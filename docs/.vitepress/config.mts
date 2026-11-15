@@ -9,6 +9,10 @@ export default defineConfig({
 
   cleanUrls: true,
 
+  markdown: {
+    math: true,
+  },
+
   themeConfig: {
     nav: navItems,
 

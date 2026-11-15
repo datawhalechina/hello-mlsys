@@ -14,7 +14,7 @@ const alphaNotice = '::: danger ⚠️ Alpha内测版本警告\n此为早期内�
 
 async function writeIfChanged(path, content) {
   const current = existsSync(path) ? await readFile(path, 'utf8') : null
-  if (current === content) return
+  if (current?.replace(/\r\n/g, '\n') === content.replace(/\r\n/g, '\n')) return
 
   changedFiles.push(path)
   if (!checkOnly) {
@@ -52,7 +52,7 @@ function chapterMarkdown(chapter) {
 
 // 已有正文只同步 frontmatter 与一级标题，不覆盖作者写下的内容。
 function syncChapterMetadata(existing, chapter) {
-  const body = existing.replace(/^---\n[\s\S]*?\n---\n/, '').replace(/^\n+/, '')
+  const body = existing.replace(/\r\n/g, '\n').replace(/^---\n[\s\S]*?\n---\n/, '').replace(/^\n+/, '')
   return `${frontmatter(chapter)}\n${body}`.replace(/^# .+$/m, `# ${chapterHeading(chapter)}`)
 }
 
@@ -87,7 +87,7 @@ function readmeDirectory() {
 
 async function syncReadme() {
   const path = join(repoRoot, 'README.md')
-  const current = await readFile(path, 'utf8')
+  const current = (await readFile(path, 'utf8')).replace(/\r\n/g, '\n')
   const next = current.replace(/## 目录\n[\s\S]*?\n## 贡献者名单/, `${readmeDirectory()}\n## 贡献者名单`)
   await writeIfChanged(path, next)
 }

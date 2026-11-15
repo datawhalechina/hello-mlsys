@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="768.6pt" height="334.26pt" viewBox="0 0 768.6 334.26" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-12T09:01:10.200333</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.8, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 334.26 
+L 768.6 334.26 
+L 768.6 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 59.3208 195.2658 
+L 136.2132 195.2658 
+Q 150.7212 195.2658 150.7212 185.5638 
+L 150.7212 114.7392 
+Q 150.7212 105.0372 136.2132 105.0372 
+L 59.3208 105.0372 
+Q 44.8128 105.0372 44.8128 114.7392 
+L 44.8128 185.5638 
+Q 44.8128 195.2658 59.3208 195.2658 
+z
+" clip-path="url(#p1f23682682)" style="fill: #f7fafc; stroke: #d5e1e9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 50.616 113.769 
+L 144.918 113.769 
+L 144.918 112.7988 
+L 50.616 112.7988 
+z
+" clip-path="url(#p1f23682682)" style="fill: #276bc3"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 204.4008 195.2658 
+L 288.5472 195.2658 
+Q 303.0552 195.2658 303.0552 185.5638 
+L 303.0552 114.7392 
+Q 303.0552 105.0372 288.5472 105.0372 
+L 204.4008 105.0372 
+Q 189.8928 105.0372 189.8928 114.7392 
+L 189.8928 185.5638 
+Q 189.8928 195.2658 204.4008 195.2658 
+z
+" clip-path="url(#p1f23682682)" style="fill: #f7fafc; stroke: #d5e1e9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 195.696 113.769 
+L 297.252 113.769 
+L 297.252 112.7988 
+L 195.696 112.7988 
+z
+" clip-path="url(#p1f23682682)" style="fill: #d88b35"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 349.4808 195.2658 
+L 426.3732 195.2658 
+Q 440.8812 195.2658 440.8812 185.5638 
+L 440.8812 114.7392 
+Q 440.8812 105.0372 426.3732 105.0372 
+L 349.4808 105.0372 
+Q 334.9728 105.0372 334.9728 114.7392 
+L 334.9728 185.5638 
+Q 334.9728 195.2658 349.4808 195.2658 
+z
+" clip-path="url(#p1f23682682)" style="fill: #f7fafc; stroke: #d5e1e9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 340.776 113.769 
+L 435.078 113.769 
+L 435.078 112.7988 
+L 340.776 112.7988 
+z
+" clip-path="url(#p1f23682682)" style="fill: #168c87"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 494.5608 195.2658 
+L 571.4532 195.2658 
+Q 585.9612 195.2658 585.9612 185.5638 
+L 585.9612 114.7392 
+Q 585.9612 105.0372 571.4532 105.0372 
+L 494.5608 105.0372 
+Q 480.0528 105.0372 480.0528 114.7392 
+L 480.0528 185.5638 
+Q 480.0528 195.2658 494.5608 195.2658 
+z
+" clip-path="url(#p1f23682682)" style="fill: #f7fafc; stroke: #d5e1e9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 485.856 113.769 
+L 580.158 113.769 
+L 580.158 112.7988 
+L 485.856 112.7988 
+z
+" clip-path="url(#p1f23682682)" style="fill: #168c87"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 639.6408 195.2658 
+L 709.2792 195.2658 
+Q 723.7872 195.2658 723.7872 185.5638 
+L 723.7872 114.7392 
+Q 723.7872 105.0372 709.2792 105.0372 
+L 639.6408 105.0372 
+Q 625.1328 105.0372 625.1328 114.7392 
+L 625.1328 185.5638 
+Q 625.1328 195.2658 639.6408 195.2658 
+z
+" clip-path="url(#p1f23682682)" style="fill: #f7fafc; stroke: #d5e1e9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 630.936 113.769 
+L 717.984 113.769 
+L 717.984 112.7988 
+L 630.936 112.7988 
+z
+" clip-path="url(#p1f23682682)" style="fill: #276bc3"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 154.168798 147.726 
+Q 170.303393 147.726 184.313724 147.726 
+" clip-path="url(#p1f23682682)" style="fill: none; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+    <path d="M 178.713724 144.926 
+L 184.313724 147.726 
+L 178.713724 150.526 
+z
+" clip-path="url(#p1f23682682)" style="fill: #567086; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 306.507226 147.726 
+Q 319.01376 147.726 329.39603 147.726 
+" clip-path="url(#p1f23682682)" style="fill: none; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+    <path d="M 323.79603 144.926 
+L 329.39603 147.726 
+L 323.79603 150.526 
+z
+" clip-path="url(#p1f23682682)" style="fill: #567086; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 444.328798 147.726 
+Q 460.463393 147.726 474.473724 147.726 
+" clip-path="url(#p1f23682682)" style="fill: none; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+    <path d="M 468.873724 144.926 
+L 474.473724 147.726 
+L 468.873724 150.526 
+z
+" clip-path="url(#p1f23682682)" style="fill: #567086; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 589.408798 147.726 
+Q 605.543393 147.726 619.553724 147.726 
+" clip-path="url(#p1f23682682)" style="fill: none; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+    <path d="M 613.953724 144.926 
+L 619.553724 147.726 
+L 613.953724 150.526 
+z
+" clip-path="url(#p1f23682682)" style="fill: #567086; stroke: #567086; stroke-width: 1.9; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 181.188 205.938 
+L 340.776 205.938 
+" clip-path="url(#p1f23682682)" style="fill: none; stroke: #d88b35; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 348.03 205.938 
+L 601.92 205.938 
+" clip-path="url(#p1f23682682)" style="fill: none; stroke: #168c87; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 19px; font-family: 'Noto Sans CJK JP'; text-anchor: start; fill: #19344a" x="43.362" y="46.799" transform="rotate(-0 43.362 46.799)">Serving 的容量是多层约束共同作用的结果</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 10.5px; font-family: 'Noto Sans CJK JP'; text-anchor: start; fill: #567086" x="43.362" y="73.086094" transform="rotate(-0 43.362 73.086094)">GPU 并不是唯一可以排队的地方；KV Cache 会改变可运行集合</text>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #19344a" x="97.767" y="141.279262" transform="rotate(-0 97.767 141.279262)">客户端</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #567086" x="97.767" y="169.479275" transform="rotate(-0 97.767 169.479275)">RPS / C</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #19344a" x="246.474" y="141.279262" transform="rotate(-0 246.474 141.279262)">等待队列</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #567086" x="246.474" y="169.479275" transform="rotate(-0 246.474 169.479275)">queue / timeout</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #19344a" x="387.927" y="141.279262" transform="rotate(-0 387.927 141.279262)">Prefill</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #567086" x="387.927" y="169.479275" transform="rotate(-0 387.927 169.479275)">大段计算</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #19344a" x="533.007" y="141.279262" transform="rotate(-0 533.007 141.279262)">Decode</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #567086" x="533.007" y="169.479275" transform="rotate(-0 533.007 169.479275)">动态 Batch</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #19344a" x="674.46" y="141.279262" transform="rotate(-0 674.46 141.279262)">流式响应</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #567086" x="674.46" y="169.479275" transform="rotate(-0 674.46 169.479275)">TTFT / ITL</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #d88b35" x="246.474" y="235.044" transform="rotate(-0 246.474 235.044)">调度 / CPU</text>
+   </g>
+   <g id="text_14">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #168c87" x="449.586" y="235.044" transform="rotate(-0 449.586 235.044)">KV Cache / GPU 资源</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK JP'; text-anchor: middle; fill: #c45b61" x="565.65" y="269.001" transform="rotate(-0 565.65 269.001)">资源不足 → 等待、抢占 / 重算、失败</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p1f23682682">
+   <rect x="21.6" y="21.6" width="725.4" height="291.06"/>
+  </clipPath>
+ </defs>
+</svg>
