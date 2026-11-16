@@ -1,0 +1,218 @@
+W1116 17:06:38.541000 16583 site-packages/torch/distributed/run.py:982] 
+W1116 17:06:38.541000 16583 site-packages/torch/distributed/run.py:982] *****************************************
+W1116 17:06:38.541000 16583 site-packages/torch/distributed/run.py:982] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1116 17:06:38.541000 16583 site-packages/torch/distributed/run.py:982] *****************************************
+z-lab-7900:16690:16690 [0] NCCL INFO ncclOsDlopen(libnccl-env.so) failed: libnccl-env.so: cannot open shared object file: No such file or directory
+z-lab-7900:16690:16690 [0] NCCL INFO ENV/Plugin: Could not find: libnccl-env.so
+z-lab-7900:16690:16690 [0] NCCL INFO Kernel version: 6.14.0-37-generic
+z-lab-7900:16690:16690 [0] NCCL INFO Hipruntime version: 71626385, firmware version: 0
+z-lab-7900:16690:16690 [0] NCCL INFO Bootstrap: Using enp39s0:192.168.1.171<0>
+z-lab-7900:16690:16735 [0] NCCL INFO Socket handshake magic 0x564ab9f2fc4b9d6c (built-in default)
+z-lab-7900:16690:16690 [0] NCCL INFO ROCr version 1.21
+z-lab-7900:16690:16690 [0] NCCL INFO cuMem auto-enable is limited to gfx1250 (detected gfx1100); set NCCL_CUMEM_ENABLE=1 to override
+z-lab-7900:16691:16691 [1] NCCL INFO ncclOsDlopen(libnccl-env.so) failed: libnccl-env.so: cannot open shared object file: No such file or directory
+z-lab-7900:16691:16691 [1] NCCL INFO ENV/Plugin: Could not find: libnccl-env.so
+z-lab-7900:16691:16691 [1] NCCL INFO ROCr version 1.21
+z-lab-7900:16691:16691 [1] NCCL INFO cuMem auto-enable is limited to gfx1250 (detected gfx1201); set NCCL_CUMEM_ENABLE=1 to override
+z-lab-7900:16691:16691 [1] NCCL INFO CONFIG_DMABUF_MOVE_NOTIFY=y in /boot/config-6.14.0-37-generic
+z-lab-7900:16691:16691 [1] NCCL INFO CONFIG_PCI_P2PDMA=y in /boot/config-6.14.0-37-generic
+z-lab-7900:16691:16691 [1] NCCL INFO DMA_BUF Support Enabled
+z-lab-7900:16691:16691 [1] NCCL INFO Kernel version: 6.14.0-37-generic
+z-lab-7900:16691:16691 [1] NCCL INFO Hipruntime version: 71626385, firmware version: 0
+z-lab-7900:16690:16690 [0] NCCL INFO CONFIG_DMABUF_MOVE_NOTIFY=y in /boot/config-6.14.0-37-generic
+z-lab-7900:16690:16690 [0] NCCL INFO CONFIG_PCI_P2PDMA=y in /boot/config-6.14.0-37-generic
+z-lab-7900:16690:16690 [0] NCCL INFO DMA_BUF Support Enabled
+z-lab-7900:16690:16690 [0] NCCL INFO Kernel version: 6.14.0-37-generic
+z-lab-7900:16690:16690 [0] NCCL INFO RCCL version : 2.30.7-HEAD:7da4302
+HIP version  : 7.16.26385-0000000
+ROCm version : 10.1.0.0-9999-7da43026
+Hostname     : z-lab-7900
+Librccl path : /home/luyzh/miniconda3/lib/python3.13/site-packages/torch/lib/../../_rocm_sdk_libraries/lib/librccl.so.1
+z-lab-7900:16691:16691 [1] NCCL INFO Bootstrap: Using enp39s0:192.168.1.171<0>
+z-lab-7900:16691:16691 [1] NCCL INFO RCCL version : 2.30.7-HEAD:7da4302
+HIP version  : 7.16.26385-0000000
+ROCm version : 10.1.0.0-9999-7da43026
+Hostname     : z-lab-7900
+Librccl path : /home/luyzh/miniconda3/lib/python3.13/site-packages/torch/lib/../../_rocm_sdk_libraries/lib/librccl.so.1
+z-lab-7900:16691:16691 [1] NCCL INFO Comm config Blocking set to 1
+z-lab-7900:16690:16690 [0] NCCL INFO Comm config Blocking set to 1
+z-lab-7900:16691:16691 [1] NCCL INFO Comm config Comm name set to 0
+z-lab-7900:16690:16690 [0] NCCL INFO Comm config Comm name set to 0
+z-lab-7900:16691:16691 [1] NCCL INFO RCCL: Detected 0 IB devices, primary type: 0 (count: 0)
+z-lab-7900:16691:16691 [1] NCCL INFO ncclOsDlopen(librccl-net.so) failed: librccl-net.so: cannot open shared object file: No such file or directory
+z-lab-7900:16691:16691 [1] NCCL INFO NET/Plugin: Could not find: librccl-net.so
+z-lab-7900:16691:16691 [1] NCCL INFO NET/IB : No device found.
+z-lab-7900:16691:16691 [1] NCCL INFO NET/IB : Using [RO]; OOB enp39s0:192.168.1.171<0>
+z-lab-7900:16691:16691 [1] NCCL INFO Failed to initialize NET plugin IB
+z-lab-7900:16691:16691 [1] NCCL INFO NET/Socket : Using [0]enp39s0:192.168.1.171<0> [1]dummy0:10.255.255.1<0>
+z-lab-7900:16691:16691 [1] NCCL INFO Initialized NET plugin Socket
+z-lab-7900:16691:16691 [1] NCCL INFO Assigned NET plugin Socket to comm
+z-lab-7900:16691:16691 [1] NCCL INFO ncclOsDlopen(libnccl-rma.so) failed: libnccl-rma.so: cannot open shared object file: No such file or directory
+z-lab-7900:16691:16691 [1] NCCL INFO RMA/Plugin: Could not find: libnccl-rma.so
+z-lab-7900:16691:16691 [1] NCCL INFO RMA/Plugin: Failed to load external plugin libnccl-rma.so, dlHandle: (nil), ncclRma: (nil)
+z-lab-7900:16691:16691 [1] NCCL INFO RMA/Plugin: Failed to initialize any plugin
+z-lab-7900:16691:16691 [1] NCCL INFO ncclOsDlopen(libnccl-gin.so) failed: libnccl-gin.so: cannot open shared object file: No such file or directory
+z-lab-7900:16691:16691 [1] NCCL INFO GIN/Plugin: Could not find: libnccl-gin.so
+z-lab-7900:16691:16691 [1] NCCL INFO GIN/Plugin: Failed to load external plugin libnccl-gin.so, dlHandle: (nil), ncclGin: (nil)
+z-lab-7900:16691:16691 [1] NCCL INFO GIN/Plugin: Failed to initialize any GIN plugin
+z-lab-7900:16691:16691 [1] NCCL INFO Using network Socket
+z-lab-7900:16691:16691 [1] NCCL INFO [node_id = 2; gpu_id = 62919; unique_id = 3458873335738439009; location_id = 12800; bdf = 12800; domain = 0; partition = 0], 
+z-lab-7900:16691:16691 [1] NCCL INFO [node_id = 1; gpu_id = 25641; unique_id = 15568676112998690418; location_id = 12032; bdf = 12032; domain = 0; partition = 0], 
+z-lab-7900:16691:16691 [1] NCCL INFO initialized internal alternative rsmi functionality; UALoE/UALLink fabric discovery uses sysfs (set RCCL_USE_AMD_SMI_LIB=1 to use amd_smi_lib instead)
+z-lab-7900:16691:16691 [1] NCCL INFO [Rank 1] ncclCommInitRankConfig_impl comm 0x5c6cc1f4d270 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId 32000 commId 0x6f14ecc7cae25627 - Init START
+z-lab-7900:16691:16691 [1] NCCL INFO Socket handshake magic 0x564ab9f2fc4b9d6c (built-in default)
+z-lab-7900:16690:16690 [0] NCCL INFO RCCL: Detected 0 IB devices, primary type: 0 (count: 0)
+z-lab-7900:16690:16690 [0] NCCL INFO ncclOsDlopen(librccl-net.so) failed: librccl-net.so: cannot open shared object file: No such file or directory
+z-lab-7900:16690:16690 [0] NCCL INFO NET/Plugin: Could not find: librccl-net.so
+z-lab-7900:16690:16690 [0] NCCL INFO NET/IB : No device found.
+z-lab-7900:16690:16690 [0] NCCL INFO NET/IB : Using [RO]; OOB enp39s0:192.168.1.171<0>
+z-lab-7900:16690:16690 [0] NCCL INFO Failed to initialize NET plugin IB
+z-lab-7900:16690:16690 [0] NCCL INFO NET/Socket : Using [0]enp39s0:192.168.1.171<0> [1]dummy0:10.255.255.1<0>
+z-lab-7900:16690:16690 [0] NCCL INFO Initialized NET plugin Socket
+z-lab-7900:16690:16690 [0] NCCL INFO Assigned NET plugin Socket to comm
+z-lab-7900:16690:16690 [0] NCCL INFO ncclOsDlopen(libnccl-rma.so) failed: libnccl-rma.so: cannot open shared object file: No such file or directory
+z-lab-7900:16690:16690 [0] NCCL INFO RMA/Plugin: Could not find: libnccl-rma.so
+z-lab-7900:16690:16690 [0] NCCL INFO RMA/Plugin: Failed to load external plugin libnccl-rma.so, dlHandle: (nil), ncclRma: (nil)
+z-lab-7900:16690:16690 [0] NCCL INFO RMA/Plugin: Failed to initialize any plugin
+z-lab-7900:16690:16690 [0] NCCL INFO ncclOsDlopen(libnccl-gin.so) failed: libnccl-gin.so: cannot open shared object file: No such file or directory
+z-lab-7900:16690:16690 [0] NCCL INFO GIN/Plugin: Could not find: libnccl-gin.so
+z-lab-7900:16690:16690 [0] NCCL INFO GIN/Plugin: Failed to load external plugin libnccl-gin.so, dlHandle: (nil), ncclGin: (nil)
+z-lab-7900:16690:16690 [0] NCCL INFO GIN/Plugin: Failed to initialize any GIN plugin
+z-lab-7900:16690:16690 [0] NCCL INFO Using network Socket
+z-lab-7900:16690:16690 [0] NCCL INFO [node_id = 2; gpu_id = 62919; unique_id = 3458873335738439009; location_id = 12800; bdf = 12800; domain = 0; partition = 0], 
+z-lab-7900:16690:16690 [0] NCCL INFO [node_id = 1; gpu_id = 25641; unique_id = 15568676112998690418; location_id = 12032; bdf = 12032; domain = 0; partition = 0], 
+z-lab-7900:16690:16690 [0] NCCL INFO initialized internal alternative rsmi functionality; UALoE/UALLink fabric discovery uses sysfs (set RCCL_USE_AMD_SMI_LIB=1 to use amd_smi_lib instead)
+z-lab-7900:16690:16690 [0] NCCL INFO [Rank 0] ncclCommInitRankConfig_impl comm 0x5dff6d895520 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 2f000 commId 0x6f14ecc7cae25627 - Init START
+z-lab-7900:16690:16690 [0] NCCL INFO RAS client listening socket at 127.0.0.1<28028>
+z-lab-7900:16691:16691 [1] NCCL INFO RAS client listening socket at 127.0.0.1<28028>
+z-lab-7900:16691:16691 [1] NCCL INFO Bootstrap timings total 0.136339 (create 0.000039, send 0.000152, recv 0.135836, ring 0.000026, delay 0.000001)
+z-lab-7900:16690:16690 [0] NCCL INFO Bootstrap timings total 0.000600 (create 0.000031, send 0.000140, recv 0.000182, ring 0.000035, delay 0.000000)
+z-lab-7900:16690:16690 [0] NCCL INFO Tuning index set to: 0
+z-lab-7900:16690:16690 [0] NCCL INFO ncclTopoGetCpuAffinity: Affinity for GPU 0 is 0-23. (GPU affinity = 0-23 ; CPU affinity = 0-23).
+z-lab-7900:16690:16690 [0] NCCL INFO ringGraph->nChannels = 1 
+z-lab-7900:16691:16691 [1] NCCL INFO Tuning index set to: 7
+z-lab-7900:16690:16690 [0] NCCL INFO Cheap post-send fence is OFF
+z-lab-7900:16690:16690 [0] NCCL INFO Rank 0: 2 Net devices
+z-lab-7900:16690:16690 [0] NCCL INFO Rank 0: 0 CollNet devices
+z-lab-7900:16691:16691 [1] NCCL INFO ncclTopoGetCpuAffinity: Affinity for GPU 1 is 0-23. (GPU affinity = 0-23 ; CPU affinity = 0-23).
+z-lab-7900:16691:16691 [1] NCCL INFO ringGraph->nChannels = 1 
+z-lab-7900:16691:16691 [1] NCCL INFO Cheap post-send fence is OFF
+z-lab-7900:16691:16691 [1] NCCL INFO Rank 1: 2 Net devices
+z-lab-7900:16691:16691 [1] NCCL INFO Rank 1: 0 CollNet devices
+z-lab-7900:16691:16691 [1] NCCL INFO comm 0x5c6cc1f4d270 rank 1 nRanks 2 nNodes 1 localRanks 2 localRank 1 MNNVL 0
+z-lab-7900:16690:16690 [0] NCCL INFO Local Net device counts across ranks: min 2 max 2
+z-lab-7900:16690:16690 [0] NCCL INFO Local CollNet device counts across ranks: min 0 max 0
+z-lab-7900:16690:16690 [0] NCCL INFO comm 0x5dff6d895520 rank 0 nRanks 2 nNodes 1 localRanks 2 localRank 0 MNNVL 0
+z-lab-7900:16691:16691 [1] NCCL INFO Trees [0] -1/-1/-1->1->0 [1] -1/-1/-1->1->0 comm 0x5c6cc1f4d270 nRanks 02 busId 32000
+z-lab-7900:16690:16690 [0] NCCL INFO Channel 00/02 : 0 1
+z-lab-7900:16690:16690 [0] NCCL INFO Channel 01/02 : 0 1
+z-lab-7900:16690:16690 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] 1/-1/-1->0->-1 comm 0x5dff6d895520 nRanks 02 busId 2f000
+z-lab-7900:16691:16691 [1] NCCL INFO P2P Chunksize set to 131072
+z-lab-7900:16690:16690 [0] NCCL INFO P2P Chunksize set to 131072
+z-lab-7900:16691:16691 [1] NCCL INFO ncclOsDlopen(libnccl-profiler.so) failed: libnccl-profiler.so: cannot open shared object file: No such file or directory
+z-lab-7900:16691:16691 [1] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so
+z-lab-7900:16691:16691 [1] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 0 isAllCudaP2p 1
+z-lab-7900:16690:16690 [0] NCCL INFO ncclOsDlopen(libnccl-profiler.so) failed: libnccl-profiler.so: cannot open shared object file: No such file or directory
+z-lab-7900:16690:16690 [0] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so
+z-lab-7900:16690:16690 [0] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 0 isAllCudaP2p 1
+z-lab-7900:16690:16749 [0] NCCL INFO [Proxy Service] Device 0 CPU core 23
+z-lab-7900:16690:16749 [0] NCCL INFO proxy listening socket at 192.168.1.171<56241>
+z-lab-7900:16691:16751 [0] NCCL INFO [Proxy Service UDS] Device 1 CPU core 20
+z-lab-7900:16691:16750 [0] NCCL INFO [Proxy Service] Device 1 CPU core 23
+z-lab-7900:16691:16750 [1] NCCL INFO proxy listening socket at 192.168.1.171<51551>
+z-lab-7900:16690:16752 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 20
+z-lab-7900:16691:16691 [1] NCCL INFO Channel 00/0 : 1[32000] -> 0[2f000] via P2P/IPC comm 0x5c6cc1f4d270 nRanks 02
+z-lab-7900:16690:16690 [0] NCCL INFO Channel 00/0 : 0[2f000] -> 1[32000] via P2P/IPC comm 0x5dff6d895520 nRanks 02
+z-lab-7900:16691:16691 [1] NCCL INFO Channel 01/0 : 1[32000] -> 0[2f000] via P2P/IPC comm 0x5c6cc1f4d270 nRanks 02
+z-lab-7900:16690:16690 [0] NCCL INFO Channel 01/0 : 0[2f000] -> 1[32000] via P2P/IPC comm 0x5dff6d895520 nRanks 02
+z-lab-7900:16691:16691 [1] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+z-lab-7900:16690:16690 [0] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+z-lab-7900:16691:16691 [1] NCCL INFO Connected all trees
+z-lab-7900:16690:16690 [0] NCCL INFO Connected all trees
+z-lab-7900:16691:16756 [0] NCCL INFO [Proxy Progress] Device 1 CPU core 23
+z-lab-7900:16691:16691 [1] NCCL INFO ncclOsDlopen(libnccl-tuner.so) failed: libnccl-tuner.so: cannot open shared object file: No such file or directory
+z-lab-7900:16691:16691 [1] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so
+z-lab-7900:16690:16757 [0] NCCL INFO [Proxy Progress] Device 0 CPU core 23
+z-lab-7900:16691:16691 [1] NCCL INFO RCCL Tuning index:7
+z-lab-7900:16691:16691 [1] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 256 | 256
+z-lab-7900:16691:16691 [1] NCCL INFO comm:0x5c6cc1f4d270, nRanks:2, nNodes:1, coll channels:2 collnet channels:2, nvls channels:0, p2p channels:2, p2p channels per peer:2, shiftSize:-1
+z-lab-7900:16691:16691 [1] NCCL INFO Symmetric memory is not supported. cuMemEnable 0, globalGinSupport 0, globalNicFused 0 cuMemGdrSupport 1
+z-lab-7900:16690:16690 [0] NCCL INFO ncclOsDlopen(libnccl-tuner.so) failed: libnccl-tuner.so: cannot open shared object file: No such file or directory
+z-lab-7900:16690:16690 [0] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so
+z-lab-7900:16690:16690 [0] NCCL INFO RCCL Tuning index:0
+z-lab-7900:16690:16690 [0] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 256 | 256
+z-lab-7900:16690:16690 [0] NCCL INFO comm:0x5dff6d895520, nRanks:2, nNodes:1, coll channels:2 collnet channels:2, nvls channels:0, p2p channels:2, p2p channels per peer:2, shiftSize:-1
+z-lab-7900:16690:16690 [0] NCCL INFO Symmetric memory is not supported. cuMemEnable 0, globalGinSupport 0, globalNicFused 0 cuMemGdrSupport 1
+z-lab-7900:16690:16690 [0] NCCL INFO CC Off, workFifoBytes 4194304
+z-lab-7900:16690:16690 [0] NCCL INFO RCCL Unroll Factor (pre-set): 4
+z-lab-7900:16691:16691 [1] NCCL INFO RCCL Unroll Factor (pre-set): 4
+z-lab-7900:16691:16691 [1] NCCL INFO ncclCommInitRankConfig_impl comm 0x5c6cc1f4d270 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId 32000 commId 0x6f14ecc7cae25627 - Init COMPLETE
+z-lab-7900:16691:16691 [1] NCCL INFO Init timings - ncclCommInitRankConfig_impl: rank 1 nranks 2 total 1.07 (kernels 0.64, alloc 0.05, bootstrap 0.14, allgathers 0.00, topo 0.19, graphs 0.00, connections 0.05, rest 0.00)
+z-lab-7900:16690:16690 [0] NCCL INFO ncclCommInitRankConfig_impl comm 0x5dff6d895520 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 2f000 commId 0x6f14ecc7cae25627 - Init COMPLETE
+z-lab-7900:16690:16690 [0] NCCL INFO Init timings - ncclCommInitRankConfig_impl: rank 0 nranks 2 total 1.07 (kernels 0.77, alloc 0.05, bootstrap 0.00, allgathers 0.00, topo 0.19, graphs 0.00, connections 0.05, rest 0.00)
+[rank1] init OK in 1.2s
+[rank0] init OK in 1.1s
+z-lab-7900:16690:16690 [0] NCCL INFO RCCL: ncclCommRegister
+z-lab-7900:16690:16690 [0] NCCL INFO CE AllReduce not enabled. Set RCCL_CE_ALLREDUCE=1 to enable.
+z-lab-7900:16690:16690 [0] NCCL INFO Taking kernel-based collective path
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/tmp/rccl_samegpu_diag.py", line 18, in <module>
+[rank1]:     dist.all_reduce(x)
+[rank1]:     ~~~~~~~~~~~~~~~^^^
+[rank1]:   File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 85, in wrapper
+[rank1]:     return func(*args, **kwargs)
+[rank1]:   File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 4218, in all_reduce
+[rank1]:     work = group.allreduce([tensor], opts)
+[rank1]: RuntimeError: Expected tensor on cuda:1 but found tensor on cuda:0
+W1116 17:06:42.229000 16583 site-packages/torch/distributed/elastic/multiprocessing/api.py:1033] Sending process 16690 closing signal SIGTERM
+E1116 17:06:42.444000 16583 site-packages/torch/distributed/elastic/multiprocessing/api.py:1007] failed (exitcode: 1) local_rank: 1 (pid: 16691) of binary: /home/luyzh/miniconda3/bin/python3.13
+Traceback (most recent call last):
+  File "/home/luyzh/miniconda3/bin/torchrun", line 6, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 384, in wrapper
+    result = f(*args, **kwargs)
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/run.py", line 1139, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/run.py", line 1130, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 212, in __call__
+    return launch_agent(
+        self._config,
+    ...<2 lines>...
+        health_check_server=self._health_check_server,
+    )
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 402, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/tmp/rccl_samegpu_diag.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-11-16_17:06:42
+  host      : z-lab-7900
+  rank      : 0 (local_rank: 0)
+  exitcode  : -15 (pid: 16690)  (SIGTERM)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 16690
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-11-16_17:06:42
+  host      : z-lab-7900
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 16691) 
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

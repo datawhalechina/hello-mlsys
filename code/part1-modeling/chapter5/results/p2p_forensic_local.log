@@ -1,0 +1,9 @@
+checks: {'device_count': 2, 'name_0': 'AMD Radeon RX 7900 XTX', 'name_1': 'AMD Radeon RX 9070 XT', 'p2p_0_1': True, 'p2p_1_0': True}
+  64KB 0->1: {'ms': 0.18, 'gbps': 0.36, 'verified': True}
+  64KB 1->0: {'ms': 0.094, 'gbps': 0.7, 'verified': True}
+  1024KB 0->1: {'ms': 0.189, 'gbps': 5.55, 'verified': True}
+  1024KB 1->0: {'ms': 0.157, 'gbps': 6.67, 'verified': True}
+  16384KB 0->1: {'ms': 1.269, 'gbps': 13.22, 'verified': True}
+  16384KB 1->0: {'ms': 1.299, 'gbps': 12.91, 'verified': True}
+saved /mnt/luyuzhou/hello-mlsys/hello-mlsys/code/part1-modeling/chapter5/results/p2p_forensic_local.json
+FORENSIC-OK

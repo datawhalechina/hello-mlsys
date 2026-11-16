@@ -1,0 +1,340 @@
+# Hello MLSys · 第 5 章实验底稿
+# 模板: docs/public/part0-intro/chapter0/experiment-draft.yaml（字段结构不变）
+# 纪律: prediction.stored_at 先于测量；holdout 测前冻结、用后即烧；
+#       不支持的机制标 not_covered，不静默改配置。
+
+experiment_id: exp_ch5_001
+chapter: 5
+hypothesis: >
+  Ring-AllReduce 一阶模型 T = 2(P−1)α + 2·(P−1)/P·Data/BW 在真机上应成立：
+  T(Data) 对 Data 线性，小消息端被有效 α 抬平（延迟主导区），大消息端斜率
+  → 2·(P−1)/P·Data/BW_eff（带宽主导区）。双卡 PCIe 2-hop（经 CPU 根复合体，
+  无 xGMI）实测 α_eff 应显著高于 nominal 协议 α（2 µs/跳 × 2 跳 = 4 µs），
+  差额归因于集合通信引擎的启动/同步开销（kernel launch + 协议栈），
+  即"公式口径 α（协议参数）"与"引擎口径 α_eff（含启动开销）"的可分解差。
+  PCIe 1-hop H2D/D2H pinned 带宽应落在工程带 20–25 GB/s（nominal 上限 25，
+  单向 raw 31.5 GB/s 的 ~79%）。
+
+scenario:
+  hardware: "RX 9070 XT 15.9GB gfx1201（主卡，Node ID 2）+ RX 7900 XTX 24GB gfx1100（辅助，Node ID 1）；P2P 路径 = PCIe 2-hop（经 CPU 根复合体，rocm-smi --showtopo 无 xGMI）"
+  workload: >
+    ① PCIe 1-hop：torch pinned H2D/D2H，1MB–1GB（6 点，×4 跨距，2^20–2^30）+ 64KB 延迟端；
+       测量卡改为 7900 XTX（主卡 9070 XT 被他人 vLLM roofline 任务占 13 GB VRAM，
+       not_covered；两卡同为 PCIe 4.0 ×16 链路，1-hop 基线等价）；
+    ② gloo CPU：2/4 rank All-Reduce 语义验证（求和正确 + 同步），
+       显式声明非多卡性能；
+    ③ RCCL：2-GPU all_reduce 64KB–128MB（12 点，calibration）
+       + 16KB / 256MB（2 点，holdout），每点 5 warmup + 30 计时取中位数。
+
+environment:                            # 测量前快照（宿主 miniconda3 直跑，不进容器）
+  gpu_driver: "6.16.13"
+  rocm_version: "rocm10.1.0"
+  framework: "torch 2.16.0.dev20261019+rocm10.1（宿主 /home/luyzh/miniconda3/bin；backend=nccl 即 RCCL）"
+  os: "Linux 6.14.0-37-generic"
+
+prediction:
+  tool: "comm_ledger.py（code/part1-modeling/chapter5/，results/comm_ledger.json，run ch5-ledger-20261116T063929Z）"
+  calibration_version: "nominal-topology-profiles-v1（测前冻结；pcie4_x16: 25 GB/s, α=2 µs/跳）"
+  metrics:
+    pcie1hop_h2d_d2h: {bw_gbps_upper: 25.0, engineering_band_gbps: [20.0, 25.0]}
+    dual_gpu_2hop_ring_ar:
+      p: 2
+      alpha_eff_us_nominal: 4.0        # 2 跳 × 2 µs（协议口径；预期实测拟合值更高）
+      bw_eff_gbps: 25.0
+      predictions_ms:                  # 来自 ledger realhw_predictions（公式 T=2(P−1)α+2(P−1)/P·D/BW）
+        - {kb: 64,     t_ms: 0.010621}
+        - {kb: 256,    t_ms: 0.018486}
+        - {kb: 1024,   t_ms: 0.049943}
+        - {kb: 4096,   t_ms: 0.175772}
+        - {kb: 16384,  t_ms: 0.679089}
+        - {kb: 65536,  t_ms: 2.692355}
+        - {kb: 262144, t_ms: 10.745418}
+  msysim_crosscheck: "commit 2d9d4de（2026-11-06），48 点公式级对账 max_rel_err=2.15e-16（grid 修正后复跑 ledger 复核）"
+  stored_at: "2026-11-16T06:05:00Z"    # 先于本章任何真机测量
+
+measurement_plan:
+  warmup: 5                            # 每消息体 5 次预热（不计入）
+  samples: 30                          # 每消息体 30 次计时，取中位数
+  rounds: 1
+  timeout_s: 600
+  round_budget_s: 3600
+  calibration_configs:                 # RCCL 拟合 α_eff/BW_eff 用（线性回归 T = a + b·Data）
+    - rccl_ar_64kb                     # 2^16 B
+    - rccl_ar_128kb                    # 2^17 B
+    - rccl_ar_256kb                    # 2^18 B
+    - rccl_ar_512kb                    # 2^19 B
+    - rccl_ar_1mb                      # 2^20 B
+    - rccl_ar_2mb                      # 2^21 B
+    - rccl_ar_4mb                      # 2^22 B
+    - rccl_ar_8mb                      # 2^23 B
+    - rccl_ar_16mb                     # 2^24 B
+    - rccl_ar_32mb                     # 2^25 B
+    - rccl_ar_64mb                     # 2^26 B
+    - rccl_ar_128mb                    # 2^27 B
+  holdout_configs:                     # 只评测、不参与拟合；用后即烧
+    - rccl_ar_16kb                     # 2^14 B，calibration 下限外（验证 α 外推）
+    - rccl_ar_256mb                    # 2^28 B，calibration 上限外（验证 β 外推）
+  side_measurements:                   # 非拟合输入，行为/基线记录
+    - pcie_h2d_d2h_pin_7900xtx         # 1MB–1GB × 6 点 + 64KB（主测量，辅助卡空闲）
+    - gloo_allreduce_2rank             # CPU 语义：求和正确性 + 同步性
+    - gloo_allreduce_4rank             # CPU 语义：4 rank 扩展
+    - p2p_access_probe                 # torch p2p 可达性 + rocm-smi --showtopo 读数
+  not_covered:
+    - rccl_dual_gpu_perf               # 双卡 RCCL all_reduce 本机无法完成首个集合通信
+                                       # （10-run 法医：run1 污染 / run2 hang 早于污染 6.7min /
+                                       #   run3 根因诊断 / run4 NCCL_P2P_DISABLE 无效 /
+                                       #   run5 iommu=pt 重启后复验仍同签名失败 /
+                                       #   run6 ReBAR 重启后传输换 P2P/IPC 仍同签名失败 +
+                                       #   传输矩阵 4 通道全死 + 单 rank 全过 + 裸 P2P DMA
+                                       #   实测走通 13.22/12.91 GB/s，见
+                                       #   outcome.rccl_dual_gpu.run6..verdict）；
+                                       # ReBAR 后根因上移 = "2-process 跨 GPU RCCL kernel
+                                       #   互等死锁（传输无关，双 GPU spin 活体取证）"，
+                                       #   候选 = GPU 计算侧 peer 写可见性 / RCCL 异构
+                                       #   gfx bug / 驱动 KFD，均超出本实验权限（vendor 级）；
+                                       # ReBAR 前证据（256MB legacy aperture、iommu=pt
+                                       #   单独不充分、客户端根复合体 peer TLP 未排除）
+                                       #   仍有效但已非当前阻塞层；
+                                       # rccl_probe.json 未产出（无编造数字）
+    - rocm_bandwidth_test              # 宿主未安装且 apt 无包（已查 /opt/rocm/bin 与 apt-cache）；
+                                       # PCIe 基线改由 torch pinned 传输实测承担
+    - pcie_h2d_d2h_pin_9070xt          # 主卡被他人 vLLM roofline 任务占用（13 GB/16 GB VRAM，
+                                       # HIP_VISIBLE_DEVICES=1，2026-11-16T14:01Z 启动）；
+                                       # 1-hop PCIe 基线由 7900 XTX 承担（同为 x16 Gen4 链路）
+    - xgmi_ring_real                   # 本机双卡无 xGMI（PCIe 2-hop），xGMI 档仅为 nominal 档案
+    - roce100g_real                    # 单机无跨节点网络，RoCE 档仅为 nominal 档案
+    - nvlink300_real                   # 本机无 NVLink，NVLink 档仅为 nominal 档案（对本机仍成立）
+                                       # （测后补充：NVLink 层引擎口径已在 v100x2 宿主实测
+                                       #   （V100×2 NV6，results/nccl_probe_v100nv6.json，
+                                       #   见 outcome.nccl_nv6_v100x2，正文 §5.9）；A100 口径的
+                                       #   nvlink300 硬件本身仍 not_covered，代际差如实记录）
+
+outcome:                                 # 测后登记（不改动 prediction 冻结区）
+  measured_at: "2026-11-16T14:16Z"
+  host_config_change: >-
+    2026-11-16 宿主 GRUB 增加 iommu=pt（GRUB_CMDLINE_LINUX_DEFAULT="quiet splash iommu=pt"，
+    update-grub 后由用户执行重启）；内核确认 "iommu: Default domain type: Passthrough"。
+    重启前的全部测量（PCIe 1-hop / gloo / RCCL run1–4）均为 no-pt 口径；
+    重启后设备口径复测与重启前在噪声内一致（见 pcie_1hop_7900xtx.recheck_iommu_pt），
+    RCCL run5 在重启后执行（见 rccl_dual_gpu.run5）。
+  pcie_1hop_7900xtx:                     # results/pcie_probe_7900xtx.json
+    h2d_gbps: {64kb: 2.66, 1mb: 11.5, 4mb: 13.58, 16mb: 14.12, 64mb: 14.26, 256mb: 14.27, 1gb: 14.30}
+    d2h_gbps: {64kb: 1.33, 1mb: 8.67, 4mb: 12.65, 16mb: 13.76, 64mb: 14.08, 256mb: 14.14, 1gb: 14.16}
+    latency_64kb_ms: {h2d: 0.051, d2h: 0.049}
+    pageable_64mb_gbps: {h2d: 14.06, d2h: 14.08}
+    recheck_iommu_pt:                   # iommu=pt 重启后同协议复测（2026-11-16T15:5x 本地）；
+                                        # results/pcie_probe_7900xtx.json 现为该版本，
+                                        # 重启前 no-pt 版留存为 results/pcie_probe_7900xtx_nopt.json；
+                                        # 正文 §5.6/§5.10 数字同步至本复测
+      h2d_gbps: {64kb: 2.61, 1mb: 11.49, 4mb: 13.67, 16mb: 14.15, 64mb: 14.27, 256mb: 14.30, 1gb: 14.31}
+      d2h_gbps: {64kb: 1.38, 1mb: 9.93, 4mb: 12.79, 16mb: 13.78, 64mb: 14.06, 256mb: 14.15, 1gb: 14.15}
+      latency_64kb_ms: {h2d: 0.049, d2h: 0.047}
+      pageable_64mb_gbps: {h2d: 14.12, d2h: 14.19}
+      vs_nopt: >-
+        与 no-pt 版噪声内一致（H2D 14.31 vs 14.30、D2H 14.15 vs 14.16 GB/s，
+        64 KB 49/47 vs 51/49 µs）——设备口径对宿主 DMA 配置变化稳定，
+        排除"仅特定 boot 配置下的读数"解释。
+    vs_prediction: "工程带 20–25 GB/s 未命中：稳态 H2D≈14.3 / D2H≈14.2 GB/s（nominal 25 的 ~57%）"
+    attribution: >
+      已排除：链路宽度/速率（sysfs current=max=Gen4 ×16，16GT/s）、NUMA 跨节点
+      （Ryzen 9 3900X 单 NUMA，x16 直连 CPU）、延迟/流水线未隐藏（8 块在途双缓冲
+      持续带宽仍 14.3，与单发一致）。实测值 ≈ Gen3 ×16 raw 的 ~92%（15.6 GB/s），
+      与 Gen4 ×16 raw（31.5 GB/s）差 ~45%。残差归因于宿主任务级 DMA/驱动拷贝路径
+      效率，本机层面无法进一步分解 → unresolved（不硬凑）。
+      结论：nominal pcie4_x16=25 GB/s 是本机 1-hop 设备口径的上界估计，
+      真机实测带宽显著低于协议上限——三口径对账的核心案例。
+  gloo_semantics:                        # results/gloo_semantics.json
+    result: "2/4 rank 全部检查通过（求和正确/跨 rank 一致/in-place/阻塞语义）"
+    note: "bf16 dtype 实测 supported（原预期 not_supported，记录事实）"
+  rccl_dual_gpu:
+    run1: >-
+      FAILED（2026-11-16T06:22–06:33Z，无数据，results/rccl_probe.json 未产出）：
+      torchrun 启动 5s 后 GPU[1] 被他人容器进程挤入（PID 1188257，8.9–15.1 GB VRAM，
+      06:22:51–06:26:16，当时实时记入本条；原始监控日志后被 run2 的 run 覆盖，
+      本 yaml 记录为唯一留存）→ 集合通信卡死 → NCCL timeout ~601s → 双 rank SIGABRT（exit -6）。
+    fix: >-
+      run_rccl_probe.sh 污染判据缺陷修复：旧逻辑 grep 计数 GPU[1] 上"任意 pid"，
+      把本探针自己的 2 个 torchrun worker 也算进去（任何 run 必判脏）；
+      改为 白名单本探针进程树（ps 递归，与 GPU 时序竞态无关）+ VRAM>2GB 异常
+      （本探针 GPU[1] 足迹实测 ~0.5 GB，他人容器 >8 GB）。
+    run2: >-
+      FAILED（2026-11-16T06:45–06:55Z，无数据，results/rccl_probe.json 未产出）：
+      首个 NCCL 集合（init 后第一笔 all_reduce）06:45:07 启动，600s 看门狗 06:55:07
+      触发，双 rank SIGABRT（exit -6）。关键证据：GPU[1] 06:45:00 确认空闲（本探针独占），
+      首个 foreign pid（1206349，~0.98GB）06:51:51 才出现——hang 早于污染 ~6.7min，
+      且窗口内 GPU[1] VRAM 恒 ~0.5GB（探针从未推进过首个集合）。→ 根因疑为
+      gfx1100(RDNA3)+gfx1201(RDNA4) 异构双卡 + P2P=off 下首个 all_reduce 永久 hang，
+      非污染；.rccl_dirty 污染门正确判脏但非根因（详见 results/rccl_gpu1_watch.log）。
+    run3: >-
+      诊断（2026-11-16T07:06–07:10Z，run_rccl_diag.sh，results/rccl_diag_{a,b,stdout}.log）：
+      两卡确认空闲后跑最小 all_reduce（1/256/1024 KB，90s 看门狗）。Config B
+      （HSA_FORCE_FINE_GRAIN_PCIE=1）与 Config A（默认 CPU 中转）完全一致地失败：
+      init/ring/tree 全 OK（init 1.4s，Connected all rings/trees），但首个 1KB all_reduce
+      90s 干净超时（sum_ok=False，双 rank SIGABRT exit -6）。根因锁定：RCCL 拓扑误判
+      isAllCudaP2p=1，而 HSA 实际 "Could not enable P2P between dev 1 and dev 0"（×8）
+      → 环走 SHM/direct/direct 直连通道，GPU↔GPU DMA 永不完成；RCCL 自警缺 iommu=pt
+      （"can lead to system instablity or hang"），且 cuMem 自动启用上限 gfx1250
+      （gfx1100 无 cuMem）。→ 本机启动配置（缺 iommu=pt + RDNA3 无 cuMem）无法承载
+      双卡直接 P2P；异构本身非死结，是本 host 配置问题。
+    run4: >-
+      FAILED（2026-11-16T07:12Z 起，run_rccl_diag2.sh，results/rccl_diag_c.log）：
+      试 NCCL_P2P_DISABLE=1（强制 proxy/CPU-staging 路径，即 2-hop 经 CPU 根复合体、
+      由 H2D/D2H DMA 承担——与 nominal 档案同口径，且 H2D/D2H 已实测 14 GB/s 可用）。
+      日志确认环境变量生效、isAllDirectP2p 由 1→0，但通道仍保持 SHM/direct/direct + GDR 1，
+      首个 1KB all_reduce 再次 91.8s 超时（sum_ok=False，双 rank SIGABRT exit -6）——
+      拓扑记录翻一位不改通道选择；mini 门未过，全量 14 点探针未执行。
+      结论：本机（host 配置缺 iommu=pt + RDNA3 无 cuMem）的双卡 RCCL all_reduce
+      无法完成首个集合通信 → 引擎口径判定 not_covered；α–β 拟合与 holdout 外推未执行
+      （results/rccl_probe.json 全程未产出，无编造数字）。非"异构卡原理上不可能"
+      结论——同一对卡在 host 启用 iommu=pt 后理论上可承载，但重启宿主不在本实验
+      权限内，不硬凑（法医明细：results/rccl_diag_*.log + rccl_gpu1_watch.log）。
+    run5: >-
+      FAILED（2026-11-16T07:47–07:52Z，run_rccl_diag3.sh，results/rccl_diag_pt_{a,b}.log
+      + rccl_diag3_stdout.log）：宿主 GRUB 启用 iommu=pt 并重启（内核确认
+      "iommu: Default domain type: Passthrough (set via kernel command line)"）后，
+      重跑最小 1KB all_reduce（90s 看门狗，两配置：默认 / HSA_FORCE_FINE_GRAIN_PCIE=1）：
+      HSA "Could not enable P2P between dev 1 and dev 0" ×8 依旧、isAllCudaP2p=1 误判
+      依旧、通道仍 SHM/direct/direct，首个 1KB all_reduce 看门狗 15:49:25（本地）
+      触发，双 rank SIGABRT（exit -6）——与 run3 逐字同签名 → iommu=pt 单独不足。
+      平台层补证（lspci，重启后）：两卡均仅暴露 256MB legacy aperture（Region 0 均
+      [size=256M]，无 Resizable BAR 大窗口）→ 对端 24/16 GB VRAM 无法经 BAR 映射，
+      amdgpu 拒绝建 P2P；全树无 ACS（排除 ACS 拦截）；两卡挂同一 Matisse 根复合体
+      两条不同 root port 链（03.1-[2e-2f] / 03.2-[31-32]），客户端根复合体是否转发
+      peer TLP 无法从 OS 层验证。→ 根因从"host boot 配置"上移到"平台层（BIOS ReBAR
+      / 根复合体 peer 路由）"；唯一剩余候选杠杆 = BIOS 启用 Above 4G Decoding /
+      Re-Size BAR 后复测（不在本实验权限内）。
+    run6: >-
+      FAILED（2026-11-16T08:50–08:52Z，ReBAR 启用后复测，results/rccl_diag_rebar_b.log）：
+      用户在主板 BIOS（MSI MEG X570 UNIFY）启用 Above 4G Decoding / Re-Size BAR 并
+      重启后复验：lspci 确认 7900 XTX BAR0 256MB→32GB（@0x6800000000）、9070 XT
+      BAR0 256MB→16GB（@0x7400000000）。6-run 以来首个实质变化：RCCL 传输选择
+      由 run3/run5 的 `via SHM/direct/direct` 变为 `via P2P/IPC`（isAllDirectP2p 1），
+      init 干净（1.2/1.3s，Init COMPLETE，Connected all rings PXN 0 GDR 1 / all trees）。
+      CE AllReduce 未启用（"CE AllReduce not enabled"，回退 kernel-based collective，
+      "Cheap post-send fence is OFF"）→ 首个 1KB all_reduce 仍 90956ms 超时
+      （sum_ok=False），双 rank SIGABRT（exit -6）；dmesg 故障窗口仍零 IOMMU fault。
+    transport_matrix: >-
+      ReBAR 后 2-rank 传输矩阵（2026-11-16T08:56–09:04Z，全部死于首个 1KB，
+      同一 90s 超时 + 双 rank SIGABRT 签名）：
+      ① RCCL_CE_ALLREDUCE=1（results/rccl_diag_rebar_ce.log）：CE AllReduce 被
+      "symmetric support is not enabled" skip（rccl_wrap.cc:792）→ kernel 路径 hang；
+      ② NCCL_CUMEM_ENABLE=1（results/rccl_diag_rebar_cumem.log）：通道变
+      P2P/CUMEMCUMEM，CE AllReduce 再被 "CTA policy is not ZERO" skip
+      （rccl_wrap.cc:821；"Init CE AllReduce … size 536870912" 行有出）→ hang；
+      ③ NCCL_P2P_DISABLE=1（results/rccl_diag_rebar_p2poff.log）：通道回落
+      SHM/direct/direct（isAllDirectP2p 0）→ hang；
+      ④ ③+NCCL_SHM_DISABLE=1（results/rccl_diag_rebar_net.log）：通道变
+      NET/Socket（enp39s0）→ hang。→ 死锁与传输无关，非 P2P 通道特有问题。
+    single_rank: >-
+      对照（results/rccl_diag_rebar_1rank.log，2026-11-16T09:02Z）：单 rank RCCL
+      全过（init 0.9s；1KB 0.35ms / 256KB 0.20ms / 1024KB 0.06ms，sum_ok 全 True，
+      DIAG-OK）；杀掉全部挂死 run 后同检复过（1KB 0.36ms）→ 单 GPU kernel 执行与
+      RCCL 机制本身健康，问题只在"2-process + 跨 GPU"。
+    p2p_forensic_local: >-
+      裸 P2P 法医（p2p_forensic_local.py，results/p2p_forensic_local.json，
+      2026-11-16T08:56Z；绕过 RCCL，不入冻结 α–β 网格、不碰 holdout/拟合）：
+      can_device_access_peer(0,1)/(1,0) 均 True；随机源 + 逐元素校验
+      （torch.equal）+ 双 GPU synchronize 后 wall-clock：16MB 0→1 13.22 GB/s、
+      1→0 12.91 GB/s（64KB 0.36/0.70、1MB 5.55/6.67 GB/s），verified 全 True
+      → P2P DMA 路径本身真实走通，≈ PCIe Gen3 x16 饱和（设备口径新增数据点）。
+      脚本前版两处 bug 如实记录：首版 synchronize() 只等当前设备，量到 launch
+      时延（13 TB/s 假读数）；次版 int32 配 n_bytes//2 字节翻倍 → 最终版 uint8
+      精确字节 + 双设备同步 + 数据校验。
+    live_inspection: >-
+      挂死 2-rank 态活体取证（results/rccl_diag_rebar_long.log，
+      2026-11-16T09:05–09:07Z，600s 后台 run，活体检查后杀掉）：双 GPU 97–98%
+      busy（RCCL spin kernel 双卡活跃运行）、主线程 R 态（用户态 CPU 自旋于
+      stream sync）、一线程在 kfd_wait_on_events [amdgpu]、proxy 线程空闲于
+      do_poll（一线程 unix_accept）→ 典型互等环死锁：两 kernel 永久自旋等对方
+      flag。各故障窗口 dmesg 零 IOMMU/驱动 fault，kill 后 dmesg 干净、GPU 状态正常。
+    verdict: >-
+      ReBAR 消除了第一层根因（256MB legacy aperture）：BAR 扩到 32G/16G、RCCL
+      真换到 P2P/IPC 通道、裸 DMA P2P 实测走通（16MB 单向 13.22/12.91 GB/s ≈
+      Gen3 x16 饱和）。但 2-rank all_reduce 在全部四种传输（P2P/IPC、
+      P2P/CUMEMCUMEM、SHM/direct/direct、NET/Socket）上仍死于首个集合通信，
+      而单 rank 全过 → 根因上移到"2-process 跨 GPU RCCL kernel 互等死锁
+      （传输无关）"；候选原因 = (a) GPU 计算侧 peer 写可见性/一致性（RCCL 日志
+      "Cheap post-send fence is OFF"）、(b) RCCL 2.30.7-HEAD 在异构
+      gfx1100/gfx1201 双卡上的 bug、(c) kernel 6.14.0-37 + ROCm 10.1.0.0 KFD
+      双 context 问题——均超出本实验权限（vendor 级：GPU 调试器 / 其他 ROCm 版本 /
+      同代 GPU 对）。引擎口径（本机 PCIe 2-hop）维持 not_covered；rccl_probe.json
+      全程未产出，α–β 拟合与 holdout 外推未执行，无编造数字（法医明细：
+      results/rccl_diag_rebar_*.log + p2p_forensic_local.log；samegpu 2-rank
+      尝试被 torch ProcessGroupNCCL rank→cuda:rank 重绑定无效化，
+      rccl_diag_rebar_samegpu.log，非有效测试）。
+  nccl_nv6_v100x2:                      # results/nccl_probe_v100nv6.json（补充宿主 v100x2，仅 GPU 4/5）
+    result: >-
+      PASSED（2026-11-16，v100x2 z-lab-v100x2 192.168.1.211；6×V100-SXM2-16GB，
+      driver 580.65.06，torch 2.10.0+cu128（venv 1cat-vllm-v100）；物理 GPU 4/5 为
+      NV6 bond（6×NVLink2），单 NUMA；CUDA_VISIBLE_DEVICES=4,5，GPU 0–3 用户 VLLM
+      占用全程未触碰）：与本机 rccl_probe.py 同协议（12 calib 64KB–128MB + 2 holdout
+      16KB/256MB（同一组测前冻结点，用后即烧），5 warmup + 30 CUDA-event 中位数，
+      最小二乘 T = a + b·Data，holdout 仅外推验证）。引擎口径 NVLink 层补齐。
+    transport: >-
+      NCCL INFO：12 channels 全部 via P2P/CUMEM（NVLink 直连），GDR 1；
+      can_device_access_peer(0,1)=True；sum_correct=True（bf16 整数域）。
+    fit: {a_ms: 0.0488964, b_ms_per_byte: 9.7813e-09, r2: 0.999647,
+          alpha_eff_us: 24.448, bw_eff_gbps: 102.235, n_cal_points: 12}
+    holdout:
+      ar_16kb: >-
+        measured 0.04096 ms vs pred 0.049057 ms（+19.77%）：小消息区存在 ~41 µs
+        时延地板（16/64/128 KB 均为 0.04096 ms），2α 线性式在 knee 下方过外推，
+        如实记录，非拟合缺陷。
+      ar_256mb: "measured 2.638848 ms vs pred 2.674557 ms（+1.35%）"
+    nominal_comparison: >-
+      对测前冻结 nvlink300 档案（300 GB/s 单向、α=1 µs/跳、A100 口径），公式复用
+      comm_ledger.ring_ar_s（与账本单源同口径）：64KB 9.71× / 1MB 7.787× /
+      16MB 3.717× / 128MB 3.001× / 256MB（holdout）2.936×。
+    gap_decomposition: >-
+      BW：实测 102.24 GB/s vs nominal 300 GB/s = 两级因子——(a) 代际：本宿主
+      NVLink2（V100 SXM2，6 条 link）vs nominal NVLink3（A100，单向 300 GB/s）；
+      NVLink2 单向 raw 由 p2p_raw_nv6_v100x2 测后实测 144.61 GB/s（原引规格书
+      150 GB/s）→ 300/144.61 = 2.07×；(b) 引擎效率 102.24/144.61 ≈ 70.7%。合成
+      2.074 × (144.61/102.24) = 2.93×，与实测 2.936×（256 MB）相符（残差 <0.1%，
+      舍入）→ 闭合。α：nominal P=2 两跳 2 µs vs 实测 2α_eff = 48.9 µs（24.5×），
+      归因 NCCL kernel launch + 通道同步开销（裸单发 64 KB 21.7 µs，与本机 PCIe
+      设备口径 49 µs 单次同量级）。
+    grid_bug_fix: >-
+      首 run 在 16 GB 点 OOM（results/nccl_v100nv6_oomrun_stdout.log，仅法医证据、
+      不入拟合）：本机 rccl_probe.py 曾把 yaml 字节指数（2^16 B–2^27 B）误当 KB 指数
+      （range(16,28) → 实际网格 16MB–128GB）；本机因首个 AR 在到网格前 hang 死而未
+      暴露，v100x2 上直接 OOM。两份探针（rccl_probe.py / nccl_probe_v100nv6.py）均
+      修正为 range(6,18)（= 64KB–128MB，与冻结网格一致）后重跑闭合。
+    evidence: "results/nccl_probe_v100nv6.json + nccl_v100nv6_{minidiag,probe,oomrun}_stdout.log"
+  p2p_raw_nv6_v100x2:                   # results/p2p_raw_v100nv6.json（测后 side measurement；不入冻结 α–β 网格、不影响 holdout/拟合）
+    result: >-
+      PASSED（2026-11-16T08:15:53Z，v100x2，单进程，CUDA_VISIBLE_DEVICES=4,5，
+      同 5 warmup + 30 CUDA-event 中位数协议）：NVLink2 裸互联（GPU4↔5，NV6 bond）
+      D2D raw 带宽/小搬运延迟。目的 = 把 §5.9 gap 分解中"NVLink2 单向 raw =
+      150 GB/s（规格书）"换成实测值，使"引擎效率 = BW_eff / raw"成为实测比。
+    one_way_single_stream_gbps: {1mb: 47.84, 4mb: 108.68, 16mb: 133.95, 64mb: 142.24, 256mb: 144.61}
+    one_way_8stream_gbps: {1mb: 4.18, 4mb: 18.31, 16mb: 69.77, 64mb: 110.68, 256mb: 136.04}
+    bidir_256mb: "total 281.53 GB/s（每方向 140.76）；标称双向总 2×154.69 的 91.0%；全双工近无劣化（每方向 −2.7% vs 单流单向）"
+    latency_64kb_us: 21.7
+    raw_reference: >-
+      raw 参考 = 单流单向 256 MB 饱和 144.61 GB/s：NV6 标称链路速率
+      6×25.781=154.69 GB/s 的 93.5%、规格单向 150 GB/s 的 96.4%。8 流分块并行
+      256 MB 仅 136.04 GB/s（比单流低 ~6%，chunk/stream 同步开销，属测量方法
+      属性而非链路属性），不作参考。
+    gap_decomposition_updated: >-
+      256 MB 比值 2.936× = 代际 2.07×（300/144.61，内含实测 NVLink2 raw 为规格
+      单向 150 的 96.4%）× 引擎效率 1.415（144.61/102.24，即 70.7% 实测 raw）；
+      残差 <0.1%（舍入）→ 闭合。正文 §5.9。
+    path_check: >-
+      nvidia-smi nvlink -s：两卡 6 links active @ 25.781 GB/s（标称单向 raw
+      154.69 GB/s）；-gt g GPU→GPU 吞吐计数器本平台不可用（sudo/非 sudo 同报
+      "Failed to get throughput counters"，如实记录）；实测单向 144.6 GB/s ≫
+      V100 SXM2 host PCIe（Gen3 x16 有效 ≈12–13 GB/s）host 中转上限 → 流量走
+      NVLink 而非 host 中转，与 NCCL transport P2P/CUMEM（GDR 1）一致。
+    evidence: "results/p2p_raw_v100nv6.json + p2p_raw_v100nv6_stdout.log"
+
+acceptance:
+  thresholds:
+    pcie_bw: "H2D/D2H 稳态带宽落在 20–25 GB/s 工程带，或给出可归因偏离（如 >25 需核查 raw 上限）"
+    rccl_holdout: "holdout 两点（16KB/256MB）用 calibration 拟合的 α_eff/BW_eff 预测，误差 <20%"
+    gloo_semantics: "2/4 rank 求和逐元素正确且同步（无 rank 提前返回）"
+    alpha_decomposition: "α_eff − α_nominal(4µs) 差值可归因（引擎启动/同步开销），或标 unresolved"
+  decision_rule: >
+    calibration 12 点做最小二乘 T = a + b·Data 拟合 α_eff=a/(2(P−1))、BW_eff=Data/(b·Data/(2(P−1)/P))
+    口径对齐；holdout 两点只外推验证、不回头改拟合；H2D/D2H 若超上限，核查 pinned 路径与
+    驱动计数后再下结论；任何未闭合差值写 unresolved，不硬凑。

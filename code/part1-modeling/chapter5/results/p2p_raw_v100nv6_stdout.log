@@ -1,0 +1,18 @@
+/home/luyzh/ch5_v100nv6/p2p_raw_probe_v100nv6.py:159: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp_utc": datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z",
+saved /home/luyzh/ch5_v100nv6/results/p2p_raw_v100nv6.json
+  one_way_single_stream 1mb: 47.84 GB/s (t=0.02192 ms)
+  one_way_single_stream 4mb: 108.68 GB/s (t=0.038592 ms)
+  one_way_single_stream 16mb: 133.95 GB/s (t=0.125248 ms)
+  one_way_single_stream 64mb: 142.24 GB/s (t=0.471808 ms)
+  one_way_single_stream 256mb: 144.61 GB/s (t=1.85624 ms)
+  one_way_8stream 1mb: 4.18 GB/s (t=0.25112 ms)
+  one_way_8stream 4mb: 18.31 GB/s (t=0.229072 ms)
+  one_way_8stream 16mb: 69.77 GB/s (t=0.240464 ms)
+  one_way_8stream 64mb: 110.68 GB/s (t=0.60632 ms)
+  one_way_8stream 256mb: 136.04 GB/s (t=1.9732 ms)
+  bidir 256mb: total 281.53 GB/s, per-dir 140.76 GB/s
+  latency 64kb: 21.7 µs
+  nvlink path check: gpu4 6×25.781 GB/s, gpu5 6×25.781 GB/s; counters: unavailable (Failed to get throughput counters, sudo 亦同)
+  one-way 256mb (path check): 144.67 GB/s
+  efficiency ref: {'bw_eff_nccl_gbps': 102.23541019841355, 'raw_oneway_single_stream_256mb_gbps': 144.61, 'raw_oneway_8stream_256mb_gbps': 136.04, 'engine_efficiency': 0.707, 'note': 'raw 参考 = 单流单向 256MB（实测最高）；8 流分块并行 256MB 略低（stream/chunk 同步开销）'}

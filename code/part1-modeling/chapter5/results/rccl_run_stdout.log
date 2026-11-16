@@ -1,0 +1,97 @@
+GPU[1] free, running RCCL probe
+W1116 14:45:03.640000 1202649 site-packages/torch/distributed/run.py:982] 
+W1116 14:45:03.640000 1202649 site-packages/torch/distributed/run.py:982] *****************************************
+W1116 14:45:03.640000 1202649 site-packages/torch/distributed/run.py:982] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1116 14:45:03.640000 1202649 site-packages/torch/distributed/run.py:982] *****************************************
+our pids:  1202649  1202813  1202814 
+[rank1]:[E1116 14:55:07.156814512 WorkNCCL.cpp:347] [TC][rank=1][name=0] Operation timed out after 600009 ms
+[rank1]:[E1116 14:55:07.157051663 FlightRecorderHook.cpp:600] FlightRecorderHook: dumping trace on collective failure
+[rank0]:[E1116 14:55:07.157486274 WorkNCCL.cpp:347] [TC][rank=0][name=0] Operation timed out after 600007 ms
+[rank0]:[E1116 14:55:07.157713505 FlightRecorderHook.cpp:600] FlightRecorderHook: dumping trace on collective failure
+[rank1]:[E1116 14:55:08.542977772 ProcessGroupNCCL.cpp:667] [TC][rank=1][name=0] Aborting process on rank 1 due to timeout - timeout watchdog detected operation timeout
+[rank1]:[E1116 14:55:08.543073463 ProcessGroupNCCL.cpp:672] [TC][rank=1][name=0] Waiting 15000ms for health check and flight recorder dump before aborting
+[rank0]:[E1116 14:55:08.545831812 ProcessGroupNCCL.cpp:667] [TC][rank=0][name=0] Aborting process on rank 0 due to timeout - timeout watchdog detected operation timeout
+[rank0]:[E1116 14:55:08.552899307 ProcessGroupNCCL.cpp:672] [TC][rank=0][name=0] Waiting 15000ms for health check and flight recorder dump before aborting
+W1116 14:55:25.261000 1202649 site-packages/torch/distributed/elastic/multiprocessing/api.py:1033] Sending process 1202813 closing signal SIGTERM
+E1116 14:55:26.327000 1202649 site-packages/torch/distributed/elastic/multiprocessing/api.py:1007] failed (exitcode: -6) local_rank: 1 (pid: 1202814) of binary: /home/luyzh/miniconda3/bin/python3.13
+Traceback (most recent call last):
+  File "/home/luyzh/miniconda3/bin/torchrun", line 6, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 384, in wrapper
+    result = f(*args, **kwargs)
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/run.py", line 1139, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/run.py", line 1130, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 212, in __call__
+    return launch_agent(
+        self._config,
+    ...<2 lines>...
+        health_check_server=self._health_check_server,
+    )
+  File "/home/luyzh/miniconda3/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 402, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+========================================================
+rccl_probe.py FAILED
+--------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-11-16_14:55:26
+  host      : z-lab-7900
+  rank      : 0 (local_rank: 0)
+  exitcode  : -6 (pid: 1202813)  (SIGABRT)
+  error_file: <N/A>
+  traceback : Signal 6 (SIGABRT) received by PID 1202813
+--------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-11-16_14:55:25
+  host      : z-lab-7900
+  rank      : 1 (local_rank: 1)
+  exitcode  : -6 (pid: 1202814)  (SIGABRT)
+  error_file: <N/A>
+  traceback : Signal 6 (SIGABRT) received by PID 1202814
+========================================================
+run window: 2026-11-16T06:45:00Z .. 2026-11-16T06:55:27Z (torchrun rc=1, our_pids= 1202649  1202813  1202814 )
+CONTAMINATED: GPU[1] 在测量窗口内出现他人进程或异常 VRAM，results/rccl_probe.json 作废需重跑
+06:51:51 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:51:57 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:02 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:08 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:13 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:18 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:24 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:29 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:34 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:40 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:45 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:51 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:52:56 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:01 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:07 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:12 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:18 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:23 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:28 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:34 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:39 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:45 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:50 DIRTY pids=1206349,1202813,1202814, used=982888448 our=[ 1202649  1202813  1202814 ]
+06:53:55 DIRTY pids=1206349,1202813,1202814, used=517169152 our=[ 1202649  1202813  1202814 ]
+06:55:00 DIRTY pids=1207529,1202813,1202814, used=9670639616 our=[ 1202649  1202813  1202814 ]
+06:55:05 DIRTY pids=1207529,1202813,1202814, used=9680564224 our=[ 1202649  1202813  1202814 ]
+06:55:11 DIRTY pids=1207529,1202813,1202814, used=8992436224 our=[ 1202649  1202813  1202814 ]
+06:55:16 DIRTY pids=1207529,1202813,1202814, used=8992436224 our=[ 1202649  1202813  1202814 ]
+06:55:21 DIRTY pids=1207529,1202813,1202814, used=9171206144 our=[ 1202649  1202813  1202814 ]
