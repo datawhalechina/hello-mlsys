@@ -235,7 +235,7 @@ hello-mlsys/
 ### 核心贡献者
 
 - 陆遥-指导教师-项目负责人（新加坡国立大学计算机学院助理教授）
-- yuzhou-项目负责人（上海科技大学博士在读）
+- [yuzhou-项目负责人](https://github.com/youyoulyz)（上海科技大学博士在读）
 - [秦博文-项目成员](https://github.com/eyuansu62)（新加坡国立大学博士在读，[mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator) 模拟器搭建与校准）
 - [潘嘉航-项目成员](https://github.com/amdjiahangpan)（AMD 软件工程师）
 - [刘伟鸿-项目成员](https://github.com/Weihong-Liu)（Datawhale 成员）
