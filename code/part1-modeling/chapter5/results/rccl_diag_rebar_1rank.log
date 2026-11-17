@@ -1,0 +1,94 @@
+z-lab-7900:13351:13351 [0] NCCL INFO ncclOsDlopen(libnccl-env.so) failed: libnccl-env.so: cannot open shared object file: No such file or directory
+z-lab-7900:13351:13351 [0] NCCL INFO ENV/Plugin: Could not find: libnccl-env.so
+z-lab-7900:13351:13351 [0] NCCL INFO Kernel version: 6.14.0-37-generic
+z-lab-7900:13351:13351 [0] NCCL INFO Hipruntime version: 71626385, firmware version: 0
+z-lab-7900:13351:13351 [0] NCCL INFO Bootstrap: Using enp39s0:192.168.1.171<0>
+z-lab-7900:13351:13426 [0] NCCL INFO Socket handshake magic 0x564ab9f2fc4b9d6c (built-in default)
+z-lab-7900:13351:13351 [0] NCCL INFO ROCr version 1.21
+z-lab-7900:13351:13351 [0] NCCL INFO cuMem auto-enable is limited to gfx1250 (detected gfx1100); set NCCL_CUMEM_ENABLE=1 to override
+z-lab-7900:13351:13351 [0] NCCL INFO CONFIG_DMABUF_MOVE_NOTIFY=y in /boot/config-6.14.0-37-generic
+z-lab-7900:13351:13351 [0] NCCL INFO CONFIG_PCI_P2PDMA=y in /boot/config-6.14.0-37-generic
+z-lab-7900:13351:13351 [0] NCCL INFO DMA_BUF Support Enabled
+z-lab-7900:13351:13351 [0] NCCL INFO Kernel version: 6.14.0-37-generic
+z-lab-7900:13351:13351 [0] NCCL INFO RCCL version : 2.30.7-HEAD:7da4302
+HIP version  : 7.16.26385-0000000
+ROCm version : 10.1.0.0-9999-7da43026
+Hostname     : z-lab-7900
+Librccl path : /home/luyzh/miniconda3/lib/python3.13/site-packages/torch/lib/../../_rocm_sdk_libraries/lib/librccl.so.1
+z-lab-7900:13351:13351 [0] NCCL INFO Comm config Blocking set to 1
+z-lab-7900:13351:13351 [0] NCCL INFO Comm config Comm name set to 0
+z-lab-7900:13351:13351 [0] NCCL INFO RCCL: Detected 0 IB devices, primary type: 0 (count: 0)
+z-lab-7900:13351:13351 [0] NCCL INFO ncclOsDlopen(librccl-net.so) failed: librccl-net.so: cannot open shared object file: No such file or directory
+z-lab-7900:13351:13351 [0] NCCL INFO NET/Plugin: Could not find: librccl-net.so
+z-lab-7900:13351:13351 [0] NCCL INFO NET/IB : No device found.
+z-lab-7900:13351:13351 [0] NCCL INFO NET/IB : Using [RO]; OOB enp39s0:192.168.1.171<0>
+z-lab-7900:13351:13351 [0] NCCL INFO Failed to initialize NET plugin IB
+z-lab-7900:13351:13351 [0] NCCL INFO NET/Socket : Using [0]enp39s0:192.168.1.171<0> [1]dummy0:10.255.255.1<0>
+z-lab-7900:13351:13351 [0] NCCL INFO Initialized NET plugin Socket
+z-lab-7900:13351:13351 [0] NCCL INFO Assigned NET plugin Socket to comm
+z-lab-7900:13351:13351 [0] NCCL INFO ncclOsDlopen(libnccl-rma.so) failed: libnccl-rma.so: cannot open shared object file: No such file or directory
+z-lab-7900:13351:13351 [0] NCCL INFO RMA/Plugin: Could not find: libnccl-rma.so
+z-lab-7900:13351:13351 [0] NCCL INFO RMA/Plugin: Failed to load external plugin libnccl-rma.so, dlHandle: (nil), ncclRma: (nil)
+z-lab-7900:13351:13351 [0] NCCL INFO RMA/Plugin: Failed to initialize any plugin
+z-lab-7900:13351:13351 [0] NCCL INFO ncclOsDlopen(libnccl-gin.so) failed: libnccl-gin.so: cannot open shared object file: No such file or directory
+z-lab-7900:13351:13351 [0] NCCL INFO GIN/Plugin: Could not find: libnccl-gin.so
+z-lab-7900:13351:13351 [0] NCCL INFO GIN/Plugin: Failed to load external plugin libnccl-gin.so, dlHandle: (nil), ncclGin: (nil)
+z-lab-7900:13351:13351 [0] NCCL INFO GIN/Plugin: Failed to initialize any GIN plugin
+z-lab-7900:13351:13351 [0] NCCL INFO Using network Socket
+z-lab-7900:13351:13351 [0] NCCL INFO [node_id = 2; gpu_id = 62919; unique_id = 3458873335738439009; location_id = 12800; bdf = 12800; domain = 0; partition = 0], 
+z-lab-7900:13351:13351 [0] NCCL INFO [node_id = 1; gpu_id = 25641; unique_id = 15568676112998690418; location_id = 12032; bdf = 12032; domain = 0; partition = 0], 
+z-lab-7900:13351:13351 [0] NCCL INFO initialized internal alternative rsmi functionality; UALoE/UALLink fabric discovery uses sysfs (set RCCL_USE_AMD_SMI_LIB=1 to use amd_smi_lib instead)
+z-lab-7900:13351:13351 [0] NCCL INFO [Rank 0] ncclCommInitRankConfig_impl comm 0x5982d7bfd280 rank 0 nranks 1 cudaDev 0 nvmlDev 0 busId 2f000 commId 0xdc06f5ffb1a9a795 - Init START
+z-lab-7900:13351:13351 [0] NCCL INFO RAS client listening socket at 127.0.0.1<28028>
+z-lab-7900:13351:13351 [0] NCCL INFO Bootstrap timings total 0.000481 (create 0.000030, send 0.000115, recv 0.000108, ring 0.000001, delay 0.000000)
+z-lab-7900:13351:13351 [0] NCCL INFO Tuning index set to: 0
+z-lab-7900:13351:13351 [0] NCCL INFO ncclTopoGetCpuAffinity: Affinity for GPU 0 is 0-23. (GPU affinity = 0-23 ; CPU affinity = 0-23).
+z-lab-7900:13351:13351 [0] NCCL INFO ringGraph->nChannels = 128 
+z-lab-7900:13351:13351 [0] NCCL INFO Cheap post-send fence is OFF
+z-lab-7900:13351:13351 [0] NCCL INFO Rank 0: 2 Net devices
+z-lab-7900:13351:13351 [0] NCCL INFO Rank 0: 0 CollNet devices
+z-lab-7900:13351:13351 [0] NCCL INFO Local Net device counts across ranks: min 2 max 2
+z-lab-7900:13351:13351 [0] NCCL INFO Local CollNet device counts across ranks: min 0 max 0
+z-lab-7900:13351:13351 [0] NCCL INFO comm 0x5982d7bfd280 rank 0 nRanks 1 nNodes 1 localRanks 1 localRank 0 MNNVL 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 00/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 01/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 02/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 03/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 04/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 05/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 06/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 07/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 08/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 09/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 10/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 11/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 12/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 13/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 14/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Channel 15/16 : 0
+z-lab-7900:13351:13351 [0] NCCL INFO Trees [0] -1/-1/-1->0->-1 [1] -1/-1/-1->0->-1 [2] -1/-1/-1->0->-1 [3] -1/-1/-1->0->-1 [4] -1/-1/-1->0->-1 [5] -1/-1/-1->0->-1 [6] -1/-1/-1->0->-1 [7] -1/-1/-1->0->-1 [8] -1/-1/-1->0->-1 [9] -1/-1/-1->0->-1 [10] -1/-1/-1->0->-1 [11] -1/-1/-1->0->-1 [12] -1/-1/-1->0->-1 [13] -1/-1/-1->0->-1 [14] -1/-1/-1->0->-1 [15] -1/-1/-1->0->-1 comm 0x5982d7bfd280 nRanks 01 busId 2f000
+z-lab-7900:13351:13351 [0] NCCL INFO P2P Chunksize set to 524288
+z-lab-7900:13351:13351 [0] NCCL INFO ncclOsDlopen(libnccl-profiler.so) failed: libnccl-profiler.so: cannot open shared object file: No such file or directory
+z-lab-7900:13351:13351 [0] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so
+z-lab-7900:13351:13351 [0] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 0 isAllCudaP2p 1
+z-lab-7900:13351:13445 [0] NCCL INFO [Proxy Service] Device 0 CPU core 21
+z-lab-7900:13351:13446 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 5
+z-lab-7900:13351:13445 [0] NCCL INFO proxy listening socket at 192.168.1.171<37857>
+z-lab-7900:13351:13447 [0] NCCL INFO [Proxy Progress] Device 0 CPU core 21
+z-lab-7900:13351:13351 [0] NCCL INFO ncclOsDlopen(libnccl-tuner.so) failed: libnccl-tuner.so: cannot open shared object file: No such file or directory
+z-lab-7900:13351:13351 [0] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so
+z-lab-7900:13351:13351 [0] NCCL INFO comm:0x5982d7bfd280, nRanks:1, nNodes:1, coll channels:16 collnet channels:16, nvls channels:0, p2p channels:64, p2p channels per peer:64, shiftSize:-1
+z-lab-7900:13351:13351 [0] NCCL INFO Symmetric memory is not supported. cuMemEnable 0, globalGinSupport 0, globalNicFused 0 cuMemGdrSupport 1
+z-lab-7900:13351:13351 [0] NCCL INFO CC Off, workFifoBytes 4194304
+z-lab-7900:13351:13351 [0] NCCL INFO RCCL Unroll Factor (pre-set): 4
+z-lab-7900:13351:13351 [0] NCCL INFO ncclCommInitRankConfig_impl comm 0x5982d7bfd280 rank 0 nranks 1 cudaDev 0 nvmlDev 0 busId 2f000 commId 0xdc06f5ffb1a9a795 - Init COMPLETE
+z-lab-7900:13351:13351 [0] NCCL INFO Init timings - ncclCommInitRankConfig_impl: rank 0 nranks 1 total 0.91 (kernels 0.73, alloc 0.05, bootstrap 0.00, allgathers 0.00, topo 0.08, graphs 0.00, connections 0.05, rest 0.01)
+[rank0] init_process_group OK in 0.9s
+z-lab-7900:13351:13351 [0] NCCL INFO RCCL: ncclCommRegister
+z-lab-7900:13351:13351 [0] NCCL INFO CE AllReduce not enabled. Set RCCL_CE_ALLREDUCE=1 to enable.
+[rank0] all_reduce 1KB: 0.35 ms, sum_ok=True
+[rank0] all_reduce 256KB: 0.20 ms, sum_ok=True
+z-lab-7900:13351:13351 [0] NCCL INFO RCCL: ncclCommRegister
+[rank0] all_reduce 1024KB: 0.06 ms, sum_ok=True
+[rank0] DIAG-OK
+z-lab-7900:13351:13351 [0] NCCL INFO Memory used = 537035636

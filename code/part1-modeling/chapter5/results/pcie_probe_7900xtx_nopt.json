@@ -1,0 +1,79 @@
+{
+  "card": "7900xtx",
+  "device": "cuda:0",
+  "rows": [
+    {
+      "msg_kb": 64,
+      "h2d_gbps": 2.66,
+      "d2h_gbps": 1.33,
+      "h2d_ms": 0.051,
+      "d2h_ms": 0.049
+    },
+    {
+      "msg_kb": 1024,
+      "h2d_gbps": 11.5,
+      "d2h_gbps": 8.67,
+      "h2d_ms": null,
+      "d2h_ms": null
+    },
+    {
+      "msg_kb": 4096,
+      "h2d_gbps": 13.58,
+      "d2h_gbps": 12.65,
+      "h2d_ms": null,
+      "d2h_ms": null
+    },
+    {
+      "msg_kb": 16384,
+      "h2d_gbps": 14.12,
+      "d2h_gbps": 13.76,
+      "h2d_ms": null,
+      "d2h_ms": null
+    },
+    {
+      "msg_kb": 65536,
+      "h2d_gbps": 14.26,
+      "d2h_gbps": 14.08,
+      "h2d_ms": null,
+      "d2h_ms": null
+    },
+    {
+      "msg_kb": 262144,
+      "h2d_gbps": 14.27,
+      "d2h_gbps": 14.14,
+      "h2d_ms": null,
+      "d2h_ms": null
+    },
+    {
+      "msg_kb": 1048576,
+      "h2d_gbps": 14.3,
+      "d2h_gbps": 14.16,
+      "h2d_ms": null,
+      "d2h_ms": null
+    }
+  ],
+  "pageable_64mb_gbps": {
+    "h2d": 14.06,
+    "d2h": 14.08
+  },
+  "device_name": "AMD Radeon RX 7900 XTX",
+  "env": {
+    "timestamp_utc": "2026-11-16T06:16:21Z",
+    "python": "3.13.11",
+    "os": "Linux-6.14.0-37-generic-x86_64-with-glibc2.41",
+    "gpus": [
+      {
+        "name": "AMD Radeon RX 7900 XTX",
+        "arch": "gfx1100",
+        "vram_gib": 23.98
+      },
+      {
+        "name": "AMD Radeon RX 9070 XT",
+        "arch": "gfx1201",
+        "vram_gib": 15.92
+      }
+    ],
+    "driver": "6.16.13",
+    "p2p_link_line": "GPU1   PCIE         0"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "what": "ReBAR 后本机 P2P 裸 copy 法医（绕过 RCCL；不入冻结网格、不碰 holdout/拟合）",
+  "host": "z-lab-7900 (Ryzen 9 3900X / MSI MEG X570 UNIFY, iommu=pt, ReBAR on)",
+  "pair": "GPU0 RX 7900 XTX gfx1100 @ 2f:00.0 <-> GPU1 RX 9070 XT gfx1201 @ 32:00.0",
+  "timestamp_utc": "2026-11-16T08:56:04+00:00",
+  "torch": "2.16.0.dev20261019+rocm10.1",
+  "checks": {
+    "device_count": 2,
+    "name_0": "AMD Radeon RX 7900 XTX",
+    "name_1": "AMD Radeon RX 9070 XT",
+    "p2p_0_1": true,
+    "p2p_1_0": true
+  },
+  "d2d": {
+    "64kb_0to1": {
+      "ms": 0.18,
+      "gbps": 0.36,
+      "verified": true
+    },
+    "64kb_1to0": {
+      "ms": 0.094,
+      "gbps": 0.7,
+      "verified": true
+    },
+    "1024kb_0to1": {
+      "ms": 0.189,
+      "gbps": 5.55,
+      "verified": true
+    },
+    "1024kb_1to0": {
+      "ms": 0.157,
+      "gbps": 6.67,
+      "verified": true
+    },
+    "16384kb_0to1": {
+      "ms": 1.269,
+      "gbps": 13.22,
+      "verified": true
+    },
+    "16384kb_1to0": {
+      "ms": 1.299,
+      "gbps": 12.91,
+      "verified": true
+    }
+  },
+  "rocm_smi_p2p": ""
+}

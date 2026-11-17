@@ -1,0 +1,100 @@
+{
+  "what": "NVLink2 raw P2P 互联 side measurement（测后；不入冻结 α–β 网格、不影响 holdout/拟合）",
+  "host": "v100x2 (z-lab-v100x2, 192.168.1.211)",
+  "pair": "物理 GPU4<->GPU5，NV6 bond（6×NVLink2）",
+  "timestamp_utc": "2026-11-16T08:15:53Z",
+  "torch": "2.10.0+cu128",
+  "cuda_runtime": "12.8",
+  "dtype": "torch.bfloat16",
+  "warmup": 5,
+  "iters": 30,
+  "checks": {
+    "p2p_access_0_1": true,
+    "device_count": 2
+  },
+  "one_way_single_stream": {
+    "1mb": {
+      "t_ms": 0.02192,
+      "gbps": 47.84
+    },
+    "4mb": {
+      "t_ms": 0.038592,
+      "gbps": 108.68
+    },
+    "16mb": {
+      "t_ms": 0.125248,
+      "gbps": 133.95
+    },
+    "64mb": {
+      "t_ms": 0.471808,
+      "gbps": 142.24
+    },
+    "256mb": {
+      "t_ms": 1.85624,
+      "gbps": 144.61
+    }
+  },
+  "one_way_8stream": {
+    "1mb": {
+      "t_ms": 0.25112,
+      "gbps": 4.18
+    },
+    "4mb": {
+      "t_ms": 0.229072,
+      "gbps": 18.31
+    },
+    "16mb": {
+      "t_ms": 0.240464,
+      "gbps": 69.77
+    },
+    "64mb": {
+      "t_ms": 0.60632,
+      "gbps": 110.68
+    },
+    "256mb": {
+      "t_ms": 1.9732,
+      "gbps": 136.04
+    }
+  },
+  "bidir": {
+    "256mb": {
+      "t_ms": 1.906992,
+      "total_gbps": 281.53,
+      "per_dir_gbps": 140.76
+    }
+  },
+  "latency": {
+    "64kb_single": {
+      "t_ms": 0.021744,
+      "gbps": 3.01
+    }
+  },
+  "nvlink_path_check": {
+    "gt_g_counters": "unavailable (Failed to get throughput counters, sudo 亦同)",
+    "link_status_gpu4": {
+      "n_links": 6,
+      "per_link_gbps": 25.781,
+      "nominal_oneway_raw_gbps": 154.69
+    },
+    "link_status_gpu5": {
+      "n_links": 6,
+      "per_link_gbps": 25.781,
+      "nominal_oneway_raw_gbps": 154.69
+    },
+    "moved_mb": 256,
+    "one_way_256mb_gbps": 144.67,
+    "inference": "实测单向 144.67 GB/s ≈ 93.5% NV6 标称单向 raw（154.69 GB/s），≫ host PCIe 通路上限（V100 SXM2 Gen3 x16 有效 ≈12–13 GB/s）→ 流量走 NVLink 而非 host 中转；与前节 NCCL transport P2P/CUMEM（GDR 1）一致"
+  },
+  "spec_ref": {
+    "nvlink2_oneway_raw_gbps": 150.0,
+    "nvlink3_oneway_raw_gbps": 300.0,
+    "note": "V100-SXM2 规格 300 GB/s 双向总 → 单向 150；A100 NVLink3 单向 300"
+  },
+  "efficiency_ref": {
+    "bw_eff_nccl_gbps": 102.23541019841355,
+    "raw_oneway_single_stream_256mb_gbps": 144.61,
+    "raw_oneway_8stream_256mb_gbps": 136.04,
+    "engine_efficiency": 0.707,
+    "note": "raw 参考 = 单流单向 256MB（实测最高）；8 流分块并行 256MB 略低（stream/chunk 同步开销）"
+  }
+}

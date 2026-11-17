@@ -1,0 +1,36 @@
+{
+  "backend": "gloo (CPU, torch.distributed)",
+  "world_size": 2,
+  "declaration": "语义验证，非多卡性能测量（Feishu CH5 ①；多卡性能见 rccl_probe）",
+  "torch": "2.16.0.dev20261019+rocm10.1",
+  "checks": {
+    "sum_correct": true,
+    "consistent_across_ranks": true,
+    "in_place": true,
+    "dtype_bf16": "supported",
+    "blocking": true,
+    "blocking_evidence": {
+      "enter_spread_s": 2.8e-05,
+      "all_exit_ge_latest_enter": true
+    }
+  },
+  "env": {
+    "timestamp_utc": "2026-11-16T06:16:27Z",
+    "python": "3.13.11",
+    "os": "Linux-6.14.0-37-generic-x86_64-with-glibc2.41",
+    "gpus": [
+      {
+        "name": "AMD Radeon RX 7900 XTX",
+        "arch": "gfx1100",
+        "vram_gib": 23.98
+      },
+      {
+        "name": "AMD Radeon RX 9070 XT",
+        "arch": "gfx1201",
+        "vram_gib": 15.92
+      }
+    ],
+    "driver": "6.16.13",
+    "p2p_link_line": "GPU1   PCIE         0"
+  }
+}
