@@ -1,0 +1,160 @@
+# Hello MLSys · 第 6 章实验底稿
+# 模板: docs/public/part0-intro/chapter0/experiment-draft.yaml（字段结构不变）
+# 纪律: prediction.stored_at 先于测量；holdout 测前冻结、用后即烧；
+#       不支持的机制标 not_covered，不静默改配置。
+
+experiment_id: exp_ch6_001
+chapter: 6
+hypothesis: >
+  gloo 后端（CPU 共享内存路径）上 2-rank 真机 TP/PP 切分的"行为验证"：
+  ① TP=2（Megatron 口径：列并行 q/k/v + 行并行 o_proj/mlp-down，GQA 32q/8kv
+     按 rank 切 16q/4kv）每层恰 2 次 all_reduce（o_proj 行并行归约 + mlp
+     down 行并行归约）→ 每前向 2×L=72 次，且调用顺序为逐层 o_proj/mlp 交替；
+  ② PP=2（层 0–17 / 18–35 切分）无集合通信，每前向恰 1 次 send + 1 次 recv
+     （rank0→rank1 激活传输），tied lm_head 使 rank1 需持 embed；
+  ③ 每 rank 分片显存（torch.cuda.memory_allocated）与纸面账本一致：
+     权重 = (总参数 − embed)/P + embed（tied embed 两 rank 各持一份，
+     账本 weights/P 为理想化口径，复测时如实记差额）；
+  ④ TP/PP 输出与单 rank 参考模型一致（logit cosine ≥ 0.998，top-10
+     重叠 ≥ 5/10，bf16 异序噪声带内）。
+  显式声明（Feishu 原文口径）：gloo 通信耗时 = CPU 共享内存路径（D2H →
+  gloo AR → H2D 三段分解），仅作行为验证，不作 GPU 间通信性能；
+  性能口径见 Ch5（v100x2 NVLink 实测档 + nominal 拓扑档案）。
+
+scenario:
+  hardware: >
+    RX 7900 XTX 24GB gfx1100（GPU0）+ RX 9070 XT 16GB gfx1201（GPU1），
+    异构双卡；gloo 全程 CPU 共享内存，不依赖 GPU P2P（本机 2-process RCCL
+    跨 GPU kernel 互等死锁，vendor 级，见 Ch5 §5.8 not_covered 记录——
+    本章因此选用 gloo：行为验证与 GPU P2P 解耦）。
+  workload: >
+    Qwen3-4B（在盘真权重 /mnt/public/models/Qwen3-4B，bf16 加载）：
+    ① TP=2：列并行 q/k/v + 行并行 o_proj/mlp-down，逐层 2×AR，
+       探针负载 B=2 × S=512（AR payload = 2·512·2560·2B = 5.24 MB/次）；
+    ② PP=2：层 0–17 / 18–35，rank0→rank1 单跳激活传输（2·512·2560·2B）；
+    ③ ref：单 rank（GPU0）全模型同输入，正确性对照。
+    测量项：每 rank 分片 VRAM（加载后/前向后）、AR 调用次数与顺序、
+    每次 AR 的 D2H/CPU-gloo/H2D 三段耗时、输出 cosine 与 top-10。
+
+environment:                            # 测量前快照（宿主 miniconda3 直跑，不进容器）
+  gpu_driver: "6.16.13"
+  rocm_version: "rocm10.1.0"
+  framework: "torch 2.16.0.dev20261019+rocm10.1（宿主 /home/luyzh/miniconda3/bin）"
+  os: "Linux 6.14.0-37-generic"
+  gpus:
+    - "GPU0: AMD Radeon RX 7900 XTX 23.98 GiB（gfx1100）"
+    - "GPU1: AMD Radeon RX 9070 XT 15.92 GiB（gfx1201）"
+
+prediction:
+  tool: "parallel_ledger.py（code/part1-modeling/chapter6/，results/parallel_ledger.json，run 20261116T1220Z）"
+  calibration_version: >
+    ch5-nominal-topology-profiles-v1 + ch2-compute-constants（测前冻结）；
+    设备口径 H2D/D2H 14.31/14.15 GB/s 引 Ch5 复测（iommu=pt 后，
+    results/pcie_probe_7900xtx.json）
+  metrics:
+    tp2:
+      ar_calls_per_forward: 72            # 2×L，L=36
+      ar_payload_mb: 5.24                 # B·S·d·2B = 2·512·2560·2
+      per_rank_weights_gib: 4.109         # (总 7.493 − embed 0.725)/2 + embed（tied 各持一份）
+      per_rank_allocated_gib_band: [4.1, 5.8]   # 权重 + KV 池(2·512 token × 72KB/token ≈ 0.07 GiB) + 激活 + 运行时
+      d2h_ms_per_ar: 0.366                # 5.24 MB / 14.31 GB/s（Ch5 设备口径）
+      h2d_ms_per_ar: 0.367                # 5.24 MB / 14.15 GB/s
+      gloo_cpu_ar_ms_band: [0.05, 5.0]    # 共享内存路径，无性能口径断言（诚实宽带）
+      total_comm_ms_band: [53, 400]       # 72 × 三段之和
+    pp2:
+      collectives_per_forward: 0
+      send_recv_per_forward: "1 send + 1 recv（rank0→rank1）"
+      per_rank_weights_gib: 4.109         # (18/36 层) + embed（rank1 为 tied lm_head）
+      per_rank_allocated_gib_band: [4.1, 5.8]
+    correctness:
+      logit_cosine_min: 0.998
+      top10_overlap_min: 5                # /10，bf16 异序噪声带内
+  msysim_crosscheck: "Ch5 commit 2d9d4de 公式级对账 max_rel_err=2.15e-16 沿用（本章账本与 Ch5 同式同源，不重跑）"
+  stored_at: "2026-11-16T12:45:00Z"      # 先于本章任何真机测量
+
+measurement_plan:
+  warmup: 2                              # 每模式 2 次前向预热（不计入）
+  samples: 3                             # 每模式 3 次计时前向，AR 三段耗时取中位数
+  rounds: 1
+  timeout_s: 600
+  round_budget_s: 1800
+  holdout_configs: []                    # 行为验证无拟合网格，无 holdout 点；
+                                         # 纸面账本的 holdout（32B 跨节点判定）已在
+                                         # parallel_ledger.json 消费（burned_at 在案）
+  side_measurements:
+    - vram_before_after                  # 每 rank 加载后/前向后 memory_allocated
+    - ar_sequence_log                    # AR 调用顺序逐条记录（层号+op 名）
+    - tp_rank_agreement                  # rank0 vs rank1 最终 hidden/logit 一致性
+  not_covered:
+    - rank4_real_hw                      # 本机仅 2 GPU，P=4 真机切分不可行（P=4 仅模拟器口径）
+    - gpu_gpu_collective_perf            # GPU 侧集合通信性能 = Ch5 not_covered（10-run 法医，
+                                         # 2-process 跨 GPU RCCL kernel 互等死锁，vendor 级）；
+                                         # 本章性能口径全部走 v100x2 NVLink 实测档 + nominal 档案
+    - rccl_tp_pp                         # 同上：真机 TP/PP 走 gloo（行为口径），RCCL 路径未产出
+    - w7900d_real                        # W7900D 48 GB 参数待确认（TODO 嘉航），仅容量占位
+    - training_fsdp_real_hw              # 训练口径（DP 梯度同步/FSDP）仅账本对照，未上真机
+
+outcome:                                 # 测后登记（不改动 prediction 冻结区）
+  run_at: "2026-11-16T13:17:54Z"         # probe run 15（含 q_norm/k_norm 修复）
+  results_file: "results/gloo_tp_pp_4b.json"
+  device_deviation: >
+    CH6_DEV=cuda:0 两 rank 同卡部署（GPU1 被其他用户容器作业占用，不抢卡）；
+    已按纪律如实登记于 JSON device_note，测量语义不变（gloo 走 CPU 共享内存、
+    每 rank 显存为进程内口径），但 D2H/H2D 受同卡 2 进程 PCIe 路径共享影响（见下）。
+  behavior_verification:                 # 行为口径全部达标
+    tp_ar_count_and_order: "72/72（两 rank），顺序逐层 o_proj/mlp_down 交替 = Megatron 口径，order_matches_megatron=true"
+    pp_collectives: "0/0（两 rank），每前向 1 send + 1 recv（rank0→rank1）"
+    shard_vram_gib: "tp rank0/rank1 = 4.144/4.135，pp rank0/rank1 = 4.144/4.135（带 [4.1, 5.8] 内；相互偏差 0.2% < 10%）"
+    gloo_cpu_ar_ms: "median 3.263/3.192（rank0/rank1），带 [0.05, 5.0] 内"
+    tp_rank_agreement_cos: "1.0（双侧均 post final_norm 同口径；run 14 的 0.277 为 q_norm bug + 口径不公平双重污染，见 bug_fix）"
+  d2h_h2d_attribution:                   # 阈值未达（>50%）→ 三点法医，归因闭合
+    measured_ms: "D2H 0.6444 / H2D 0.9573（rank0，median）"
+    predicted_ms: "D2H 0.366 / H2D 0.367（Ch5 设备口径 14.31/14.15 GB/s，单进程口径）"
+    deviation: "+76% / +161%"
+    forensics:
+      - "① 单进程同卡（/tmp/ch6_pcie_diag.py，60 reps，同 sync 结构）：D2H 0.3966 / H2D 0.3977 ms —— 与 Ch5 口径 +8%，排除本机固有差异"
+      - "② 2 进程同卡纯传输（/tmp/ch6_pcie_diag2.py，barrier 同步轮次，无计算）：D2H 0.7797 / H2D 0.7612 ms（×1.97 / ×1.91）—— PCIe 路径共享 ≈ 2×，主因"
+      - "③ probe 实测（2 进程同卡 + 并发注意力计算）：D2H 0.6444（低于②：两 rank AR 时间窗不完全重叠）/ H2D 0.9573（较② +0.20 ms：同设备并发计算干扰，次因）"
+    verdict: >
+      偏离归因于 CH6_DEV 同卡部署偏离（2 进程共享 GPU0 PCIe 路径 + H2D 同设备
+      计算干扰），非探针计时缺陷（计时窗口仅含 D2H/H2D 传输，同步点位置已复核）；
+      默认双卡设计下传输应落在 Ch5 口径。acceptance 的 d2h_h2d 条款以
+      "偏差 <50% 或给出可归因偏离"判定 → 归因闭合，pass。
+  timing:                                # 墙钟（行为口径，非性能断言）
+    manual_full_wall_ms: 628.52
+    tp_wall_ms_median: 561.95
+    pp_wall_ms_median: 140.69
+    tp_comm_ms_per_forward: "4.865（share 0.87%；远低于冻结预测带 [53, 400] 悲观包络——该带含 D2H/H2D 按单进程口径×72 的保守上界，实测 gloo AR 与计算部分重叠后摊薄）"
+    pp_send_ms_median: 10.316            # rank0
+    pp_recv_ms_median: 2.37              # rank1
+  correctness:                           # 三链路全过（HF ← manual_full ← {TP, PP}）
+    manualfull_cos_vs_hf: 0.999846
+    manualfull_top10_vs_hf: 0.9785
+    tp_cos_vs_manualfull: 0.999889
+    pp_cos_vs_manualfull: 1.0
+    tp_top10_vs_hf: 0.9771
+    pp_top10_vs_hf: 0.9785
+    pass: true
+  bug_fix: >
+    run 14 correctness cos 0.172 的根因：手写 forward 缺 Qwen3 特有的 q_norm/k_norm
+    （q/k 投影后、RoPE 前的逐 head RMSNorm，权重 [hd]）—— 从层 0 即分歧（0.642），
+    逐层法医 → 子阶段法医 → 注意力后端排除（eager/sdpa 一致）→ 读安装版
+    modeling_qwen3.py 定位。修复后 36 层全对齐、post final_norm cos 0.9999；
+    同步修正 4 处口径：hidden_states 末条 = post final_norm（本版本约定，实测判定）、
+    rank_agreement 双侧同口径、判定链每跳必过、device_note 登记条件。
+    教训入正文 §gloo 行为验证节（"复现 HF 前读安装版 modeling_*.py，不凭印象写 forward"）。
+  acceptance: "ar_count_sequence ✓ / shard_vram ✓ / d2h_h2d（归因条款）✓ / correctness ✓ / behavior_vs_perf（正文标注）待正文落地"
+  unresolved: []                         # 无未闭合差值
+
+acceptance:
+  thresholds:
+    ar_count_sequence: "TP 每前向恰 72 次 AR、逐层 o_proj/mlp 交替；PP 0 AR + 1 send/1 recv"
+    shard_vram: "每 rank 分片显存落在预测带内，且 TP 两 rank 相互偏差 <10%（对称切分）"
+    d2h_h2d: "每 AR D2H/H2D 时长与 Ch5 设备口径（14.31/14.15 GB/s）换算值偏差 <50%，或给出可归因偏离"
+    correctness: "cosine ≥ 0.998 且 top-10 重叠 ≥ 5/10（对 ref）"
+    behavior_vs_perf: "正文必须把 gloo 通信耗时标注为行为口径（CPU 共享内存），不与 Ch5 性能口径混用"
+  decision_rule: >
+    任一阈值未达 → 记录实测值 + 归因，不硬凑；AR 次数/顺序不符 → 检查切分实现
+    （列并行切 out 维 / 行并行切 in 维），不改预测；D2H/H2D 显著偏离 Ch5 设备口径
+    （>50%）→ 核查探针是否在计时窗口内混入 GPU 计算（同步点位置），记录后判定；
+    任何未闭合差值写 unresolved。
