@@ -1,0 +1,4781 @@
+{
+  "generated_at": "2026-11-16T12:23:42Z",
+  "usage": "python3 parallel_ledger.py [--skip-holdout]",
+  "calibration_version": "ch5-nominal-topology-profiles-v1 + ch5-nvlink-measured-v100x2（测前冻结）；ch2-compute-constants（PEAK=195 TFLOPS bf16, η=0.6243）",
+  "workload": {
+    "batch": 8,
+    "seq": 4096,
+    "note": "固定服务负载：batch B=8 × 上下文 S=4096，跨方案可比"
+  },
+  "comm_budget_pct": 10.0,
+  "formulas": {
+    "t_step": "t_step = F(N)/(P·PEAK·η)（三方案每 rank 同值；PP 末 rank 多 lm_head）",
+    "tp_comm": "逐层 2×Ring-AR，payload = N·d·bf16（Megatron 口径）",
+    "pp_bubble": "GPipe 稳态气泡比 = (P−1)/(m+P−1)（与带宽无关）；m=1 单流：(P−1)·T_p2p 传输项",
+    "dp_inference": "副本独立，前向通信 = 0（训练口径见 training_caliber）",
+    "flops": "逐层精确：2N(d·d_q+2d·d_kv+d_q·d)+6N·d·inter+4N·S·d_q，+2N·V·d（lm_head）"
+  },
+  "models": {
+    "Qwen3-8B": {
+      "n_layers": 36,
+      "hidden": 4096,
+      "n_q_heads": 32,
+      "n_kv_heads": 8,
+      "head_dim": 128,
+      "inter": 12288,
+      "vocab": 151936,
+      "tie_weights": false,
+      "source": "huggingface.co/Qwen/Qwen3-8B config.json（raw/main，2026-11-16 核实）"
+    },
+    "Qwen3-14B": {
+      "n_layers": 40,
+      "hidden": 5120,
+      "n_q_heads": 40,
+      "n_kv_heads": 8,
+      "head_dim": 128,
+      "inter": 17408,
+      "vocab": 151936,
+      "tie_weights": false,
+      "source": "huggingface.co/Qwen/Qwen3-14B config.json（raw/main，2026-11-16 核实）"
+    },
+    "Qwen3-32B": {
+      "n_layers": 64,
+      "hidden": 5120,
+      "n_q_heads": 64,
+      "n_kv_heads": 8,
+      "head_dim": 128,
+      "inter": 25600,
+      "vocab": 151936,
+      "tie_weights": false,
+      "source": "huggingface.co/Qwen/Qwen3-32B config.json（raw/main，2026-11-16 核实）"
+    },
+    "Qwen3-4B": {
+      "name": "Qwen3-4B",
+      "n_layers": 36,
+      "hidden": 2560,
+      "n_q_heads": 32,
+      "n_kv_heads": 8,
+      "head_dim": 128,
+      "inter": 9728,
+      "vocab": 151936,
+      "tie_weights": true,
+      "source": "/mnt/public/models/Qwen3-4B/config.json（在盘）"
+    }
+  },
+  "memory": {
+    "Qwen3-8B": {
+      "9070xt_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.257,
+          "kv_pool": 2.25,
+          "act_buffer": 0.031,
+          "overhead": 0.5,
+          "total": 18.038
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 30.514,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.257,
+          "kv_pool": 1.125,
+          "act_buffer": 0.031,
+          "overhead": 0.5,
+          "total": 16.913
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 61.027,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "9070xt_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.814,
+          "kv_pool": 1.125,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 5.502
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "9070xt_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "层均匀切 18/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "9070xt_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.814,
+          "kv_pool": 1.125,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 5.502
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "层均匀切 9/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.257,
+          "kv_pool": 2.25,
+          "act_buffer": 0.031,
+          "overhead": 0.5,
+          "total": 18.038
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 30.514,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.257,
+          "kv_pool": 1.125,
+          "act_buffer": 0.031,
+          "overhead": 0.5,
+          "total": 16.913
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 61.027,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "w7900d_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.814,
+          "kv_pool": 1.125,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 5.502
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "w7900d_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "层均匀切 18/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.814,
+          "kv_pool": 1.125,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 5.502
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "层均匀切 9/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      }
+    },
+    "Qwen3-14B": {
+      "9070xt_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 27.509,
+          "kv_pool": 2.5,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 30.548
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 55.017,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 27.509,
+          "kv_pool": 1.25,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 29.298
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 110.034,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 13.754,
+          "kv_pool": 2.5,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 16.832
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "9070xt_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 6.877,
+          "kv_pool": 1.25,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 8.705
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "9070xt_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 13.754,
+          "kv_pool": 2.5,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 16.832
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "层均匀切 20/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "9070xt_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 6.877,
+          "kv_pool": 1.25,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 8.705
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "层均匀切 10/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 27.509,
+          "kv_pool": 2.5,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 30.548
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 55.017,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 27.509,
+          "kv_pool": 1.25,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 29.298
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 110.034,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 13.754,
+          "kv_pool": 2.5,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 16.832
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "w7900d_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 6.877,
+          "kv_pool": 1.25,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 8.705
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "w7900d_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 13.754,
+          "kv_pool": 2.5,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 16.832
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "层均匀切 20/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 6.877,
+          "kv_pool": 1.25,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 8.705
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "层均匀切 10/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      }
+    },
+    "Qwen3-32B": {
+      "9070xt_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 61.025,
+          "kv_pool": 4.0,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 65.564
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 122.051,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 61.025,
+          "kv_pool": 2.0,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 63.564
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 244.101,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 30.513,
+          "kv_pool": 4.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 35.091
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "9070xt_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.256,
+          "kv_pool": 2.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 17.834
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "9070xt_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 30.513,
+          "kv_pool": 4.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 35.091
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "层均匀切 32/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "9070xt_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.256,
+          "kv_pool": 2.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 17.834
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "层均匀切 16/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 61.025,
+          "kv_pool": 4.0,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 65.564
+        },
+        "usable_gib": 42.7,
+        "feasible": false,
+        "weights_redundancy_total_gib": 122.051,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 61.025,
+          "kv_pool": 2.0,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 63.564
+        },
+        "usable_gib": 42.7,
+        "feasible": false,
+        "weights_redundancy_total_gib": 244.101,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 30.513,
+          "kv_pool": 4.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 35.091
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "w7900d_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.256,
+          "kv_pool": 2.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 17.834
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "w7900d_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 30.513,
+          "kv_pool": 4.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 35.091
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "层均匀切 32/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.256,
+          "kv_pool": 2.0,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 17.834
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 61.025,
+        "note": "层均匀切 16/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      }
+    },
+    "Qwen3-4B": {
+      "9070xt_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.493,
+          "kv_pool": 2.25,
+          "act_buffer": 0.02,
+          "overhead": 0.5,
+          "total": 10.262
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 14.986,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.493,
+          "kv_pool": 1.125,
+          "act_buffer": 0.02,
+          "overhead": 0.5,
+          "total": 9.137
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 29.971,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "9070xt_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.746,
+          "kv_pool": 2.25,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 6.535
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "9070xt_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 1.873,
+          "kv_pool": 1.125,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 3.537
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "9070xt_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.746,
+          "kv_pool": 2.25,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 6.535
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "层均匀切 18/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "9070xt_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 1.873,
+          "kv_pool": 1.125,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 3.537
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "层均匀切 9/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.493,
+          "kv_pool": 2.25,
+          "act_buffer": 0.02,
+          "overhead": 0.5,
+          "total": 10.262
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 14.986,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_dp_p4": {
+        "scheme": "dp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.493,
+          "kv_pool": 1.125,
+          "act_buffer": 0.02,
+          "overhead": 0.5,
+          "total": 9.137
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 29.971,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "w7900d_tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.746,
+          "kv_pool": 2.25,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 6.535
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "w7900d_tp_p4": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 1.873,
+          "kv_pool": 1.125,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 3.537
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "w7900d_pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 3.746,
+          "kv_pool": 2.25,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 6.535
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "层均匀切 18/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "w7900d_pp_p4": {
+        "scheme": "pp",
+        "p": 4,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 1.873,
+          "kv_pool": 1.125,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 3.537
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 7.493,
+        "note": "层均匀切 9/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      }
+    }
+  },
+  "comm_share": {
+    "Qwen3-8B": {
+      "tp_p2": {
+        "prefill_share_by_s": {
+          "1": 83.367,
+          "2": 72.941,
+          "4": 60.59,
+          "8": 48.935,
+          "16": 40.071,
+          "32": 34.367,
+          "64": 31.071,
+          "128": 29.261,
+          "256": 28.247,
+          "512": 27.586,
+          "1024": 26.97,
+          "2048": 26.121,
+          "4096": 24.713,
+          "8192": 22.367,
+          "16384": 18.818,
+          "32768": 14.291,
+          "nvlink300_by_s": [
+            70.13,
+            54.332,
+            37.912,
+            24.304,
+            14.987,
+            9.411,
+            6.336,
+            4.714,
+            3.871,
+            3.423,
+            3.156,
+            2.944,
+            2.701,
+            2.362,
+            1.902,
+            1.373
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            98.268,
+            96.6,
+            93.442,
+            87.76,
+            78.403,
+            65.039,
+            49.374,
+            34.751,
+            23.718,
+            16.627,
+            12.467,
+            10.036,
+            8.421,
+            7.027,
+            5.549,
+            3.986
+          ],
+          "roce100g_by_s": [
+            84.604,
+            76.069,
+            66.892,
+            59.036,
+            53.518,
+            50.151,
+            48.256,
+            47.209,
+            46.579,
+            46.078,
+            45.468,
+            44.471,
+            42.686,
+            39.549,
+            34.495,
+            27.477
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 81.211,
+          "2": 69.923,
+          "4": 57.008,
+          "8": 45.255,
+          "16": 36.587,
+          "32": 31.135,
+          "nvlink300_by_b": [
+            66.94,
+            50.642,
+            34.497,
+            21.689,
+            13.203,
+            8.231
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            97.997,
+            96.078,
+            92.475,
+            86.082,
+            75.801,
+            61.631
+          ],
+          "roce100g_by_b": [
+            82.575,
+            73.271,
+            63.538,
+            55.42,
+            49.837,
+            46.485
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.008,
+            "t_ar_ms": 0.0043,
+            "t_comm_ms": 0.3116,
+            "t_comp_ms": 0.0622,
+            "share_pct": 83.367
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.016,
+            "t_ar_ms": 0.0047,
+            "t_comm_ms": 0.3352,
+            "t_comp_ms": 0.1243,
+            "share_pct": 72.941
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.031,
+            "t_ar_ms": 0.0053,
+            "t_comm_ms": 0.3824,
+            "t_comp_ms": 0.2487,
+            "share_pct": 60.59
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.062,
+            "t_ar_ms": 0.0066,
+            "t_comm_ms": 0.4767,
+            "t_comp_ms": 0.4975,
+            "share_pct": 48.935
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.125,
+            "t_ar_ms": 0.0092,
+            "t_comm_ms": 0.6655,
+            "t_comp_ms": 0.9953,
+            "share_pct": 40.071
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.25,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.043,
+            "t_comp_ms": 1.9918,
+            "share_pct": 34.367
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.5,
+            "t_ar_ms": 0.025,
+            "t_comm_ms": 1.7979,
+            "t_comp_ms": 3.9886,
+            "share_pct": 31.071
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.0,
+            "t_ar_ms": 0.0459,
+            "t_comm_ms": 3.3079,
+            "t_comp_ms": 7.997,
+            "share_pct": 29.261
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.0,
+            "t_ar_ms": 0.0879,
+            "t_comm_ms": 6.3278,
+            "t_comp_ms": 16.0735,
+            "share_pct": 28.247
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 4.0,
+            "t_ar_ms": 0.1718,
+            "t_comm_ms": 12.3676,
+            "t_comp_ms": 32.4645,
+            "share_pct": 27.586
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 8.0,
+            "t_ar_ms": 0.3395,
+            "t_comm_ms": 24.4472,
+            "t_comp_ms": 66.199,
+            "share_pct": 26.97
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 16.0,
+            "t_ar_ms": 0.6751,
+            "t_comm_ms": 48.6064,
+            "t_comp_ms": 137.4784,
+            "share_pct": 26.121
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 32.0,
+            "t_ar_ms": 1.3462,
+            "t_comm_ms": 96.9248,
+            "t_comp_ms": 295.2782,
+            "share_pct": 24.713
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 64.0,
+            "t_ar_ms": 2.6884,
+            "t_comm_ms": 193.5615,
+            "t_comp_ms": 671.8422,
+            "share_pct": 22.367
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 128.0,
+            "t_ar_ms": 5.3727,
+            "t_comm_ms": 386.8351,
+            "t_comp_ms": 1668.8274,
+            "share_pct": 18.818
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 256.0,
+            "t_ar_ms": 10.7414,
+            "t_comm_ms": 773.3821,
+            "t_comp_ms": 4638.2267,
+            "share_pct": 14.291
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.008,
+            "t_ar_ms": 0.0043,
+            "t_comm_ms": 0.3116,
+            "t_comp_ms": 0.0721,
+            "share_pct": 81.211
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.016,
+            "t_ar_ms": 0.0047,
+            "t_comm_ms": 0.3352,
+            "t_comp_ms": 0.1442,
+            "share_pct": 69.923
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.031,
+            "t_ar_ms": 0.0053,
+            "t_comm_ms": 0.3824,
+            "t_comp_ms": 0.2884,
+            "share_pct": 57.008
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.062,
+            "t_ar_ms": 0.0066,
+            "t_comm_ms": 0.4767,
+            "t_comp_ms": 0.5767,
+            "share_pct": 45.255
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.125,
+            "t_ar_ms": 0.0092,
+            "t_comm_ms": 0.6655,
+            "t_comp_ms": 1.1534,
+            "share_pct": 36.587
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.25,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.043,
+            "t_comp_ms": 2.3069,
+            "share_pct": 31.135
+          }
+        ]
+      },
+      "tp_p4": {
+        "prefill_share_by_s": {
+          "1": 96.659,
+          "2": 93.764,
+          "4": 88.994,
+          "8": 82.18,
+          "16": 74.187,
+          "32": 66.718,
+          "64": 61.073,
+          "128": 57.428,
+          "256": 55.253,
+          "512": 53.906,
+          "1024": 52.851,
+          "2048": 51.62,
+          "4096": 49.69,
+          "8192": 46.398,
+          "16384": 41.035,
+          "32768": 33.352,
+          "nvlink300_by_s": [
+            93.33,
+            87.567,
+            78.113,
+            64.684,
+            49.055,
+            34.578,
+            23.737,
+            16.836,
+            12.869,
+            10.685,
+            9.444,
+            8.605,
+            7.812,
+            6.821,
+            5.52,
+            4.017
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            99.707,
+            99.416,
+            98.84,
+            97.714,
+            95.556,
+            91.585,
+            84.789,
+            74.481,
+            61.389,
+            48.016,
+            36.981,
+            29.152,
+            23.758,
+            19.515,
+            15.439,
+            11.255
+          ],
+          "roce100g_by_s": [
+            96.814,
+            94.281,
+            90.508,
+            85.836,
+            81.211,
+            77.538,
+            75.089,
+            73.62,
+            72.748,
+            72.146,
+            71.546,
+            70.665,
+            69.11,
+            66.262,
+            61.245,
+            53.201
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 96.147,
+          "2": 92.84,
+          "4": 87.46,
+          "8": 79.912,
+          "16": 71.264,
+          "32": 63.382,
+          "nvlink300_by_b": [
+            92.347,
+            85.864,
+            75.479,
+            61.24,
+            45.382,
+            31.335
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            99.66,
+            99.323,
+            98.658,
+            97.359,
+            94.886,
+            90.382
+          ],
+          "roce100g_by_b": [
+            96.324,
+            93.428,
+            89.159,
+            83.943,
+            78.856,
+            74.877
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.008,
+            "t_ar_ms": 0.0125,
+            "t_comm_ms": 0.8994,
+            "t_comp_ms": 0.0311,
+            "share_pct": 96.659
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.016,
+            "t_ar_ms": 0.013,
+            "t_comm_ms": 0.9348,
+            "t_comp_ms": 0.0622,
+            "share_pct": 93.764
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.031,
+            "t_ar_ms": 0.014,
+            "t_comm_ms": 1.0056,
+            "t_comp_ms": 0.1244,
+            "share_pct": 88.994
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.062,
+            "t_ar_ms": 0.0159,
+            "t_comm_ms": 1.1471,
+            "t_comp_ms": 0.2487,
+            "share_pct": 82.18
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.125,
+            "t_ar_ms": 0.0199,
+            "t_comm_ms": 1.4302,
+            "t_comp_ms": 0.4976,
+            "share_pct": 74.187
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.25,
+            "t_ar_ms": 0.0277,
+            "t_comm_ms": 1.9965,
+            "t_comp_ms": 0.9959,
+            "share_pct": 66.718
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.5,
+            "t_ar_ms": 0.0435,
+            "t_comm_ms": 3.1289,
+            "t_comp_ms": 1.9943,
+            "share_pct": 61.073
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.0,
+            "t_ar_ms": 0.0749,
+            "t_comm_ms": 5.3938,
+            "t_comp_ms": 3.9985,
+            "share_pct": 57.428
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.0,
+            "t_ar_ms": 0.1378,
+            "t_comm_ms": 9.9237,
+            "t_comp_ms": 8.0367,
+            "share_pct": 55.253
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 4.0,
+            "t_ar_ms": 0.2637,
+            "t_comm_ms": 18.9834,
+            "t_comp_ms": 16.2322,
+            "share_pct": 53.906
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 8.0,
+            "t_ar_ms": 0.5153,
+            "t_comm_ms": 37.1028,
+            "t_comp_ms": 33.0995,
+            "share_pct": 52.851
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 16.0,
+            "t_ar_ms": 1.0186,
+            "t_comm_ms": 73.3416,
+            "t_comp_ms": 68.7392,
+            "share_pct": 51.62
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 32.0,
+            "t_ar_ms": 2.0253,
+            "t_comm_ms": 145.8191,
+            "t_comp_ms": 147.6391,
+            "share_pct": 49.69
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 64.0,
+            "t_ar_ms": 4.0385,
+            "t_comm_ms": 290.7743,
+            "t_comp_ms": 335.9211,
+            "share_pct": 46.398
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 128.0,
+            "t_ar_ms": 8.0651,
+            "t_comm_ms": 580.6846,
+            "t_comp_ms": 834.4137,
+            "share_pct": 41.035
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 256.0,
+            "t_ar_ms": 16.1181,
+            "t_comm_ms": 1160.5052,
+            "t_comp_ms": 2319.1133,
+            "share_pct": 33.352
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.008,
+            "t_ar_ms": 0.0125,
+            "t_comm_ms": 0.8994,
+            "t_comp_ms": 0.036,
+            "share_pct": 96.147
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.016,
+            "t_ar_ms": 0.013,
+            "t_comm_ms": 0.9348,
+            "t_comp_ms": 0.0721,
+            "share_pct": 92.84
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.031,
+            "t_ar_ms": 0.014,
+            "t_comm_ms": 1.0056,
+            "t_comp_ms": 0.1442,
+            "share_pct": 87.46
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.062,
+            "t_ar_ms": 0.0159,
+            "t_comm_ms": 1.1471,
+            "t_comp_ms": 0.2884,
+            "share_pct": 79.912
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.125,
+            "t_ar_ms": 0.0199,
+            "t_comm_ms": 1.4302,
+            "t_comp_ms": 0.5767,
+            "share_pct": 71.264
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.25,
+            "t_ar_ms": 0.0277,
+            "t_comm_ms": 1.9965,
+            "t_comp_ms": 1.1534,
+            "share_pct": 63.382
+          }
+        ]
+      },
+      "pp": {
+        "p2_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.4975,
+          "bubble_or_transfer_share_pct": 0.462,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.4975,
+          "bubble_or_transfer_share_pct": 33.333,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.4975,
+          "bubble_or_transfer_share_pct": 20.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.4975,
+          "bubble_or_transfer_share_pct": 11.111,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.4975,
+          "bubble_or_transfer_share_pct": 5.882,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.4975,
+          "bubble_or_transfer_share_pct": 3.03,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.2487,
+          "bubble_or_transfer_share_pct": 1.374,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.2487,
+          "bubble_or_transfer_share_pct": 60.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.2487,
+          "bubble_or_transfer_share_pct": 42.857,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.2487,
+          "bubble_or_transfer_share_pct": 27.273,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.2487,
+          "bubble_or_transfer_share_pct": 15.789,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.062,
+          "t_p2p_ms": 0.0046,
+          "t_step_ms": 0.2487,
+          "bubble_or_transfer_share_pct": 8.571,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        }
+      }
+    },
+    "Qwen3-14B": {
+      "tp_p2": {
+        "prefill_share_by_s": {
+          "1": 75.428,
+          "2": 62.649,
+          "4": 49.525,
+          "8": 38.766,
+          "16": 31.458,
+          "32": 27.104,
+          "64": 24.701,
+          "128": 23.416,
+          "256": 22.709,
+          "512": 22.257,
+          "1024": 21.843,
+          "2048": 21.278,
+          "4096": 20.332,
+          "8192": 18.716,
+          "16384": 16.165,
+          "32768": 12.707,
+          "nvlink300_by_s": [
+            58.61,
+            41.856,
+            27.103,
+            16.51,
+            9.969,
+            6.298,
+            4.346,
+            3.336,
+            2.817,
+            2.543,
+            2.381,
+            2.254,
+            2.107,
+            1.894,
+            1.586,
+            1.2
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            97.152,
+            94.472,
+            89.561,
+            81.217,
+            68.714,
+            53.106,
+            37.519,
+            25.061,
+            16.749,
+            11.832,
+            9.088,
+            7.532,
+            6.514,
+            5.624,
+            4.628,
+            3.486
+          ],
+          "roce100g_by_s": [
+            77.44,
+            67.108,
+            57.339,
+            49.897,
+            45.106,
+            42.343,
+            40.838,
+            40.023,
+            39.541,
+            39.167,
+            38.719,
+            37.991,
+            36.679,
+            34.338,
+            30.463,
+            24.856
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 73.269,
+          "2": 59.965,
+          "4": 46.701,
+          "8": 36.119,
+          "16": 29.078,
+          "32": 24.942,
+          "nvlink300_by_b": [
+            55.839,
+            39.129,
+            24.926,
+            15.011,
+            9.001,
+            5.666
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            96.821,
+            93.85,
+            88.454,
+            79.432,
+            66.239,
+            50.302
+          ],
+          "roce100g_by_b": [
+            75.4,
+            64.562,
+            54.551,
+            47.075,
+            42.332,
+            39.627
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0044,
+            "t_comm_ms": 0.3528,
+            "t_comp_ms": 0.1149,
+            "share_pct": 75.428
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0048,
+            "t_comm_ms": 0.3855,
+            "t_comp_ms": 0.2298,
+            "share_pct": 62.649
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0056,
+            "t_comm_ms": 0.4511,
+            "t_comp_ms": 0.4597,
+            "share_pct": 49.525
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0073,
+            "t_comm_ms": 0.5821,
+            "t_comp_ms": 0.9196,
+            "share_pct": 38.766
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0106,
+            "t_comm_ms": 0.8443,
+            "t_comp_ms": 1.8396,
+            "share_pct": 31.458
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0171,
+            "t_comm_ms": 1.3686,
+            "t_comp_ms": 3.6808,
+            "share_pct": 27.104
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.625,
+            "t_ar_ms": 0.0302,
+            "t_comm_ms": 2.4172,
+            "t_comp_ms": 7.3685,
+            "share_pct": 24.701
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.25,
+            "t_ar_ms": 0.0564,
+            "t_comm_ms": 4.5143,
+            "t_comp_ms": 14.7647,
+            "share_pct": 23.416
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.5,
+            "t_ar_ms": 0.1089,
+            "t_comm_ms": 8.7086,
+            "t_comp_ms": 29.6396,
+            "share_pct": 22.709
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 5.0,
+            "t_ar_ms": 0.2137,
+            "t_comm_ms": 17.0972,
+            "t_comp_ms": 59.7201,
+            "share_pct": 22.257
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 10.0,
+            "t_ar_ms": 0.4234,
+            "t_comm_ms": 33.8744,
+            "t_comp_ms": 121.2043,
+            "share_pct": 21.843
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 20.0,
+            "t_ar_ms": 0.8429,
+            "t_comm_ms": 67.4289,
+            "t_comp_ms": 249.4646,
+            "share_pct": 21.278
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 1.6817,
+            "t_comm_ms": 134.5377,
+            "t_comp_ms": 527.1534,
+            "share_pct": 20.332
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 80.0,
+            "t_ar_ms": 3.3594,
+            "t_comm_ms": 268.7555,
+            "t_comp_ms": 1167.2037,
+            "share_pct": 18.716
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 160.0,
+            "t_ar_ms": 6.7149,
+            "t_comm_ms": 537.1909,
+            "t_comp_ms": 2785.9948,
+            "share_pct": 16.165
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 320.0,
+            "t_ar_ms": 13.4258,
+            "t_comm_ms": 1074.0618,
+            "t_comp_ms": 7378.3395,
+            "share_pct": 12.707
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0044,
+            "t_comm_ms": 0.3528,
+            "t_comp_ms": 0.1287,
+            "share_pct": 73.269
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0048,
+            "t_comm_ms": 0.3855,
+            "t_comp_ms": 0.2574,
+            "share_pct": 59.965
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0056,
+            "t_comm_ms": 0.4511,
+            "t_comp_ms": 0.5148,
+            "share_pct": 46.701
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0073,
+            "t_comm_ms": 0.5821,
+            "t_comp_ms": 1.0296,
+            "share_pct": 36.119
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0106,
+            "t_comm_ms": 0.8443,
+            "t_comp_ms": 2.0592,
+            "share_pct": 29.078
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0171,
+            "t_comm_ms": 1.3686,
+            "t_comp_ms": 4.1184,
+            "share_pct": 24.942
+          }
+        ]
+      },
+      "tp_p4": {
+        "prefill_share_by_s": {
+          "1": 94.613,
+          "2": 90.204,
+          "4": 83.421,
+          "8": 74.64,
+          "16": 65.502,
+          "32": 57.917,
+          "64": 52.705,
+          "128": 49.553,
+          "256": 47.749,
+          "512": 46.665,
+          "1024": 45.84,
+          "2048": 44.895,
+          "4096": 43.422,
+          "8192": 40.884,
+          "16384": 36.661,
+          "32768": 30.403,
+          "nvlink300_by_s": [
+            89.39,
+            80.945,
+            68.349,
+            52.724,
+            37.23,
+            24.927,
+            16.766,
+            11.975,
+            9.35,
+            7.945,
+            7.161,
+            6.638,
+            6.145,
+            5.51,
+            4.628,
+            3.523
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            99.513,
+            99.032,
+            98.087,
+            96.259,
+            92.841,
+            86.817,
+            77.243,
+            64.262,
+            49.988,
+            37.465,
+            28.405,
+            22.566,
+            18.785,
+            15.883,
+            13.027,
+            9.905
+          ],
+          "roce100g_by_s": [
+            94.911,
+            91.148,
+            85.956,
+            80.126,
+            74.918,
+            71.131,
+            68.761,
+            67.394,
+            66.605,
+            66.074,
+            65.558,
+            64.812,
+            63.498,
+            61.085,
+            56.796,
+            49.811
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 94.006,
+          "2": 89.158,
+          "4": 81.796,
+          "8": 72.441,
+          "16": 62.911,
+          "32": 55.158,
+          "nvlink300_by_b": [
+            88.267,
+            79.137,
+            65.852,
+            49.901,
+            34.634,
+            22.884
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            99.455,
+            98.917,
+            97.862,
+            95.831,
+            92.054,
+            85.478
+          ],
+          "roce100g_by_b": [
+            94.336,
+            90.191,
+            84.533,
+            78.265,
+            72.74,
+            68.771
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0126,
+            "t_comm_ms": 1.0092,
+            "t_comp_ms": 0.0575,
+            "share_pct": 94.613
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0132,
+            "t_comm_ms": 1.0583,
+            "t_comp_ms": 0.1149,
+            "share_pct": 90.204
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.1566,
+            "t_comp_ms": 0.2299,
+            "share_pct": 83.421
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0169,
+            "t_comm_ms": 1.3532,
+            "t_comp_ms": 0.4598,
+            "share_pct": 74.64
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0218,
+            "t_comm_ms": 1.7464,
+            "t_comp_ms": 0.9198,
+            "share_pct": 65.502
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0317,
+            "t_comm_ms": 2.5329,
+            "t_comp_ms": 1.8404,
+            "share_pct": 57.917
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.625,
+            "t_ar_ms": 0.0513,
+            "t_comm_ms": 4.1057,
+            "t_comp_ms": 3.6843,
+            "share_pct": 52.705
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.25,
+            "t_ar_ms": 0.0906,
+            "t_comm_ms": 7.2515,
+            "t_comp_ms": 7.3823,
+            "share_pct": 49.553
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.5,
+            "t_ar_ms": 0.1693,
+            "t_comm_ms": 13.5429,
+            "t_comp_ms": 14.8198,
+            "share_pct": 47.749
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 5.0,
+            "t_ar_ms": 0.3266,
+            "t_comm_ms": 26.1258,
+            "t_comp_ms": 29.8601,
+            "share_pct": 46.665
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 10.0,
+            "t_ar_ms": 0.6411,
+            "t_comm_ms": 51.2916,
+            "t_comp_ms": 60.6021,
+            "share_pct": 45.84
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 20.0,
+            "t_ar_ms": 1.2703,
+            "t_comm_ms": 101.6233,
+            "t_comp_ms": 124.7323,
+            "share_pct": 44.895
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 2.5286,
+            "t_comm_ms": 202.2866,
+            "t_comp_ms": 263.5767,
+            "share_pct": 43.422
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 80.0,
+            "t_ar_ms": 5.0452,
+            "t_comm_ms": 403.6132,
+            "t_comp_ms": 583.6018,
+            "share_pct": 40.884
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 160.0,
+            "t_ar_ms": 10.0783,
+            "t_comm_ms": 806.2664,
+            "t_comp_ms": 1392.9974,
+            "share_pct": 36.661
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 320.0,
+            "t_ar_ms": 20.1447,
+            "t_comm_ms": 1611.5727,
+            "t_comp_ms": 3689.1698,
+            "share_pct": 30.403
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0126,
+            "t_comm_ms": 1.0092,
+            "t_comp_ms": 0.0643,
+            "share_pct": 94.006
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0132,
+            "t_comm_ms": 1.0583,
+            "t_comp_ms": 0.1287,
+            "share_pct": 89.158
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.1566,
+            "t_comp_ms": 0.2574,
+            "share_pct": 81.796
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0169,
+            "t_comm_ms": 1.3532,
+            "t_comp_ms": 0.5148,
+            "share_pct": 72.441
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0218,
+            "t_comm_ms": 1.7464,
+            "t_comp_ms": 1.0296,
+            "share_pct": 62.911
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0317,
+            "t_comm_ms": 2.5329,
+            "t_comp_ms": 2.0592,
+            "share_pct": 55.158
+          }
+        ]
+      },
+      "pp": {
+        "p2_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.9196,
+          "bubble_or_transfer_share_pct": 0.286,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.9196,
+          "bubble_or_transfer_share_pct": 33.333,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.9196,
+          "bubble_or_transfer_share_pct": 20.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.9196,
+          "bubble_or_transfer_share_pct": 11.111,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.9196,
+          "bubble_or_transfer_share_pct": 5.882,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.9196,
+          "bubble_or_transfer_share_pct": 3.03,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.4598,
+          "bubble_or_transfer_share_pct": 0.853,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.4598,
+          "bubble_or_transfer_share_pct": 60.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.4598,
+          "bubble_or_transfer_share_pct": 42.857,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.4598,
+          "bubble_or_transfer_share_pct": 27.273,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.4598,
+          "bubble_or_transfer_share_pct": 15.789,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 0.4598,
+          "bubble_or_transfer_share_pct": 8.571,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        }
+      }
+    },
+    "Qwen3-32B": {
+      "tp_p2": {
+        "prefill_share_by_s": {
+          "1": 68.237,
+          "2": 54.0,
+          "4": 40.712,
+          "8": 30.702,
+          "16": 24.311,
+          "32": 20.647,
+          "64": 18.668,
+          "128": 17.62,
+          "256": 17.043,
+          "512": 16.667,
+          "1024": 16.312,
+          "2048": 15.817,
+          "4096": 14.991,
+          "8192": 13.607,
+          "16384": 11.497,
+          "32768": 8.779,
+          "nvlink300_by_s": [
+            49.774,
+            33.502,
+            20.647,
+            12.157,
+            7.192,
+            4.492,
+            3.081,
+            2.357,
+            1.986,
+            1.79,
+            1.673,
+            1.578,
+            1.465,
+            1.303,
+            1.074,
+            0.797
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            95.979,
+            92.284,
+            85.723,
+            75.162,
+            60.584,
+            44.211,
+            29.586,
+            18.959,
+            12.333,
+            8.572,
+            6.518,
+            5.359,
+            4.594,
+            3.916,
+            3.166,
+            2.332
+          ],
+          "roce100g_by_s": [
+            70.608,
+            58.811,
+            48.47,
+            41.071,
+            36.51,
+            33.946,
+            32.568,
+            31.825,
+            31.381,
+            31.025,
+            30.587,
+            29.869,
+            28.585,
+            26.347,
+            22.788,
+            17.944
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 65.446,
+          "2": 50.86,
+          "4": 37.713,
+          "8": 28.094,
+          "16": 22.077,
+          "32": 18.674,
+          "nvlink300_by_b": [
+            46.63,
+            30.757,
+            18.661,
+            10.877,
+            6.398,
+            3.985
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            95.464,
+            91.338,
+            84.112,
+            72.741,
+            57.551,
+            41.155
+          ],
+          "roce100g_by_b": [
+            67.928,
+            55.731,
+            45.336,
+            38.066,
+            33.653,
+            31.202
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0044,
+            "t_comm_ms": 0.5644,
+            "t_comp_ms": 0.2627,
+            "share_pct": 68.237
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0048,
+            "t_comm_ms": 0.6169,
+            "t_comp_ms": 0.5255,
+            "share_pct": 54.0
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0056,
+            "t_comm_ms": 0.7217,
+            "t_comp_ms": 1.051,
+            "share_pct": 40.712
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0073,
+            "t_comm_ms": 0.9314,
+            "t_comp_ms": 2.1023,
+            "share_pct": 30.702
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0106,
+            "t_comm_ms": 1.3509,
+            "t_comp_ms": 4.2058,
+            "share_pct": 24.311
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0171,
+            "t_comm_ms": 2.1897,
+            "t_comp_ms": 8.416,
+            "share_pct": 20.647
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.625,
+            "t_ar_ms": 0.0302,
+            "t_comm_ms": 3.8674,
+            "t_comp_ms": 16.8496,
+            "share_pct": 18.668
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.25,
+            "t_ar_ms": 0.0564,
+            "t_comm_ms": 7.2229,
+            "t_comp_ms": 33.7697,
+            "share_pct": 17.62
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.5,
+            "t_ar_ms": 0.1089,
+            "t_comm_ms": 13.9338,
+            "t_comp_ms": 67.8216,
+            "share_pct": 17.043
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 5.0,
+            "t_ar_ms": 0.2137,
+            "t_comm_ms": 27.3555,
+            "t_comp_ms": 136.7722,
+            "share_pct": 16.667
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 10.0,
+            "t_ar_ms": 0.4234,
+            "t_comm_ms": 54.1991,
+            "t_comp_ms": 278.0604,
+            "share_pct": 16.312
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 20.0,
+            "t_ar_ms": 0.8429,
+            "t_comm_ms": 107.8862,
+            "t_comp_ms": 574.1842,
+            "share_pct": 15.817
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 1.6817,
+            "t_comm_ms": 215.2604,
+            "t_comp_ms": 1220.6224,
+            "share_pct": 14.991
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 80.0,
+            "t_ar_ms": 3.3594,
+            "t_comm_ms": 430.0087,
+            "t_comp_ms": 2730.2608,
+            "share_pct": 13.607
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 160.0,
+            "t_ar_ms": 6.7149,
+            "t_comm_ms": 859.5055,
+            "t_comp_ms": 6616.5855,
+            "share_pct": 11.497
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 320.0,
+            "t_ar_ms": 13.4258,
+            "t_comm_ms": 1718.4989,
+            "t_comp_ms": 17857.4268,
+            "share_pct": 8.779
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0044,
+            "t_comm_ms": 0.5644,
+            "t_comp_ms": 0.298,
+            "share_pct": 65.446
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0048,
+            "t_comm_ms": 0.6169,
+            "t_comp_ms": 0.596,
+            "share_pct": 50.86
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0056,
+            "t_comm_ms": 0.7217,
+            "t_comp_ms": 1.192,
+            "share_pct": 37.713
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0073,
+            "t_comm_ms": 0.9314,
+            "t_comp_ms": 2.384,
+            "share_pct": 28.094
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0106,
+            "t_comm_ms": 1.3509,
+            "t_comp_ms": 4.7681,
+            "share_pct": 22.077
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0171,
+            "t_comm_ms": 2.1897,
+            "t_comp_ms": 9.5361,
+            "share_pct": 18.674
+          }
+        ]
+      },
+      "tp_p4": {
+        "prefill_share_by_s": {
+          "1": 92.476,
+          "2": 86.568,
+          "4": 77.883,
+          "8": 67.318,
+          "16": 57.059,
+          "32": 49.059,
+          "64": 43.812,
+          "128": 40.728,
+          "256": 38.987,
+          "512": 37.937,
+          "1024": 37.118,
+          "2048": 36.158,
+          "4096": 34.654,
+          "8192": 32.114,
+          "16384": 28.054,
+          "32768": 22.408,
+          "nvlink300_by_s": [
+            85.499,
+            74.83,
+            60.18,
+            43.836,
+            29.332,
+            18.854,
+            12.353,
+            8.69,
+            6.727,
+            5.687,
+            5.105,
+            4.71,
+            4.328,
+            3.836,
+            3.165,
+            2.357
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            99.306,
+            98.623,
+            97.288,
+            94.74,
+            90.075,
+            82.17,
+            70.37,
+            55.711,
+            41.139,
+            29.506,
+            21.673,
+            16.846,
+            13.78,
+            11.438,
+            9.166,
+            6.775
+          ],
+          "roce100g_by_s": [
+            92.884,
+            87.815,
+            81.072,
+            73.832,
+            67.641,
+            63.292,
+            60.631,
+            59.115,
+            58.239,
+            57.638,
+            57.035,
+            56.147,
+            54.588,
+            51.777,
+            46.967,
+            39.618
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 91.551,
+          "2": 85.035,
+          "4": 75.639,
+          "8": 64.493,
+          "16": 53.961,
+          "32": 45.944,
+          "nvlink300_by_b": [
+            83.867,
+            72.384,
+            57.129,
+            40.768,
+            26.8,
+            17.016
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            99.214,
+            98.441,
+            96.936,
+            94.076,
+            88.896,
+            80.265
+          ],
+          "roce100g_by_b": [
+            92.005,
+            86.402,
+            79.065,
+            71.331,
+            64.836,
+            60.344
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0126,
+            "t_comm_ms": 1.6146,
+            "t_comp_ms": 0.1314,
+            "share_pct": 92.476
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0132,
+            "t_comm_ms": 1.6933,
+            "t_comp_ms": 0.2627,
+            "share_pct": 86.568
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.8506,
+            "t_comp_ms": 0.5255,
+            "share_pct": 77.883
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0169,
+            "t_comm_ms": 2.1651,
+            "t_comp_ms": 1.0512,
+            "share_pct": 67.318
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0218,
+            "t_comm_ms": 2.7943,
+            "t_comp_ms": 2.1029,
+            "share_pct": 57.059
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0317,
+            "t_comm_ms": 4.0526,
+            "t_comp_ms": 4.208,
+            "share_pct": 49.059
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.625,
+            "t_ar_ms": 0.0513,
+            "t_comm_ms": 6.5692,
+            "t_comp_ms": 8.4248,
+            "share_pct": 43.812
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.25,
+            "t_ar_ms": 0.0906,
+            "t_comm_ms": 11.6023,
+            "t_comp_ms": 16.8848,
+            "share_pct": 40.728
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.5,
+            "t_ar_ms": 0.1693,
+            "t_comm_ms": 21.6687,
+            "t_comp_ms": 33.9108,
+            "share_pct": 38.987
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 5.0,
+            "t_ar_ms": 0.3266,
+            "t_comm_ms": 41.8013,
+            "t_comp_ms": 68.3861,
+            "share_pct": 37.937
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 10.0,
+            "t_ar_ms": 0.6411,
+            "t_comm_ms": 82.0666,
+            "t_comp_ms": 139.0302,
+            "share_pct": 37.118
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 20.0,
+            "t_ar_ms": 1.2703,
+            "t_comm_ms": 162.5973,
+            "t_comp_ms": 287.0921,
+            "share_pct": 36.158
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 2.5286,
+            "t_comm_ms": 323.6585,
+            "t_comp_ms": 610.3112,
+            "share_pct": 34.654
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 80.0,
+            "t_ar_ms": 5.0452,
+            "t_comm_ms": 645.7811,
+            "t_comp_ms": 1365.1304,
+            "share_pct": 32.114
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 160.0,
+            "t_ar_ms": 10.0783,
+            "t_comm_ms": 1290.0262,
+            "t_comp_ms": 3308.2928,
+            "share_pct": 28.054
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 320.0,
+            "t_ar_ms": 20.1447,
+            "t_comm_ms": 2578.5164,
+            "t_comp_ms": 8928.7134,
+            "share_pct": 22.408
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0126,
+            "t_comm_ms": 1.6146,
+            "t_comp_ms": 0.149,
+            "share_pct": 91.551
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0132,
+            "t_comm_ms": 1.6933,
+            "t_comp_ms": 0.298,
+            "share_pct": 85.035
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.8506,
+            "t_comp_ms": 0.596,
+            "share_pct": 75.639
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0169,
+            "t_comm_ms": 2.1651,
+            "t_comp_ms": 1.192,
+            "share_pct": 64.493
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0218,
+            "t_comm_ms": 2.7943,
+            "t_comp_ms": 2.384,
+            "share_pct": 53.961
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0317,
+            "t_comm_ms": 4.0526,
+            "t_comp_ms": 4.7681,
+            "share_pct": 45.944
+          }
+        ]
+      },
+      "pp": {
+        "p2_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 2.1023,
+          "bubble_or_transfer_share_pct": 0.125,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 2.1023,
+          "bubble_or_transfer_share_pct": 33.333,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 2.1023,
+          "bubble_or_transfer_share_pct": 20.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 2.1023,
+          "bubble_or_transfer_share_pct": 11.111,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 2.1023,
+          "bubble_or_transfer_share_pct": 5.882,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 2.1023,
+          "bubble_or_transfer_share_pct": 3.03,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 1.0512,
+          "bubble_or_transfer_share_pct": 0.375,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 1.0512,
+          "bubble_or_transfer_share_pct": 60.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 1.0512,
+          "bubble_or_transfer_share_pct": 42.857,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 1.0512,
+          "bubble_or_transfer_share_pct": 27.273,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 1.0512,
+          "bubble_or_transfer_share_pct": 15.789,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.078,
+          "t_p2p_ms": 0.0053,
+          "t_step_ms": 1.0512,
+          "bubble_or_transfer_share_pct": 8.571,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        }
+      }
+    },
+    "Qwen3-4B": {
+      "tp_p2": {
+        "prefill_share_by_s": {
+          "1": 90.16,
+          "2": 82.77,
+          "4": 72.411,
+          "8": 60.552,
+          "16": 49.747,
+          "32": 41.759,
+          "64": 36.7,
+          "128": 33.758,
+          "256": 32.042,
+          "512": 30.87,
+          "1024": 29.728,
+          "2048": 28.147,
+          "4096": 25.642,
+          "8192": 21.844,
+          "16384": 16.873,
+          "32768": 11.602,
+          "nvlink300_by_s": [
+            81.465,
+            68.906,
+            52.973,
+            36.774,
+            23.619,
+            14.747,
+            9.486,
+            6.593,
+            5.053,
+            4.219,
+            3.712,
+            3.306,
+            2.858,
+            2.302,
+            1.673,
+            1.085
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            99.071,
+            98.161,
+            96.395,
+            93.066,
+            87.115,
+            77.432,
+            63.845,
+            48.264,
+            34.024,
+            23.417,
+            16.549,
+            12.29,
+            9.415,
+            7.09,
+            4.991,
+            3.197
+          ],
+          "roce100g_by_s": [
+            90.681,
+            84.306,
+            76.148,
+            67.769,
+            60.896,
+            56.211,
+            53.383,
+            51.745,
+            50.715,
+            49.85,
+            48.754,
+            46.966,
+            43.873,
+            38.814,
+            31.555,
+            22.969
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 87.573,
+          "2": 78.701,
+          "4": 66.877,
+          "8": 54.153,
+          "16": 43.252,
+          "32": 35.596,
+          "nvlink300_by_b": [
+            77.171,
+            63.024,
+            46.425,
+            30.919,
+            19.23,
+            11.765
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            98.796,
+            97.622,
+            95.364,
+            91.172,
+            83.886,
+            72.564
+          ],
+          "roce100g_by_b": [
+            88.212,
+            80.514,
+            71.064,
+            61.803,
+            54.525,
+            49.737
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.005,
+            "t_ar_ms": 0.0042,
+            "t_comm_ms": 0.3027,
+            "t_comp_ms": 0.033,
+            "share_pct": 90.16
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0044,
+            "t_comm_ms": 0.3175,
+            "t_comp_ms": 0.0661,
+            "share_pct": 82.77
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0048,
+            "t_comm_ms": 0.347,
+            "t_comp_ms": 0.1322,
+            "share_pct": 72.411
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0056,
+            "t_comm_ms": 0.406,
+            "t_comp_ms": 0.2645,
+            "share_pct": 60.552
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0073,
+            "t_comm_ms": 0.5239,
+            "t_comp_ms": 0.5293,
+            "share_pct": 49.747
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0106,
+            "t_comm_ms": 0.7599,
+            "t_comp_ms": 1.0598,
+            "share_pct": 41.759
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0171,
+            "t_comm_ms": 1.2317,
+            "t_comp_ms": 2.1245,
+            "share_pct": 36.7
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.625,
+            "t_ar_ms": 0.0302,
+            "t_comm_ms": 2.1754,
+            "t_comp_ms": 4.2688,
+            "share_pct": 33.758
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.25,
+            "t_ar_ms": 0.0564,
+            "t_comm_ms": 4.0629,
+            "t_comp_ms": 8.6171,
+            "share_pct": 32.042
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.5,
+            "t_ar_ms": 0.1089,
+            "t_comm_ms": 7.8377,
+            "t_comp_ms": 17.5517,
+            "share_pct": 30.87
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 5.0,
+            "t_ar_ms": 0.2137,
+            "t_comm_ms": 15.3875,
+            "t_comp_ms": 36.3734,
+            "share_pct": 29.728
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 10.0,
+            "t_ar_ms": 0.4234,
+            "t_comm_ms": 30.487,
+            "t_comp_ms": 77.8272,
+            "share_pct": 28.147
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 20.0,
+            "t_ar_ms": 0.8429,
+            "t_comm_ms": 60.686,
+            "t_comp_ms": 175.9758,
+            "share_pct": 25.642
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 1.6817,
+            "t_comm_ms": 121.084,
+            "t_comp_ms": 433.2373,
+            "share_pct": 21.844
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 80.0,
+            "t_ar_ms": 3.3594,
+            "t_comm_ms": 241.8799,
+            "t_comp_ms": 1191.6176,
+            "share_pct": 16.873
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 160.0,
+            "t_ar_ms": 6.7149,
+            "t_comm_ms": 483.4718,
+            "t_comp_ms": 3683.8072,
+            "share_pct": 11.602
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.005,
+            "t_ar_ms": 0.0042,
+            "t_comm_ms": 0.3027,
+            "t_comp_ms": 0.043,
+            "share_pct": 87.573
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0044,
+            "t_comm_ms": 0.3175,
+            "t_comp_ms": 0.0859,
+            "share_pct": 78.701
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0048,
+            "t_comm_ms": 0.347,
+            "t_comp_ms": 0.1719,
+            "share_pct": 66.877
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0056,
+            "t_comm_ms": 0.406,
+            "t_comp_ms": 0.3437,
+            "share_pct": 54.153
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0073,
+            "t_comm_ms": 0.5239,
+            "t_comp_ms": 0.6874,
+            "share_pct": 43.252
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0106,
+            "t_comm_ms": 0.7599,
+            "t_comp_ms": 1.3748,
+            "share_pct": 35.596
+          }
+        ]
+      },
+      "tp_p4": {
+        "prefill_share_by_s": {
+          "1": 98.17,
+          "2": 96.489,
+          "4": 93.511,
+          "8": 88.728,
+          "16": 82.15,
+          "32": 74.787,
+          "64": 68.214,
+          "128": 63.386,
+          "256": 60.234,
+          "512": 58.139,
+          "1024": 56.387,
+          "2048": 54.26,
+          "4096": 50.968,
+          "8192": 45.666,
+          "16384": 37.876,
+          "32768": 28.262,
+          "nvlink300_by_s": [
+            96.332,
+            92.95,
+            86.923,
+            77.16,
+            63.555,
+            48.095,
+            34.112,
+            23.835,
+            17.341,
+            13.552,
+            11.311,
+            9.756,
+            8.317,
+            6.69,
+            4.89,
+            3.197
+          ],
+          "nvlink_measured_v100x2_by_s": [
+            99.844,
+            99.688,
+            99.379,
+            98.768,
+            97.575,
+            95.296,
+            91.126,
+            84.059,
+            73.495,
+            60.304,
+            46.958,
+            35.736,
+            27.104,
+            20.21,
+            14.27,
+            9.252
+          ],
+          "roce100g_by_s": [
+            98.225,
+            96.687,
+            94.157,
+            90.544,
+            86.309,
+            82.352,
+            79.348,
+            77.372,
+            76.119,
+            75.194,
+            74.213,
+            72.736,
+            70.149,
+            65.577,
+            58.05,
+            47.223
+          ]
+        },
+        "decode_share_by_b": {
+          "1": 97.633,
+          "2": 95.483,
+          "4": 91.725,
+          "8": 85.83,
+          "16": 77.99,
+          "32": 69.573,
+          "nvlink300_by_b": [
+            95.282,
+            91.024,
+            83.643,
+            72.219,
+            57.314,
+            41.666
+          ],
+          "nvlink_measured_v100x2_by_b": [
+            99.797,
+            99.595,
+            99.195,
+            98.405,
+            96.873,
+            93.982
+          ],
+          "roce100g_by_b": [
+            97.704,
+            95.736,
+            92.535,
+            88.049,
+            82.917,
+            78.247
+          ]
+        },
+        "prefill_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.005,
+            "t_ar_ms": 0.0123,
+            "t_comm_ms": 0.8861,
+            "t_comp_ms": 0.0165,
+            "share_pct": 98.17
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0126,
+            "t_comm_ms": 0.9082,
+            "t_comp_ms": 0.033,
+            "share_pct": 96.489
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0132,
+            "t_comm_ms": 0.9525,
+            "t_comp_ms": 0.0661,
+            "share_pct": 93.511
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.0409,
+            "t_comp_ms": 0.1322,
+            "share_pct": 88.728
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0169,
+            "t_comm_ms": 1.2179,
+            "t_comp_ms": 0.2646,
+            "share_pct": 82.15
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0218,
+            "t_comm_ms": 1.5718,
+            "t_comp_ms": 0.5299,
+            "share_pct": 74.787
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.312,
+            "t_ar_ms": 0.0317,
+            "t_comm_ms": 2.2796,
+            "t_comp_ms": 1.0622,
+            "share_pct": 68.214
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.625,
+            "t_ar_ms": 0.0513,
+            "t_comm_ms": 3.6952,
+            "t_comp_ms": 2.1344,
+            "share_pct": 63.386
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 1.25,
+            "t_ar_ms": 0.0906,
+            "t_comm_ms": 6.5263,
+            "t_comp_ms": 4.3085,
+            "share_pct": 60.234
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 2.5,
+            "t_ar_ms": 0.1693,
+            "t_comm_ms": 12.1886,
+            "t_comp_ms": 8.7758,
+            "share_pct": 58.139
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 5.0,
+            "t_ar_ms": 0.3266,
+            "t_comm_ms": 23.5132,
+            "t_comp_ms": 18.1867,
+            "share_pct": 56.387
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 10.0,
+            "t_ar_ms": 0.6411,
+            "t_comm_ms": 46.1625,
+            "t_comp_ms": 38.9136,
+            "share_pct": 54.26
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 20.0,
+            "t_ar_ms": 1.2703,
+            "t_comm_ms": 91.461,
+            "t_comp_ms": 87.9879,
+            "share_pct": 50.968
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 2.5286,
+            "t_comm_ms": 182.0579,
+            "t_comp_ms": 216.6187,
+            "share_pct": 45.666
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 80.0,
+            "t_ar_ms": 5.0452,
+            "t_comm_ms": 363.2519,
+            "t_comp_ms": 595.8088,
+            "share_pct": 37.876
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 160.0,
+            "t_ar_ms": 10.0783,
+            "t_comm_ms": 725.6397,
+            "t_comp_ms": 1841.9036,
+            "share_pct": 28.262
+          }
+        ],
+        "decode_points_pcie": [
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.005,
+            "t_ar_ms": 0.0123,
+            "t_comm_ms": 0.8861,
+            "t_comp_ms": 0.0215,
+            "share_pct": 97.633
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.01,
+            "t_ar_ms": 0.0126,
+            "t_comm_ms": 0.9082,
+            "t_comp_ms": 0.043,
+            "share_pct": 95.483
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.02,
+            "t_ar_ms": 0.0132,
+            "t_comm_ms": 0.9525,
+            "t_comp_ms": 0.0859,
+            "share_pct": 91.725
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.039,
+            "t_ar_ms": 0.0145,
+            "t_comm_ms": 1.0409,
+            "t_comp_ms": 0.1719,
+            "share_pct": 85.83
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0169,
+            "t_comm_ms": 1.2179,
+            "t_comp_ms": 0.3437,
+            "share_pct": 77.99
+          },
+          {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.156,
+            "t_ar_ms": 0.0218,
+            "t_comm_ms": 1.5718,
+            "t_comp_ms": 0.6874,
+            "share_pct": 69.573
+          }
+        ]
+      },
+      "pp": {
+        "p2_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.2645,
+          "bubble_or_transfer_share_pct": 0.683,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.2645,
+          "bubble_or_transfer_share_pct": 33.333,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.2645,
+          "bubble_or_transfer_share_pct": 20.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.2645,
+          "bubble_or_transfer_share_pct": 11.111,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.2645,
+          "bubble_or_transfer_share_pct": 5.882,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p2_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.2645,
+          "bubble_or_transfer_share_pct": 3.03,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m1": {
+          "topo": "pcie4_x16",
+          "m": 1,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.1322,
+          "bubble_or_transfer_share_pct": 2.022,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m2": {
+          "topo": "pcie4_x16",
+          "m": 2,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.1322,
+          "bubble_or_transfer_share_pct": 60.0,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m4": {
+          "topo": "pcie4_x16",
+          "m": 4,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.1322,
+          "bubble_or_transfer_share_pct": 42.857,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m8": {
+          "topo": "pcie4_x16",
+          "m": 8,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.1322,
+          "bubble_or_transfer_share_pct": 27.273,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m16": {
+          "topo": "pcie4_x16",
+          "m": 16,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.1322,
+          "bubble_or_transfer_share_pct": 15.789,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        },
+        "p4_m32": {
+          "topo": "pcie4_x16",
+          "m": 32,
+          "payload_mb": 0.039,
+          "t_p2p_ms": 0.0036,
+          "t_step_ms": 0.1322,
+          "bubble_or_transfer_share_pct": 8.571,
+          "caliber": "m=1: 传输开销占比；m≥2: GPipe 稳态气泡比 (P−1)/(m+P−1)"
+        }
+      }
+    }
+  },
+  "judgment": {
+    "Qwen3-8B": {
+      "tp_smin_prefill": {
+        "p2_pcie4_x16": null,
+        "p2_nvlink300": 32,
+        "p2_nvlink_measured_v100x2": 4096,
+        "p2_roce100g": null,
+        "p4_pcie4_x16": null,
+        "p4_nvlink300": 1024,
+        "p4_nvlink_measured_v100x2": null,
+        "p4_roce100g": null
+      },
+      "pp_bubble": {
+        "p2": {
+          "m_min_for_10pct": 9,
+          "table": {
+            "1": 50.0,
+            "2": 33.33,
+            "4": 20.0,
+            "8": 11.11,
+            "16": 5.88,
+            "32": 3.03
+          }
+        },
+        "p4": {
+          "m_min_for_10pct": 27,
+          "table": {
+            "1": 75.0,
+            "2": 60.0,
+            "4": 42.86,
+            "8": 27.27,
+            "16": 15.79,
+            "32": 8.57
+          }
+        }
+      }
+    },
+    "Qwen3-14B": {
+      "tp_smin_prefill": {
+        "p2_pcie4_x16": null,
+        "p2_nvlink300": 16,
+        "p2_nvlink_measured_v100x2": 1024,
+        "p2_roce100g": null,
+        "p4_pcie4_x16": null,
+        "p4_nvlink300": 256,
+        "p4_nvlink_measured_v100x2": 32768,
+        "p4_roce100g": null
+      },
+      "pp_bubble": {
+        "p2": {
+          "m_min_for_10pct": 9,
+          "table": {
+            "1": 50.0,
+            "2": 33.33,
+            "4": 20.0,
+            "8": 11.11,
+            "16": 5.88,
+            "32": 3.03
+          }
+        },
+        "p4": {
+          "m_min_for_10pct": 27,
+          "table": {
+            "1": 75.0,
+            "2": 60.0,
+            "4": 42.86,
+            "8": 27.27,
+            "16": 15.79,
+            "32": 8.57
+          }
+        }
+      }
+    },
+    "Qwen3-32B": {
+      "tp_smin_prefill": {
+        "p2_pcie4_x16": 32768,
+        "p2_nvlink300": 16,
+        "p2_nvlink_measured_v100x2": 512,
+        "p2_roce100g": null,
+        "p4_pcie4_x16": null,
+        "p4_nvlink300": 128,
+        "p4_nvlink_measured_v100x2": 16384,
+        "p4_roce100g": null
+      },
+      "pp_bubble": {
+        "p2": {
+          "m_min_for_10pct": 9,
+          "table": {
+            "1": 50.0,
+            "2": 33.33,
+            "4": 20.0,
+            "8": 11.11,
+            "16": 5.88,
+            "32": 3.03
+          }
+        },
+        "p4": {
+          "m_min_for_10pct": 27,
+          "table": {
+            "1": 75.0,
+            "2": 60.0,
+            "4": 42.86,
+            "8": 27.27,
+            "16": 15.79,
+            "32": 8.57
+          }
+        }
+      }
+    },
+    "Qwen3-4B": {
+      "tp_smin_prefill": {
+        "p2_pcie4_x16": null,
+        "p2_nvlink300": 64,
+        "p2_nvlink_measured_v100x2": 4096,
+        "p2_roce100g": null,
+        "p4_pcie4_x16": null,
+        "p4_nvlink300": 2048,
+        "p4_nvlink_measured_v100x2": 32768,
+        "p4_roce100g": null
+      },
+      "pp_bubble": {
+        "p2": {
+          "m_min_for_10pct": 9,
+          "table": {
+            "1": 50.0,
+            "2": 33.33,
+            "4": 20.0,
+            "8": 11.11,
+            "16": 5.88,
+            "32": 3.03
+          }
+        },
+        "p4": {
+          "m_min_for_10pct": 27,
+          "table": {
+            "1": 75.0,
+            "2": 60.0,
+            "4": 42.86,
+            "8": 27.27,
+            "16": 15.79,
+            "32": 8.57
+          }
+        }
+      }
+    }
+  },
+  "boundary": {
+    "Qwen3-8B_16gb_boundary": {
+      "single_card_9070xt": {
+        "scheme": "dp",
+        "p": 1,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.257,
+          "kv_pool": 4.5,
+          "act_buffer": 0.031,
+          "overhead": 0.5,
+          "total": 20.288
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "single_card_verdict": "weights 16.4 GB > 15.9×0.9−0.5=13.81 GiB 可用 → 单卡不可行，必须切分",
+      "dp_p2": {
+        "scheme": "dp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 15.257,
+          "kv_pool": 2.25,
+          "act_buffer": 0.031,
+          "overhead": 0.5,
+          "total": 18.038
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 30.514,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "tp_p2": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "pp_p2": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 15.257,
+        "note": "层均匀切 18/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      }
+    },
+    "Qwen3-14B_2x16gb_vs_48gb": {
+      "tp_p2_9070xt": {
+        "scheme": "tp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 13.754,
+          "kv_pool": 2.5,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 16.832
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "权重切 1/P；KV 头 8→4/rank"
+      },
+      "tp_p4_9070xt": {
+        "scheme": "tp",
+        "p": 4,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 6.877,
+          "kv_pool": 1.25,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 8.705
+        },
+        "usable_gib": 13.81,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "权重切 1/P；KV 头 8→2/rank"
+      },
+      "pp_p2_9070xt": {
+        "scheme": "pp",
+        "p": 2,
+        "card_gib": 15.9,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 13.754,
+          "kv_pool": 2.5,
+          "act_buffer": 0.078,
+          "overhead": 0.5,
+          "total": 16.832
+        },
+        "usable_gib": 13.81,
+        "feasible": false,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "层均匀切 20/rank；KV 随层切；transit 缓冲 = 一个激活块"
+      },
+      "single_48gb": {
+        "scheme": "dp",
+        "p": 1,
+        "card_gib": 48,
+        "workload": {
+          "batch": 8,
+          "seq": 4096
+        },
+        "per_rank_gib": {
+          "weights": 27.509,
+          "kv_pool": 5.0,
+          "act_buffer": 0.039,
+          "overhead": 0.5,
+          "total": 33.048
+        },
+        "usable_gib": 42.7,
+        "feasible": true,
+        "weights_redundancy_total_gib": 27.509,
+        "note": "权重全量冗余 ×P；每副本独立服务 B/P 请求，KV 池 = (B/P)·S"
+      },
+      "note": "48 GB 卡参数 TODO 嘉航（容量占位）：14B 权重 29.5 GB 单张 48 GB 可放下 → 切分决策取决于卡容量档位，正是 Feishu 要求的'真实切分决策'压力场景"
+    }
+  },
+  "training_caliber": {
+    "Qwen3-8B": {
+      "n_tok": 8,
+      "seq": 4096,
+      "p": 2,
+      "bytes_per_param_mixed_precision": 16,
+      "dp": {
+        "per_rank_gib": 122.054,
+        "grad_ar_payload_gib": 15.257,
+        "t_ar_ms": 655.277,
+        "t_step_train_ms": 1.73,
+        "comm_share_pct": 99.737,
+        "topo": "pcie4_x16（节点内档）"
+      },
+      "fsdp": {
+        "per_rank_gib": 61.027,
+        "allgather_payload_per_layer_mib": 368.025,
+        "t_ag_ms": 7.7201,
+        "comm_share_pct": 99.69,
+        "topo": "pcie4_x16（节点内档）"
+      },
+      "note": "训练口径对照（Feishu 核心内容 DP/FSDP）：fwd+bwd ≈ 3×F，Ch2 常数（195 TFLOPS bf16 × η=0.6243）；显存为方案间对比账本，非单卡可行性（8B DP 122 GiB/rank 远超 16/48 GB 档，需 FSDP 切分或更大卡档）；非 serving 主线"
+    }
+  },
+  "animation_data": {
+    "model": "Qwen3-8B",
+    "card_gib": 15.9,
+    "p": 2,
+    "workload": {
+      "batch": 8,
+      "seq": 4096
+    },
+    "memory": {
+      "dp": {
+        "per_rank_gib": {
+          "weights": 15.257,
+          "kv_pool": 2.25,
+          "act_buffer": 0.031,
+          "overhead": 0.5,
+          "total": 18.038
+        },
+        "feasible": false,
+        "usable_gib": 13.81
+      },
+      "tp": {
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "feasible": true,
+        "usable_gib": 13.81
+      },
+      "pp": {
+        "per_rank_gib": {
+          "weights": 7.628,
+          "kv_pool": 2.25,
+          "act_buffer": 0.062,
+          "overhead": 0.5,
+          "total": 10.441
+        },
+        "feasible": true,
+        "usable_gib": 13.81
+      }
+    },
+    "tp_layer_timeline": {
+      "attn_ms": 2.5402,
+      "ar_ms": 1.3462,
+      "mlp_ms": 5.0804,
+      "n_layers": 36,
+      "payload_mb": 32.0,
+      "topo": "pcie4_x16"
+    },
+    "pp_gantt": {
+      "p": 4,
+      "m": 8,
+      "t_stage_ms": 147.639,
+      "bubble_pct": 27.27,
+      "note": "GPipe 稳态：每 stage 先等 (P−1) 个微批进入（气泡区），之后连续流水；气泡比与带宽无关"
+    }
+  },
+  "compute_equivalence": {
+    "Qwen3-8B": {
+      "dp": {
+        "prefill_p2_ms": [
+          295.2782,
+          295.2782
+        ],
+        "decode_p2_ms": [
+          0.5767,
+          0.5767
+        ],
+        "note": "DP 切 token：每副本跑全模型，N/P tokens"
+      },
+      "tp": {
+        "prefill_p2_ms": [
+          295.2782,
+          295.2782
+        ],
+        "decode_p2_ms": [
+          0.5767,
+          0.5767
+        ],
+        "note": "TP 切层内权重：每 rank F/N 份，精确 1/P"
+      },
+      "pp": {
+        "prefill_p2_ms": [
+          274.3394,
+          316.2171
+        ],
+        "decode_p2_ms": [
+          0.5358,
+          0.6176
+        ],
+        "note": "PP 切层间：每 rank L/P 层；末 rank 多 lm_head（轻微不均衡）"
+      }
+    },
+    "Qwen3-14B": {
+      "dp": {
+        "prefill_p2_ms": [
+          527.1534,
+          527.1534
+        ],
+        "decode_p2_ms": [
+          1.0296,
+          1.0296
+        ],
+        "note": "DP 切 token：每副本跑全模型，N/P tokens"
+      },
+      "tp": {
+        "prefill_p2_ms": [
+          527.1534,
+          527.1534
+        ],
+        "decode_p2_ms": [
+          1.0296,
+          1.0296
+        ],
+        "note": "TP 切层内权重：每 rank F/N 份，精确 1/P"
+      },
+      "pp": {
+        "prefill_p2_ms": [
+          500.9799,
+          553.327
+        ],
+        "decode_p2_ms": [
+          0.9785,
+          1.0807
+        ],
+        "note": "PP 切层间：每 rank L/P 层；末 rank 多 lm_head（轻微不均衡）"
+      }
+    },
+    "Qwen3-32B": {
+      "dp": {
+        "prefill_p2_ms": [
+          1220.6224,
+          1220.6224
+        ],
+        "decode_p2_ms": [
+          2.384,
+          2.384
+        ],
+        "note": "DP 切 token：每副本跑全模型，N/P tokens"
+      },
+      "tp": {
+        "prefill_p2_ms": [
+          1220.6224,
+          1220.6224
+        ],
+        "decode_p2_ms": [
+          2.384,
+          2.384
+        ],
+        "note": "TP 切层内权重：每 rank F/N 份，精确 1/P"
+      },
+      "pp": {
+        "prefill_p2_ms": [
+          1194.4489,
+          1246.796
+        ],
+        "decode_p2_ms": [
+          2.3329,
+          2.4351
+        ],
+        "note": "PP 切层间：每 rank L/P 层；末 rank 多 lm_head（轻微不均衡）"
+      }
+    },
+    "Qwen3-4B": {
+      "dp": {
+        "prefill_p2_ms": [
+          175.9758,
+          175.9758
+        ],
+        "decode_p2_ms": [
+          0.3437,
+          0.3437
+        ],
+        "note": "DP 切 token：每副本跑全模型，N/P tokens"
+      },
+      "tp": {
+        "prefill_p2_ms": [
+          175.9758,
+          175.9758
+        ],
+        "decode_p2_ms": [
+          0.3437,
+          0.3437
+        ],
+        "note": "TP 切层内权重：每 rank F/N 份，精确 1/P"
+      },
+      "pp": {
+        "prefill_p2_ms": [
+          162.889,
+          189.0626
+        ],
+        "decode_p2_ms": [
+          0.3181,
+          0.3693
+        ],
+        "note": "PP 切层间：每 rank L/P 层；末 rank 多 lm_head（轻微不均衡）"
+      }
+    }
+  },
+  "holdout_32b": {
+    "tp_p2": {
+      "p": 2,
+      "batch": 8,
+      "seq_ctx": 4096,
+      "decode": {
+        "shares_pct": {
+          "innode_pcie4_x16": 28.094,
+          "innode_nvlink300": 10.877,
+          "cross_roce100g": 38.066
+        },
+        "best_innode_pct": 10.877,
+        "crossnode_pct": 38.066,
+        "verdict": "infeasible_even_innode",
+        "detail": {
+          "innode_pcie4_x16": {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0073,
+            "t_comm_ms": 0.9314,
+            "t_comp_ms": 2.384,
+            "share_pct": 28.094
+          },
+          "innode_nvlink300": {
+            "topo": "nvlink300",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0023,
+            "t_comm_ms": 0.291,
+            "t_comp_ms": 2.384,
+            "share_pct": 10.877
+          },
+          "cross_roce100g": {
+            "topo": "roce100g",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0114,
+            "t_comm_ms": 1.4653,
+            "t_comp_ms": 2.384,
+            "share_pct": 38.066
+          }
+        }
+      },
+      "prefill": {
+        "shares_pct": {
+          "innode_pcie4_x16": 14.991,
+          "innode_nvlink300": 1.465,
+          "cross_roce100g": 28.585
+        },
+        "best_innode_pct": 1.465,
+        "crossnode_pct": 28.585,
+        "verdict": "must_innode",
+        "detail": {
+          "innode_pcie4_x16": {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 1.6817,
+            "t_comm_ms": 215.2604,
+            "t_comp_ms": 1220.6224,
+            "share_pct": 14.991
+          },
+          "innode_nvlink300": {
+            "topo": "nvlink300",
+            "payload_mb": 40.0,
+            "t_ar_ms": 0.1418,
+            "t_comm_ms": 18.1517,
+            "t_comp_ms": 1220.6224,
+            "share_pct": 1.465
+          },
+          "cross_roce100g": {
+            "topo": "roce100g",
+            "payload_mb": 40.0,
+            "t_ar_ms": 3.817,
+            "t_comm_ms": 488.5765,
+            "t_comp_ms": 1220.6224,
+            "share_pct": 28.585
+          }
+        }
+      }
+    },
+    "tp_p4": {
+      "p": 4,
+      "batch": 8,
+      "seq_ctx": 4096,
+      "decode": {
+        "shares_pct": {
+          "innode_pcie4_x16": 64.493,
+          "innode_nvlink300": 40.768,
+          "cross_roce100g": 71.331
+        },
+        "best_innode_pct": 40.768,
+        "crossnode_pct": 71.331,
+        "verdict": "infeasible_even_innode",
+        "detail": {
+          "innode_pcie4_x16": {
+            "topo": "pcie4_x16",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0169,
+            "t_comm_ms": 2.1651,
+            "t_comp_ms": 1.192,
+            "share_pct": 64.493
+          },
+          "innode_nvlink300": {
+            "topo": "nvlink300",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0064,
+            "t_comm_ms": 0.8204,
+            "t_comp_ms": 1.192,
+            "share_pct": 40.768
+          },
+          "cross_roce100g": {
+            "topo": "roce100g",
+            "payload_mb": 0.078,
+            "t_ar_ms": 0.0232,
+            "t_comm_ms": 2.9659,
+            "t_comp_ms": 1.192,
+            "share_pct": 71.331
+          }
+        }
+      },
+      "prefill": {
+        "shares_pct": {
+          "innode_pcie4_x16": 34.654,
+          "innode_nvlink300": 4.328,
+          "cross_roce100g": 54.588
+        },
+        "best_innode_pct": 4.328,
+        "crossnode_pct": 54.588,
+        "verdict": "must_innode",
+        "detail": {
+          "innode_pcie4_x16": {
+            "topo": "pcie4_x16",
+            "payload_mb": 40.0,
+            "t_ar_ms": 2.5286,
+            "t_comm_ms": 323.6585,
+            "t_comp_ms": 610.3112,
+            "share_pct": 34.654
+          },
+          "innode_nvlink300": {
+            "topo": "nvlink300",
+            "payload_mb": 40.0,
+            "t_ar_ms": 0.2157,
+            "t_comm_ms": 27.6115,
+            "t_comp_ms": 610.3112,
+            "share_pct": 4.328
+          },
+          "cross_roce100g": {
+            "topo": "roce100g",
+            "payload_mb": 40.0,
+            "t_ar_ms": 5.7315,
+            "t_comm_ms": 733.6327,
+            "t_comp_ms": 610.3112,
+            "share_pct": 54.588
+          }
+        }
+      }
+    },
+    "control_8B": {
+      "p2": {
+        "p": 2,
+        "batch": 8,
+        "seq_ctx": 4096,
+        "decode": {
+          "shares_pct": {
+            "innode_pcie4_x16": 45.255,
+            "innode_nvlink300": 21.689,
+            "cross_roce100g": 55.42
+          },
+          "best_innode_pct": 21.689,
+          "crossnode_pct": 55.42,
+          "verdict": "infeasible_even_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 0.062,
+              "t_ar_ms": 0.0066,
+              "t_comm_ms": 0.4767,
+              "t_comp_ms": 0.5767,
+              "share_pct": 45.255
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 0.062,
+              "t_ar_ms": 0.0022,
+              "t_comm_ms": 0.1597,
+              "t_comp_ms": 0.5767,
+              "share_pct": 21.689
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 0.062,
+              "t_ar_ms": 0.01,
+              "t_comm_ms": 0.717,
+              "t_comp_ms": 0.5767,
+              "share_pct": 55.42
+            }
+          }
+        },
+        "prefill": {
+          "shares_pct": {
+            "innode_pcie4_x16": 24.713,
+            "innode_nvlink300": 2.701,
+            "cross_roce100g": 42.686
+          },
+          "best_innode_pct": 2.701,
+          "crossnode_pct": 42.686,
+          "verdict": "must_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 32.0,
+              "t_ar_ms": 1.3462,
+              "t_comm_ms": 96.9248,
+              "t_comp_ms": 295.2782,
+              "share_pct": 24.713
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 32.0,
+              "t_ar_ms": 0.1138,
+              "t_comm_ms": 8.1971,
+              "t_comp_ms": 295.2782,
+              "share_pct": 2.701
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 32.0,
+              "t_ar_ms": 3.0544,
+              "t_comm_ms": 219.917,
+              "t_comp_ms": 295.2782,
+              "share_pct": 42.686
+            }
+          }
+        }
+      },
+      "p4": {
+        "p": 4,
+        "batch": 8,
+        "seq_ctx": 4096,
+        "decode": {
+          "shares_pct": {
+            "innode_pcie4_x16": 79.912,
+            "innode_nvlink300": 61.24,
+            "cross_roce100g": 83.943
+          },
+          "best_innode_pct": 61.24,
+          "crossnode_pct": 83.943,
+          "verdict": "infeasible_even_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 0.062,
+              "t_ar_ms": 0.0159,
+              "t_comm_ms": 1.1471,
+              "t_comp_ms": 0.2884,
+              "share_pct": 79.912
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 0.062,
+              "t_ar_ms": 0.0063,
+              "t_comm_ms": 0.4556,
+              "t_comp_ms": 0.2884,
+              "share_pct": 61.24
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 0.062,
+              "t_ar_ms": 0.0209,
+              "t_comm_ms": 1.5074,
+              "t_comp_ms": 0.2884,
+              "share_pct": 83.943
+            }
+          }
+        },
+        "prefill": {
+          "shares_pct": {
+            "innode_pcie4_x16": 49.69,
+            "innode_nvlink300": 7.812,
+            "cross_roce100g": 69.11
+          },
+          "best_innode_pct": 7.812,
+          "crossnode_pct": 69.11,
+          "verdict": "must_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 32.0,
+              "t_ar_ms": 2.0253,
+              "t_comm_ms": 145.8191,
+              "t_comp_ms": 147.6391,
+              "share_pct": 49.69
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 32.0,
+              "t_ar_ms": 0.1738,
+              "t_comm_ms": 12.5116,
+              "t_comp_ms": 147.6391,
+              "share_pct": 7.812
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 32.0,
+              "t_ar_ms": 4.5876,
+              "t_comm_ms": 330.3075,
+              "t_comp_ms": 147.6391,
+              "share_pct": 69.11
+            }
+          }
+        }
+      }
+    },
+    "control_14B": {
+      "p2": {
+        "p": 2,
+        "batch": 8,
+        "seq_ctx": 4096,
+        "decode": {
+          "shares_pct": {
+            "innode_pcie4_x16": 36.119,
+            "innode_nvlink300": 15.011,
+            "cross_roce100g": 47.075
+          },
+          "best_innode_pct": 15.011,
+          "crossnode_pct": 47.075,
+          "verdict": "infeasible_even_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 0.078,
+              "t_ar_ms": 0.0073,
+              "t_comm_ms": 0.5821,
+              "t_comp_ms": 1.0296,
+              "share_pct": 36.119
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 0.078,
+              "t_ar_ms": 0.0023,
+              "t_comm_ms": 0.1818,
+              "t_comp_ms": 1.0296,
+              "share_pct": 15.011
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 0.078,
+              "t_ar_ms": 0.0114,
+              "t_comm_ms": 0.9158,
+              "t_comp_ms": 1.0296,
+              "share_pct": 47.075
+            }
+          }
+        },
+        "prefill": {
+          "shares_pct": {
+            "innode_pcie4_x16": 20.332,
+            "innode_nvlink300": 2.107,
+            "cross_roce100g": 36.679
+          },
+          "best_innode_pct": 2.107,
+          "crossnode_pct": 36.679,
+          "verdict": "must_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 40.0,
+              "t_ar_ms": 1.6817,
+              "t_comm_ms": 134.5377,
+              "t_comp_ms": 527.1534,
+              "share_pct": 20.332
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 40.0,
+              "t_ar_ms": 0.1418,
+              "t_comm_ms": 11.3448,
+              "t_comp_ms": 527.1534,
+              "share_pct": 2.107
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 40.0,
+              "t_ar_ms": 3.817,
+              "t_comm_ms": 305.3603,
+              "t_comp_ms": 527.1534,
+              "share_pct": 36.679
+            }
+          }
+        }
+      },
+      "p4": {
+        "p": 4,
+        "batch": 8,
+        "seq_ctx": 4096,
+        "decode": {
+          "shares_pct": {
+            "innode_pcie4_x16": 72.441,
+            "innode_nvlink300": 49.901,
+            "cross_roce100g": 78.265
+          },
+          "best_innode_pct": 49.901,
+          "crossnode_pct": 78.265,
+          "verdict": "infeasible_even_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 0.078,
+              "t_ar_ms": 0.0169,
+              "t_comm_ms": 1.3532,
+              "t_comp_ms": 0.5148,
+              "share_pct": 72.441
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 0.078,
+              "t_ar_ms": 0.0064,
+              "t_comm_ms": 0.5128,
+              "t_comp_ms": 0.5148,
+              "share_pct": 49.901
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 0.078,
+              "t_ar_ms": 0.0232,
+              "t_comm_ms": 1.8537,
+              "t_comp_ms": 0.5148,
+              "share_pct": 78.265
+            }
+          }
+        },
+        "prefill": {
+          "shares_pct": {
+            "innode_pcie4_x16": 43.422,
+            "innode_nvlink300": 6.145,
+            "cross_roce100g": 63.498
+          },
+          "best_innode_pct": 6.145,
+          "crossnode_pct": 63.498,
+          "verdict": "must_innode",
+          "detail": {
+            "innode_pcie4_x16": {
+              "topo": "pcie4_x16",
+              "payload_mb": 40.0,
+              "t_ar_ms": 2.5286,
+              "t_comm_ms": 202.2866,
+              "t_comp_ms": 263.5767,
+              "share_pct": 43.422
+            },
+            "innode_nvlink300": {
+              "topo": "nvlink300",
+              "payload_mb": 40.0,
+              "t_ar_ms": 0.2157,
+              "t_comm_ms": 17.2572,
+              "t_comp_ms": 263.5767,
+              "share_pct": 6.145
+            },
+            "cross_roce100g": {
+              "topo": "roce100g",
+              "payload_mb": 40.0,
+              "t_ar_ms": 5.7315,
+              "t_comm_ms": 458.5204,
+              "t_comp_ms": 263.5767,
+              "share_pct": 63.498
+            }
+          }
+        }
+      }
+    },
+    "burned_at": "2026-11-16T12:23:42Z"
+  }
+}

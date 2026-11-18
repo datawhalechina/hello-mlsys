@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 6 章 · 三方案拆分对比动画（Qwen3-8B · 9070 XT 16 GB）</title>
+<style>
+  :root {
+    --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+    --surface: #fcfcfb; --card: #ffffff;
+    --grid: #e1e0d9; --baseline: #c3c2b7;
+    --blue: #2a78d6; --orange: #eb6834; --aqua: #1baf7a;
+    --red: #e34948; --neutral: #d8d7d0; --bubble: #fbe9e7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--surface); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Noto Sans CJK SC",
+                 "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px; line-height: 1.55;
+    padding: 32px 20px 48px;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  header { margin-bottom: 22px; }
+  header h1 { font-size: 21px; font-weight: 700; letter-spacing: .01em; }
+  header .sub { color: var(--ink2); font-size: 13px; margin-top: 6px; }
+  header .sub code {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px; background: #f0efea; padding: 1px 5px;
+    border-radius: 3px; color: var(--ink);
+  }
+  section.card {
+    background: var(--card); border: 1px solid var(--grid);
+    border-radius: 6px; padding: 20px 22px 22px; margin-bottom: 22px;
+  }
+  section.card h2 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  section.card .desc { color: var(--ink2); font-size: 13px; margin-bottom: 16px; }
+  .btn {
+    font: inherit; font-size: 12.5px; color: var(--ink);
+    background: #f0efea; border: 1px solid var(--grid); border-radius: 4px;
+    padding: 4px 12px; cursor: pointer; float: right;
+  }
+  .btn:hover { background: #e8e7e1; }
+
+  /* ---------- ① 显存水位 ---------- */
+  .mem-area { position: relative; height: 300px; margin: 26px 0 6px 46px; }
+  .mem-scale {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 42px;
+    border-right: 1px solid var(--grid);
+  }
+  .mem-scale .tick {
+    position: absolute; right: 6px; transform: translateY(50%);
+    font-size: 11px; color: var(--muted);
+  }
+  .hline {
+    position: absolute; left: 46px; right: 0; height: 0;
+    border-top: 2px dashed var(--red); z-index: 3; pointer-events: none;
+  }
+  .hline.card-line { border-top: 1px dashed var(--baseline); }
+  .hline .tag {
+    position: absolute; right: 0; top: -19px; font-size: 11.5px;
+    color: var(--red); white-space: nowrap;
+  }
+  .hline.card-line .tag { color: var(--muted); }
+  .mem-bars { position: absolute; left: 46px; right: 0; top: 0; bottom: 0;
+              display: flex; gap: 0; }
+  .mcol { flex: 1; display: flex; flex-direction: column; align-items: center;
+          justify-content: flex-end; position: relative; }
+  .mbar {
+    width: 64%; display: flex; flex-direction: column-reverse;
+    background: transparent; position: relative;
+  }
+  .mbar.infeasible { outline: 2px solid var(--red); outline-offset: 1px; }
+  .seg { width: 100%; height: 0; transition: height .5s ease; position: relative; }
+  .seg .v {
+    position: absolute; left: calc(100% + 7px); top: 0; transform: translateY(-50%);
+    font-size: 11.5px; color: var(--ink2); white-space: nowrap;
+    opacity: 0; transition: opacity .3s;
+  }
+  .seg.show .v { opacity: 1; }
+  .seg.w { background: var(--blue); }
+  .seg.k { background: var(--aqua); }
+  .seg.a { background: var(--orange); }
+  .seg.o { background: var(--neutral); }
+  .seg .v.on-light { color: var(--ink2); }
+  .overflow-cap {
+    position: absolute; left: 0; right: 0; top: 0; z-index: 2;
+    background: repeating-linear-gradient(45deg,
+      rgba(227,73,72,.30) 0 5px, rgba(227,73,72,.08) 5px 10px);
+    opacity: 0; transition: opacity .4s; pointer-events: none;
+  }
+  .overflow-cap.show { opacity: 1; }
+  .overflow-cap .v {
+    position: absolute; left: calc(100% + 7px); top: 50%;
+    transform: translateY(-50%); font-size: 11.5px; color: var(--red);
+    white-space: nowrap;
+  }
+  .mname { height: 26px; font-size: 13.5px; font-weight: 700;
+           display: flex; align-items: center; }
+  .verdict {
+    height: 20px; font-size: 12px; opacity: 0; transition: opacity .4s;
+    margin-top: 2px;
+  }
+  .verdict.show { opacity: 1; }
+  .verdict.ok { color: var(--aqua); font-weight: 700; }
+  .verdict.bad { color: var(--red); font-weight: 700; }
+  table.mem-tab { width: 100%; border-collapse: collapse; margin-top: 14px;
+                  font-size: 12.5px; }
+  table.mem-tab th, table.mem-tab td {
+    border: 1px solid var(--grid); padding: 4px 9px; text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  table.mem-tab th { background: #f0efea; font-weight: 600; text-align: center; }
+  table.mem-tab td:first-child, table.mem-tab th:first-child {
+    text-align: left; font-weight: 600;
+  }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px;
+            font-size: 12px; color: var(--ink2); }
+  .legend .sw { display: inline-block; width: 11px; height: 11px;
+                border-radius: 2px; margin-right: 5px; vertical: -1px; }
+
+  /* ---------- ② TP 时序 ---------- */
+  .tl-layer { display: flex; height: 64px; margin: 10px 0 4px; }
+  .tl-layer .blk {
+    display: flex; flex-direction: column; justify-content: center;
+    align-items: center; color: #fff; font-size: 12px; line-height: 1.35;
+    min-width: 0; overflow: hidden;
+  }
+  .tl-layer .blk .ms { font-size: 13px; font-weight: 700; }
+  .tl-layer .blk.c-attn { background: var(--blue); }
+  .tl-layer .blk.c-ar   { background: var(--orange); }
+  .tl-layer .blk.c-mlp  { background: var(--aqua); }
+  .tl-strip-wrap { position: relative; margin: 14px 0 4px; }
+  .tl-strip { display: flex; height: 34px; background: #f0efea;
+              border: 1px solid var(--grid); }
+  .tl-unit { display: flex; height: 100%; }
+  .tl-unit .s { height: 100%; }
+  .tl-unit .s.attn { background: rgba(42,120,214,.28); }
+  .tl-unit .s.ar   { background: rgba(235,104,52,.30); }
+  .tl-unit .s.mlp  { background: rgba(27,175,122,.28); }
+  .tl-unit.lit .s.attn { background: var(--blue); }
+  .tl-unit.lit .s.ar   { background: var(--orange); }
+  .tl-unit.lit .s.mlp  { background: var(--aqua); }
+  .tl-head {
+    position: absolute; top: -4px; bottom: -4px; width: 2px;
+    background: var(--ink); left: 0%; z-index: 2;
+  }
+  .tl-head::after {
+    content: ""; position: absolute; top: -5px; left: -4px;
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .tl-stats { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 14px;
+              font-size: 13px; }
+  .tl-stats .st b { font-size: 17px; font-weight: 700; }
+  .tl-stats .st.ar b { color: var(--orange); }
+  .tl-stats .st .u { color: var(--muted); font-size: 11.5px; display: block; }
+  .tl-time { font-variant-numeric: tabular-nums; color: var(--ink2);
+             font-size: 12.5px; margin-top: 8px; }
+
+  /* ---------- ③ PP 甘特 ---------- */
+  .gantt { position: relative; margin: 30px 0 0 4px; }
+  .g-grid { display: block; }
+  .g-row { display: flex; align-items: center; margin-bottom: 4px; }
+  .g-label { width: 70px; flex: none; font-size: 12.5px;
+             color: var(--ink2); text-align: right; padding-right: 8px; }
+  .g-cells { display: grid; gap: 3px; flex: 1; }
+  .g-cell { height: 40px; border-radius: 2px; position: relative;
+            opacity: 0; transform: translateY(4px);
+            transition: opacity .3s, transform .3s; }
+  .g-cell.on { opacity: 1; transform: none; }
+  .g-cell.bubble {
+    background: var(--bubble);
+    background-image: repeating-linear-gradient(45deg,
+      rgba(227,73,72,.18) 0 5px, transparent 5px 10px);
+    border: 1px solid rgba(227,73,72,.35);
+  }
+  .g-cell.comp { background: var(--blue); color: #fff;
+                 display: flex; align-items: center; justify-content: center;
+                 font-size: 11px; font-weight: 600; }
+  .g-cell.drain { background: #f5f5f2; border: 1px solid var(--grid); }
+  .g-axis { display: grid; gap: 3px; margin: 4px 0 0 70px; }
+  .g-axis span { font-size: 11px; color: var(--muted); text-align: center;
+                 border-top: 1px solid var(--grid); padding-top: 3px;
+                 font-variant-numeric: tabular-nums; }
+  .g-stats { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 16px;
+             font-size: 13px; }
+  .g-stats .st b { font-size: 17px; font-weight: 700; }
+  .g-stats .st .u { color: var(--muted); font-size: 11.5px; display: block; }
+  .g-note { color: var(--ink2); font-size: 12.5px; margin-top: 10px; }
+  .g-time { font-variant-numeric: tabular-nums; color: var(--ink2);
+            font-size: 12.5px; margin-top: 8px; }
+
+  footer { color: var(--muted); font-size: 12px; line-height: 1.7;
+           border-top: 1px solid var(--grid); padding-top: 14px; }
+  footer code { font-family: ui-monospace, "SF Mono", Consolas, monospace;
+                font-size: 11.5px; }
+  @media (prefers-reduced-motion: reduce) {
+    .seg, .g-cell, .verdict, .overflow-cap { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>第 6 章 · 单卡放不下的模型，三种拆法各走一遍</h1>
+  <div class="sub" id="hdr-sub"></div>
+</header>
+
+<section class="card" id="panel-mem">
+  <button class="btn" data-replay="mem">↻ 重播</button>
+  <h2>① 每卡显存水位：同一模型，三种拆法各占多少</h2>
+  <div class="desc" id="mem-desc"></div>
+  <div class="mem-area">
+    <div class="mem-scale" id="mem-scale"></div>
+    <div class="hline card-line" id="hline-card"><span class="tag" id="hline-card-tag"></span></div>
+    <div class="hline" id="hline-usable"><span class="tag" id="hline-usable-tag"></span></div>
+    <div class="mem-bars" id="mem-bars"></div>
+  </div>
+  <table class="mem-tab" id="mem-tab"></table>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--blue)"></span>权重</span>
+    <span><span class="sw" style="background:var(--aqua)"></span>KV 池</span>
+    <span><span class="sw" style="background:var(--orange)"></span>激活缓冲</span>
+    <span><span class="sw" style="background:var(--neutral)"></span>运行时开销</span>
+  </div>
+</section>
+
+<section class="card" id="panel-tp">
+  <button class="btn" data-replay="tp">↻ 重播</button>
+  <h2>② TP 逐层通信时序：每层 2 次 AllReduce 的密度</h2>
+  <div class="desc" id="tp-desc"></div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:4px">放大：第 1 层的执行序列（宽度按耗时比例）</div>
+  <div class="tl-layer" id="tl-layer"></div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:4px">全前向：L = <span id="tl-nlayers"></span> 层逐层重复（播放头扫过即点亮）</div>
+  <div class="tl-strip-wrap">
+    <div class="tl-strip" id="tl-strip"></div>
+    <div class="tl-head" id="tl-head"></div>
+  </div>
+  <div class="tl-time" id="tl-time"></div>
+  <div class="tl-stats" id="tl-stats"></div>
+</section>
+
+<section class="card" id="panel-pp">
+  <button class="btn" data-replay="pp">↻ 重播</button>
+  <h2>③ PP 流水线甘特：GPipe 稳态与气泡</h2>
+  <div class="desc" id="pp-desc"></div>
+  <div class="gantt" id="gantt"></div>
+  <div class="g-time" id="g-time"></div>
+  <div class="g-stats" id="g-stats"></div>
+  <div class="g-note" id="g-note"></div>
+</section>
+
+<footer>
+  数据来源：<code>code/part1-modeling/chapter6/results/parallel_ledger.json → animation_data</code>
+  （公式口径：CH2 硬件常数 × CH5 拓扑 profile，Qwen3-8B，9070 XT 16 GB 卡，B=8 × S=4096）。
+  本页为自包含 HTML，数据内嵌、无外部依赖、可离线打开；动画只做可视化、不改数字，
+  标注「合计」的数值均为内嵌数据的透明算术（和 / 差），逐层、逐段数值与账本完全一致。
+</footer>
+
+</div>
+<script>
+"use strict";
+/* ============ 内嵌数据：parallel_ledger.json → animation_data 原样 ============ */
+const DATA = {
+  "model": "Qwen3-8B",
+  "card_gib": 15.9,
+  "p": 2,
+  "workload": { "batch": 8, "seq": 4096 },
+  "memory": {
+    "dp": { "per_rank_gib": { "weights": 15.257, "kv_pool": 2.25, "act_buffer": 0.031, "overhead": 0.5, "total": 18.038 },
+            "feasible": false, "usable_gib": 13.81 },
+    "tp": { "per_rank_gib": { "weights": 7.628, "kv_pool": 2.25, "act_buffer": 0.062, "overhead": 0.5, "total": 10.441 },
+            "feasible": true, "usable_gib": 13.81 },
+    "pp": { "per_rank_gib": { "weights": 7.628, "kv_pool": 2.25, "act_buffer": 0.062, "overhead": 0.5, "total": 10.441 },
+            "feasible": true, "usable_gib": 13.81 }
+  },
+  "tp_layer_timeline": {
+    "attn_ms": 2.5402, "ar_ms": 1.3462, "mlp_ms": 5.0804,
+    "n_layers": 36, "payload_mb": 32.0, "topo": "pcie4_x16"
+  },
+  "pp_gantt": {
+    "p": 4, "m": 8, "t_stage_ms": 147.639, "bubble_pct": 27.27,
+    "note": "GPipe 稳态：每 stage 先等 (P−1) 个微批进入（气泡区），之后连续流水；气泡比与带宽无关"
+  }
+};
+const BLOCKS = [
+  ["weights", "权重", "w"], ["kv_pool", "KV 池", "k"],
+  ["act_buffer", "激活缓冲", "a"], ["overhead", "运行时开销", "o"]
+];
+const SCHEME_CN = { dp: "DP（P=2）", tp: "TP/PP（P=2）", pp: "PP（P=2）" };
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const f2 = x => x.toFixed(2), f3 = x => x.toFixed(3), f4 = x => x.toFixed(4);
+
+document.getElementById("hdr-sub").innerHTML =
+  `${DATA.model} · 9070 XT 16 GB（可用 ${f2(DATA.memory.dp.usable_gib)} GiB） · ` +
+  `P=${DATA.p} · B=${DATA.workload.batch} × S=${DATA.workload.seq} · ` +
+  `公式口径（<code>parallel_ledger.json</code> 账本驱动）`;
+
+/* ============ ① 显存水位 ============ */
+(function panelMem() {
+  const S_MAX = 20, H = 300, PX = H / S_MAX;
+  document.getElementById("mem-desc").textContent =
+    `每卡（每 rank）显存账本逐块堆叠：权重 + KV 池 + 激活缓冲 + 运行时开销，对照可用显存红线` +
+    `（${f2(DATA.memory.dp.usable_gib)} GiB）与卡物理容量线（${DATA.card_gib} GiB）。`;
+  const scale = document.getElementById("mem-scale");
+  for (let g = 0; g <= S_MAX; g += 4) {
+    const t = document.createElement("div");
+    t.className = "tick"; t.textContent = g + " GiB";
+    t.style.bottom = (g * PX) + "px";
+    scale.appendChild(t);
+  }
+  const hu = document.getElementById("hline-usable");
+  hu.style.bottom = DATA.memory.dp.usable_gib * PX + "px";
+  document.getElementById("hline-usable-tag").textContent =
+    `可用 ${f2(DATA.memory.dp.usable_gib)} GiB`;
+  const hc = document.getElementById("hline-card");
+  hc.style.bottom = DATA.card_gib * PX + "px";
+  document.getElementById("hline-card-tag").textContent =
+    `卡物理容量 ${DATA.card_gib} GiB`;
+
+  const bars = document.getElementById("mem-bars");
+  const cols = {};
+  for (const s of ["dp", "tp", "pp"]) {
+    const m = DATA.memory[s];
+    const col = document.createElement("div"); col.className = "mcol";
+    const nm = document.createElement("div"); nm.className = "mname";
+    nm.textContent = SCHEME_CN[s];
+    const bar = document.createElement("div"); bar.className = "mbar";
+    if (!m.feasible) bar.classList.add("infeasible");
+    const cap = document.createElement("div"); cap.className = "overflow-cap";
+    if (!m.feasible) {
+      cap.style.bottom = m.usable_gib * PX + "px";
+      cap.style.height = (m.per_rank_gib.total - m.usable_gib) * PX + "px";
+      cap.innerHTML = `<span class="v">超出可用 +${f3(m.per_rank_gib.total - m.usable_gib)} GiB（合计）</span>`;
+    }
+    bar.appendChild(cap);
+    const segs = {};
+    for (const [key, , cls] of BLOCKS) {
+      const d = document.createElement("div");
+      d.className = "seg " + cls;
+      d.dataset.h = m.per_rank_gib[key] * PX;
+      d.dataset.v = f3(m.per_rank_gib[key]);
+      d.innerHTML = `<span class="v">${f3(m.per_rank_gib[key])} GiB</span>`;
+      bar.appendChild(d); segs[key] = d;
+    }
+    const vd = document.createElement("div"); vd.className = "verdict";
+    vd.textContent = m.feasible
+      ? `✓ 可行 · 每卡 ${f3(m.per_rank_gib.total)} GiB`
+      : `✗ 不可行 · ${f3(m.per_rank_gib.total)} GiB > ${f2(m.usable_gib)} GiB（且超卡物理 ${DATA.card_gib}）`;
+    vd.classList.add(m.feasible ? "ok" : "bad");
+    col.append(nm, bar, vd);
+    bars.appendChild(col);
+    cols[s] = { bar, cap, segs, vd };
+  }
+
+  const tab = document.getElementById("mem-tab");
+  tab.innerHTML = "<tr><th>每 rank 构成（GiB）</th>" +
+    Object.keys(SCHEME_CN).map(s => `<th>${SCHEME_CN[s]}</th>`).join("") + "</tr>" +
+    BLOCKS.map(([key, cn]) =>
+      `<tr><td>${cn}</td>` + Object.keys(SCHEME_CN).map(s =>
+        `<td>${f3(DATA.memory[s].per_rank_gib[key])}</td>`).join("") + "</tr>").join("") +
+    `<tr><td>合计</td>` + Object.keys(SCHEME_CN).map(s =>
+      `<td><b>${f3(DATA.memory[s].per_rank_gib.total)}</b></td>`).join("") + "</tr>" +
+    `<tr><td>可行性</td>` + Object.keys(SCHEME_CN).map(s =>
+      `<td>${DATA.memory[s].feasible ? "✓" : "✗"}</td>`).join("") + "</tr>";
+
+  function play() {
+    for (const s in cols) { const c = cols[s];
+      c.cap.classList.remove("show"); c.vd.classList.remove("show");
+      for (const k in c.segs) { c.segs[k].classList.remove("show");
+        c.segs[k].style.height = "0"; } }
+    if (reduced) return finish(true);
+    BLOCKS.forEach(([key], i) => setTimeout(() => {
+      for (const s in cols) { const el = cols[s].segs[key];
+        el.style.height = Math.max(parseFloat(el.dataset.h), 3) + "px";
+        el.classList.add("show"); }
+    }, 250 * i));
+    setTimeout(() => finish(false), 250 * BLOCKS.length + 300);
+  }
+  function finish(immediate) {
+    for (const s in cols) { const c = cols[s];
+      if (!DATA.memory[s].feasible) c.cap.classList.add("show");
+      c.vd.classList.add("show");
+      if (immediate) for (const k in c.segs) { const el = c.segs[k];
+        el.style.height = Math.max(parseFloat(el.dataset.h), 3) + "px";
+        el.classList.add("show"); } }
+  }
+  window.__memReplay = play; play();
+})();
+
+/* ============ ② TP 逐层通信时序 ============ */
+(function panelTp() {
+  const T = DATA.tp_layer_timeline;
+  const f1 = x => x.toFixed(1);
+  const L = [
+    ["attn_ms", "attn 计算", "c-attn"],
+    ["ar_ms", "AR · o_proj 归约", "c-ar"],
+    ["mlp_ms", "mlp 计算", "c-mlp"],
+    ["ar_ms", "AR · mlp down 归约", "c-ar"]
+  ];
+  const layerMs = T.attn_ms + 2 * T.ar_ms + T.mlp_ms;          // 10.3130（合计）
+  const n = T.n_layers;
+  const totalMs = layerMs * n;                                  // 371.268（合计）
+  const arTotal = 2 * n * T.ar_ms;                              // 96.926（合计）
+  document.getElementById("tp-desc").innerHTML =
+    `prefill 每层固定节奏：attn 计算 → AR → mlp 计算 → AR，两次 AR 逐层交替` +
+    `（o_proj 行并行归约 + mlp down 行并行归约，与真机 72/72 一致）。` +
+    `payload ${f1(T.payload_mb)} MB / 次，拓扑 ${T.topo}（公式口径）。`;
+
+  const layer = document.getElementById("tl-layer");
+  for (const [key, label, cls] of L) {
+    const b = document.createElement("div"); b.className = "blk " + cls;
+    b.style.flex = T[key];
+    b.innerHTML = `<span>${label}</span><span class="ms">${f4(T[key])} ms</span>`;
+    layer.appendChild(b);
+  }
+
+  const strip = document.getElementById("tl-strip");
+  const units = [];
+  for (let i = 0; i < n; i++) {
+    const u = document.createElement("div"); u.className = "tl-unit";
+    u.style.flex = layerMs;
+    for (const [key, , cls] of L) {
+      const s = document.createElement("div");
+      s.className = "s " + cls.split("-")[1]; s.style.flex = T[key];
+      u.appendChild(s);
+    }
+    strip.appendChild(u); units.push(u);
+  }
+  document.getElementById("tl-nlayers").textContent = n;
+
+  const head = document.getElementById("tl-head");
+  const timeEl = document.getElementById("tl-time");
+  timeEl.textContent = `t = 0.000 ms / ${f3(totalMs)} ms（时间轴合计，不含 lm_head）`;
+
+  document.getElementById("tl-stats").innerHTML =
+    `<div class="st"><b>${2 * n}</b><span class="u">AR 次数 / 前向（2L，L=${n}）</span></div>
+     <div class="st ar"><b>${f3(arTotal)} ms</b><span class="u">AR 总耗时 = ${2 * n} × ${f4(T.ar_ms)} ms（合计）</span></div>
+     <div class="st"><b>${f3(totalMs)} ms</b><span class="u">时间轴总长 = ${n} × ${f4(layerMs)} ms（合计，不含 lm_head）</span></div>
+     <div class="st"><b>${f1(T.payload_mb)} MB</b><span class="u">每次 AR payload（B 维按 S 计，bf16）</span></div>`;
+
+  const DURATION = 9000; // 9 s 扫完全前向
+  let raf = null, t0 = null;
+  function play() {
+    if (raf) cancelAnimationFrame(raf);
+    for (const u of units) u.classList.remove("lit");
+    head.style.left = "0%";
+    if (reduced) { finish(); return; }
+    t0 = performance.now();
+    const step = now => {
+      const t = (now - t0) / DURATION * totalMs;
+      if (t >= totalMs) { finish(); return; }
+      head.style.left = (t / totalMs * 100) + "%";
+      const idx = Math.min(n - 1, Math.floor(t / layerMs));
+      for (let i = 0; i <= idx; i++) units[i].classList.add("lit");
+      let arDone = 0;
+      for (let i = 0; i < n; i++) {
+        const base = i * layerMs;
+        if (t >= base + T.attn_ms) arDone++;                              // o_proj AR 已开始
+        if (t >= base + T.attn_ms + T.ar_ms + T.mlp_ms) arDone++;         // down AR 已开始
+      }
+      timeEl.textContent = `t = ${f3(t)} ms / ${f3(totalMs)} ms · 已完成 AR ${arDone} / ${2 * n}`;
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+  function finish() {
+    if (raf) cancelAnimationFrame(raf); raf = null;
+    for (const u of units) u.classList.add("lit");
+    head.style.left = "100%";
+    timeEl.textContent = `t = ${f3(totalMs)} ms / ${f3(totalMs)} ms · 已完成 AR ${2 * n} / ${2 * n}（每前向 2L 次）`;
+  }
+  play();
+  window.__tpReplay = play;
+})();
+
+/* ============ ③ PP 流水线甘特 ============ */
+(function panelPp() {
+  const G = DATA.pp_gantt;
+  const P = G.p, m = G.m, tS = G.t_stage_ms;
+  const T = m + P - 1;                                  // 11 个 slot（合计）
+  const makespan = T * tS;                              // 1624.029（合计）
+  const bubble = (P - 1) / T;                           // 3/11
+  document.getElementById("pp-desc").innerHTML =
+    `P=${P} 个 stage、m=${m} 个微批，每 stage 处理一个微批耗时 t_stage = ${f3(tS)} ms` +
+    `（P=${P} 卡分摊一次前向，演示口径）。粉色斜纹 = 气泡区（stage 在首个微批到达前空闲）。`;
+
+  const gantt = document.getElementById("gantt");
+  const grid = document.createElement("div"); grid.className = "g-grid";
+  const rows = [];
+  for (let s = 0; s < P; s++) {
+    const row = document.createElement("div"); row.className = "g-row";
+    const lab = document.createElement("div"); lab.className = "g-label";
+    lab.textContent = `stage ${s}`;
+    const cells = document.createElement("div"); cells.className = "g-cells";
+    cells.style.gridTemplateColumns = `repeat(${T}, 1fr)`;
+    const cellObjs = [];
+    for (let col = 0; col < T; col++) {
+      const c = document.createElement("div");
+      const mb = col - s;
+      if (mb < 0) c.className = "g-cell bubble";          // 头部等待 = 气泡
+      else if (mb < m) {
+        c.className = "g-cell comp";
+        c.style.background = `rgba(42,120,214,${(0.32 + 0.68 * mb / (m - 1)).toFixed(3)})`;
+        c.textContent = "MB " + mb;
+        cellObjs.push([col, c]);
+      } else c.className = "g-cell drain";                // 排空后的空闲
+      cells.appendChild(c);
+      c.dataset.slot = col;
+    }
+    row.append(lab, cells);
+    grid.appendChild(row);
+    rows.push(cellObjs);
+  }
+  const axis = document.createElement("div"); axis.className = "g-axis";
+  axis.style.gridTemplateColumns = `repeat(${T}, 1fr)`;
+  for (let col = 0; col < T; col++) {
+    const sp = document.createElement("span");
+    sp.textContent = (col === 0 || col === T - 1) ? f3(col * tS) + " ms" : String(col);
+    axis.appendChild(sp);
+  }
+  gantt.append(grid, axis);
+
+  const stats = document.getElementById("g-stats");
+  stats.innerHTML =
+    `<div class="st"><b>${f3(tS)} ms</b><span class="u">t_stage（每 stage / 每微批）</span></div>
+     <div class="st"><b>${f2(bubble * 100)}%</b><span class="u">气泡比 = (P−1)/(m+P−1) = ${P - 1}/${T}</span></div>
+     <div class="st"><b>${f3(makespan)} ms</b><span class="u">makespan = ${T} × ${f3(tS)} ms（合计）</span></div>
+     <div class="st"><b>${P * m}</b><span class="u">计算块（${P} stage × ${m} 微批）</span></div>`;
+  document.getElementById("g-note").textContent = G.note;
+  const timeEl = document.getElementById("g-time");
+  timeEl.textContent = `t = 0 ms`;
+
+  let timers = [];
+  function play() {
+    for (const t of timers) clearTimeout(t); timers = [];
+    for (const r of rows) for (const [, c] of r) c.classList.remove("on");
+    for (const c of grid.querySelectorAll(".g-cell.bubble,.g-cell.drain"))
+      c.classList.remove("on");
+    if (reduced) { finish(); return; }
+    timeEl.textContent = "t = 0 ms";
+    const allBubbles = [...grid.querySelectorAll(".g-cell.bubble")];
+    allBubbles.forEach(c => c.classList.add("on"));       // 气泡区先可见（结构性）
+    for (let col = 0; col < T; col++) {
+      timers.push(setTimeout(() => {
+        for (const r of rows) for (const [cc, cell] of r) if (cc === col) cell.classList.add("on");
+        grid.querySelectorAll(`.g-cell.drain[data-slot="${col}"]`).forEach(c => c.classList.add("on"));
+        timeEl.textContent = `t = ${f3((col + 1) * tS)} ms / ${f3(makespan)} ms（${col + 1}/${T} 个 t_stage）`;
+      }, 380 * (col + 1)));
+    }
+    timers.push(setTimeout(finish, 380 * (T + 1)));
+  }
+  function finish() {
+    for (const c of grid.querySelectorAll(".g-cell")) c.classList.add("on");
+    timeEl.textContent = `t = ${f3(makespan)} ms / ${f3(makespan)} ms（${T}/${T} 个 t_stage）`;
+  }
+  play();
+  window.__ppReplay = play;
+})();
+
+/* ============ 重播按钮 ============ */
+document.querySelectorAll("[data-replay]").forEach(b => b.addEventListener("click", () => {
+  const fn = window["__" + b.dataset.replay + "Replay"];
+  if (fn) fn();
+}));
+</script>
+</body>
+</html>
