@@ -1,0 +1,120 @@
+# Hello MLSys · 第 7 章实验底稿
+# 模板: docs/public/part0-intro/chapter0/experiment-draft.yaml（字段结构不变）
+# 纪律: prediction.stored_at 先于 holdout 测量；holdout 测前冻结、用后即烧。
+
+experiment_id: exp_ch7_001
+chapter: 7
+hypothesis: >
+  在单张 RX 9070 XT（15.92 GiB，gfx1201）上，用 vLLM 0.29 服务 Qwen3-4B
+  bf16（ISL=256，OSL=128，seed=42）时，由 C=1/2/4/8 真机校准的 DES
+  可以预测全新 C=12/24/48/96 的 P99 TTFT；预测误差主要来自 decode
+  batch 调度、chunked prefill 与 decode 混排、KV 块压力，以及确定性
+  服务时间对请求级通过率的低估。开环到达实验用于验证：吞吐饱和后新增
+  offered load 主要转化为排队，而不是有效 goodput；OSL=512 压力实验
+  用于分离 KV preemption/recompute 的贡献。
+
+scenario:
+  hardware: >
+    AMD Radeon RX 9070 XT 15.92 GiB（gfx1201，宿主 GPU[1]），
+    ROCm 10.1 / driver 6.16.13；容器内 HIP_VISIBLE_DEVICES=1
+    把宿主 GPU[1] 重映射为 device 0。宿主 GPU[0] 为 RX 7900 XTX，
+    不参与本章测量。
+  model: >
+    /mnt/public/models/Qwen3-4B，bf16，36 层，hidden=2560，
+    32 q heads / 8 kv heads / head_dim=128，tied embedding。
+  server: >
+    rocm/vllm:rocm10.1.0_ubuntu24.04_py3.14-pytorch_2.13.0_vllm-0.29.0，
+    实测 vLLM 0.29.1.dev0+g98dff2a81；--max-model-len 4096，
+    --gpu-memory-utilization 0.90，--max-num-seqs 64。
+    启动日志：KV cache 24,464 tokens（3.36 GiB），
+    4096-token 请求最大并发 5.97x。默认启用 prefix caching 与 chunked prefill。
+  workload: >
+    主实验：random dataset，input=256 / output=128 tokens，ignore_eos，
+    temperature=0，seed=42。闭环点 C=1/2/4/8 用于校准；全新 v2 holdout
+    为 C=12/24/48/96（200 prompts/点）。v1 的 C=16/32/64 留出已烧掉，
+    只保留真实测量用于定位业务水位，不参与 v2 模型选择。
+    开环 λ=1…24（120 prompts/点）与 OSL=512、C=32/64（160 prompts/点）
+    只用于定位拐点和归因，不参与校准。
+
+environment:
+  captured_at: "2026-11-18T14:20:00Z"
+  driver: "6.16.13"
+  rocm: "10.1"
+  torch: "2.13.0+rocm10.1"
+  vllm: "0.29.1.dev0+g98dff2a81.d20261002.rocm101"
+  container_image: "rocm/vllm:rocm10.1.0_ubuntu24.04_py3.14-pytorch_2.13.0_vllm-0.29.0"
+  gpu: "AMD Radeon RX 9070 XT 15.92 GiB (gfx1201)"
+  kv_cache_tokens: 24464
+  kv_cache_gib: 3.36
+  max_num_seqs: 64
+  max_model_len: 4096
+
+prediction:
+  tool: >
+    code/part1-modeling/chapter7/simulate_queue.py
+    + fit_service_model.py；results/des_prediction_holdout_v2.json
+  calibration_version: >
+    ch7-service-model-v2（2026-11-18T14:47:48Z 冻结）：
+    t_prefill(B)=17.9093+19.4696*B ms；
+    t_decode(B)=13.8927*max(B,1)^0.062544 ms。
+    模型选择只使用 C=1/2/4/8 校准集：线性 prefill 的 RMSE=3.294 ms，
+    v1 的 log2 prefill RMSE=12.554 ms，因此选线性。
+    v1 的 C=16/32/64 留出已烧掉（v1 预测 C=64 TTFT=295.27 ms，
+    实测=1286.09 ms），不参与 v2 选择，也不作为 v2 验收点。
+  metrics:
+    holdout_c12: {ttft_p99_ms: 251.54, tpot_p99_ms: 16.23, e2el_p99_ms: 2312.59, achieved_rps: 4.962, preemptions: 0}
+    holdout_c24: {ttft_p99_ms: 485.18, tpot_p99_ms: 16.95, e2el_p99_ms: 2637.54, achieved_rps: 7.75, preemptions: 0}
+    holdout_c48: {ttft_p99_ms: 952.45, tpot_p99_ms: 17.70, e2el_p99_ms: 3200.17, achieved_rps: 10.678, preemptions: 0}
+    holdout_c96: {ttft_p99_ms: 4853.55, tpot_p99_ms: 24.78, e2el_p99_ms: 7179.17, achieved_rps: 12.365, preemptions: 3}
+    slo: {ttft_p99_ms: 800, tpot_p99_ms: 100, e2el_p99_ms: 15000, failure_rate_max: 0.01}
+  stored_at: "2026-11-18T14:47:55Z"       # 先于 v2 的 C=12/24/48/96 真机测量
+
+measurement_plan:
+  warmup: 2
+  samples: 200 prompts/point（主实验与 v2 holdout）；120（开环）；160（OSL=512 压力）
+  rounds: 1
+  timeout_s: 1800
+  round_budget_s: 3600
+  calibration_configs:
+    - {mode: closed, concurrency: 1, num_prompts: 200}
+    - {mode: closed, concurrency: 2, num_prompts: 200}
+    - {mode: closed, concurrency: 4, num_prompts: 200}
+    - {mode: closed, concurrency: 8, num_prompts: 200}
+  burned_v1_configs:                         # 测过、已烧掉，不作为 v2 验收
+    - {mode: closed, concurrency: 16, num_prompts: 200}
+    - {mode: closed, concurrency: 32, num_prompts: 200}
+    - {mode: closed, concurrency: 64, num_prompts: 200}
+  holdout_configs:                           # v2 测前冻结，用后即烧
+    - {mode: closed, concurrency: 12, num_prompts: 200}
+    - {mode: closed, concurrency: 24, num_prompts: 200}
+    - {mode: closed, concurrency: 48, num_prompts: 200}
+    - {mode: closed, concurrency: 96, num_prompts: 200}
+  pressure_configs:
+    - {mode: closed, concurrency: 32, num_prompts: 160, output_len: 512}
+    - {mode: closed, concurrency: 64, num_prompts: 160, output_len: 512}
+  extension_configs: []                      # C=128/256/512 未执行
+  extension_status: not_run
+  open_loop_rates: [1, 2, 4, 6, 8, 10, 12, 16, 20, 24]
+  open_loop_num_prompts: 120
+
+artifacts:
+  calibration: code/part1-modeling/chapter7/results/calibration/
+  service_model: code/part1-modeling/chapter7/results/service_model.json
+  burned_v1: code/part1-modeling/chapter7/results/holdout/
+  holdout_v2: code/part1-modeling/chapter7/results/holdout_v2/
+  pressure: code/part1-modeling/chapter7/results/pressure/
+  open_loop: code/part1-modeling/chapter7/results/open_loop/
+  analysis: code/part1-modeling/chapter7/results/analysis.json
+  animation_trace: code/part1-modeling/chapter7/results/des_animation_trace.json
+  animation: docs/public/part1-modeling/chapter7/animation.html
+  extension: null
+
+acceptance:
+  - holdout prediction exists with stored_at earlier than holdout files
+  - v1 burned points are reported separately and never used to select v2
+  - v2 holdout C=12/24/48/96 is opened only after service_model.json is frozen
+  - real P99 table includes failures/timeouts and goodput
+  - knee alignment table reports residual and relative error
+  - residual attribution separates queue, prefill/decode, KV preemption and scheduler overhead
+  - raw throughput, SLO goodput and engineering safe waterline are reported separately
+  - animation is driven by a DES run, not hand-authored numbers
