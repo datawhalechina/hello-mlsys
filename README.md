@@ -240,7 +240,7 @@ hello-mlsys/
 - [潘嘉航-项目成员](https://github.com/amdjiahangpan)（AMD 软件工程师）
 - [刘伟鸿-项目成员](https://github.com/Weihong-Liu)（Datawhale 成员）
 - yanhui-项目成员（新加坡国立大学 MComp 硕士）
-- jiyan-项目成员（新加坡国立大学 MComp 硕士）
+- [郑纪言-项目成员](https://github.com/Keyan0412)（新加坡国立大学 MComp 硕士）
 
 > 注：欢迎更多贡献者加入！
 

@@ -244,7 +244,7 @@ hello-mlsys/
 - [Jiahang Pan - Project Member](https://github.com/amdjiahangpan) (Software Engineer, AMD)
 - [Weihong Liu - Project Member](https://github.com/Weihong-Liu) (Datawhale member)
 - yanhui - Project Member (MComp student, National University of Singapore)
-- jiyan - Project Member (MComp student, National University of Singapore)
+- [Jiyan Zheng - Project Member](https://github.com/Keyan0412) (MComp student, National University of Singapore)
 
 > Note: more contributors are welcome!
 
