@@ -1,0 +1,63 @@
+candidate_id,id,category,scope,actual,operator,limit,unit,sample_count,verdict,normalized_headroom,reason
+bf16-tp2-small-r2,execution.status,execution,"{""kind"": ""dag""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+bf16-tp2-small-r2,execution.unsuccessful_requests,execution,"{""kind"": ""dag""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+bf16-tp2-small-r2,execution.request_ledger,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+bf16-tp2-small-r2,execution.resources_drained,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,resources_drained
+bf16-tp2-small-r2,execution.nodes_completed,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,nodes_completed
+bf16-tp2-small-r2,samples.completed,samples,"{""kind"": ""dag""}",52,>=,20,requests,52,PASS,1.6,sufficient_completed_samples
+bf16-tp2-small-r2,memory.rank.0,memory,"{""kind"": ""dag"", ""device_id"": ""gpu0"", ""model_id"": ""32B"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",43811891200,<=,51539607552,bytes,—,PASS,0.149937,within_limit
+bf16-tp2-small-r2,memory.rank.1,memory,"{""kind"": ""dag"", ""device_id"": ""gpu1"", ""model_id"": ""32B"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 1}",43811891200,<=,51539607552,bytes,—,PASS,0.149937,within_limit
+bf16-tp2-small-r2,memory.rank.2,memory,"{""kind"": ""dag"", ""device_id"": ""gpu2"", ""model_id"": ""7B"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",42277215744,<=,51539607552,bytes,—,PASS,0.179714,within_limit
+bf16-tp2-small-r2,memory.rank.3,memory,"{""kind"": ""dag"", ""device_id"": ""gpu3"", ""model_id"": ""7B"", ""replica_index"": 1, ""stage_index"": 0, ""tp_rank"": 0}",42277215744,<=,51539607552,bytes,—,PASS,0.179714,within_limit
+bf16-tp2-small-r2,task.max_makespan_ms,task,"{""kind"": ""dag""}",22924.3,<=,25000,ms,—,PASS,0.0830288,within_limit
+bf16-tp2-small-r2,execution.status,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+bf16-tp2-small-r2,execution.unsuccessful_requests,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+bf16-tp2-small-r2,execution.request_ledger,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+bf16-tp2-small-r2,execution.resources_drained,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,resources_drained
+bf16-tp2-small-r2,execution.nodes_completed,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,nodes_completed
+bf16-tp2-small-r2,samples.completed,samples,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",33,>=,20,requests,33,PASS,0.65,sufficient_completed_samples
+bf16-tp2-small-r2,memory.rank.0,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu2"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",42277215744,<=,51539607552,bytes,—,PASS,0.179714,within_limit
+bf16-tp2-small-r2,memory.rank.1,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu3"", ""replica_index"": 1, ""stage_index"": 0, ""tp_rank"": 0}",42277215744,<=,51539607552,bytes,—,PASS,0.179714,within_limit
+bf16-tp2-small-r2,latency.p99_e2e_ms,latency,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",1603.45,<=,10000,ms,33,PASS,0.839655,within_limit
+fp8-single-small-r3,execution.status,execution,"{""kind"": ""dag""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fp8-single-small-r3,execution.unsuccessful_requests,execution,"{""kind"": ""dag""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fp8-single-small-r3,execution.request_ledger,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fp8-single-small-r3,execution.resources_drained,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,resources_drained
+fp8-single-small-r3,execution.nodes_completed,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,nodes_completed
+fp8-single-small-r3,samples.completed,samples,"{""kind"": ""dag""}",52,>=,20,requests,52,PASS,1.6,sufficient_completed_samples
+fp8-single-small-r3,memory.rank.0,memory,"{""kind"": ""dag"", ""device_id"": ""gpu0"", ""model_id"": ""32B"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",40606782464,<=,51539607552,bytes,—,PASS,0.212125,within_limit
+fp8-single-small-r3,memory.rank.1,memory,"{""kind"": ""dag"", ""device_id"": ""gpu1"", ""model_id"": ""7B"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+fp8-single-small-r3,memory.rank.2,memory,"{""kind"": ""dag"", ""device_id"": ""gpu2"", ""model_id"": ""7B"", ""replica_index"": 1, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+fp8-single-small-r3,memory.rank.3,memory,"{""kind"": ""dag"", ""device_id"": ""gpu3"", ""model_id"": ""7B"", ""replica_index"": 2, ""stage_index"": 0, ""tp_rank"": 0}",42260438528,<=,51539607552,bytes,—,PASS,0.18004,within_limit
+fp8-single-small-r3,task.max_makespan_ms,task,"{""kind"": ""dag""}",29666,<=,25000,ms,—,FAIL,'-0.18664,limit_violated
+fp8-single-small-r3,execution.status,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fp8-single-small-r3,execution.unsuccessful_requests,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fp8-single-small-r3,execution.request_ledger,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fp8-single-small-r3,execution.resources_drained,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,resources_drained
+fp8-single-small-r3,execution.nodes_completed,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,nodes_completed
+fp8-single-small-r3,samples.completed,samples,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",33,>=,20,requests,33,PASS,0.65,sufficient_completed_samples
+fp8-single-small-r3,memory.rank.0,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu1"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+fp8-single-small-r3,memory.rank.1,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu2"", ""replica_index"": 1, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+fp8-single-small-r3,memory.rank.2,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu3"", ""replica_index"": 2, ""stage_index"": 0, ""tp_rank"": 0}",42260438528,<=,51539607552,bytes,—,PASS,0.18004,within_limit
+fp8-single-small-r3,latency.p99_e2e_ms,latency,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",1240.23,<=,10000,ms,33,PASS,0.875977,within_limit
+int4-single-small-r3,execution.status,execution,"{""kind"": ""dag""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+int4-single-small-r3,execution.unsuccessful_requests,execution,"{""kind"": ""dag""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+int4-single-small-r3,execution.request_ledger,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+int4-single-small-r3,execution.resources_drained,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,resources_drained
+int4-single-small-r3,execution.nodes_completed,execution,"{""kind"": ""dag""}",True,'==,True,boolean,—,PASS,—,nodes_completed
+int4-single-small-r3,samples.completed,samples,"{""kind"": ""dag""}",52,>=,20,requests,52,PASS,1.6,sufficient_completed_samples
+int4-single-small-r3,memory.rank.0,memory,"{""kind"": ""dag"", ""device_id"": ""gpu0"", ""model_id"": ""32B"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",32253194832,<=,51539607552,bytes,—,PASS,0.374206,within_limit
+int4-single-small-r3,memory.rank.1,memory,"{""kind"": ""dag"", ""device_id"": ""gpu1"", ""model_id"": ""7B"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+int4-single-small-r3,memory.rank.2,memory,"{""kind"": ""dag"", ""device_id"": ""gpu2"", ""model_id"": ""7B"", ""replica_index"": 1, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+int4-single-small-r3,memory.rank.3,memory,"{""kind"": ""dag"", ""device_id"": ""gpu3"", ""model_id"": ""7B"", ""replica_index"": 2, ""stage_index"": 0, ""tp_rank"": 0}",42260454912,<=,51539607552,bytes,—,PASS,0.180039,within_limit
+int4-single-small-r3,task.max_makespan_ms,task,"{""kind"": ""dag""}",24380.3,<=,25000,ms,—,PASS,0.0247894,within_limit
+int4-single-small-r3,execution.status,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+int4-single-small-r3,execution.unsuccessful_requests,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+int4-single-small-r3,execution.request_ledger,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+int4-single-small-r3,execution.resources_drained,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,resources_drained
+int4-single-small-r3,execution.nodes_completed,execution,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",True,'==,True,boolean,—,PASS,—,nodes_completed
+int4-single-small-r3,samples.completed,samples,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",33,>=,20,requests,33,PASS,0.65,sufficient_completed_samples
+int4-single-small-r3,memory.rank.0,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu1"", ""replica_index"": 0, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+int4-single-small-r3,memory.rank.1,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu2"", ""replica_index"": 1, ""stage_index"": 0, ""tp_rank"": 0}",42268827136,<=,51539607552,bytes,—,PASS,0.179877,within_limit
+int4-single-small-r3,memory.rank.2,memory,"{""kind"": ""dag_pool"", ""model_id"": ""7B"", ""device_id"": ""gpu3"", ""replica_index"": 2, ""stage_index"": 0, ""tp_rank"": 0}",42260454912,<=,51539607552,bytes,—,PASS,0.180039,within_limit
+int4-single-small-r3,latency.p99_e2e_ms,latency,"{""kind"": ""dag_pool"", ""model_id"": ""7B""}",1240.23,<=,10000,ms,33,PASS,0.875977,within_limit

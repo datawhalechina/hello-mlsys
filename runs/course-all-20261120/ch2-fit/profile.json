@@ -1,0 +1,202 @@
+{
+  "identity": {
+    "devices": [
+      {
+        "compute_tflops": 1.0,
+        "id": "gpu0",
+        "memory_bandwidth_gbps": 10.0,
+        "memory_bytes": 67108864,
+        "name": "toy-device"
+      }
+    ],
+    "execution": {
+      "communication_buffer_bytes": 0,
+      "graph_bytes": 0,
+      "kv_block_tokens": 16,
+      "runtime_bytes": 1048576
+    },
+    "model": {
+      "activation_bytes": 2.0,
+      "activation_dtype": "auto",
+      "head_dim": 16,
+      "hidden_size": 128,
+      "intermediate_size": 512,
+      "kv_bytes": 2.0,
+      "kv_dtype": "auto",
+      "name": "toy-dense-gqa",
+      "num_attention_heads": 8,
+      "num_kv_heads": 2,
+      "num_layers": 4,
+      "revision": "unspecified",
+      "vocab_size": 256,
+      "weight_bytes": 2.0,
+      "weight_dtype": "auto"
+    },
+    "parallelism": {
+      "pipeline_parallel_size": 1,
+      "shard_plan": "megatron_dense_no_sp",
+      "stage_layers": [
+        4
+      ],
+      "tensor_parallel_size": 1
+    },
+    "runtime": {
+      "driver_version": "not-applicable",
+      "name": "fixture-runtime",
+      "rccl_version": "not-applicable",
+      "rocm_version": "not-applicable",
+      "timing_boundary": "step_includes_output_and_sampling_v1",
+      "version": "fixture-1"
+    },
+    "topology": {
+      "link_bandwidth_gbps": 20.0,
+      "link_latency_us": 5.0,
+      "name": "single-node-uncontended"
+    }
+  },
+  "method": "lookup",
+  "notes": {
+    "dataset_id": "hand-calculated-step-fixture",
+    "fit": "mean_duration_and_max_observed_workspace",
+    "parent_samples_reused": false,
+    "record_count": 6,
+    "repeat_statistics": [
+      {
+        "duration_max_ms": 1.0,
+        "duration_min_ms": 1.0,
+        "duration_sample_stdev_ms": null,
+        "sample_count": 1,
+        "shape_key": "[\"decode\",0,[1],[16]]"
+      },
+      {
+        "duration_max_ms": 1.2,
+        "duration_min_ms": 1.2,
+        "duration_sample_stdev_ms": null,
+        "sample_count": 1,
+        "shape_key": "[\"decode\",0,[1],[17]]"
+      },
+      {
+        "duration_max_ms": 6.2,
+        "duration_min_ms": 6.0,
+        "duration_sample_stdev_ms": 0.14142135623730964,
+        "sample_count": 2,
+        "shape_key": "[\"prefill\",0,[16],[0]]"
+      },
+      {
+        "duration_max_ms": 8.0,
+        "duration_min_ms": 8.0,
+        "duration_sample_stdev_ms": null,
+        "sample_count": 1,
+        "shape_key": "[\"prefill\",0,[24],[0]]"
+      },
+      {
+        "duration_max_ms": 4.0,
+        "duration_min_ms": 4.0,
+        "duration_sample_stdev_ms": null,
+        "sample_count": 1,
+        "shape_key": "[\"prefill\",0,[8],[0]]"
+      }
+    ]
+  },
+  "profile_id": "hand-calculated-step-fixture:fixture-v1",
+  "profile_version": "fixture-v1",
+  "samples": [
+    {
+      "context_lengths": [
+        16
+      ],
+      "duration_ms": 1.0,
+      "phase": "decode",
+      "query_tokens": [
+        1
+      ],
+      "sample_count": 1,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1049600
+    },
+    {
+      "context_lengths": [
+        17
+      ],
+      "duration_ms": 1.2,
+      "phase": "decode",
+      "query_tokens": [
+        1
+      ],
+      "sample_count": 1,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1049600
+    },
+    {
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 6.1,
+      "phase": "prefill",
+      "query_tokens": [
+        16
+      ],
+      "sample_count": 2,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1064960
+    },
+    {
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 8.0,
+      "phase": "prefill",
+      "query_tokens": [
+        24
+      ],
+      "sample_count": 1,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1073152
+    },
+    {
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 4.0,
+      "phase": "prefill",
+      "query_tokens": [
+        8
+      ],
+      "sample_count": 1,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1056768
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "kind": "test_fixture",
+    "reference": "Hand-calculated test fixture; no GPU measurements."
+  },
+  "timing_includes_communication": true,
+  "training": {
+    "dataset_sha256": "7d84aea9d80853d8d5d1d44e0338d9c3c7a1be0dfee58673f94b4dfecf119c72",
+    "group_ids": [
+      "decode-16",
+      "decode-17",
+      "prefill-16",
+      "prefill-24",
+      "prefill-8"
+    ],
+    "parent_profile_version": null,
+    "record_ids": [
+      "d16",
+      "d17",
+      "p16-a",
+      "p16-b",
+      "p24",
+      "p8"
+    ],
+    "shape_keys": [
+      "[\"decode\",0,[1],[16]]",
+      "[\"decode\",0,[1],[17]]",
+      "[\"prefill\",0,[16],[0]]",
+      "[\"prefill\",0,[24],[0]]",
+      "[\"prefill\",0,[8],[0]]"
+    ]
+  }
+}

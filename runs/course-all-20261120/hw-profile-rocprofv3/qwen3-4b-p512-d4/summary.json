@@ -1,0 +1,536 @@
+{
+  "source": "runs/course-all-20261120/hw-profile-rocprofv3/qwen3-4b-p512-d4/z-lab-7900/2433645_results.json",
+  "process": [
+    "/home/luyzh/miniconda3/envs/torch/bin/python",
+    "runs/course-all-20261120/scripts/prof_qwen_steps.py",
+    "--model",
+    "/mnt/public/models/Qwen3-4B",
+    "--prompt-tokens",
+    "512",
+    "--decode-steps",
+    "4",
+    "--out",
+    "runs/course-all-20261120/hw-profile-rocprofv3/qwen3-4b-p512-d4/result.json"
+  ],
+  "marker_count": 2,
+  "total_kernel_dispatches": 20612,
+  "total_kernel_time_ms": 260.153181,
+  "windows": [
+    {
+      "label": "PREFILL",
+      "kernel_count": 2075,
+      "kernel_time_ms": 61.225317,
+      "wall_ms": 71.312172,
+      "gpu_busy_ratio": 0.8586,
+      "categories": [
+        {
+          "category": "gemm",
+          "count": 254,
+          "total_ms": 43.633171,
+          "pct_of_kernel_time": 71.267
+        },
+        {
+          "category": "elementwise",
+          "count": 1199,
+          "total_ms": 8.656668,
+          "pct_of_kernel_time": 14.139
+        },
+        {
+          "category": "copy_or_cat",
+          "count": 438,
+          "total_ms": 3.772511,
+          "pct_of_kernel_time": 6.162
+        },
+        {
+          "category": "attention",
+          "count": 36,
+          "total_ms": 3.763673,
+          "pct_of_kernel_time": 6.147
+        },
+        {
+          "category": "reduce",
+          "count": 146,
+          "total_ms": 1.380653,
+          "pct_of_kernel_time": 2.255
+        },
+        {
+          "category": "other",
+          "count": 2,
+          "total_ms": 0.018641,
+          "pct_of_kernel_time": 0.03
+        }
+      ],
+      "top_kernels": [
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT96x128x64_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT3_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+          "count": 73,
+          "total_ms": 21.958148,
+          "avg_ms": 0.300797,
+          "pct_of_kernel_time": 35.864
+        },
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x64x64_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR1_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+          "count": 72,
+          "total_ms": 14.638683,
+          "avg_ms": 0.203315,
+          "pct_of_kernel_time": 23.91
+        },
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x96x32_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR1_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS1_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT4_3_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW4_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGRO1_USI0_VSn1_VWA4_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+          "count": 36,
+          "total_ms": 4.167836,
+          "avg_ms": 0.115773,
+          "pct_of_kernel_time": 6.807
+        },
+        {
+          "kernel": "attn_fwd.kd",
+          "count": 36,
+          "total_ms": 3.763673,
+          "avg_ms": 0.104546,
+          "pct_of_kernel_time": 6.147
+        },
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT64x64x32_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_2_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA1_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+          "count": 72,
+          "total_ms": 2.860824,
+          "avg_ms": 0.039734,
+          "pct_of_kernel_time": 4.673
+        },
+        {
+          "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi8EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIN3c108BFloat16ES5_S5_NS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUlibE_EEviT1_.kd",
+          "count": 289,
+          "total_ms": 2.67678,
+          "avg_ms": 0.009262,
+          "pct_of_kernel_time": 4.372
+        },
+        {
+          "kernel": "_ZN2at6native12_GLOBAL__N_119CatArrayBatchedCopyINS1_10OpaqueTypeILj2EEEjLi4ELi64ELi64EEEvPT_NS1_25CatArrInputTensorMetadataIS5_T0_XT2_EXT3_EEENS1_16TensorSizeStrideIS8_Lj4EEEiS8_.kd",
+          "count": 144,
+          "total_ms": 2.398662,
+          "avg_ms": 0.016657,
+          "pct_of_kernel_time": 3.918
+        },
+        {
+          "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi4EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIfffNS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUlibE_EEviT1_.kd",
+          "count": 145,
+          "total_ms": 1.369414,
+          "avg_ms": 0.009444,
+          "pct_of_kernel_time": 2.237
+        },
+        {
+          "kernel": "_ZN2at6native13reduce_kernelILi512ELi1ENS0_8ReduceOpIfNS0_7MeanOpsIffffEEjfLi4ELi4EEEEEvT1_.kd",
+          "count": 145,
+          "total_ms": 1.367293,
+          "avg_ms": 0.00943,
+          "pct_of_kernel_time": 2.233
+        },
+        {
+          "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi8EZNS0_22gpu_kernel_impl_nocastINS0_15CUDAFunctor_addIN3c108BFloat16EEEEEvRNS_18TensorIteratorBaseERKT_EUlibE_EEviT1_.kd",
+          "count": 72,
+          "total_ms": 0.933288,
+          "avg_ms": 0.012962,
+          "pct_of_kernel_time": 1.524
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_12_GLOBAL__N_129pow_tensor_scalar_kernel_implIffEEvRNS_18TensorIteratorBaseET0_EUlfE_St5arrayIPcLm2EEEEviS6_T1_.kd",
+          "count": 145,
+          "total_ms": 0.91633,
+          "avg_ms": 0.00632,
+          "pct_of_kernel_time": 1.497
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_34bfloat16tofloat32_copy_kernel_cudaERNS_18TensorIteratorBaseEEUlN3c108BFloat16EE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 145,
+          "total_ms": 0.680566,
+          "avg_ms": 0.004694,
+          "pct_of_kernel_time": 1.112
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_25bfloat16_copy_kernel_cudaERNS_18TensorIteratorBaseEEUlfE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 147,
+          "total_ms": 0.671243,
+          "avg_ms": 0.004566,
+          "pct_of_kernel_time": 1.096
+        },
+        {
+          "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi8EZNS0_22gpu_kernel_impl_nocastIZZZNS0_15neg_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE0_clEvENKUlvE7_clEvEUlN3c108BFloat16EE_EEvS4_RKT_EUlibE_EEviT1_.kd",
+          "count": 72,
+          "total_ms": 0.561082,
+          "avg_ms": 0.007793,
+          "pct_of_kernel_time": 0.916
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi8ENS0_13BinaryFunctorIN3c108BFloat16ES4_S4_NS0_15binary_internal10MulFunctorIfEEEESt5arrayIPcLm3EEEEviT0_T1_.kd",
+          "count": 36,
+          "total_ms": 0.476924,
+          "avg_ms": 0.013248,
+          "pct_of_kernel_time": 0.779
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi8EZZZNS0_12_GLOBAL__N_111silu_kernelERNS_18TensorIteratorBaseEENKUlvE_clEvENKUlvE4_clEvEUlN3c108BFloat16EE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 36,
+          "total_ms": 0.475684,
+          "avg_ms": 0.013213,
+          "pct_of_kernel_time": 0.777
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi8ENS0_15CUDAFunctor_addIN3c108BFloat16EEESt5arrayIPcLm3EEEEviT0_T1_.kd",
+          "count": 72,
+          "total_ms": 0.474003,
+          "avg_ms": 0.006583,
+          "pct_of_kernel_time": 0.774
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_17rsqrt_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE0_clEvENKUlvE0_clEvEUlfE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 145,
+          "total_ms": 0.387082,
+          "avg_ms": 0.00267,
+          "pct_of_kernel_time": 0.632
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_21CUDAFunctorOnSelf_addIfEESt5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 145,
+          "total_ms": 0.29236,
+          "avg_ms": 0.002016,
+          "pct_of_kernel_time": 0.478
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_11FillFunctorIiEESt5arrayIPcLm1EEEEviT0_T1_.kd",
+          "count": 36,
+          "total_ms": 0.071721,
+          "avg_ms": 0.001992,
+          "pct_of_kernel_time": 0.117
+        }
+      ]
+    },
+    {
+      "label": "DECODE",
+      "kernel_count": 8156,
+      "kernel_time_ms": 85.700956,
+      "wall_ms": 182.582056,
+      "gpu_busy_ratio": 0.4694,
+      "categories": [
+        {
+          "category": "gemm",
+          "count": 1016,
+          "total_ms": 44.337568,
+          "pct_of_kernel_time": 51.735
+        },
+        {
+          "category": "elementwise",
+          "count": 4652,
+          "total_ms": 22.584819,
+          "pct_of_kernel_time": 26.353
+        },
+        {
+          "category": "copy_or_cat",
+          "count": 1752,
+          "total_ms": 9.390168,
+          "pct_of_kernel_time": 10.957
+        },
+        {
+          "category": "reduce",
+          "count": 584,
+          "total_ms": 5.50225,
+          "pct_of_kernel_time": 6.42
+        },
+        {
+          "category": "attention",
+          "count": 144,
+          "total_ms": 3.848431,
+          "pct_of_kernel_time": 4.491
+        },
+        {
+          "category": "other",
+          "count": 8,
+          "total_ms": 0.03772,
+          "pct_of_kernel_time": 0.044
+        }
+      ],
+      "top_kernels": [
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT32x16x128_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT1_1_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR1_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_2_1_WGMXCC1.kd",
+          "count": 432,
+          "total_ms": 18.423303,
+          "avg_ms": 0.042647,
+          "pct_of_kernel_time": 21.497
+        },
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x32x128_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_2_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+          "count": 288,
+          "total_ms": 18.08005,
+          "avg_ms": 0.062778,
+          "pct_of_kernel_time": 21.097
+        },
+        {
+          "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi8EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIN3c108BFloat16ES5_S5_NS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUlibE_EEviT1_.kd",
+          "count": 864,
+          "total_ms": 6.471807,
+          "avg_ms": 0.007491,
+          "pct_of_kernel_time": 7.552
+        },
+        {
+          "kernel": "_ZN2at6native13reduce_kernelILi512ELi1ENS0_8ReduceOpIfNS0_7MeanOpsIffffEEjfLi4ELi4EEEEEvT1_.kd",
+          "count": 580,
+          "total_ms": 5.445089,
+          "avg_ms": 0.009388,
+          "pct_of_kernel_time": 6.354
+        },
+        {
+          "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi4EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIfffNS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUlibE_EEviT1_.kd",
+          "count": 580,
+          "total_ms": 4.505192,
+          "avg_ms": 0.007768,
+          "pct_of_kernel_time": 5.257
+        },
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT96x128x64_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT3_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+          "count": 4,
+          "total_ms": 4.108074,
+          "avg_ms": 1.027019,
+          "pct_of_kernel_time": 4.793
+        },
+        {
+          "kernel": "attn_fwd.kd",
+          "count": 144,
+          "total_ms": 3.848431,
+          "avg_ms": 0.026725,
+          "pct_of_kernel_time": 4.491
+        },
+        {
+          "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT16x16x128_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT1_1_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR1_PKA0_SGROB0_SIA1_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG16_2_1_WGMXCC1.kd",
+          "count": 288,
+          "total_ms": 3.694661,
+          "avg_ms": 0.012829,
+          "pct_of_kernel_time": 4.311
+        },
+        {
+          "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi8EZNS0_22gpu_kernel_impl_nocastIZZZNS0_15neg_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE0_clEvENKUlvE7_clEvEUlN3c108BFloat16EE_EEvS4_RKT_EUlibE_EEviT1_.kd",
+          "count": 288,
+          "total_ms": 3.223671,
+          "avg_ms": 0.011193,
+          "pct_of_kernel_time": 3.762
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_25bfloat16_copy_kernel_cudaERNS_18TensorIteratorBaseEEUlfE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 588,
+          "total_ms": 2.636871,
+          "avg_ms": 0.004484,
+          "pct_of_kernel_time": 3.077
+        },
+        {
+          "kernel": "_ZN2at6native12_GLOBAL__N_126CatArrayBatchedCopy_contigINS1_10OpaqueTypeILj2EEEjLi4ELi128ELi1EEEvPT_NS1_25CatArrInputTensorMetadataIS5_T0_XT2_EXT3_EEENS1_16TensorSizeStrideIS8_Lj4EEEiS8_.kd",
+          "count": 288,
+          "total_ms": 2.578584,
+          "avg_ms": 0.008953,
+          "pct_of_kernel_time": 3.009
+        },
+        {
+          "kernel": "_ZN2at6native12_GLOBAL__N_119CatArrayBatchedCopyINS1_10OpaqueTypeILj2EEEjLi4ELi64ELi64EEEvPT_NS1_25CatArrInputTensorMetadataIS5_T0_XT2_EXT3_EEENS1_16TensorSizeStrideIS8_Lj4EEEiS8_.kd",
+          "count": 288,
+          "total_ms": 2.529013,
+          "avg_ms": 0.008781,
+          "pct_of_kernel_time": 2.951
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_21CUDAFunctorOnSelf_addIfEESt5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 580,
+          "total_ms": 1.732657,
+          "avg_ms": 0.002987,
+          "pct_of_kernel_time": 2.022
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_17rsqrt_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE0_clEvENKUlvE0_clEvEUlfE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 580,
+          "total_ms": 1.633218,
+          "avg_ms": 0.002816,
+          "pct_of_kernel_time": 1.906
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_34bfloat16tofloat32_copy_kernel_cudaERNS_18TensorIteratorBaseEEUlN3c108BFloat16EE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 580,
+          "total_ms": 1.598779,
+          "avg_ms": 0.002757,
+          "pct_of_kernel_time": 1.866
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi8ENS0_15CUDAFunctor_addIN3c108BFloat16EEESt5arrayIPcLm3EEEEviT0_T1_.kd",
+          "count": 576,
+          "total_ms": 1.547536,
+          "avg_ms": 0.002687,
+          "pct_of_kernel_time": 1.806
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_12_GLOBAL__N_129pow_tensor_scalar_kernel_implIffEEvRNS_18TensorIteratorBaseET0_EUlfE_St5arrayIPcLm2EEEEviS6_T1_.kd",
+          "count": 580,
+          "total_ms": 1.307326,
+          "avg_ms": 0.002254,
+          "pct_of_kernel_time": 1.525
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi8ENS0_13BinaryFunctorIN3c108BFloat16ES4_S4_NS0_15binary_internal10MulFunctorIfEEEESt5arrayIPcLm3EEEEviT0_T1_.kd",
+          "count": 436,
+          "total_ms": 1.294724,
+          "avg_ms": 0.00297,
+          "pct_of_kernel_time": 1.511
+        },
+        {
+          "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi8EZZZNS0_12_GLOBAL__N_111silu_kernelERNS_18TensorIteratorBaseEENKUlvE_clEvENKUlvE4_clEvEUlN3c108BFloat16EE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+          "count": 144,
+          "total_ms": 0.783525,
+          "avg_ms": 0.005441,
+          "pct_of_kernel_time": 0.914
+        },
+        {
+          "kernel": "_ZN2at6native13reduce_kernelILi512ELi1ENS0_8ReduceOpIN3c108BFloat16ENS0_9ArgMaxOpsIfEEjlLi4ELi4EEEEEvT1_.kd",
+          "count": 4,
+          "total_ms": 0.057161,
+          "avg_ms": 0.01429,
+          "pct_of_kernel_time": 0.067
+        }
+      ]
+    }
+  ],
+  "overall_top_kernels": [
+    {
+      "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x32x128_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_2_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+      "count": 648,
+      "total_ms": 42.945343,
+      "avg_ms": 0.066274,
+      "pct_of_kernel_time": 16.508
+    },
+    {
+      "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT32x16x128_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT1_1_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR1_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_2_1_WGMXCC1.kd",
+      "count": 936,
+      "total_ms": 38.091248,
+      "avg_ms": 0.040696,
+      "pct_of_kernel_time": 14.642
+    },
+    {
+      "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT96x128x64_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT3_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+      "count": 82,
+      "total_ms": 31.329067,
+      "avg_ms": 0.382062,
+      "pct_of_kernel_time": 12.043
+    },
+    {
+      "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi8EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIN3c108BFloat16ES5_S5_NS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUlibE_EEviT1_.kd",
+      "count": 2306,
+      "total_ms": 17.826756,
+      "avg_ms": 0.007731,
+      "pct_of_kernel_time": 6.852
+    },
+    {
+      "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x64x64_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR1_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+      "count": 72,
+      "total_ms": 14.638683,
+      "avg_ms": 0.203315,
+      "pct_of_kernel_time": 5.627
+    },
+    {
+      "kernel": "_ZN2at6native13reduce_kernelILi512ELi1ENS0_8ReduceOpIfNS0_7MeanOpsIffffEEjfLi4ELi4EEEEEvT1_.kd",
+      "count": 1450,
+      "total_ms": 13.303785,
+      "avg_ms": 0.009175,
+      "pct_of_kernel_time": 5.114
+    },
+    {
+      "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi4EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIfffNS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUlibE_EEviT1_.kd",
+      "count": 1450,
+      "total_ms": 11.093771,
+      "avg_ms": 0.007651,
+      "pct_of_kernel_time": 4.264
+    },
+    {
+      "kernel": "attn_fwd.kd",
+      "count": 360,
+      "total_ms": 9.841763,
+      "avg_ms": 0.027338,
+      "pct_of_kernel_time": 3.783
+    },
+    {
+      "kernel": "_ZN2at6native12_GLOBAL__N_119CatArrayBatchedCopyINS1_10OpaqueTypeILj2EEEjLi4ELi64ELi64EEEvPT_NS1_25CatArrInputTensorMetadataIS5_T0_XT2_EXT3_EEENS1_16TensorSizeStrideIS8_Lj4EEEiS8_.kd",
+      "count": 864,
+      "total_ms": 9.020155,
+      "avg_ms": 0.01044,
+      "pct_of_kernel_time": 3.467
+    },
+    {
+      "kernel": "_ZN2at6native32elementwise_kernel_manual_unrollILi128ELi8EZNS0_22gpu_kernel_impl_nocastIZZZNS0_15neg_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE0_clEvENKUlvE7_clEvEUlN3c108BFloat16EE_EEvS4_RKT_EUlibE_EEviT1_.kd",
+      "count": 720,
+      "total_ms": 7.910148,
+      "avg_ms": 0.010986,
+      "pct_of_kernel_time": 3.041
+    },
+    {
+      "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT16x16x128_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT1_1_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR1_PKA0_SGROB0_SIA1_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG16_2_1_WGMXCC1.kd",
+      "count": 576,
+      "total_ms": 7.735067,
+      "avg_ms": 0.013429,
+      "pct_of_kernel_time": 2.973
+    },
+    {
+      "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_25bfloat16_copy_kernel_cudaERNS_18TensorIteratorBaseEEUlfE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+      "count": 1470,
+      "total_ms": 6.481145,
+      "avg_ms": 0.004409,
+      "pct_of_kernel_time": 2.491
+    },
+    {
+      "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT64x64x64_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_2_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR1_PKA0_SGROB0_SIA1_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+      "count": 72,
+      "total_ms": 5.387562,
+      "avg_ms": 0.074827,
+      "pct_of_kernel_time": 2.071
+    },
+    {
+      "kernel": "_ZN2at6native12_GLOBAL__N_126CatArrayBatchedCopy_contigINS1_10OpaqueTypeILj2EEEjLi4ELi128ELi1EEEvPT_NS1_25CatArrInputTensorMetadataIS5_T0_XT2_EXT3_EEENS1_16TensorSizeStrideIS8_Lj4EEEiS8_.kd",
+      "count": 576,
+      "total_ms": 5.297012,
+      "avg_ms": 0.009196,
+      "pct_of_kernel_time": 2.036
+    },
+    {
+      "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_21CUDAFunctorOnSelf_addIfEESt5arrayIPcLm2EEEEviT0_T1_.kd",
+      "count": 1450,
+      "total_ms": 4.547794,
+      "avg_ms": 0.003136,
+      "pct_of_kernel_time": 1.748
+    },
+    {
+      "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_17rsqrt_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE0_clEvENKUlvE0_clEvEUlfE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+      "count": 1450,
+      "total_ms": 4.461078,
+      "avg_ms": 0.003077,
+      "pct_of_kernel_time": 1.715
+    },
+    {
+      "kernel": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x96x32_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR1_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS1_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSTI0_LBSPPA256_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT4_3_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW4_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGRO1_USI0_VSn1_VWA4_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+      "count": 36,
+      "total_ms": 4.167836,
+      "avg_ms": 0.115773,
+      "pct_of_kernel_time": 1.602
+    },
+    {
+      "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_34bfloat16tofloat32_copy_kernel_cudaERNS_18TensorIteratorBaseEEUlN3c108BFloat16EE_St5arrayIPcLm2EEEEviT0_T1_.kd",
+      "count": 1450,
+      "total_ms": 4.079478,
+      "avg_ms": 0.002813,
+      "pct_of_kernel_time": 1.568
+    },
+    {
+      "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4EZNS0_12_GLOBAL__N_129pow_tensor_scalar_kernel_implIffEEvRNS_18TensorIteratorBaseET0_EUlfE_St5arrayIPcLm2EEEEviS6_T1_.kd",
+      "count": 1450,
+      "total_ms": 3.965589,
+      "avg_ms": 0.002735,
+      "pct_of_kernel_time": 1.524
+    },
+    {
+      "kernel": "_ZN2at6native29vectorized_elementwise_kernelILi8ENS0_15CUDAFunctor_addIN3c108BFloat16EEESt5arrayIPcLm3EEEEviT0_T1_.kd",
+      "count": 1296,
+      "total_ms": 3.885272,
+      "avg_ms": 0.002998,
+      "pct_of_kernel_time": 1.493
+    }
+  ]
+}

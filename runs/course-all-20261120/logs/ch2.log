@@ -1,0 +1,20 @@
+##### calibrate fixture-v1
+Fri Nov 20 05:46:37 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-fit/result.json", "status": "COMPLETED"}
+exit=0
+##### validate holdout-v1
+Fri Nov 20 05:46:37 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-holdout/result.json", "status": "COMPLETED"}
+exit=0
+##### import course calibration
+Fri Nov 20 05:46:37 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-course-calibration/result.json", "status": "COMPLETED"}
+exit=0
+##### simulate profile-serving
+Fri Nov 20 05:46:49 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-profile-serving/result.json", "status": "COMPLETED"}
+exit=0
+##### compare predicted vs observed
+Fri Nov 20 05:46:50 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-compare/result.json", "status": "COMPLETED"}
+exit=0

@@ -1,0 +1,21 @@
+{
+  "arrival": {
+    "duration_ms": 5000,
+    "max_requests": 200,
+    "process": "poisson",
+    "rate_rps": 10
+  },
+  "request_prefix": "frozen-teaching-workload",
+  "schema_version": 1,
+  "seed": 42,
+  "tokens": {
+    "input": {
+      "max": 1024,
+      "min": 128
+    },
+    "output": {
+      "max": 64,
+      "min": 16
+    }
+  }
+}

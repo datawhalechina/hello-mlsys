@@ -1,0 +1,9 @@
+saved /tmp/ch5-run-20261120/results/pcie_probe_7900xtx.json
+       64 KB  h2d=  2.63 GB/s  d2h=  1.38 GB/s  t=0.049ms/0.045ms
+     1024 KB  h2d= 11.56 GB/s  d2h=  9.95 GB/s
+     4096 KB  h2d=  13.7 GB/s  d2h= 12.82 GB/s
+    16384 KB  h2d= 14.15 GB/s  d2h= 13.79 GB/s
+    65536 KB  h2d= 14.27 GB/s  d2h= 14.08 GB/s
+   262144 KB  h2d=  14.3 GB/s  d2h= 14.15 GB/s
+  1048576 KB  h2d=  14.3 GB/s  d2h= 14.17 GB/s
+  pageable 64MB: {'h2d': 14.12, 'd2h': 14.18}

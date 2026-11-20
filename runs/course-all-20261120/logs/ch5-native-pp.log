@@ -1,0 +1,16 @@
+##### calibrate native-pp-communication
+Fri Nov 20 05:49:42 UTC 2026
+{"error_code": "INVALID_COMMUNICATION_FIT", "next_actions": ["Inspect result.json and logs.txt; use a fresh output directory."], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch5-native-pp-calibrate/result.json", "status": "FAILED"}
+exit=2
+##### validate native-pp-communication holdout
+Fri Nov 20 05:49:42 UTC 2026
+{"error_code": "INVALID_ARGUMENT", "next_actions": ["Inspect result.json and logs.txt; use a fresh output directory."], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch5-native-pp-holdout/result.json", "status": "FAILED"}
+exit=2
+##### calibrate native-pp-communication size-lookup
+Fri Nov 20 05:49:57 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch5-native-pp-calibrate-lookup/result.json", "status": "COMPLETED"}
+exit=0
+##### validate native-pp-communication holdout with profile
+Fri Nov 20 05:49:57 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch5-native-pp-holdout-lookup/result.json", "status": "COMPLETED"}
+exit=0

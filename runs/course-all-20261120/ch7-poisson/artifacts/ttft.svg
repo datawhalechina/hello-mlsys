@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-label="ttft P99 延迟"><rect width="900" height="480" fill="white"/>
+<g font-family="sans-serif" fill="#172536">
+<text x="80" y="32" font-size="20">ttft P99 延迟 · CPU 模型预测</text>
+<text x="80" y="56" font-size="12">窗口完成吞吐取重复均值；经验 P99 合并全部重复的完成样本；非真机测量</text>
+<path d="M80 80 V370 H840" fill="none" stroke="#657486"/>
+<text x="68" y="374" text-anchor="end" font-size="12">0</text>
+<text x="68" y="301.5" text-anchor="end" font-size="12">773</text>
+<text x="68" y="229" text-anchor="end" font-size="12">1.55e+03</text>
+<text x="68" y="156.5" text-anchor="end" font-size="12">2.32e+03</text>
+<text x="68" y="84" text-anchor="end" font-size="12">3.09e+03</text>
+<path d="M224.762 367.767 L369.524 366.742" stroke="#23599a" fill="none"/>
+<path d="M369.524 366.742 L514.286 361.798" stroke="#23599a" fill="none"/>
+<path d="M514.286 361.798 L659.048 329.084" stroke="#23599a" fill="none"/>
+<path d="M659.048 329.084 L803.81 106.364" stroke="#23599a" fill="none"/>
+<circle cx="224.762" cy="367.767" r="4" fill="#23599a"/>
+<text x="224.762" y="392" text-anchor="middle" font-size="11">25</text>
+<text x="224.762" y="409" text-anchor="middle" font-size="10">n=736</text>
+<circle cx="369.524" cy="366.742" r="4" fill="#23599a"/>
+<text x="369.524" y="392" text-anchor="middle" font-size="11">50</text>
+<text x="369.524" y="409" text-anchor="middle" font-size="10">n=1449</text>
+<circle cx="514.286" cy="361.798" r="4" fill="#23599a"/>
+<text x="514.286" y="392" text-anchor="middle" font-size="11">75</text>
+<text x="514.286" y="409" text-anchor="middle" font-size="10">n=2156</text>
+<circle cx="659.048" cy="329.084" r="4" fill="#23599a"/>
+<text x="659.048" y="392" text-anchor="middle" font-size="11">100</text>
+<text x="659.048" y="409" text-anchor="middle" font-size="10">n=2975</text>
+<circle cx="803.81" cy="106.364" r="4" fill="#23599a"/>
+<text x="803.81" y="392" text-anchor="middle" font-size="11">125</text>
+<text x="803.81" y="409" text-anchor="middle" font-size="10">n=3751</text>
+<text x="20" y="78" font-size="12">ms</text>
+<text x="460" y="438" text-anchor="middle" font-size="13">开放到达率 requests/s</text>
+<text x="80" y="464" font-size="11">分位数仅来自完成请求；失败、超时、未完成会使整点 SLA 不通过。详见 report.json/points.csv。</text>
+</g></svg>

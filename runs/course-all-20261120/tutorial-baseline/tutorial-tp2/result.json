@@ -1,0 +1,192 @@
+{
+  "admitted_count": 3,
+  "backend": "simulated",
+  "batching": {
+    "compute_busy_ms_semantics": "single_group_time",
+    "mixed_batches_admitted": 0,
+    "mixed_batches_completed": 0,
+    "mixed_batching": false,
+    "mixed_compute_busy_ms": 0.0,
+    "policy": "homogeneous_phase_batches",
+    "recompute_policy": "homogeneous_recovery_batches"
+  },
+  "calibration_source": "analytical",
+  "cohort_completion_rate": 1.0,
+  "completion_rate": 1.0,
+  "completion_rate_denominator": 3,
+  "compute_busy_ms": 8.790505728000001,
+  "counts": {
+    "completed": 3,
+    "failed": 0,
+    "not_admitted": 0,
+    "timed_out": 0,
+    "total": 3,
+    "unfinished": 0
+  },
+  "error_code": null,
+  "evaluation_count": 3,
+  "events_processed": 20,
+  "goodput": {
+    "eligible_requests": 3,
+    "output_tokens_per_s": 5460.436689905993,
+    "requests_per_s": 341.2772931191246,
+    "rule": "completed_requests_satisfying_all_declared_slas",
+    "sla_declared": false,
+    "window_ms": 8.790505728000001
+  },
+  "hardware_validated": false,
+  "latency_ms": {
+    "end_to_end": {
+      "p50": 8.690505728000002,
+      "p95": 8.780505728000001,
+      "p99": 8.788505728
+    },
+    "itl": {
+      "p50": 0.3617216000000001,
+      "p95": 0.3627967999999999,
+      "p99": 1.867032135680006
+    },
+    "tpot": {
+      "p50": 0.3617216000000001,
+      "p95": 0.52301869568,
+      "p99": 0.5373562152960001
+    },
+    "ttft": {
+      "p50": 3.1646817279999997,
+      "p95": 3.2546817279999996,
+      "p99": 3.2626817279999996
+    }
+  },
+  "limitations": [
+    "uncalibrated CPU model",
+    "single replica; homogeneous phase batches",
+    "fixed KV pool; allocator fragmentation is not simulated",
+    "prefill-first admission; pressure drains active requests before recovery"
+  ],
+  "measurement_contract": {
+    "arrival_window_ms": null,
+    "arrival_window_rule": "half_open",
+    "completion_denominator": "requests_eligible_for_arrival_window",
+    "drain": true,
+    "failed_timed_out_unfinished_in_completion_denominator": true,
+    "initial_state": "empty_cache",
+    "max_drain_ms": null,
+    "outside_window_in_completion_denominator": false
+  },
+  "memory": [
+    {
+      "allocatable_free_blocks": 1024,
+      "budget_peak_bytes": 9013248,
+      "device_id": "gpu0",
+      "device_memory_bytes": 67108864,
+      "fixed_budget_bytes": 7309312,
+      "free_blocks": 1024,
+      "guard_blocks": 0,
+      "kv_block_bytes": 4096,
+      "kv_bytes_per_token": 256,
+      "kv_pool_reserved_bytes": 4194304,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 51,
+      "physical_peak_bytes": 7964672,
+      "physical_reserved_bytes": 6260736,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 1024,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 1017856,
+      "workspace_last_source": "analytical_assumption",
+      "workspace_peak_bytes": 1703936,
+      "workspace_source": "analytical_assumption"
+    },
+    {
+      "allocatable_free_blocks": 1024,
+      "budget_peak_bytes": 9013248,
+      "device_id": "gpu1",
+      "device_memory_bytes": 67108864,
+      "fixed_budget_bytes": 7309312,
+      "free_blocks": 1024,
+      "guard_blocks": 0,
+      "kv_block_bytes": 4096,
+      "kv_bytes_per_token": 256,
+      "kv_pool_reserved_bytes": 4194304,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 51,
+      "physical_peak_bytes": 7964672,
+      "physical_reserved_bytes": 6260736,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 1024,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 0,
+      "tp_rank": 1,
+      "used_blocks": 0,
+      "weights_bytes": 1017856,
+      "workspace_last_source": "analytical_assumption",
+      "workspace_peak_bytes": 1703936,
+      "workspace_source": "analytical_assumption"
+    }
+  ],
+  "preemption_count": 0,
+  "prefill": {
+    "batch_policy": "homogeneous_phase_batches",
+    "chunk_token_limit": null,
+    "chunked": false,
+    "completed_chunks": 3,
+    "computed_tokens": 768,
+    "reused_prefix_tokens": 0
+  },
+  "prefix_cache": {
+    "abandoned_hit_tokens": 0,
+    "abandoned_lookups": 0,
+    "attached_block_references": 0,
+    "block_tokens": 16,
+    "bypassed_requests": 0,
+    "cached_blocks": 0,
+    "capacity_blocks": 128,
+    "deduplicated_blocks": 0,
+    "enabled": false,
+    "entries": [],
+    "evictable_blocks": 0,
+    "evicted_blocks": 0,
+    "hit_rate": null,
+    "hit_requests": 0,
+    "hit_tokens": 0,
+    "identity": "sha256_parent_digest_and_unsigned_8byte_big_endian_block_token_ids",
+    "lookup_requests": 0,
+    "miss_requests": 0,
+    "peak_cached_blocks": 0,
+    "pinned_blocks": 0,
+    "policy": "full_prompt_blocks_sha256_ancestry_and_namespace_lru_unreferenced_only",
+    "private_blocks": 0,
+    "published_blocks": 0,
+    "shared_blocks": 0
+  },
+  "profile_provenance": null,
+  "profile_version": "uncalibrated-v1",
+  "quality_status": "not_evaluated",
+  "recompute_execution_ms": 0.0,
+  "recomputed_tokens": 0,
+  "simulated_ms": 8.790505728000001,
+  "sla_satisfied": null,
+  "status": "COMPLETED",
+  "throughput": {
+    "output_tokens_per_s": 5460.436689905993,
+    "requests_per_s": 341.2772931191246,
+    "window_ms": 8.790505728000001,
+    "window_rule": "zero_to_simulation_end"
+  },
+  "warmup": {
+    "cache_effect": "none; measured run starts with empty KV",
+    "enabled": false,
+    "status": "NOT_REQUESTED"
+  }
+}

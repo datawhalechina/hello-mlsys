@@ -1,0 +1,35 @@
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 64
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     64        
+Failed requests:                         0         
+Maximum request concurrency:             64        
+Benchmark duration (s):                  1.71      
+Total input tokens:                      16384     
+Total generated tokens:                  4096      
+Request throughput (req/s):              37.32     
+Output token throughput (tok/s):         2388.66   
+Peak output token throughput (tok/s):    2157.00   
+Peak concurrent requests:                64.00     
+Total token throughput (tok/s):          11943.30  
+---------------Time to First Token----------------
+Mean TTFT (ms):                          215.76    
+Median TTFT (ms):                        190.41    
+P50 TTFT (ms):                           190.41    
+P95 TTFT (ms):                           267.44    
+P99 TTFT (ms):                           268.27    
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          23.48     
+Median TPOT (ms):                        23.86     
+P50 TPOT (ms):                           23.86     
+P95 TPOT (ms):                           24.68     
+P99 TPOT (ms):                           24.68     
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           23.48     
+Median ITL (ms):                         22.97     
+P50 ITL (ms):                            22.97     
+P95 ITL (ms):                            24.01     
+P99 ITL (ms):                            61.10     
+==================================================

@@ -1,0 +1,313 @@
+{
+  "backend": "simulated",
+  "calibration_source": "test_fixture_profile",
+  "comparison_contract": {
+    "evaluation": {
+      "drain": true,
+      "max_drain_ms": null,
+      "measurement_window_ms": null,
+      "tpot_sla_ms": 2.0,
+      "ttft_sla_ms": 20.0
+    },
+    "execution": {
+      "initial_state": "empty_cache",
+      "max_simulated_ms": 180000.0,
+      "seed": 42,
+      "warmup": []
+    },
+    "identity": {
+      "devices": [
+        {
+          "compute_tflops": 1.0,
+          "id": "gpu0",
+          "memory_bandwidth_gbps": 10.0,
+          "memory_bytes": 67108864,
+          "name": "toy-device"
+        }
+      ],
+      "execution": {
+        "communication_buffer_bytes": 0,
+        "graph_bytes": 0,
+        "kv_block_tokens": 16,
+        "runtime_bytes": 1048576
+      },
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "auto",
+        "head_dim": 16,
+        "hidden_size": 128,
+        "intermediate_size": 512,
+        "kv_bytes": 2.0,
+        "kv_dtype": "auto",
+        "name": "toy-dense-gqa",
+        "num_attention_heads": 8,
+        "num_kv_heads": 2,
+        "num_layers": 4,
+        "revision": "unspecified",
+        "vocab_size": 256,
+        "weight_bytes": 2.0,
+        "weight_dtype": "auto"
+      },
+      "parallelism": {
+        "pipeline_parallel_size": 1,
+        "shard_plan": "megatron_dense_no_sp",
+        "stage_layers": [
+          4
+        ],
+        "tensor_parallel_size": 1
+      },
+      "runtime": {
+        "driver_version": "not-applicable",
+        "name": "fixture-runtime",
+        "rccl_version": "not-applicable",
+        "rocm_version": "not-applicable",
+        "timing_boundary": "step_includes_output_and_sampling_v1",
+        "version": "fixture-1"
+      },
+      "topology": {
+        "link_bandwidth_gbps": 20.0,
+        "link_latency_us": 5.0,
+        "name": "single-node-uncontended"
+      }
+    },
+    "schema_version": 1,
+    "strategy": {
+      "chunked_prefill": false,
+      "max_batch_size": 8,
+      "max_batch_tokens": 4096,
+      "max_preemptions_per_request": 100,
+      "memory": {
+        "communication_buffer_bytes": 0,
+        "cpu_swap_bytes": 0,
+        "graph_bytes": 0,
+        "guard_blocks": 0,
+        "kv_block_tokens": 16,
+        "kv_pool_bytes": 4194304,
+        "other_bytes": 0,
+        "runtime_bytes": 1048576,
+        "safety_margin_bytes": 1048576,
+        "swap_d2h_bandwidth_gbps": 12.0,
+        "swap_h2d_bandwidth_gbps": 12.0,
+        "swap_latency_us": 10.0,
+        "workspace_base_bytes": 1048576,
+        "workspace_bytes_per_token": 1024
+      },
+      "mixed_batching": false,
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "auto",
+        "architecture_config_sha256": "",
+        "final_norm": false,
+        "head_dim": 16,
+        "hidden_size": 128,
+        "intermediate_size": 512,
+        "kv_bytes": 2.0,
+        "kv_dtype": "auto",
+        "name": "toy-dense-gqa",
+        "num_attention_heads": 8,
+        "num_kv_heads": 2,
+        "num_layers": 4,
+        "qk_norm": false,
+        "revision": "unspecified",
+        "tie_word_embeddings": false,
+        "vocab_size": 256,
+        "weight_bytes": 2.0,
+        "weight_dequant": "none",
+        "weight_dtype": "auto"
+      },
+      "pipeline_feedback_latency_us": 0.0,
+      "pipeline_max_inflight_microbatches": 8,
+      "pipeline_microbatch_size": 1,
+      "pipeline_p2p": true,
+      "pipeline_parallel_size": 1,
+      "pipeline_transport": "full_hidden",
+      "pipeline_transport_max_tokens": 0,
+      "preemption": "recompute",
+      "prefill_chunk_tokens": 512,
+      "prefix_cache": false,
+      "prefix_cache_max_blocks": 128,
+      "replica_routing": "least_loaded",
+      "replicas": 1,
+      "scheduler": "fifo",
+      "stage_layers": [
+        4
+      ],
+      "swap_fallback": "none",
+      "tensor_parallel_size": 1
+    },
+    "timing_boundary": "step_includes_output_and_sampling_v1",
+    "workload_sha256": "c86856998ebb6f785335be239a6bd40026790388a1e1defd57bad1cc11893340"
+  },
+  "config_sha256": "3d88bd02579ed616d19e28962ed5d46083009e99f1d63d9e70dc2e0aabebe3b4",
+  "effective_config": {
+    "calibration": {
+      "allow_extrapolation": false,
+      "allow_test_fixture": true,
+      "backend": "profile",
+      "bandwidth_efficiency": 0.5,
+      "compute_efficiency": 0.5,
+      "decode_ms": 1.0,
+      "dequant_flops_per_weight": 1.0,
+      "driver_version": "not-applicable",
+      "framework_overhead_us": 5.0,
+      "launch_overhead_us": 2.0,
+      "mixed_ms": 10.0,
+      "native_pp_communication_allow_extrapolation": false,
+      "native_pp_communication_profile_path": null,
+      "native_pp_communication_profile_version": "",
+      "prefill_ms": 10.0,
+      "profile_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-fit/profile.json",
+      "profile_version": "fixture-v1",
+      "rccl_version": "not-applicable",
+      "recompute_ms": 10.0,
+      "replica_native_pp_communication_profile_paths": [],
+      "replica_profile_paths": [],
+      "replica_workspace_profile_paths": [],
+      "rocm_version": "not-applicable",
+      "runtime_config_sha256": "",
+      "runtime_name": "fixture-runtime",
+      "runtime_version": "fixture-1",
+      "timing_boundary": "step_includes_output_and_sampling_v1",
+      "workspace_profile_path": null,
+      "workspace_profile_version": ""
+    },
+    "evaluation": {
+      "drain": true,
+      "max_drain_ms": null,
+      "measurement_window_ms": null,
+      "tpot_sla_ms": 2.0,
+      "ttft_sla_ms": 20.0
+    },
+    "execution": {
+      "detailed_events": true,
+      "initial_state": "empty_cache",
+      "max_events": 1000000,
+      "max_simulated_ms": 180000.0,
+      "seed": 42,
+      "warmup": []
+    },
+    "infra": {
+      "devices": [
+        {
+          "compute_tflops": 1.0,
+          "id": "gpu0",
+          "memory_bandwidth_gbps": 10.0,
+          "memory_bytes": 67108864,
+          "name": "toy-device"
+        }
+      ],
+      "link_bandwidth_gbps": 20.0,
+      "link_latency_us": 5.0,
+      "topology": "single-node-uncontended"
+    },
+    "schema_version": 1,
+    "strategy": {
+      "chunked_prefill": false,
+      "max_batch_size": 8,
+      "max_batch_tokens": 4096,
+      "max_preemptions_per_request": 100,
+      "memory": {
+        "communication_buffer_bytes": 0,
+        "cpu_swap_bytes": 0,
+        "graph_bytes": 0,
+        "guard_blocks": 0,
+        "kv_block_tokens": 16,
+        "kv_pool_bytes": 4194304,
+        "other_bytes": 0,
+        "runtime_bytes": 1048576,
+        "safety_margin_bytes": 1048576,
+        "swap_d2h_bandwidth_gbps": 12.0,
+        "swap_h2d_bandwidth_gbps": 12.0,
+        "swap_latency_us": 10.0,
+        "workspace_base_bytes": 1048576,
+        "workspace_bytes_per_token": 1024
+      },
+      "mixed_batching": false,
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "auto",
+        "architecture_config_sha256": "",
+        "final_norm": false,
+        "head_dim": 16,
+        "hidden_size": 128,
+        "intermediate_size": 512,
+        "kv_bytes": 2.0,
+        "kv_dtype": "auto",
+        "name": "toy-dense-gqa",
+        "num_attention_heads": 8,
+        "num_kv_heads": 2,
+        "num_layers": 4,
+        "qk_norm": false,
+        "revision": "unspecified",
+        "tie_word_embeddings": false,
+        "vocab_size": 256,
+        "weight_bytes": 2.0,
+        "weight_dequant": "none",
+        "weight_dtype": "auto"
+      },
+      "pipeline_feedback_latency_us": 0.0,
+      "pipeline_max_inflight_microbatches": 8,
+      "pipeline_microbatch_size": 1,
+      "pipeline_p2p": true,
+      "pipeline_parallel_size": 1,
+      "pipeline_transport": "full_hidden",
+      "pipeline_transport_max_tokens": 0,
+      "preemption": "recompute",
+      "prefill_chunk_tokens": 512,
+      "prefix_cache": false,
+      "prefix_cache_max_blocks": 128,
+      "replica_routing": "least_loaded",
+      "replicas": 1,
+      "scheduler": "fifo",
+      "stage_layers": [],
+      "swap_fallback": "none",
+      "tensor_parallel_size": 1
+    },
+    "workload": [
+      {
+        "arrival_ms": 0.0,
+        "cache_namespace": "",
+        "input_tokens": 16,
+        "output_tokens": 3,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "demo",
+        "timeout_ms": null
+      }
+    ]
+  },
+  "experiment_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/inputs/ch2-profile-serving.experiment.json",
+  "hardware_validated": false,
+  "input_files": [
+    {
+      "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-fit/profile.json",
+      "sha256": "33341d3b9141fe692cca33bbbada4656b0a6648396fbecd7b2efa4e02cdf090d"
+    },
+    {
+      "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/inputs/ch2-profile-serving.experiment.json",
+      "sha256": "fbfa897e80040705e04bf9c2eea835273edc5919ddda43db1da7034736a4abc8"
+    }
+  ],
+  "mode": "simulate",
+  "origin_profile_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-fit/profile.json",
+  "profile_provenance": {
+    "domain_policy": "reject_outside_grid",
+    "extrapolation_used": false,
+    "origin_profile_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-fit/profile.json",
+    "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch2-profile-serving/profile.json",
+    "profile_id": "hand-calculated-step-fixture:fixture-v1",
+    "profile_version": "fixture-v1",
+    "sha256": "33341d3b9141fe692cca33bbbada4656b0a6648396fbecd7b2efa4e02cdf090d",
+    "snapshot_file": "profile.json",
+    "source_kind": "test_fixture",
+    "source_reference": "Hand-calculated test fixture; no GPU measurements.",
+    "timing_includes_communication": true
+  },
+  "profile_sha256": "33341d3b9141fe692cca33bbbada4656b0a6648396fbecd7b2efa4e02cdf090d",
+  "profile_snapshot": "profile.json",
+  "profile_version": "fixture-v1",
+  "schema_version": 1,
+  "seed": 42,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059"
+}

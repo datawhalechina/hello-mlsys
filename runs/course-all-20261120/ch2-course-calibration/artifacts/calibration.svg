@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="410" viewBox="0 0 1120 410" role="img">
+<title>各形状的效率系数；实心点参与拟合，空心点仅用于诊断</title>
+<metadata>report.json data_sha256=fc4b7ef212c251b4a77aff63bcf052dcd84a6f73d3277a5258089612a1dd632a; hardware_validated=false</metadata>
+<rect width="1120" height="410" fill="white"/><style>text{font:13px system-ui,sans-serif;fill:#172b3a}</style>
+<text x="30" y="30">各形状效率：实心点参与拟合，空心点仅诊断；不同 regime 不能混作全卡常数</text>
+<line x1="105" x2="105" y1="300" y2="263.33" stroke="#d9e2e8"/>
+<circle cx="105" cy="263.33" r="6" fill="white" stroke="#176b9b" stroke-width="2"/>
+<text x="80" y="248.33">0.2500</text>
+<text x="61" y="330">gemm</text>
+<text x="61" y="350">2048^3</text>
+<line x1="240" x2="240" y1="300" y2="226.67" stroke="#d9e2e8"/>
+<circle cx="240" cy="226.67" r="6" fill="#176b9b" stroke="#176b9b" stroke-width="2"/>
+<text x="215" y="211.67">0.5000</text>
+<text x="196" y="330">gemm</text>
+<text x="196" y="350">4096^3</text>
+<line x1="375" x2="375" y1="300" y2="226.67" stroke="#d9e2e8"/>
+<circle cx="375" cy="226.67" r="6" fill="#176b9b" stroke="#176b9b" stroke-width="2"/>
+<text x="350" y="211.67">0.5000</text>
+<text x="331" y="330">gemm</text>
+<text x="331" y="350">5120^3</text>
+<line x1="510" x2="510" y1="300" y2="241.33" stroke="#d9e2e8"/>
+<circle cx="510" cy="241.33" r="6" fill="white" stroke="#176b9b" stroke-width="2"/>
+<text x="485" y="226.33">0.4000</text>
+<text x="466" y="330">gemm</text>
+<text x="466" y="350">8192^3</text>
+<line x1="645" x2="645" y1="300" y2="226.65" stroke="#d9e2e8"/>
+<circle cx="645" cy="226.65" r="6" fill="white" stroke="#b0521c" stroke-width="2"/>
+<text x="620" y="211.65">0.5001</text>
+<text x="601" y="330">ln</text>
+<text x="601" y="350">2048x1024</text>
+<line x1="780" x2="780" y1="300" y2="182.67" stroke="#d9e2e8"/>
+<circle cx="780" cy="182.67" r="6" fill="#b0521c" stroke="#b0521c" stroke-width="2"/>
+<text x="755" y="167.67">0.8000</text>
+<text x="736" y="330">ln</text>
+<text x="736" y="350">8192x4096</text>
+<line x1="915" x2="915" y1="300" y2="116.68" stroke="#d9e2e8"/>
+<circle cx="915" cy="116.68" r="6" fill="white" stroke="#b0521c" stroke-width="2"/>
+<text x="890" y="101.68">1.2499</text>
+<text x="871" y="330">softmax</text>
+<text x="871" y="350">4096x4096</text>
+<line x1="1050" x2="1050" y1="300" y2="182.67" stroke="#d9e2e8"/>
+<circle cx="1050" cy="182.67" r="6" fill="#b0521c" stroke="#b0521c" stroke-width="2"/>
+<text x="1025" y="167.67">0.8000</text>
+<text x="1006" y="330">softmax</text>
+<text x="1006" y="350">8192x4096</text>
+<text x="30" y="390">数据：report.json · fc4b7ef212c251b4；来源 test_fixture；无新实测</text>
+</svg>

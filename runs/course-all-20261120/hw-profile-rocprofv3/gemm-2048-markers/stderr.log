@@ -1,0 +1,8 @@
+W1120 17:03:16.099825 2432478 simple_timer.cpp:55] [rocprofv3] tool initialization ::     0.000544 sec
+W1120 17:03:16.100228 2432478 simple_timer.cpp:55] [rocprofv3] '/home/luyzh/miniconda3/envs/torch/bin/python runs/course-all-20261120/scripts/prof_gemm_bf16.py' ::     0.000000 sec
+W1120 17:03:17.627757 2432478 tool.cpp:3348] HSA version 1.21.0 initialized (instance=0)
+W1120 17:03:17.733637 2432478 tool.cpp:3348] MARKER (ROCTx) version 1.3.5 initialized (instance=0)
+W1120 17:03:18.041675 2432478 simple_timer.cpp:55] [rocprofv3] '/home/luyzh/miniconda3/envs/torch/bin/python runs/course-all-20261120/scripts/prof_gemm_bf16.py' ::     1.941445 sec
+E1120 17:03:18.376877 2432478 output_stream.cpp:110] Opened result file: runs/course-all-20261120/hw-profile-rocprofv3/gemm-2048-markers/z-lab-7900/2432478_results.json
+W1120 17:03:18.502307 2432478 simple_timer.cpp:55] [rocprofv3] output generation ::     0.458301 sec
+W1120 17:03:18.502534 2432478 simple_timer.cpp:55] [rocprofv3] tool finalization ::     0.458561 sec

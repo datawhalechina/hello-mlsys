@@ -1,0 +1,22 @@
+{
+  "backend": "tool",
+  "course_calibration_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+  "hardware_validated": false,
+  "historical_prediction_before_measurement_established": false,
+  "input_files": [
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/course/chapter1.plan.json",
+      "sha256": "fd2d015a40bba6586cbc80a3ac2320b7c90ab4d483071f246c5610453f5d1c4e"
+    },
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/course/course-calibration.fixture.json",
+      "sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a"
+    }
+  ],
+  "mode": "import-course-calibration",
+  "prediction_id": "course-calibration-17b2d40fadbe2e9c5ed4b349",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059",
+  "stored_at": "2026-11-20T05:46:38.440306+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "communication_group_count": 1,
+  "hardware_validated": false,
+  "mode": "calibrate",
+  "parent_profile_version": null,
+  "profile_id": "public-small-message-train:small-message-fixture-v1",
+  "profile_kind": "native_pp_communication_profile",
+  "profile_method": "piecewise_size_lookup_v1",
+  "profile_version": "small-message-fixture-v1",
+  "shape_count": 0,
+  "source": {
+    "kind": "test_fixture",
+    "reference": "Public CPU hand calculations only: size/mean ms = 128/.10, 256/.12, 512/.02, 1024/.04; five repetitions per training size. No GPU or network execution."
+  },
+  "status": "COMPLETED",
+  "training_record_count": 20
+}

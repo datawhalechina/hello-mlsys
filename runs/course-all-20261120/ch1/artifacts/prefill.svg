@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="550" viewBox="0 0 900 550" role="img" aria-label="Prefill：序列长度与 step 下界">
+<title>Prefill：序列长度与 step 下界</title>
+<metadata>report.json sha256=46d48034bf3455f710ebb30919e72e43f653259a7b67aa1646162990c4b4907f; protocol=hello_mlsys_ch1_nominal_v1; hardware_validated=false</metadata>
+<style>text{font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172b3a;font-size:13px} .small{font-size:11px} .title{font-size:21px;font-weight:600}.grid{stroke:#d9e2e8;stroke-width:1} .axis{stroke:#607785;stroke-width:1}</style>
+<rect width="900" height="550" fill="#fff"/>
+<text x="32" y="34" class="title">Prefill：序列长度与 step 下界</text>
+<text x="82.00" y="110.00" >单步时间（ms）</text>
+<line x1="82" x2="840" y1="435.00" y2="435.00" class="grid"/>
+<text x="29.00" y="439.00" >0</text>
+<line x1="82" x2="840" y1="360.00" y2="360.00" class="grid"/>
+<text x="29.00" y="364.00" >26</text>
+<line x1="82" x2="840" y1="285.00" y2="285.00" class="grid"/>
+<text x="29.00" y="289.00" >52</text>
+<line x1="82" x2="840" y1="210.00" y2="210.00" class="grid"/>
+<text x="29.00" y="214.00" >78</text>
+<line x1="82" x2="840" y1="135.00" y2="135.00" class="grid"/>
+<text x="29.00" y="139.00" >1e+02</text>
+<line x1="82.00" x2="82.00" y1="135" y2="435" class="grid"/>
+<text x="72.00" y="458.00" >128</text>
+<line x1="233.60" x2="233.60" y1="135" y2="435" class="grid"/>
+<text x="223.60" y="458.00" >512</text>
+<line x1="840.00" x2="840.00" y1="135" y2="435" class="grid"/>
+<text x="830.00" y="458.00" >2048</text>
+<polyline points="82.00,430.29 233.60,427.15 840.00,392.91" fill="none" stroke="#176b9b" stroke-width="2"/>
+<g><title>qwen3_0_6b_prefill_s128: t_step_ms=1.6285696</title><circle cx="82.00" cy="430.29" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s512: t_step_ms=2.71278172</title><circle cx="233.60" cy="427.15" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s2048: t_step_ms=14.5514064</title><circle cx="840.00" cy="392.91" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<polyline points="82.00,421.00 233.60,412.17 840.00,332.98" fill="none" stroke="#b0521c" stroke-width="2"/>
+<g><title>qwen3_1_7b_prefill_s128: t_step_ms=4.8398336</title><path d="M82.00,417.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s512: t_step_ms=7.89241646</title><path d="M233.60,408.17l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s2048: t_step_ms=35.2699454</title><path d="M840.00,328.98l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<polyline points="82.00,400.02 233.60,376.66 840.00,174.13" fill="none" stroke="#27734d" stroke-width="2"/>
+<g><title>qwen3_4b_prefill_s128: t_step_ms=12.091392</title><rect x="79.00" y="397.02" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s512: t_step_ms=20.1673953</title><rect x="230.60" y="373.66" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s2048: t_step_ms=90.1845857</title><rect x="837.00" y="171.13" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="152.00" y="489.00" >输入长度 S（B=1）</text>
+<text x="32.00" y="75.00" >○ Qwen3-0.6B</text>
+<text x="282.00" y="75.00" >◇ Qwen3-1.7B</text>
+<text x="532.00" y="75.00" >□ Qwen3-4B</text>
+<text x="32.00" y="529.00" class="small">数据：report.json · 46d48034bf3455f7 · nominal η=1 · 无实测点</text>
+</svg>

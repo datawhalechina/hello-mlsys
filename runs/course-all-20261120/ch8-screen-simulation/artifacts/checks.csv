@@ -1,0 +1,23 @@
+candidate_id,id,category,scope,actual,operator,limit,unit,sample_count,verdict,normalized_headroom,reason
+joint-pass,execution.status,execution,"{""kind"": ""simulation""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+joint-pass,execution.unsuccessful_requests,execution,"{""kind"": ""simulation""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+joint-pass,execution.request_ledger,execution,"{""kind"": ""simulation""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+joint-pass,samples.completed,samples,"{""kind"": ""simulation""}",100,>=,100,requests,100,PASS,0,sufficient_completed_samples
+joint-pass,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+joint-pass,latency.p99_e2e_ms,latency,"{""kind"": ""simulation""}",49.604,<=,70,ms,100,PASS,0.291371,within_limit
+joint-pass,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation""}",1669.45,>=,1000,requests/s,—,PASS,0.669449,within_limit
+static-memory-fail,execution.startup,execution,{},STATIC_MEMORY_INFEASIBLE,'==,COMPLETED,status,0,FAIL,—,"gpu0: fixed budget and base workspace require 9373696 bytes, capacity is 1048576"
+p99-only-fail,execution.status,execution,"{""kind"": ""simulation""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+p99-only-fail,execution.unsuccessful_requests,execution,"{""kind"": ""simulation""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+p99-only-fail,execution.request_ledger,execution,"{""kind"": ""simulation""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+p99-only-fail,samples.completed,samples,"{""kind"": ""simulation""}",100,>=,100,requests,100,PASS,0,sufficient_completed_samples
+p99-only-fail,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+p99-only-fail,latency.p99_e2e_ms,latency,"{""kind"": ""simulation""}",79.307,<=,70,ms,100,FAIL,'-0.132957,limit_violated
+p99-only-fail,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation""}",1112.35,>=,1000,requests/s,—,PASS,0.112347,within_limit
+throughput-only-fail,execution.status,execution,"{""kind"": ""simulation""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+throughput-only-fail,execution.unsuccessful_requests,execution,"{""kind"": ""simulation""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+throughput-only-fail,execution.request_ledger,execution,"{""kind"": ""simulation""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+throughput-only-fail,samples.completed,samples,"{""kind"": ""simulation""}",100,>=,100,requests,100,PASS,0,sufficient_completed_samples
+throughput-only-fail,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+throughput-only-fail,latency.p99_e2e_ms,latency,"{""kind"": ""simulation""}",50.495,<=,70,ms,100,PASS,0.278643,within_limit
+throughput-only-fail,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation""}",671.141,>=,1000,requests/s,—,FAIL,'-0.328859,limit_violated

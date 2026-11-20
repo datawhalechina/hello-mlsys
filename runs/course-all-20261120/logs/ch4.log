@@ -1,0 +1,20 @@
+##### predict bf16
+Fri Nov 20 05:47:59 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch4-bf16/result.json", "status": "COMPLETED"}
+exit=0
+##### predict fp8
+Fri Nov 20 05:48:00 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch4-fp8/result.json", "status": "COMPLETED"}
+exit=0
+##### predict int8
+Fri Nov 20 05:48:00 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch4-int8/result.json", "status": "COMPLETED"}
+exit=0
+##### predict fp4_nvfp4
+Fri Nov 20 05:48:00 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch4-fp4_nvfp4/result.json", "status": "COMPLETED"}
+exit=0
+##### predict int4_gptq128
+Fri Nov 20 05:48:00 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch4-int4_gptq128/result.json", "status": "COMPLETED"}
+exit=0

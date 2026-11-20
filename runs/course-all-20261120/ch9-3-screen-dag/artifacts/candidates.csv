@@ -1,0 +1,4 @@
+candidate_id,verdict,constraint_verdict,objective,actual,unit,rank
+bf16-tp2-small-r2,PASS,PASS,makespan_ms,22924.3,ms,1
+fp8-single-small-r3,FAIL,FAIL,makespan_ms,29666,ms,—
+int4-single-small-r3,PASS,PASS,makespan_ms,24380.3,ms,2

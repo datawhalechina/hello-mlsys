@@ -1,0 +1,76 @@
+{
+  "model": "Qwen3-1.7B BF16",
+  "device": "AMD Radeon RX 7900 XTX",
+  "load_s": 3.6315267086029053,
+  "vram_before": {
+    "0": 28585984,
+    "1": 13740314624
+  },
+  "vram_after": {
+    "0": 4683231232,
+    "1": 13740470272
+  },
+  "load_delta_bytes": {
+    "0": 4654645248,
+    "1": 155648
+  },
+  "peak_allocated_gib": 4.892366886138916,
+  "peak_reserved_gib": 5.89453125,
+  "requests": [
+    {
+      "request_id": "p01",
+      "input_tokens": 48,
+      "output_tokens": 128,
+      "ttft_ms": 28.398651123046875,
+      "tpot_ms": 23.754324575108807,
+      "decode_tok_s": 42.09759771691675,
+      "e2e_ms": 3045.1978721618652
+    },
+    {
+      "request_id": "p02",
+      "input_tokens": 120,
+      "output_tokens": 128,
+      "ttft_ms": 23.87117576599121,
+      "tpot_ms": 22.665941418625238,
+      "decode_tok_s": 44.119058702687376,
+      "e2e_ms": 2902.4457359313965
+    },
+    {
+      "request_id": "p03",
+      "input_tokens": 512,
+      "output_tokens": 256,
+      "ttft_ms": 36.061851501464844,
+      "tpot_ms": 23.228587438545976,
+      "decode_tok_s": 43.050400832406204,
+      "e2e_ms": 5959.3516483306885
+    },
+    {
+      "request_id": "p04",
+      "input_tokens": 1024,
+      "output_tokens": 256,
+      "ttft_ms": 57.56474304199219,
+      "tpot_ms": 22.57932528327493,
+      "decode_tok_s": 44.2883030141173,
+      "e2e_ms": 5815.2926902771
+    },
+    {
+      "request_id": "p05",
+      "input_tokens": 2048,
+      "output_tokens": 128,
+      "ttft_ms": 108.25904846191406,
+      "tpot_ms": 22.96946126081812,
+      "decode_tok_s": 43.53606680822875,
+      "e2e_ms": 3025.3806285858154
+    },
+    {
+      "request_id": "p06",
+      "input_tokens": 4096,
+      "output_tokens": 128,
+      "ttft_ms": 225.81163024902344,
+      "tpot_ms": 22.825036552008683,
+      "decode_tok_s": 43.81153991676725,
+      "e2e_ms": 3124.591272354126
+    }
+  ],
+  "hardware_validated": true
+}

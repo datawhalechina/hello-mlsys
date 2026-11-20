@@ -1,0 +1,24 @@
+##### generate-workload
+Fri Nov 20 05:51:33 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch7-workload/result.json", "status": "COMPLETED"}
+exit=0
+##### official poisson
+Fri Nov 20 05:51:33 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch7-poisson/result.json", "status": "COMPLETED"}
+exit=0
+##### official clients
+Fri Nov 20 05:51:48 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch7-clients/result.json", "status": "COMPLETED"}
+exit=0
+##### custom open loop 1-64
+Fri Nov 20 05:51:58 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch7-open-loop-1-64/result.json", "status": "COMPLETED"}
+exit=0
+##### custom closed loop clients 1-64
+Fri Nov 20 05:52:02 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch7-clients-1-64/result.json", "status": "COMPLETED"}
+exit=0
+##### detailed queue debug 16/32/64
+Fri Nov 20 05:53:01 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch7-queue-debug/result.json", "status": "COMPLETED"}
+exit=0

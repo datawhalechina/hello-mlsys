@@ -1,0 +1,4 @@
+offered_rps,clients,replication,classification,slo_pass,eligible,completed,cohort_requests_per_s,window_completed_requests_per_s,ttft_p99_ms,tpot_p99_ms,e2e_p99_ms
+16,,0,observed_stable,True,16,16,16.0,15.0,118.56023090604964,1.1028070175438645,143.93668542646822
+32,,0,observed_overloaded,True,33,33,33.0,20.0,564.0714617638677,1.1000233918128688,604.1130500691695
+64,,0,observed_overloaded,False,72,72,72.0,21.0,2214.64457717273,1.1060568421052652,2270.1395771727307

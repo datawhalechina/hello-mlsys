@@ -1,0 +1,7 @@
+W1120 16:58:18.216939 2427306 simple_timer.cpp:55] [rocprofv3] tool initialization ::     0.001147 sec
+W1120 16:58:18.217341 2427306 simple_timer.cpp:55] [rocprofv3] '/home/luyzh/miniconda3/envs/torch/bin/python runs/course-all-20261120/scripts/prof_gemm_bf16.py' ::     0.000000 sec
+LLVM ERROR: support is already registered for analysis: AnalysisName(PointerFlowAnalysisResult)
+W1120 16:58:18.293650 2427306 simple_timer.cpp:55] [rocprofv3] output generation ::     0.002306 sec
+W1120 16:58:18.298727 2427306 simple_timer.cpp:55] [rocprofv3] tool finalization ::     0.007482 sec
+W1120 16:58:18.298920 2427310 tool.cpp:4559] [PPID=2427304][PID=2427306][TID=2427310][signal_finalization_worker] rocprofv3 finalizing after signal 0...
+W1120 16:58:18.307133 2427310 tool.cpp:4484] [PPID=2427304][PID=2427306][TID=2427310][signal_finalization_worker] rocprofv3 waiting for 0 children to exit

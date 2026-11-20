@@ -1,0 +1,1 @@
+INVALID_COMMUNICATION_FIT: Native PP primitive fit: Communication fit needs a positive finite time-per-byte slope

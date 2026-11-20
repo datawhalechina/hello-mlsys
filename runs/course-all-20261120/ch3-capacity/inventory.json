@@ -1,0 +1,45 @@
+{
+  "devices": [],
+  "issues": [
+    {
+      "code": "TORCH_UNAVAILABLE",
+      "message": "No module named 'torch'"
+    }
+  ],
+  "kind": "rocm_inventory",
+  "platform": {
+    "machine": "x86_64",
+    "python": "3.13.11",
+    "system": "Linux"
+  },
+  "rccl_library": null,
+  "schema_version": 1,
+  "source": {
+    "kind": "measured",
+    "reference": "local ROCm inventory probe"
+  },
+  "status": "UNAVAILABLE",
+  "tools": {
+    "amd_smi_version": {
+      "argv": [
+        "/home/luyzh/miniconda3/bin/amd-smi",
+        "version",
+        "--json"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "[\n    {\n        \"tool\": \"AMDSMI Tool\",\n        \"version\": \"27.1.0+7da43026\",\n        \"amdsmi_library_version\": \"27.1.0\",\n        \"rocm_version\": \"10.1.0\",\n        \"amdgpu_version\": \"6.16.13\",\n        \"amd_hsmp_driver_version\": \"N/A\",\n        \"nic_driver_version\": \"N/A\"\n    }\n]\n"
+    }
+  },
+  "torch": {
+    "cuda_available": false,
+    "hip_version": null,
+    "pytorch_collective_build_version": null,
+    "version": null
+  },
+  "versions": {
+    "driver_version": "6.16.13",
+    "rccl_version": null,
+    "rocm_version": "10.1.0"
+  }
+}

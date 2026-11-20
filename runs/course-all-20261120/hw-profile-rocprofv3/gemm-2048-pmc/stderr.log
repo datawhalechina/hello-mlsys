@@ -1,0 +1,16 @@
+W1120 17:05:40.506801 2434112 simple_timer.cpp:55] [rocprofv3] tool initialization ::     0.314649 sec
+W1120 17:05:40.507194 2434112 simple_timer.cpp:55] [rocprofv3] '/home/luyzh/miniconda3/envs/torch/bin/python runs/course-all-20261120/scripts/prof_gemm_bf16.py' ::     0.000000 sec
+W1120 17:05:42.041326 2434112 tool.cpp:3348] HSA version 1.21.0 initialized (instance=0)
+W1120 17:05:42.121093 2434112 queue_controller.cpp:170] [queue-intercept] device-memory ring-buffer requested but profiling requires system-memory InterceptQueue; falling back to system-memory ring for agent 1210805952 (priority and CU-mask from the descriptor are not preserved)
+aqlprofile API table load failed: HSA_STATUS_ERROR: A generic error has occurred.
+W1120 17:05:42.133330 2434112 tool.cpp:4136] [PPID=2434111][PID=2434112][TID=2434112][rocprofv3_error_signal_handler] rocprofv3 caught signal 6...
+W1120 17:05:42.133388 2434112 tool.cpp:4159] [PPID=2434111][PID=2434112][TID=2434112][rocprofv3_error_signal_handler] rocprofv3 will wait for 0 children to exit
+W1120 17:05:42.143333 2434112 tool.cpp:4174] [PPID=2434111][PID=2434112][TID=2434112][rocprofv3_error_signal_handler] rocprofv3 finalizing after signal 6...
+W1120 17:05:42.146744 2434112 simple_timer.cpp:55] [rocprofv3] output generation ::     0.003167 sec
+W1120 17:05:42.154163 2434112 simple_timer.cpp:55] [rocprofv3] tool finalization ::     0.010625 sec
+W1120 17:05:42.154273 2434112 tool.cpp:4216] [PPID=2434111][PID=2434112][TID=2434112][rocprofv3_error_signal_handler] rocprofv3 found chained signal handler for 6... executing chained sigaction (SIGINFO)
+*** SIGABRT received at time=1795165542 on cpu 2 ***
+PC: @     0x7a4602aa49bc  (unknown)  pthread_kill
+    @    0x6bf00034883e8  (unknown)  (unknown)
+W1120 17:05:42.187682 2434112 tool.cpp:4136] [PPID=2434111][PID=2434112][TID=2434112][rocprofv3_error_signal_handler] rocprofv3 caught signal 6...
+W1120 17:07:10.044234 2434112 tool.cpp:4136] [PPID=2434111][PID=2434112][TID=2434112][rocprofv3_error_signal_handler] rocprofv3 caught signal 15...

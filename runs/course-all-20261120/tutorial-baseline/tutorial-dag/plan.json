@@ -1,0 +1,332 @@
+{
+  "execution": {
+    "detailed_events": true,
+    "initial_state": "empty_cache",
+    "max_events": 1000000,
+    "max_simulated_ms": 180000.0,
+    "seed": 42,
+    "warmup": []
+  },
+  "nodes": [
+    {
+      "cache_namespace": "",
+      "dependencies": [],
+      "input_tokens": 4,
+      "model_id": "large",
+      "node_id": "a",
+      "output_tokens": 1,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    },
+    {
+      "cache_namespace": "",
+      "dependencies": [
+        "a"
+      ],
+      "input_tokens": 4,
+      "model_id": "small",
+      "node_id": "b",
+      "output_tokens": 2,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    },
+    {
+      "cache_namespace": "",
+      "dependencies": [
+        "a"
+      ],
+      "input_tokens": 4,
+      "model_id": "small",
+      "node_id": "c",
+      "output_tokens": 1,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    },
+    {
+      "cache_namespace": "",
+      "dependencies": [
+        "b",
+        "c"
+      ],
+      "input_tokens": 4,
+      "model_id": "large",
+      "node_id": "d",
+      "output_tokens": 1,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    }
+  ],
+  "pools": [
+    {
+      "experiment": {
+        "calibration": {
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "backend": "synthetic",
+          "bandwidth_efficiency": 0.5,
+          "compute_efficiency": 0.5,
+          "decode_ms": 1,
+          "dequant_flops_per_weight": 1.0,
+          "driver_version": "unspecified",
+          "framework_overhead_us": 5.0,
+          "launch_overhead_us": 2.0,
+          "mixed_ms": 10.0,
+          "native_pp_communication_allow_extrapolation": false,
+          "native_pp_communication_profile_path": null,
+          "native_pp_communication_profile_version": "",
+          "prefill_ms": 10,
+          "profile_path": null,
+          "profile_version": "uncalibrated-v1",
+          "rccl_version": "unspecified",
+          "recompute_ms": 10.0,
+          "replica_native_pp_communication_profile_paths": [],
+          "replica_profile_paths": [],
+          "replica_workspace_profile_paths": [],
+          "rocm_version": "unspecified",
+          "runtime_config_sha256": "",
+          "runtime_name": "unspecified",
+          "runtime_version": "unspecified",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "workspace_profile_path": null,
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "drain": true,
+          "max_drain_ms": null,
+          "measurement_window_ms": null,
+          "tpot_sla_ms": null,
+          "ttft_sla_ms": null
+        },
+        "execution": {
+          "detailed_events": true,
+          "initial_state": "empty_cache",
+          "max_events": 1000000,
+          "max_simulated_ms": 180000.0,
+          "seed": 42,
+          "warmup": []
+        },
+        "infra": {
+          "devices": [
+            {
+              "compute_tflops": 1.0,
+              "id": "large-gpu",
+              "memory_bandwidth_gbps": 10.0,
+              "memory_bytes": 67108864,
+              "name": "toy-device"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "schema_version": 1,
+        "strategy": {
+          "chunked_prefill": false,
+          "max_batch_size": 8,
+          "max_batch_tokens": 4096,
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "communication_buffer_bytes": 0,
+            "cpu_swap_bytes": 0,
+            "graph_bytes": 0,
+            "guard_blocks": 0,
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 4194304,
+            "other_bytes": 0,
+            "runtime_bytes": 1048576,
+            "safety_margin_bytes": 1048576,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0,
+            "workspace_base_bytes": 1048576,
+            "workspace_bytes_per_token": 1024
+          },
+          "mixed_batching": false,
+          "model": {
+            "activation_bytes": 2.0,
+            "activation_dtype": "auto",
+            "architecture_config_sha256": "",
+            "final_norm": false,
+            "head_dim": 16,
+            "hidden_size": 128,
+            "intermediate_size": 512,
+            "kv_bytes": 2.0,
+            "kv_dtype": "auto",
+            "name": "toy-dense-gqa",
+            "num_attention_heads": 8,
+            "num_kv_heads": 2,
+            "num_layers": 4,
+            "qk_norm": false,
+            "revision": "unspecified",
+            "tie_word_embeddings": false,
+            "vocab_size": 256,
+            "weight_bytes": 2.0,
+            "weight_dequant": "none",
+            "weight_dtype": "auto"
+          },
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_microbatch_size": 1,
+          "pipeline_p2p": true,
+          "pipeline_parallel_size": 1,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "preemption": "recompute",
+          "prefill_chunk_tokens": 512,
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "replica_routing": "least_loaded",
+          "replicas": 1,
+          "scheduler": "fifo",
+          "stage_layers": [],
+          "swap_fallback": "none",
+          "tensor_parallel_size": 1
+        },
+        "workload": []
+      },
+      "model_id": "large",
+      "role": "model"
+    },
+    {
+      "experiment": {
+        "calibration": {
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "backend": "synthetic",
+          "bandwidth_efficiency": 0.5,
+          "compute_efficiency": 0.5,
+          "decode_ms": 1,
+          "dequant_flops_per_weight": 1.0,
+          "driver_version": "unspecified",
+          "framework_overhead_us": 5.0,
+          "launch_overhead_us": 2.0,
+          "mixed_ms": 10.0,
+          "native_pp_communication_allow_extrapolation": false,
+          "native_pp_communication_profile_path": null,
+          "native_pp_communication_profile_version": "",
+          "prefill_ms": 4,
+          "profile_path": null,
+          "profile_version": "uncalibrated-v1",
+          "rccl_version": "unspecified",
+          "recompute_ms": 10.0,
+          "replica_native_pp_communication_profile_paths": [],
+          "replica_profile_paths": [],
+          "replica_workspace_profile_paths": [],
+          "rocm_version": "unspecified",
+          "runtime_config_sha256": "",
+          "runtime_name": "unspecified",
+          "runtime_version": "unspecified",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "workspace_profile_path": null,
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "drain": true,
+          "max_drain_ms": null,
+          "measurement_window_ms": null,
+          "tpot_sla_ms": null,
+          "ttft_sla_ms": null
+        },
+        "execution": {
+          "detailed_events": true,
+          "initial_state": "empty_cache",
+          "max_events": 1000000,
+          "max_simulated_ms": 180000.0,
+          "seed": 42,
+          "warmup": []
+        },
+        "infra": {
+          "devices": [
+            {
+              "compute_tflops": 1.0,
+              "id": "small-gpu",
+              "memory_bandwidth_gbps": 10.0,
+              "memory_bytes": 67108864,
+              "name": "toy-device"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "schema_version": 1,
+        "strategy": {
+          "chunked_prefill": false,
+          "max_batch_size": 8,
+          "max_batch_tokens": 4096,
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "communication_buffer_bytes": 0,
+            "cpu_swap_bytes": 0,
+            "graph_bytes": 0,
+            "guard_blocks": 0,
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 4194304,
+            "other_bytes": 0,
+            "runtime_bytes": 1048576,
+            "safety_margin_bytes": 1048576,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0,
+            "workspace_base_bytes": 1048576,
+            "workspace_bytes_per_token": 1024
+          },
+          "mixed_batching": false,
+          "model": {
+            "activation_bytes": 2.0,
+            "activation_dtype": "auto",
+            "architecture_config_sha256": "",
+            "final_norm": false,
+            "head_dim": 16,
+            "hidden_size": 128,
+            "intermediate_size": 512,
+            "kv_bytes": 2.0,
+            "kv_dtype": "auto",
+            "name": "toy-dense-gqa",
+            "num_attention_heads": 8,
+            "num_kv_heads": 2,
+            "num_layers": 4,
+            "qk_norm": false,
+            "revision": "unspecified",
+            "tie_word_embeddings": false,
+            "vocab_size": 256,
+            "weight_bytes": 2.0,
+            "weight_dequant": "none",
+            "weight_dtype": "auto"
+          },
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_microbatch_size": 1,
+          "pipeline_p2p": true,
+          "pipeline_parallel_size": 1,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "preemption": "recompute",
+          "prefill_chunk_tokens": 512,
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "replica_routing": "least_loaded",
+          "replicas": 1,
+          "scheduler": "fifo",
+          "stage_layers": [],
+          "swap_fallback": "none",
+          "tensor_parallel_size": 1
+        },
+        "workload": []
+      },
+      "model_id": "small",
+      "role": "model"
+    }
+  ],
+  "schema_version": 1,
+  "trace_description": "Hand-derived fork/join oracle: a10,b15,c19,d29 milliseconds; no hardware claim.",
+  "trace_source": "synthetic_teaching_trace"
+}

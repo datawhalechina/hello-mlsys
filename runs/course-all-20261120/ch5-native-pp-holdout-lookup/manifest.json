@@ -1,0 +1,25 @@
+{
+  "backend": "tool",
+  "dataset_sha256": "2f6add22d1cf12340cffcec5e9dec3ed7487a8b099c3df2488a5810687f4b3d3",
+  "hardware_validated": false,
+  "input_files": [
+    {
+      "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch5-native-pp-calibrate-lookup/profile.json",
+      "sha256": "8e324be45422d6fd516726b8066f719e0a6eec929ade123e02cd9f4365d5e7bf"
+    },
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/v1_10/communication-holdout.fixture.json",
+      "sha256": "39d267780d39a5e4b60c88eb88da68f14af189e34364addf9e692e32ddd459c6"
+    }
+  ],
+  "mode": "validate",
+  "profile_sha256": "8e324be45422d6fd516726b8066f719e0a6eec929ade123e02cd9f4365d5e7bf",
+  "profile_version": "small-message-fixture-v1",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source": {
+    "kind": "test_fixture",
+    "reference": "Public CPU hand calculations only: size/mean ms = 128/.10, 256/.12, 512/.02, 1024/.04; five repetitions per training size. No GPU or network execution."
+  },
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059"
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>负载扫描实验报告</title><style>
+body{font:16px/1.6 system-ui,sans-serif;color:#172536;max-width:1100px;margin:2rem auto;padding:0 1rem}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:.5rem;border-bottom:1px solid #ccd4dd;text-align:right}
+th:nth-child(2),td:nth-child(2){text-align:left}figure{margin:1.5rem 0}img{max-width:100%;height:auto}
+figcaption{color:#526273;font-size:14px}pre{white-space:pre-wrap;background:#f3f5f7;padding:1rem}
+</style><h1>负载扫描实验报告</h1>
+<p>本报告为 CPU 模型预测；没有新增真机测量。扫描轴为 在线 client 数，共 5 点，
+每点 3 次独立重复。SLO 阈值：<code>{&quot;p99_e2e_ms&quot;: 30, &quot;p99_ttft_ms&quot;: 30}</code>。</p>
+<p>经验 P99 仅来自完成请求，但失败、超时、未完成会否决整点 SLO；空样本或低于声明最小样本数返回未知。
+各重复均须通过，不能只选健康 seed。窗口内完成吞吐按窗口内完成数 / 窗口时长计算，
+原模拟器包含 drain 的到达队列吞吐另保留在 CSV / JSON，不等同于设备稳态服务率。</p>
+<table><thead><tr><th>在线 client 数</th><th>有限观察判据</th><th>SLO 通过</th><th>完成 n</th>
+<th>窗口吞吐 req/s</th><th>E2E P99 ms</th><th>各重复 SLO</th></tr></thead><tbody><tr><td>1</td><td>observed_completed</td><td>True</td><td>1502</td><td>99.9333</td><td>13</td><td>[True, True, True]</td></tr><tr><td>2</td><td>observed_completed</td><td>True</td><td>1505</td><td>99.9333</td><td>26</td><td>[True, True, True]</td></tr><tr><td>4</td><td>observed_completed</td><td>False</td><td>1511</td><td>99.9333</td><td>50</td><td>[False, False, False]</td></tr><tr><td>8</td><td>observed_completed</td><td>False</td><td>1523</td><td>99.9333</td><td>94</td><td>[False, False, False]</td></tr><tr><td>16</td><td>observed_completed</td><td>False</td><td>1547</td><td>99.9333</td><td>180</td><td>[False, False, False]</td></tr></tbody></table>
+<figure><img src="throughput.svg" alt="窗口内完成吞吐"/><figcaption>窗口内完成吞吐；全部重复均保留，n 为相应指标样本数（吞吐图为完成请求数）。</figcaption></figure>
+<figure><img src="ttft.svg" alt="首 token 经验 P99"/><figcaption>首 token 经验 P99；全部重复均保留，n 为相应指标样本数（吞吐图为完成请求数）。</figcaption></figure>
+<figure><img src="tpot.svg" alt="每输出 token 经验 P99"/><figcaption>每输出 token 经验 P99；全部重复均保留，n 为相应指标样本数（吞吐图为完成请求数）。</figcaption></figure>
+<figure><img src="end_to_end.svg" alt="端到端经验 P99"/><figcaption>端到端经验 P99；全部重复均保留，n 为相应指标样本数（吞吐图为完成请求数）。</figcaption></figure><h2>观察到的边界</h2><p>仅报告相邻网格 bracket 和实际观察到的最大通过点，不插值、不外推。
+随机曲线可非单调；有限时间中的排队增长和 drain 完成情况不是数学稳定性证明。
+闭环 client 数表示在线用户，独立于调度器 max_batch_size。</p><pre>{
+  &quot;sla_max_observed&quot;: 2,
+  &quot;last_observed_stable_rps&quot;: null,
+  &quot;stable_overloaded_brackets&quot;: [],
+  &quot;slo_pass_fail_brackets&quot;: [
+    {
+      &quot;pass&quot;: 2,
+      &quot;fail&quot;: 4,
+      &quot;resolution&quot;: 2,
+      &quot;axis&quot;: &quot;clients&quot;
+    }
+  ],
+  &quot;slo_nonmonotonic&quot;: false,
+  &quot;p99_decreases_on_grid&quot;: false,
+  &quot;stability_nonmonotonic&quot;: false
+}</pre>
+<p>可审计源：<a href="report.json">完整报告与生成请求</a>、<a href="points.csv">逐重复指标 CSV</a>、
+<code>runs/</code> 下逐次原结果、事件及 provenance。经验分位数采用 (n−1)q 的线性插值。</p>
+</html>

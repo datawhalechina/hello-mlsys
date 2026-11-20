@@ -1,0 +1,16 @@
+##### predict qwen3-4b
+Fri Nov 20 05:47:06 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-predict/result.json", "status": "COMPLETED"}
+exit=0
+##### simulate native-pp-workspace fixture
+Fri Nov 20 05:47:07 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-workspace/result.json", "status": "COMPLETED"}
+exit=0
+##### collect memory-capacity
+Fri Nov 20 05:47:07 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-capacity/result.json", "status": "COMPLETED"}
+exit=0
+##### validate memory-capacity
+Fri Nov 20 05:47:08 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-capacity-validation/result.json", "status": "COMPLETED"}
+exit=0

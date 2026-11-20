@@ -1,0 +1,1 @@
+STATIC_MEMORY_INFEASIBLE: gpu0: fixed budget and base workspace require 72237721600 bytes, capacity is 51539607552

@@ -1,0 +1,299 @@
+{
+  "backend": "simulated",
+  "calibration_source": "analytical",
+  "comparison_contract": {
+    "evaluation": {
+      "drain": true,
+      "max_drain_ms": null,
+      "measurement_window_ms": null,
+      "tpot_sla_ms": 50.0,
+      "ttft_sla_ms": 500.0
+    },
+    "execution": {
+      "initial_state": "empty_cache",
+      "max_simulated_ms": 600000.0,
+      "seed": 20261111,
+      "warmup": []
+    },
+    "identity": {
+      "devices": [
+        {
+          "compute_tflops": 195.0,
+          "id": "gpu0",
+          "memory_bandwidth_gbps": 640.0,
+          "memory_bytes": 15032385536,
+          "name": "AMD Radeon RX 9070 XT"
+        }
+      ],
+      "execution": {
+        "communication_buffer_bytes": 0,
+        "graph_bytes": 0,
+        "kv_block_tokens": 16,
+        "runtime_bytes": 1073741824
+      },
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "bfloat16",
+        "architecture_config_sha256": "f27adcaf3cf45423f86940d9c8b9f55c1568274b4272d63a991325a28f4a4baa",
+        "final_norm": true,
+        "head_dim": 128,
+        "hidden_size": 2560,
+        "intermediate_size": 9728,
+        "kv_bytes": 2.0,
+        "kv_dtype": "bfloat16",
+        "name": "Qwen3-4B-int8",
+        "num_attention_heads": 32,
+        "num_kv_heads": 8,
+        "num_layers": 36,
+        "qk_norm": true,
+        "revision": "local-checkpoint-sha256:16539acffdc3fbdd62f6b832a494d80229c3f05a829a3af677c0876e80833efd",
+        "tie_word_embeddings": true,
+        "vocab_size": 151936,
+        "weight_bytes": 1.0,
+        "weight_dequant": "fused",
+        "weight_dtype": "int8"
+      },
+      "parallelism": {
+        "pipeline_parallel_size": 1,
+        "shard_plan": "megatron_dense_no_sp",
+        "stage_layers": [
+          36
+        ],
+        "tensor_parallel_size": 1
+      },
+      "runtime": {
+        "driver_version": "6.16.13",
+        "name": "vllm",
+        "rccl_version": "2.30.7",
+        "rocm_version": "10.1.0",
+        "runtime_config_sha256": "cd0073587cf46c88a9854bb777e263d65a33bcdec6885d56aae568b884ac104d",
+        "timing_boundary": "step_includes_output_and_sampling_v1",
+        "version": "0.29.1.dev0+g98dff2a81.d20261002"
+      },
+      "topology": {
+        "link_bandwidth_gbps": 20.0,
+        "link_latency_us": 5.0,
+        "name": "single-node-uncontended"
+      }
+    },
+    "schema_version": 1,
+    "strategy": {
+      "chunked_prefill": true,
+      "max_batch_size": 16,
+      "max_batch_tokens": 2048,
+      "max_preemptions_per_request": 100,
+      "memory": {
+        "communication_buffer_bytes": 0,
+        "cpu_swap_bytes": 0,
+        "graph_bytes": 0,
+        "guard_blocks": 0,
+        "kv_block_tokens": 16,
+        "kv_pool_bytes": 2147483648,
+        "other_bytes": 0,
+        "runtime_bytes": 1073741824,
+        "safety_margin_bytes": 1073741824,
+        "swap_d2h_bandwidth_gbps": 12.0,
+        "swap_h2d_bandwidth_gbps": 12.0,
+        "swap_latency_us": 10.0,
+        "workspace_base_bytes": 268435456,
+        "workspace_bytes_per_token": 1024
+      },
+      "mixed_batching": true,
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "bfloat16",
+        "architecture_config_sha256": "f27adcaf3cf45423f86940d9c8b9f55c1568274b4272d63a991325a28f4a4baa",
+        "final_norm": true,
+        "head_dim": 128,
+        "hidden_size": 2560,
+        "intermediate_size": 9728,
+        "kv_bytes": 2.0,
+        "kv_dtype": "bfloat16",
+        "name": "Qwen3-4B-int8",
+        "num_attention_heads": 32,
+        "num_kv_heads": 8,
+        "num_layers": 36,
+        "qk_norm": true,
+        "revision": "local-checkpoint-sha256:16539acffdc3fbdd62f6b832a494d80229c3f05a829a3af677c0876e80833efd",
+        "tie_word_embeddings": true,
+        "vocab_size": 151936,
+        "weight_bytes": 1.0,
+        "weight_dequant": "fused",
+        "weight_dtype": "int8"
+      },
+      "pipeline_feedback_latency_us": 0.0,
+      "pipeline_max_inflight_microbatches": 1,
+      "pipeline_microbatch_size": 1,
+      "pipeline_p2p": true,
+      "pipeline_parallel_size": 1,
+      "pipeline_transport": "full_hidden",
+      "pipeline_transport_max_tokens": 0,
+      "preemption": "recompute",
+      "prefill_chunk_tokens": 512,
+      "prefix_cache": false,
+      "prefix_cache_max_blocks": 128,
+      "replica_routing": "least_loaded",
+      "replicas": 1,
+      "scheduler": "continuous_batching",
+      "stage_layers": [
+        36
+      ],
+      "swap_fallback": "none",
+      "tensor_parallel_size": 1
+    },
+    "timing_boundary": "step_includes_output_and_sampling_v1",
+    "workload_sha256": "2ee78d91103e7ef01b98b49c82621d688fbc0cc7ba3704148f2cd708bff5a753"
+  },
+  "config_sha256": "0bc97d156f11adff7a1657526ee5b3b4273b6195f7a9b1564d16c97890c002fb",
+  "effective_config": {
+    "calibration": {
+      "allow_extrapolation": false,
+      "allow_test_fixture": false,
+      "backend": "analytical",
+      "bandwidth_efficiency": 0.9054,
+      "compute_efficiency": 0.6243,
+      "decode_ms": 1.0,
+      "dequant_flops_per_weight": 1.0,
+      "driver_version": "6.16.13",
+      "framework_overhead_us": 5.0,
+      "launch_overhead_us": 2.0,
+      "mixed_ms": 10.0,
+      "native_pp_communication_allow_extrapolation": false,
+      "native_pp_communication_profile_path": null,
+      "native_pp_communication_profile_version": "",
+      "prefill_ms": 10.0,
+      "profile_path": null,
+      "profile_version": "course-eta-beta-a49f5e5da620c931",
+      "rccl_version": "2.30.7",
+      "recompute_ms": 10.0,
+      "replica_native_pp_communication_profile_paths": [],
+      "replica_profile_paths": [],
+      "replica_workspace_profile_paths": [],
+      "rocm_version": "10.1.0",
+      "runtime_config_sha256": "cd0073587cf46c88a9854bb777e263d65a33bcdec6885d56aae568b884ac104d",
+      "runtime_name": "vllm",
+      "runtime_version": "0.29.1.dev0+g98dff2a81.d20261002",
+      "timing_boundary": "step_includes_output_and_sampling_v1",
+      "workspace_profile_path": null,
+      "workspace_profile_version": ""
+    },
+    "evaluation": {
+      "drain": true,
+      "max_drain_ms": null,
+      "measurement_window_ms": null,
+      "tpot_sla_ms": 50.0,
+      "ttft_sla_ms": 500.0
+    },
+    "execution": {
+      "detailed_events": false,
+      "initial_state": "empty_cache",
+      "max_events": 200000,
+      "max_simulated_ms": 600000.0,
+      "seed": 20261111,
+      "warmup": []
+    },
+    "infra": {
+      "devices": [
+        {
+          "compute_tflops": 195.0,
+          "id": "gpu0",
+          "memory_bandwidth_gbps": 640.0,
+          "memory_bytes": 15032385536,
+          "name": "AMD Radeon RX 9070 XT"
+        }
+      ],
+      "link_bandwidth_gbps": 20.0,
+      "link_latency_us": 5.0,
+      "topology": "single-node-uncontended"
+    },
+    "schema_version": 1,
+    "strategy": {
+      "chunked_prefill": true,
+      "max_batch_size": 16,
+      "max_batch_tokens": 2048,
+      "max_preemptions_per_request": 100,
+      "memory": {
+        "communication_buffer_bytes": 0,
+        "cpu_swap_bytes": 0,
+        "graph_bytes": 0,
+        "guard_blocks": 0,
+        "kv_block_tokens": 16,
+        "kv_pool_bytes": 2147483648,
+        "other_bytes": 0,
+        "runtime_bytes": 1073741824,
+        "safety_margin_bytes": 1073741824,
+        "swap_d2h_bandwidth_gbps": 12.0,
+        "swap_h2d_bandwidth_gbps": 12.0,
+        "swap_latency_us": 10.0,
+        "workspace_base_bytes": 268435456,
+        "workspace_bytes_per_token": 1024
+      },
+      "mixed_batching": true,
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "bfloat16",
+        "architecture_config_sha256": "f27adcaf3cf45423f86940d9c8b9f55c1568274b4272d63a991325a28f4a4baa",
+        "final_norm": true,
+        "head_dim": 128,
+        "hidden_size": 2560,
+        "intermediate_size": 9728,
+        "kv_bytes": 2.0,
+        "kv_dtype": "bfloat16",
+        "name": "Qwen3-4B-int8",
+        "num_attention_heads": 32,
+        "num_kv_heads": 8,
+        "num_layers": 36,
+        "qk_norm": true,
+        "revision": "local-checkpoint-sha256:16539acffdc3fbdd62f6b832a494d80229c3f05a829a3af677c0876e80833efd",
+        "tie_word_embeddings": true,
+        "vocab_size": 151936,
+        "weight_bytes": 1.0,
+        "weight_dequant": "fused",
+        "weight_dtype": "int8"
+      },
+      "pipeline_feedback_latency_us": 0.0,
+      "pipeline_max_inflight_microbatches": 1,
+      "pipeline_microbatch_size": 1,
+      "pipeline_p2p": true,
+      "pipeline_parallel_size": 1,
+      "pipeline_transport": "full_hidden",
+      "pipeline_transport_max_tokens": 0,
+      "preemption": "recompute",
+      "prefill_chunk_tokens": 512,
+      "prefix_cache": false,
+      "prefix_cache_max_blocks": 128,
+      "replica_routing": "least_loaded",
+      "replicas": 1,
+      "scheduler": "continuous_batching",
+      "stage_layers": [],
+      "swap_fallback": "none",
+      "tensor_parallel_size": 1
+    },
+    "workload": [
+      {
+        "arrival_ms": 0.0,
+        "cache_namespace": "",
+        "input_tokens": 1024,
+        "output_tokens": 128,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "ch4-shape",
+        "timeout_ms": null
+      }
+    ]
+  },
+  "experiment_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/inputs/ch4/int8.experiment.json",
+  "hardware_validated": false,
+  "input_files": [
+    {
+      "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/inputs/ch4/int8.experiment.json",
+      "sha256": "4498009fb7e367765a3b04107f9281e0bd89b39989614cb4c1b6b269021cb257"
+    }
+  ],
+  "mode": "predict",
+  "profile_version": "course-eta-beta-a49f5e5da620c931",
+  "schema_version": 1,
+  "seed": 20261111,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059"
+}

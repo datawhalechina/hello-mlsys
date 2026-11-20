@@ -1,0 +1,2 @@
+usage: rocprofv3 [options] -- <application> [application options]
+rocprofv3: error: argument -f/--output-format: invalid choice: 'csv,json' (choose from csv, json, pftrace, otf2, rocpd)

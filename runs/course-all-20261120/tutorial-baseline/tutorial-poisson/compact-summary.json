@@ -1,0 +1,298 @@
+{
+  "source": "/tmp/mlsys-sim-tutorial/runs/tutorial-poisson",
+  "note": "full detail stripped; compact extract from result.json",
+  "backend": "simulated",
+  "hardware_validated": false,
+  "limitations": [
+    "CPU model predictions, not a hardware benchmark or mathematical stability proof",
+    "SLA boundary is observed grid only; no interpolation or extrapolation",
+    "Empirical service scaling is IID synthetic phase-batch/stage timing, not request-level variance",
+    "Low sample counts do not establish a reliable tail; all run counts remain visible"
+  ],
+  "measurement_contract": {
+    "arrival_window_ms": [
+      0,
+      10000.0
+    ],
+    "closed_loop": "client population is distinct from scheduler max_batch_size",
+    "drain_ms": 20000,
+    "initial_state": "fresh engine and empty measured cache per point/replication",
+    "latency": "original completed-request metrics; failed/timedout/unfinished veto SLO pass",
+    "quantile": "linear interpolation at (n-1)*q; pooled across all declared replications",
+    "service_time": {
+      "kind": "empirical_step_scale",
+      "samples": [
+        0.7,
+        0.8,
+        1.0,
+        1.2,
+        1.3
+      ]
+    },
+    "stability": "finite observation only; completed drain plus declared backlog growth test",
+    "throughput": "original arrival-cohort completions / offered window, including drain",
+    "window_completed_throughput": "requests completed at or before window end / offered window"
+  },
+  "boundaries": {
+    "last_observed_stable_rps": 100,
+    "p99_decreases_on_grid": false,
+    "sla_max_observed": 25,
+    "slo_nonmonotonic": false,
+    "slo_pass_fail_brackets": [
+      {
+        "axis": "offered_rps",
+        "fail": 50,
+        "pass": 25,
+        "resolution": 25
+      }
+    ],
+    "stability_nonmonotonic": false,
+    "stable_overloaded_brackets": [
+      {
+        "overloaded": 125,
+        "resolution_rps": 25,
+        "stable": 100
+      }
+    ]
+  },
+  "slo": {
+    "p99_e2e_ms": 30
+  },
+  "points": [
+    {
+      "point_index": 0,
+      "offered_rps": 25,
+      "clients": null,
+      "classification": "observed_stable",
+      "slo_pass": true,
+      "mixed_replication_slo": false,
+      "replication_slo_outcomes": [
+        true,
+        true,
+        true
+      ],
+      "mean_requests_per_s": 24.53333333333333,
+      "mean_window_completed_requests_per_s": 24.53333333333333,
+      "throughput_observed_range": [
+        22.9,
+        25.4
+      ],
+      "sample_counts": {
+        "end_to_end": 736,
+        "tpot": 0,
+        "ttft": 736
+      },
+      "pooled_latency_ms": {
+        "end_to_end": {
+          "p50": 11.104348649855183,
+          "p90": 17.15805627351392,
+          "p95": 19.918319268483174,
+          "p99": 23.817618629083064,
+          "p999": 31.434366691129643
+        },
+        "tpot": {
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p999": null
+        },
+        "ttft": {
+          "p50": 11.104348649855183,
+          "p90": 17.15805627351392,
+          "p95": 19.918319268483174,
+          "p99": 23.817618629083064,
+          "p999": 31.434366691129643
+        }
+      }
+    },
+    {
+      "point_index": 1,
+      "offered_rps": 50,
+      "clients": null,
+      "classification": "observed_stable",
+      "slo_pass": false,
+      "mixed_replication_slo": false,
+      "replication_slo_outcomes": [
+        false,
+        false,
+        false
+      ],
+      "mean_requests_per_s": 48.300000000000004,
+      "mean_window_completed_requests_per_s": 48.300000000000004,
+      "throughput_observed_range": [
+        44.7,
+        51.6
+      ],
+      "sample_counts": {
+        "end_to_end": 1449,
+        "tpot": 0,
+        "ttft": 1449
+      },
+      "pooled_latency_ms": {
+        "end_to_end": {
+          "p50": 12.0,
+          "p90": 22.735631236133493,
+          "p95": 26.520615723787657,
+          "p99": 34.75078173597119,
+          "p999": 52.06135920193884
+        },
+        "tpot": {
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p999": null
+        },
+        "ttft": {
+          "p50": 12.0,
+          "p90": 22.735631236133493,
+          "p95": 26.520615723787657,
+          "p99": 34.75078173597119,
+          "p999": 52.06135920193884
+        }
+      }
+    },
+    {
+      "point_index": 2,
+      "offered_rps": 75,
+      "clients": null,
+      "classification": "observed_stable",
+      "slo_pass": false,
+      "mixed_replication_slo": false,
+      "replication_slo_outcomes": [
+        false,
+        false,
+        false
+      ],
+      "mean_requests_per_s": 71.86666666666666,
+      "mean_window_completed_requests_per_s": 71.76666666666667,
+      "throughput_observed_range": [
+        68.5,
+        75.6
+      ],
+      "sample_counts": {
+        "end_to_end": 2156,
+        "tpot": 0,
+        "ttft": 2156
+      },
+      "pooled_latency_ms": {
+        "end_to_end": {
+          "p50": 17.572147680386934,
+          "p90": 47.35819256271327,
+          "p95": 60.325596555675475,
+          "p99": 87.47166708294796,
+          "p999": 124.34058426414046
+        },
+        "tpot": {
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p999": null
+        },
+        "ttft": {
+          "p50": 17.572147680386934,
+          "p90": 47.35819256271327,
+          "p95": 60.325596555675475,
+          "p99": 87.47166708294796,
+          "p999": 124.34058426414046
+        }
+      }
+    },
+    {
+      "point_index": 3,
+      "offered_rps": 100,
+      "clients": null,
+      "classification": "observed_stable",
+      "slo_pass": false,
+      "mixed_replication_slo": false,
+      "replication_slo_outcomes": [
+        false,
+        false,
+        false
+      ],
+      "mean_requests_per_s": 99.16666666666667,
+      "mean_window_completed_requests_per_s": 95.3,
+      "throughput_observed_range": [
+        96.0,
+        103.1
+      ],
+      "sample_counts": {
+        "end_to_end": 2975,
+        "tpot": 0,
+        "ttft": 2975
+      },
+      "pooled_latency_ms": {
+        "end_to_end": {
+          "p50": 118.34877986742595,
+          "p90": 346.8359091302151,
+          "p95": 383.47052635903134,
+          "p99": 436.36739135719523,
+          "p999": 468.6629760215571
+        },
+        "tpot": {
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p999": null
+        },
+        "ttft": {
+          "p50": 118.34877986742595,
+          "p90": 346.8359091302151,
+          "p95": 383.47052635903134,
+          "p99": 436.36739135719523,
+          "p999": 468.6629760215571
+        }
+      }
+    },
+    {
+      "point_index": 4,
+      "offered_rps": 125,
+      "clients": null,
+      "classification": "observed_overloaded",
+      "slo_pass": false,
+      "mixed_replication_slo": false,
+      "replication_slo_outcomes": [
+        false,
+        false,
+        false
+      ],
+      "mean_requests_per_s": 125.03333333333333,
+      "mean_window_completed_requests_per_s": 99.7,
+      "throughput_observed_range": [
+        122.0,
+        128.4
+      ],
+      "sample_counts": {
+        "end_to_end": 3751,
+        "tpot": 0,
+        "ttft": 3751
+      },
+      "pooled_latency_ms": {
+        "end_to_end": {
+          "p50": 1088.800510189928,
+          "p90": 2249.3899968211617,
+          "p95": 2515.8352334183874,
+          "p99": 2811.6668987765224,
+          "p999": 2874.7011554491346
+        },
+        "tpot": {
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p999": null
+        },
+        "ttft": {
+          "p50": 1088.800510189928,
+          "p90": 2249.3899968211617,
+          "p95": 2515.8352334183874,
+          "p99": 2811.6668987765224,
+          "p999": 2874.7011554491346
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "backend": "tool",
+  "hardware_validated": false,
+  "input_files": [],
+  "mode": "validate",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059"
+}

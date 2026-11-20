@@ -1,0 +1,37 @@
+<!doctype html><html lang='zh-CN'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>冻结 DAG 候选部署比较</title><style>
+body{margin:0;background:#f4f6f8;color:#162438;font:15px/1.6 system-ui,sans-serif}
+main{max-width:1200px;margin:32px auto;padding:32px;background:white;border-radius:12px}
+h1{margin-top:0;font-size:30px}h2{margin-top:32px;font-size:21px}.lead{color:#465a72}
+aside{padding:14px 18px;border-left:4px solid #bf7019;background:#fff6e8;margin:16px 0}
+.synthetic{border-color:#2563eb;background:#eff6ff}a{color:#174f9c}p{overflow-wrap:anywhere}
+.hash{font-size:12px;font-family:monospace}.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #dce3eb}
+th{background:#edf2f7;white-space:nowrap}td{overflow-wrap:anywhere;max-width:360px}
+.gantt{display:block;width:100%;height:auto;margin:20px 0;border:1px solid #dce3eb}
+@media(max-width:700px){main{margin:0;padding:18px;border-radius:0}h1{font-size:24px}}
+</style></head><body><main><h1>冻结 DAG 候选部署比较</h1>
+<p class='lead'>同一冻结请求图上的因果调度预测。时间单位为 ms。</p>
+<aside>所有时间、利用率和 KV 水位均为 CPU 模拟预测；即使使用实测 Profile，本次运行也不是 W7900D 端到端真机测量。</aside>
+<aside class='synthetic'><strong>人工教学轨迹。</strong>此轨迹不是采集的真实 Claude / claudecode deep-research 轨迹；示例中的 32B/7B 几何与硬件性能参数为显式解析假设。</aside>
+<p><strong>轨迹来源：</strong>synthetic_teaching_trace</p>
+<p>52-node authored fork/join teaching workload. This is not a captured claudecode trace. 32B/7B names denote declared dense macro geometries. Four 48-GiB devices and 100 TFLOP/s, 800 GB/s are analytical assumptions, not measured W7900D specifications. INT4 effective width 0.515625 includes declared GPTQ-128-like scale metadata; fused dequant and all quantized behavior are assumptions.</p>
+<p class='hash'><strong>Trace SHA256：</strong>1012da76e80906009d3b637e8d8dab7f2d1b3668887a6bffa1b6e757845a2559</p>
+<p><a href='report.json'>完整 JSON</a></p>
+<h2>候选摘要</h2>
+<p>仅全部节点完成、资源排空且没有错误的候选进入排名。截断结果可以保留任务 makespan，但不获得名次。</p>
+<p><a href='candidates.csv'>候选 CSV</a></p>
+<div class='table-scroll'><table><thead><tr><th scope='col'>候选</th><th scope='col'>合格名次</th><th scope='col'>整体状态</th><th scope='col'>任务 makespan</th><th scope='col'>观测 / 排空 elapsed</th><th scope='col'>资源已排空</th></tr></thead><tbody><tr><td>bf16-tp2-small-r2</td><td>1</td><td>COMPLETED</td><td>22,924.280</td><td>22,924.280</td><td>True</td></tr><tr><td>fp8-single-small-r3</td><td>3</td><td>COMPLETED</td><td>29,665.989</td><td>29,665.989</td><td>True</td></tr><tr><td>int4-single-small-r3</td><td>2</td><td>COMPLETED</td><td>24,380.265</td><td>24,380.265</td><td>True</td></tr></tbody></table></div>
+<p>任务 makespan 以最后输出 token 为准；elapsed 包含必要的反馈与 DMA 排空。二者分开报告，不能把 PP 反馈尾部计入用户任务墙钟。</p>
+<section><h2>bf16-tp2-small-r2</h2>
+<p>状态：COMPLETED · 任务 makespan：22,924.280 ms · elapsed：22,924.280 ms</p>
+<p><a href='candidate-000/report.html'>节点与设备详情</a> · <a href='candidate-000/gantt.svg'>甘特图 SVG</a> · <a href='candidate-000/nodes.csv'>节点 CSV</a></p>
+<img class='gantt' loading='lazy' src='candidate-000/gantt.svg' alt='bf16-tp2-small-r2 的节点时间线'></section>
+<section><h2>fp8-single-small-r3</h2>
+<p>状态：COMPLETED · 任务 makespan：29,665.989 ms · elapsed：29,665.989 ms</p>
+<p><a href='candidate-001/report.html'>节点与设备详情</a> · <a href='candidate-001/gantt.svg'>甘特图 SVG</a> · <a href='candidate-001/nodes.csv'>节点 CSV</a></p>
+<img class='gantt' loading='lazy' src='candidate-001/gantt.svg' alt='fp8-single-small-r3 的节点时间线'></section>
+<section><h2>int4-single-small-r3</h2>
+<p>状态：COMPLETED · 任务 makespan：24,380.265 ms · elapsed：24,380.265 ms</p>
+<p><a href='candidate-002/report.html'>节点与设备详情</a> · <a href='candidate-002/gantt.svg'>甘特图 SVG</a> · <a href='candidate-002/nodes.csv'>节点 CSV</a></p>
+<img class='gantt' loading='lazy' src='candidate-002/gantt.svg' alt='int4-single-small-r3 的节点时间线'></section>
+<h2>模型边界</h2><ul><li>model pools own exclusive devices and independent links, host pools and DMA lanes</li><li>dispatch, DAG dependency evaluation and inter-model data transfer have zero modeled latency</li><li>request content and target model are frozen; generated semantic quality is not evaluated</li><li>quantized byte widths are declared analytical assumptions, not quantization kernel validation</li><li>per-device utilization is modeled busy time, not measured GPU occupancy</li></ul></main></body></html>

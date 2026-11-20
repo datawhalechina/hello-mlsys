@@ -1,0 +1,24 @@
+{
+  "model_path": "/mnt/public/models/Qwen3-0.6B",
+  "device": "AMD Radeon RX 7900 XTX",
+  "dtype": "bfloat16",
+  "prompt_tokens": 512,
+  "decode_steps": 8,
+  "load_s": 1.7015029189642519,
+  "prefill_ms": 51.484527587890625,
+  "decode_step_ms": [
+    46.9327507019043,
+    45.69208908081055,
+    39.02101135253906,
+    34.70056915283203,
+    34.130916595458984,
+    36.18224334716797,
+    37.27671432495117,
+    34.07505416870117
+  ],
+  "decode_step_ms_median": 36.72947883605957,
+  "decode_tok_s_median": 27.226087374216675,
+  "peak_allocated_gib": 1.545426845550537,
+  "peak_reserved_gib": 1.61328125,
+  "hardware_validated": true
+}

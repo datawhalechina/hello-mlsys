@@ -1,0 +1,1 @@
+Collection adapter execution; raw evidence and measurement boundaries are preserved.

@@ -1,0 +1,41 @@
+{
+  "drain_ms": 20000,
+  "min_completed_samples": 100,
+  "rate_grid_rps": [
+    25,
+    50,
+    75,
+    100,
+    125
+  ],
+  "replications": 3,
+  "schema_version": 1,
+  "service_time": {
+    "kind": "empirical_step_scale",
+    "samples": [
+      0.7,
+      0.8,
+      1.0,
+      1.2,
+      1.3
+    ]
+  },
+  "slo": {
+    "p99_e2e_ms": 30
+  },
+  "workload": {
+    "arrival": {
+      "duration_ms": 10000,
+      "max_requests": 2000,
+      "process": "poisson",
+      "rate_rps": 25
+    },
+    "request_prefix": "poisson-lesson",
+    "schema_version": 1,
+    "seed": 42,
+    "tokens": {
+      "input": 16,
+      "output": 1
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "backend": "tool",
+  "hardware_validated": false,
+  "input_files": [
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/v1_9/capacity-measurements.fixture.json",
+      "sha256": "a86d3530e82dfc37467a14f65812c4a205b7af3f8b47fe64de1298bab03f3be8"
+    }
+  ],
+  "mode": "validate",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source": {
+    "kind": "test_fixture",
+    "reference": "CLI protocol fixture; no GPU or communication measurement"
+  },
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059"
+}

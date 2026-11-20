@@ -1,0 +1,487 @@
+{
+  "backend": "simulated",
+  "calibration_source": "analytical",
+  "comparison_contract": {
+    "evaluation": {
+      "drain": true,
+      "max_drain_ms": null,
+      "measurement_window_ms": null,
+      "tpot_sla_ms": null,
+      "ttft_sla_ms": null
+    },
+    "execution": {
+      "initial_state": "empty_cache",
+      "max_simulated_ms": 600000.0,
+      "seed": 42,
+      "warmup": []
+    },
+    "identity": {
+      "devices": [
+        {
+          "compute_tflops": 195.0,
+          "id": "gpu0",
+          "memory_bandwidth_gbps": 640.0,
+          "memory_bytes": 17179869184,
+          "name": "Declared single GPU"
+        }
+      ],
+      "execution": {
+        "communication_buffer_bytes": 0,
+        "graph_bytes": 0,
+        "kv_block_tokens": 16,
+        "runtime_bytes": 134217728
+      },
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "bfloat16",
+        "architecture_config_sha256": "cb13f33d3f13fa5de6595df29bb6d9ae04c120dbb107a3c2a2e5d4b3b990deca",
+        "final_norm": true,
+        "head_dim": 128,
+        "hidden_size": 2560,
+        "intermediate_size": 9728,
+        "kv_bytes": 2.0,
+        "kv_dtype": "bfloat16",
+        "name": "Qwen3-4B",
+        "num_attention_heads": 32,
+        "num_kv_heads": 8,
+        "num_layers": 36,
+        "qk_norm": true,
+        "revision": "course-7df2dae493eb-geometry",
+        "tie_word_embeddings": true,
+        "vocab_size": 151936,
+        "weight_bytes": 2.0,
+        "weight_dtype": "bfloat16"
+      },
+      "parallelism": {
+        "pipeline_parallel_size": 1,
+        "shard_plan": "megatron_dense_no_sp",
+        "stage_layers": [
+          36
+        ],
+        "tensor_parallel_size": 1
+      },
+      "runtime": {
+        "driver_version": "unspecified",
+        "name": "unspecified",
+        "rccl_version": "unspecified",
+        "rocm_version": "unspecified",
+        "timing_boundary": "step_includes_output_and_sampling_v1",
+        "version": "unspecified"
+      },
+      "topology": {
+        "link_bandwidth_gbps": 20.0,
+        "link_latency_us": 5.0,
+        "name": "single-node-uncontended"
+      }
+    },
+    "schema_version": 1,
+    "strategy": {
+      "chunked_prefill": true,
+      "max_batch_size": 8,
+      "max_batch_tokens": 2048,
+      "max_preemptions_per_request": 100,
+      "memory": {
+        "communication_buffer_bytes": 0,
+        "cpu_swap_bytes": 0,
+        "graph_bytes": 0,
+        "guard_blocks": 0,
+        "kv_block_tokens": 16,
+        "kv_pool_bytes": 2147483648,
+        "other_bytes": 0,
+        "runtime_bytes": 134217728,
+        "safety_margin_bytes": 268435456,
+        "swap_d2h_bandwidth_gbps": 12.0,
+        "swap_h2d_bandwidth_gbps": 12.0,
+        "swap_latency_us": 10.0,
+        "workspace_base_bytes": 67108864,
+        "workspace_bytes_per_token": 1024
+      },
+      "mixed_batching": true,
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "bfloat16",
+        "architecture_config_sha256": "cb13f33d3f13fa5de6595df29bb6d9ae04c120dbb107a3c2a2e5d4b3b990deca",
+        "final_norm": true,
+        "head_dim": 128,
+        "hidden_size": 2560,
+        "intermediate_size": 9728,
+        "kv_bytes": 2.0,
+        "kv_dtype": "bfloat16",
+        "name": "Qwen3-4B",
+        "num_attention_heads": 32,
+        "num_kv_heads": 8,
+        "num_layers": 36,
+        "qk_norm": true,
+        "revision": "course-7df2dae493eb-geometry",
+        "tie_word_embeddings": true,
+        "vocab_size": 151936,
+        "weight_bytes": 2.0,
+        "weight_dequant": "none",
+        "weight_dtype": "bfloat16"
+      },
+      "pipeline_feedback_latency_us": 0.0,
+      "pipeline_max_inflight_microbatches": 8,
+      "pipeline_microbatch_size": 1,
+      "pipeline_p2p": true,
+      "pipeline_parallel_size": 1,
+      "pipeline_transport": "full_hidden",
+      "pipeline_transport_max_tokens": 0,
+      "preemption": "recompute",
+      "prefill_chunk_tokens": 512,
+      "prefix_cache": false,
+      "prefix_cache_max_blocks": 128,
+      "replica_routing": "least_loaded",
+      "replicas": 1,
+      "scheduler": "continuous_batching",
+      "stage_layers": [
+        36
+      ],
+      "swap_fallback": "none",
+      "tensor_parallel_size": 1
+    },
+    "timing_boundary": "step_includes_output_and_sampling_v1",
+    "workload_sha256": "0c4e1f99160cd119e62f0c5817176d5ad5957c2de70d19648eae42e8628e6c18"
+  },
+  "config_sha256": "34a855949cd26a2c5e12a1ce74bfbd92b47294712c9800a53a31e51aa90fecad",
+  "effective_config": {
+    "calibration": {
+      "allow_extrapolation": false,
+      "allow_test_fixture": false,
+      "backend": "analytical",
+      "bandwidth_efficiency": 0.5,
+      "compute_efficiency": 0.5,
+      "decode_ms": 1.0,
+      "dequant_flops_per_weight": 1.0,
+      "driver_version": "unspecified",
+      "framework_overhead_us": 5.0,
+      "launch_overhead_us": 2.0,
+      "mixed_ms": 10.0,
+      "native_pp_communication_allow_extrapolation": false,
+      "native_pp_communication_profile_path": null,
+      "native_pp_communication_profile_version": "",
+      "prefill_ms": 10.0,
+      "profile_path": null,
+      "profile_version": "web-uncalibrated-v1",
+      "rccl_version": "unspecified",
+      "recompute_ms": 10.0,
+      "replica_native_pp_communication_profile_paths": [],
+      "replica_profile_paths": [],
+      "replica_workspace_profile_paths": [],
+      "rocm_version": "unspecified",
+      "runtime_config_sha256": "",
+      "runtime_name": "unspecified",
+      "runtime_version": "unspecified",
+      "timing_boundary": "step_includes_output_and_sampling_v1",
+      "workspace_profile_path": null,
+      "workspace_profile_version": ""
+    },
+    "evaluation": {
+      "drain": true,
+      "max_drain_ms": null,
+      "measurement_window_ms": null,
+      "tpot_sla_ms": null,
+      "ttft_sla_ms": null
+    },
+    "execution": {
+      "detailed_events": true,
+      "initial_state": "empty_cache",
+      "max_events": 100000,
+      "max_simulated_ms": 600000.0,
+      "seed": 42,
+      "warmup": []
+    },
+    "infra": {
+      "devices": [
+        {
+          "compute_tflops": 195.0,
+          "id": "gpu0",
+          "memory_bandwidth_gbps": 640.0,
+          "memory_bytes": 17179869184,
+          "name": "Declared single GPU"
+        }
+      ],
+      "link_bandwidth_gbps": 20.0,
+      "link_latency_us": 5.0,
+      "topology": "single-node-uncontended"
+    },
+    "schema_version": 1,
+    "strategy": {
+      "chunked_prefill": true,
+      "max_batch_size": 8,
+      "max_batch_tokens": 2048,
+      "max_preemptions_per_request": 100,
+      "memory": {
+        "communication_buffer_bytes": 0,
+        "cpu_swap_bytes": 0,
+        "graph_bytes": 0,
+        "guard_blocks": 0,
+        "kv_block_tokens": 16,
+        "kv_pool_bytes": 2147483648,
+        "other_bytes": 0,
+        "runtime_bytes": 134217728,
+        "safety_margin_bytes": 268435456,
+        "swap_d2h_bandwidth_gbps": 12.0,
+        "swap_h2d_bandwidth_gbps": 12.0,
+        "swap_latency_us": 10.0,
+        "workspace_base_bytes": 67108864,
+        "workspace_bytes_per_token": 1024
+      },
+      "mixed_batching": true,
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "bfloat16",
+        "architecture_config_sha256": "cb13f33d3f13fa5de6595df29bb6d9ae04c120dbb107a3c2a2e5d4b3b990deca",
+        "final_norm": true,
+        "head_dim": 128,
+        "hidden_size": 2560,
+        "intermediate_size": 9728,
+        "kv_bytes": 2.0,
+        "kv_dtype": "bfloat16",
+        "name": "Qwen3-4B",
+        "num_attention_heads": 32,
+        "num_kv_heads": 8,
+        "num_layers": 36,
+        "qk_norm": true,
+        "revision": "course-7df2dae493eb-geometry",
+        "tie_word_embeddings": true,
+        "vocab_size": 151936,
+        "weight_bytes": 2.0,
+        "weight_dequant": "none",
+        "weight_dtype": "bfloat16"
+      },
+      "pipeline_feedback_latency_us": 0.0,
+      "pipeline_max_inflight_microbatches": 8,
+      "pipeline_microbatch_size": 1,
+      "pipeline_p2p": true,
+      "pipeline_parallel_size": 1,
+      "pipeline_transport": "full_hidden",
+      "pipeline_transport_max_tokens": 0,
+      "preemption": "recompute",
+      "prefill_chunk_tokens": 512,
+      "prefix_cache": false,
+      "prefix_cache_max_blocks": 128,
+      "replica_routing": "least_loaded",
+      "replicas": 1,
+      "scheduler": "continuous_batching",
+      "stage_layers": [],
+      "swap_fallback": "none",
+      "tensor_parallel_size": 1
+    },
+    "workload": [
+      {
+        "arrival_ms": 0.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0001",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0002",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 1000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0003",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 1500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0004",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 2000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0005",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 2500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0006",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 3000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0007",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 3500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0008",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 4000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0009",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 4500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0010",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 5000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0011",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 5500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0012",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 6000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0013",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 6500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0014",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 7000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0015",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 7500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0016",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 8000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0017",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 8500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0018",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 9000.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0019",
+        "timeout_ms": null
+      },
+      {
+        "arrival_ms": 9500.0,
+        "cache_namespace": "",
+        "input_tokens": 256,
+        "output_tokens": 32,
+        "priority": 0,
+        "prompt_token_ids": [],
+        "request_id": "web-0020",
+        "timeout_ms": null
+      }
+    ]
+  },
+  "experiment_path": "/tmp/web-exported-experiment.json",
+  "hardware_validated": false,
+  "input_files": [
+    {
+      "path": "/tmp/web-exported-experiment.json",
+      "sha256": "d2bcc4ca093f55d60b7a37719c0675840793ee863852cf8d0b06a6b1be4f8960"
+    }
+  ],
+  "mode": "simulate",
+  "profile_version": "web-uncalibrated-v1",
+  "schema_version": 1,
+  "seed": 42,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059"
+}

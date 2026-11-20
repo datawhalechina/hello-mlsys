@@ -1,0 +1,9 @@
+id,fit,source_point_efficiency
+gemm_2048^3,False,0.2500
+gemm_4096^3,True,0.5000
+gemm_5120^3,True,0.5000
+gemm_8192^3,False,0.4000
+ln_2048x1024,False,0.5001
+ln_8192x4096,True,0.8000
+softmax_4096x4096,False,1.2499
+softmax_8192x4096,True,0.8000

@@ -1,0 +1,12 @@
+##### screen dag
+Fri Nov 20 05:54:40 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch9-3-screen-dag/result.json", "status": "COMPLETED"}
+exit=0
+##### dag candidates
+Fri Nov 20 05:54:41 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch9-3-dag-candidates/result.json", "status": "COMPLETED"}
+exit=0
+##### dag fork join
+Fri Nov 20 05:54:44 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch9-3-dag-fork-join/result.json", "status": "COMPLETED"}
+exit=0

@@ -1,0 +1,162 @@
+{
+  "admitted_count": 2,
+  "backend": "simulated",
+  "batching": {
+    "compute_busy_ms_semantics": "single_group_time",
+    "mixed_batches_admitted": 0,
+    "mixed_batches_completed": 0,
+    "mixed_batching": false,
+    "mixed_compute_busy_ms": 0.0,
+    "policy": "homogeneous_phase_batches",
+    "recompute_policy": "homogeneous_recovery_batches"
+  },
+  "calibration_source": "synthetic",
+  "cohort_completion_rate": 1.0,
+  "completion_rate": 1.0,
+  "completion_rate_denominator": 2,
+  "compute_busy_ms": 28.0,
+  "counts": {
+    "completed": 2,
+    "failed": 0,
+    "not_admitted": 0,
+    "timed_out": 0,
+    "total": 2,
+    "unfinished": 0
+  },
+  "error_code": null,
+  "evaluation_count": 2,
+  "events_processed": 26,
+  "goodput": {
+    "eligible_requests": 2,
+    "output_tokens_per_s": 1714.2857142857142,
+    "requests_per_s": 71.42857142857143,
+    "rule": "completed_requests_satisfying_all_declared_slas",
+    "sla_declared": true,
+    "window_ms": 28.0
+  },
+  "hardware_validated": false,
+  "latency_ms": {
+    "end_to_end": {
+      "p50": 28.0,
+      "p95": 28.0,
+      "p99": 28.0
+    },
+    "itl": {
+      "p50": 1.0,
+      "p95": 1.0,
+      "p99": 1.0
+    },
+    "tpot": {
+      "p50": 1.0,
+      "p95": 1.0,
+      "p99": 1.0
+    },
+    "ttft": {
+      "p50": 5.0,
+      "p95": 5.0,
+      "p99": 5.0
+    }
+  },
+  "limitations": [
+    "uncalibrated CPU model",
+    "single replica; homogeneous phase batches",
+    "fixed KV pool; allocator fragmentation is not simulated",
+    "prefill-first admission; pressure drains active requests before recovery"
+  ],
+  "measurement_contract": {
+    "arrival_window_ms": null,
+    "arrival_window_rule": "half_open",
+    "completion_denominator": "requests_eligible_for_arrival_window",
+    "drain": true,
+    "failed_timed_out_unfinished_in_completion_denominator": true,
+    "initial_state": "empty_cache",
+    "max_drain_ms": null,
+    "outside_window_in_completion_denominator": false
+  },
+  "memory": [
+    {
+      "allocatable_free_blocks": 6,
+      "budget_peak_bytes": 5261312,
+      "device_id": "gpu0",
+      "device_memory_bytes": 67108864,
+      "fixed_budget_bytes": 4179968,
+      "free_blocks": 6,
+      "guard_blocks": 0,
+      "kv_block_bytes": 8192,
+      "kv_bytes_per_token": 512,
+      "kv_pool_reserved_bytes": 49152,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 6,
+      "physical_peak_bytes": 4212736,
+      "physical_reserved_bytes": 3131392,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 6,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 2033664,
+      "workspace_last_source": "analytical_assumption",
+      "workspace_peak_bytes": 1081344,
+      "workspace_source": "analytical_assumption"
+    }
+  ],
+  "preemption_count": 0,
+  "prefill": {
+    "batch_policy": "homogeneous_phase_batches",
+    "chunk_token_limit": null,
+    "chunked": false,
+    "completed_chunks": 2,
+    "computed_tokens": 32,
+    "reused_prefix_tokens": 0
+  },
+  "prefix_cache": {
+    "abandoned_hit_tokens": 0,
+    "abandoned_lookups": 0,
+    "attached_block_references": 0,
+    "block_tokens": 16,
+    "bypassed_requests": 0,
+    "cached_blocks": 0,
+    "capacity_blocks": 128,
+    "deduplicated_blocks": 0,
+    "enabled": false,
+    "entries": [],
+    "evictable_blocks": 0,
+    "evicted_blocks": 0,
+    "hit_rate": null,
+    "hit_requests": 0,
+    "hit_tokens": 0,
+    "identity": "sha256_parent_digest_and_unsigned_8byte_big_endian_block_token_ids",
+    "lookup_requests": 0,
+    "miss_requests": 0,
+    "peak_cached_blocks": 0,
+    "pinned_blocks": 0,
+    "policy": "full_prompt_blocks_sha256_ancestry_and_namespace_lru_unreferenced_only",
+    "private_blocks": 0,
+    "published_blocks": 0,
+    "shared_blocks": 0
+  },
+  "profile_provenance": null,
+  "profile_version": "uncalibrated-v1",
+  "quality_status": "not_evaluated",
+  "recompute_execution_ms": 0.0,
+  "recomputed_tokens": 0,
+  "simulated_ms": 28.0,
+  "sla_satisfied": true,
+  "status": "COMPLETED",
+  "throughput": {
+    "output_tokens_per_s": 1714.2857142857142,
+    "requests_per_s": 71.42857142857143,
+    "window_ms": 28.0,
+    "window_rule": "zero_to_simulation_end"
+  },
+  "warmup": {
+    "cache_effect": "none; measured run starts with empty KV",
+    "enabled": false,
+    "status": "NOT_REQUESTED"
+  }
+}

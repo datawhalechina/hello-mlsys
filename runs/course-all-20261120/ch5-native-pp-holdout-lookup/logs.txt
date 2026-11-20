@@ -1,0 +1,1 @@
+CPU tool execution; hardware validation is not inferred from supplied records.

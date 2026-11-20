@@ -1,0 +1,17 @@
+{
+  "backend": "tool",
+  "hardware_validated": false,
+  "historical_prediction_before_measurement_established": false,
+  "input_files": [
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/course/dag-candidates.plan.json",
+      "sha256": "e3981b3b4cede834ee725208e938cc59f38b21112ad853c49bbfe9e2fd67b76a"
+    }
+  ],
+  "mode": "dag",
+  "prediction_id": "dag-b5d84540a539d50d3a2a34f8",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059",
+  "stored_at": "2026-11-20T05:54:43.904367+00:00"
+}

@@ -1,0 +1,42 @@
+{
+  "model": "/mnt/public/models/Qwen3-4B",
+  "device": "cuda:0",
+  "dtype": "bfloat16",
+  "torch": "2.12.0+rocm10.0.0",
+  "transformers": "5.17.0",
+  "gpu": "AMD Radeon RX 7900 XTX",
+  "prompt_tokens": 256,
+  "output_tokens": 64,
+  "parameter_count": 4022468096,
+  "load_s": 6.440287828445435,
+  "vram_before_bytes": {
+    "0": 28585984,
+    "1": 13740314624
+  },
+  "vram_after_load_bytes": {
+    "0": 8332070912,
+    "1": 13740437504
+  },
+  "load_vram_delta_bytes": {
+    "0": 8303484928,
+    "1": 122880
+  },
+  "ttft_ms_runs": [
+    41.47576904296875,
+    41.32741928100586,
+    41.41075897216797
+  ],
+  "ttft_ms_p50": 41.41075897216797,
+  "ttft_ms_p99": 41.474468841552735,
+  "tpot_ms_runs": [
+    29.987552915300643,
+    29.30362232147701,
+    29.2944817921472
+  ],
+  "tpot_ms_p50": 29.30362232147701,
+  "tpot_ms_p99": 29.97387430342417,
+  "decode_tok_s_p50": 34.12547394412351,
+  "torch_peak_allocated_gib": 7.683843612670898,
+  "torch_peak_reserved_gib": 7.71875,
+  "hardware_validated": true
+}

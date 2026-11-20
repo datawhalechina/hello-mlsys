@@ -1,0 +1,20 @@
+##### predict 32b-single
+Fri Nov 20 05:50:54 UTC 2026
+{"error_code": "STATIC_MEMORY_INFEASIBLE", "next_actions": ["Inspect result.json and logs.txt; use a fresh output directory."], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-32b-single/result.json", "status": "FAILED"}
+exit=2
+##### predict 32b-dp2
+Fri Nov 20 05:50:54 UTC 2026
+{"error_code": "STATIC_MEMORY_INFEASIBLE", "next_actions": ["Inspect result.json and logs.txt; use a fresh output directory."], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-32b-dp2/result.json", "status": "FAILED"}
+exit=2
+##### predict 32b-tp2
+Fri Nov 20 05:50:54 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-32b-tp2/result.json", "status": "COMPLETED"}
+exit=0
+##### predict 32b-pp2
+Fri Nov 20 05:50:54 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-32b-pp2/result.json", "status": "COMPLETED"}
+exit=0
+##### predict 4b-dp2
+Fri Nov 20 05:50:55 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-4b-dp2/result.json", "status": "COMPLETED"}
+exit=0

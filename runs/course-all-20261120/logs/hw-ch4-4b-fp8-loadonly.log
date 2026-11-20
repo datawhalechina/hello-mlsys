@@ -1,0 +1,23 @@
+Loading weights:   0%|          | 0/651 [00:00<?, ?it/s]Loading weights:   0%|          | 1/651 [00:00<03:28,  3.12it/s]Loading weights:   0%|          | 2/651 [00:00<04:17,  2.52it/s]Loading weights:   4%|▍         | 26/651 [00:00<00:14, 43.66it/s]Loading weights:   9%|▉         | 60/651 [00:00<00:05, 101.17it/s]Loading weights:  14%|█▍        | 93/651 [00:01<00:03, 149.34it/s]Loading weights:  18%|█▊        | 120/651 [00:01<00:02, 177.55it/s]Loading weights:  23%|██▎       | 151/651 [00:01<00:02, 204.71it/s]Loading weights:  29%|██▊       | 186/651 [00:01<00:01, 238.40it/s]Loading weights:  34%|███▍      | 220/651 [00:01<00:01, 262.40it/s]Loading weights:  39%|███▊      | 251/651 [00:01<00:01, 273.40it/s]Loading weights:  43%|████▎     | 281/651 [00:01<00:01, 272.96it/s]Loading weights:  48%|████▊     | 314/651 [00:01<00:01, 279.76it/s]Loading weights:  53%|█████▎    | 347/651 [00:01<00:01, 292.74it/s]Loading weights:  59%|█████▊    | 381/651 [00:02<00:00, 301.03it/s]Loading weights:  63%|██████▎   | 412/651 [00:02<00:00, 297.98it/s]Loading weights:  68%|██████▊   | 443/651 [00:02<00:00, 290.14it/s]Loading weights:  73%|███████▎  | 475/651 [00:02<00:00, 292.22it/s]Loading weights:  78%|███████▊  | 510/651 [00:02<00:00, 300.25it/s]Loading weights:  84%|████████▎ | 544/651 [00:02<00:00, 310.10it/s]Loading weights:  88%|████████▊ | 576/651 [00:02<00:00, 310.88it/s]Loading weights:  93%|█████████▎| 608/651 [00:02<00:00, 303.38it/s]Loading weights:  98%|█████████▊| 639/651 [00:02<00:00, 291.40it/s]Loading weights: 100%|██████████| 651/651 [00:02<00:00, 222.08it/s]
+{
+  "model": "/mnt/public/models/Qwen3-4B-FP8",
+  "load_s": 4.443038463592529,
+  "parameter_count": 4022689856,
+  "param_bytes_bf16": 8045379712,
+  "vram_before": {
+    "0": 28581888,
+    "1": 13740204032
+  },
+  "vram_after": {
+    "0": 5892722688,
+    "1": 13740376064
+  },
+  "load_delta": {
+    "0": 5864140800,
+    "1": 172032
+  },
+  "torch_allocated_gib": 4.115133285522461,
+  "torch_reserved_gib": 5.220703125,
+  "quantization_config": "FineGrainedFP8Config(quant_method='fp8')",
+  "hardware_validated": true
+}

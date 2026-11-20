@@ -1,0 +1,6 @@
+id,scope,source_prediction_ms,measured_ms,source_error_pct,nominal_bound,recomputed_t_compute_ms,recomputed_t_memory_ms,recomputed_prediction_ms,recomputed_bound,recomputed_error_pct
+gemm_6144,source_declared_regime_new_shape,4.7575,4.85265,2.0,compute,4.7575022355692305,0.442368,4.7575022355692305,compute,1.9999520697941309
+ln_16384x4096,source_declared_regime_new_shape,0.52429,0.5138,-2.0,memory,0.002753184164102564,0.524288,0.524288,memory,-2.000427246093739
+softmax_16384x4096,source_declared_regime_new_shape,0.52429,0.54002,3.0,memory,0.002753184164102564,0.524288,0.524288,memory,3.000640869140625
+attn_mha16_s512,out_of_fit_domain_attention,0.01638,0.03276,100.0,memory,0.022025473312820513,0.016384,0.022025473312820513,compute,48.736871778964975
+attn_mha16_s1024,out_of_fit_domain_attention,0.0881,0.13215,50.0,compute,0.08810189325128205,0.032768,0.08810189325128205,compute,49.99677659943698

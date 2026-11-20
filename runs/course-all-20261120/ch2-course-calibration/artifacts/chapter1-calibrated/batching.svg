@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="550" viewBox="0 0 1150 550" role="img" aria-label="Decode batching：step 与聚合吞吐（η/β 迁移）">
+<title>Decode batching：step 与聚合吞吐（η/β 迁移）</title>
+<metadata>report.json sha256=4169fc37698c5a981f1783be3b6b8c99521b9745299fa719b27721d3d6393b06; protocol=hello_mlsys_ch1_eta_beta_transfer_v1; hardware_validated=false</metadata>
+<style>text{font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172b3a;font-size:13px} .small{font-size:11px} .title{font-size:21px;font-weight:600}.grid{stroke:#d9e2e8;stroke-width:1} .axis{stroke:#607785;stroke-width:1}</style>
+<rect width="1150" height="550" fill="#fff"/>
+<text x="32" y="34" class="title">Decode batching：step 与聚合吞吐（η/β 迁移）</text>
+<text x="82.00" y="110.00" >单步时间（ms）</text>
+<line x1="82" x2="520" y1="435.00" y2="435.00" class="grid"/>
+<text x="29.00" y="439.00" >0</text>
+<line x1="82" x2="520" y1="360.00" y2="360.00" class="grid"/>
+<text x="29.00" y="364.00" >5.9</text>
+<line x1="82" x2="520" y1="285.00" y2="285.00" class="grid"/>
+<text x="29.00" y="289.00" >12</text>
+<line x1="82" x2="520" y1="210.00" y2="210.00" class="grid"/>
+<text x="29.00" y="214.00" >18</text>
+<line x1="82" x2="520" y1="135.00" y2="135.00" class="grid"/>
+<text x="29.00" y="139.00" >24</text>
+<line x1="82.00" x2="82.00" y1="135" y2="435" class="grid"/>
+<text x="72.00" y="458.00" >1</text>
+<line x1="169.60" x2="169.60" y1="135" y2="435" class="grid"/>
+<text x="159.60" y="458.00" >4</text>
+<line x1="520.00" x2="520.00" y1="135" y2="435" class="grid"/>
+<text x="510.00" y="458.00" >16</text>
+<polyline points="82.00,402.36 169.60,393.57 520.00,358.41" fill="none" stroke="#176b9b" stroke-width="2"/>
+<g><title>qwen3_0_6b_decode_b1: t_step_ms=2.557664</title><circle cx="82.00" cy="402.36" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b4: t_step_ms=3.246464</title><circle cx="169.60" cy="393.57" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b16: t_step_ms=6.001664</title><circle cx="520.00" cy="358.41" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<polyline points="82.00,346.30 169.60,337.51 520.00,302.31" fill="none" stroke="#b0521c" stroke-width="2"/>
+<g><title>qwen3_1_7b_decode_b1: t_step_ms=6.950336</title><path d="M82.00,342.30l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b4: t_step_ms=7.639808</title><path d="M169.60,333.51l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b16: t_step_ms=10.397696</title><path d="M520.00,298.31l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<polyline points="82.00,230.72 169.60,219.40 520.00,174.13" fill="none" stroke="#27734d" stroke-width="2"/>
+<g><title>qwen3_4b_decode_b1: t_step_ms=16.007632</title><rect x="79.00" y="227.72" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b4: t_step_ms=16.894528</title><rect x="166.60" y="216.40" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b16: t_step_ms=20.442112</title><rect x="517.00" y="171.13" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="152.00" y="489.00" >Batch size B（ctx=1024，含当前 token）</text>
+<text x="660.00" y="110.00" >聚合吞吐上限（token/s）</text>
+<line x1="660" x2="1090" y1="435.00" y2="435.00" class="grid"/>
+<text x="607.00" y="439.00" >0</text>
+<line x1="660" x2="1090" y1="360.00" y2="360.00" class="grid"/>
+<text x="607.00" y="364.00" >7.7e+02</text>
+<line x1="660" x2="1090" y1="285.00" y2="285.00" class="grid"/>
+<text x="607.00" y="289.00" >1.5e+03</text>
+<line x1="660" x2="1090" y1="210.00" y2="210.00" class="grid"/>
+<text x="607.00" y="214.00" >2.3e+03</text>
+<line x1="660" x2="1090" y1="135.00" y2="135.00" class="grid"/>
+<text x="607.00" y="139.00" >3.1e+03</text>
+<line x1="660.00" x2="660.00" y1="135" y2="435" class="grid"/>
+<text x="650.00" y="458.00" >1</text>
+<line x1="746.00" x2="746.00" y1="135" y2="435" class="grid"/>
+<text x="736.00" y="458.00" >4</text>
+<line x1="1090.00" x2="1090.00" y1="135" y2="435" class="grid"/>
+<text x="1080.00" y="458.00" >16</text>
+<polyline points="660.00,396.74 746.00,314.43 1090.00,174.13" fill="none" stroke="#176b9b" stroke-width="2"/>
+<g><title>qwen3_0_6b_decode_b1: aggregate_tokens_per_s=390.981771</title><circle cx="660.00" cy="396.74" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b4: aggregate_tokens_per_s=1232.10977</title><circle cx="746.00" cy="314.43" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b16: aggregate_tokens_per_s=2665.92732</title><circle cx="1090.00" cy="174.13" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<polyline points="660.00,420.92 746.00,383.77 1090.00,284.42" fill="none" stroke="#b0521c" stroke-width="2"/>
+<g><title>qwen3_1_7b_decode_b1: aggregate_tokens_per_s=143.877936</title><path d="M660.00,416.92l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b4: aggregate_tokens_per_s=523.573367</title><path d="M746.00,379.77l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b16: aggregate_tokens_per_s=1538.80244</title><path d="M1090.00,280.42l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<polyline points="660.00,428.89 746.00,411.83 1090.00,358.41" fill="none" stroke="#27734d" stroke-width="2"/>
+<g><title>qwen3_4b_decode_b1: aggregate_tokens_per_s=62.4702017</title><rect x="657.00" y="425.89" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b4: aggregate_tokens_per_s=236.763051</title><rect x="743.00" y="408.83" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b16: aggregate_tokens_per_s=782.697991</title><rect x="1087.00" y="355.41" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="730.00" y="489.00" >Batch size B（ctx=1024，含当前 token）</text>
+<text x="32.00" y="75.00" >○ Qwen3-0.6B</text>
+<text x="282.00" y="75.00" >◇ Qwen3-1.7B</text>
+<text x="532.00" y="75.00" >□ Qwen3-4B</text>
+<text x="32.00" y="529.00" class="small">数据：report.json · 4169fc37698c5a98 · primitive η/β 迁移，非全模型验证 · 无实测点</text>
+</svg>

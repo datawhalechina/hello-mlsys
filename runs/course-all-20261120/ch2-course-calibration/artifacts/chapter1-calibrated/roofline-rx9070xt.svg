@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1250" height="650" viewBox="0 0 1250 650" role="img" aria-label="RX 9070 XT：矩阵 / 向量双屋顶与 18 点组件（primitive η/β 迁移）">
+<title>RX 9070 XT：矩阵 / 向量双屋顶与 18 点组件（primitive η/β 迁移）</title>
+<metadata>report.json sha256=4169fc37698c5a981f1783be3b6b8c99521b9745299fa719b27721d3d6393b06; protocol=hello_mlsys_ch1_eta_beta_transfer_v1; hardware_validated=false</metadata>
+<style>text{font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172b3a;font-size:13px} .small{font-size:11px} .title{font-size:21px;font-weight:600}.grid{stroke:#d9e2e8;stroke-width:1} .axis{stroke:#607785;stroke-width:1}</style>
+<rect width="1250" height="650" fill="#fff"/>
+<text x="32" y="34" class="title">RX 9070 XT：矩阵 / 向量双屋顶与 18 点组件（primitive η/β 迁移）</text>
+<line x1="128.75" x2="128.75" y1="95" y2="545" class="grid"/>
+<text x="119.75" y="567.00" >1.0</text>
+<line x1="284.07" x2="284.07" y1="95" y2="545" class="grid"/>
+<text x="275.07" y="567.00" >10.0</text>
+<line x1="439.38" x2="439.38" y1="95" y2="545" class="grid"/>
+<text x="430.38" y="567.00" >100.0</text>
+<line x1="594.69" x2="594.69" y1="95" y2="545" class="grid"/>
+<text x="585.69" y="567.00" >1000.0</text>
+<line x1="82" x2="750" y1="545.00" y2="545.00" class="grid"/>
+<text x="37.00" y="549.00" >0.1</text>
+<line x1="82" x2="750" y1="420.07" y2="420.07" class="grid"/>
+<text x="37.00" y="424.07" >1.0</text>
+<line x1="82" x2="750" y1="295.14" y2="295.14" class="grid"/>
+<text x="37.00" y="299.14" >10.0</text>
+<line x1="82" x2="750" y1="170.21" y2="170.21" class="grid"/>
+<text x="37.00" y="174.21" >100.0</text>
+<polyline points="82.00,494.00 482.82,171.59 750.00,171.59" fill="none" stroke="#176b9b" stroke-width="2.5"/>
+<text x="82.00" y="65.00" >矩阵：97.5 TFLOP/s；拐点 AI=190.4297</text>
+<polyline points="82.00,494.00 389.25,246.86 750.00,246.86" fill="none" stroke="#a45518" stroke-width="2.5" stroke-dasharray="7,4"/>
+<text x="82.00" y="83.00" >向量：24.35 TFLOP/s；拐点 AI=47.5586</text>
+<g><title>G1: AI=114.626866; qwen3_0_6b_prefill_s128</title><circle cx="448.58" cy="199.13" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A1: AI=85.3333333; qwen3_0_6b_prefill_s128</title><path d="M428.68,211.14l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E1: AI=2; qwen3_0_6b_prefill_s128</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G2: AI=349.090909; qwen3_0_6b_prefill_s512</title><circle cx="523.70" cy="171.59" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A2: AI=341.333333; qwen3_0_6b_prefill_s512</title><path d="M522.19,167.59l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E2: AI=2; qwen3_0_6b_prefill_s512</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G3: AI=714.418605; qwen3_0_6b_prefill_s2048</title><circle cx="572.01" cy="171.59" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A3: AI=1365.33333; qwen3_0_6b_prefill_s2048</title><path d="M615.69,167.59l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E3: AI=2; qwen3_0_6b_prefill_s2048</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G4: AI=1; qwen3_0_6b_decode_b1</title><circle cx="128.75" cy="456.39" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A4: AI=2; qwen3_0_6b_decode_b1</title><path d="M175.51,414.78l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E4: AI=2; qwen3_0_6b_decode_b1</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G5: AI=4; qwen3_0_6b_decode_b4</title><circle cx="222.26" cy="381.18" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A5: AI=2; qwen3_0_6b_decode_b4</title><path d="M175.51,414.78l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E5: AI=2; qwen3_0_6b_decode_b4</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G6: AI=16; qwen3_0_6b_decode_b16</title><circle cx="315.77" cy="305.96" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A6: AI=2; qwen3_0_6b_decode_b16</title><path d="M175.51,414.78l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E6: AI=2; qwen3_0_6b_decode_b16</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G7: AI=119.300971; qwen3_1_7b_prefill_s128</title><circle cx="451.28" cy="196.96" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A7: AI=85.3333333; qwen3_1_7b_prefill_s128</title><path d="M428.68,211.14l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E7: AI=2; qwen3_1_7b_prefill_s128</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G8: AI=396.387097; qwen3_1_7b_prefill_s512</title><circle cx="532.27" cy="171.59" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A8: AI=341.333333; qwen3_1_7b_prefill_s512</title><path d="M522.19,167.59l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E8: AI=2; qwen3_1_7b_prefill_s512</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G9: AI=945.230769; qwen3_1_7b_prefill_s2048</title><circle cx="590.89" cy="171.59" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A9: AI=1365.33333; qwen3_1_7b_prefill_s2048</title><path d="M615.69,167.59l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E9: AI=2; qwen3_1_7b_prefill_s2048</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G10: AI=1; qwen3_1_7b_decode_b1</title><circle cx="128.75" cy="456.39" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A10: AI=2; qwen3_1_7b_decode_b1</title><path d="M175.51,414.78l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E10: AI=2; qwen3_1_7b_decode_b1</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G11: AI=4; qwen3_1_7b_decode_b4</title><circle cx="222.26" cy="381.18" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A11: AI=2; qwen3_1_7b_decode_b4</title><path d="M175.51,414.78l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E11: AI=2; qwen3_1_7b_decode_b4</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G12: AI=16; qwen3_1_7b_decode_b16</title><circle cx="315.77" cy="305.96" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A12: AI=2; qwen3_1_7b_decode_b16</title><path d="M175.51,414.78l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E12: AI=2; qwen3_1_7b_decode_b16</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G13: AI=122.434783; qwen3_4b_prefill_s128</title><circle cx="453.03" cy="195.55" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A13: AI=102.4; qwen3_4b_prefill_s128</title><path d="M440.98,201.25l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E13: AI=2; qwen3_4b_prefill_s128</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G14: AI=433.230769; qwen3_4b_prefill_s512</title><circle cx="538.27" cy="171.59" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A14: AI=409.6; qwen3_4b_prefill_s512</title><path d="M534.48,167.59l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E14: AI=2; qwen3_4b_prefill_s512</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G15: AI=1185.68421; qwen3_4b_prefill_s2048</title><circle cx="606.18" cy="171.59" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A15: AI=1638.4; qwen3_4b_prefill_s2048</title><path d="M627.99,167.59l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E15: AI=2; qwen3_4b_prefill_s2048</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G16: AI=1; qwen3_4b_decode_b1</title><circle cx="128.75" cy="456.39" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A16: AI=4; qwen3_4b_decode_b1</title><path d="M222.26,377.18l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E16: AI=2; qwen3_4b_decode_b1</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G17: AI=4; qwen3_4b_decode_b4</title><circle cx="222.26" cy="381.18" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A17: AI=4; qwen3_4b_decode_b4</title><path d="M222.26,377.18l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E17: AI=2; qwen3_4b_decode_b4</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<g><title>G18: AI=16; qwen3_4b_decode_b16</title><circle cx="315.77" cy="305.96" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>A18: AI=4; qwen3_4b_decode_b16</title><path d="M222.26,377.18l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>E18: AI=2; qwen3_4b_decode_b16</title><rect x="172.51" y="415.78" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="250.00" y="590.00" >算术强度 AI（FLOP/byte，对数）</text>
+<text x="33.00" y="62.00" >TFLOP/s</text>
+<text x="805.00" y="70.00" >编号 / 配置                 AI：G / A / E</text>
+<text x="805.00" y="94.00" class="small">01  Qwen3-0.6B S128  114.6 / 85.3 / 2.0</text>
+<text x="805.00" y="119.00" class="small">02  Qwen3-0.6B S512  349.1 / 341.3 / 2.0</text>
+<text x="805.00" y="144.00" class="small">03  Qwen3-0.6B S2048  714.4 / 1365.3 / 2.0</text>
+<text x="805.00" y="169.00" class="small">04  Qwen3-0.6B B1 ctx1024  1.0 / 2.0 / 2.0</text>
+<text x="805.00" y="194.00" class="small">05  Qwen3-0.6B B4 ctx1024  4.0 / 2.0 / 2.0</text>
+<text x="805.00" y="219.00" class="small">06  Qwen3-0.6B B16 ctx1024  16.0 / 2.0 / 2.0</text>
+<text x="805.00" y="244.00" class="small">07  Qwen3-1.7B S128  119.3 / 85.3 / 2.0</text>
+<text x="805.00" y="269.00" class="small">08  Qwen3-1.7B S512  396.4 / 341.3 / 2.0</text>
+<text x="805.00" y="294.00" class="small">09  Qwen3-1.7B S2048  945.2 / 1365.3 / 2.0</text>
+<text x="805.00" y="319.00" class="small">10  Qwen3-1.7B B1 ctx1024  1.0 / 2.0 / 2.0</text>
+<text x="805.00" y="344.00" class="small">11  Qwen3-1.7B B4 ctx1024  4.0 / 2.0 / 2.0</text>
+<text x="805.00" y="369.00" class="small">12  Qwen3-1.7B B16 ctx1024  16.0 / 2.0 / 2.0</text>
+<text x="805.00" y="394.00" class="small">13  Qwen3-4B S128  122.4 / 102.4 / 2.0</text>
+<text x="805.00" y="419.00" class="small">14  Qwen3-4B S512  433.2 / 409.6 / 2.0</text>
+<text x="805.00" y="444.00" class="small">15  Qwen3-4B S2048  1185.7 / 1638.4 / 2.0</text>
+<text x="805.00" y="469.00" class="small">16  Qwen3-4B B1 ctx1024  1.0 / 4.0 / 2.0</text>
+<text x="805.00" y="494.00" class="small">17  Qwen3-4B B4 ctx1024  4.0 / 4.0 / 2.0</text>
+<text x="805.00" y="519.00" class="small">18  Qwen3-4B B16 ctx1024  16.0 / 4.0 / 2.0</text>
+<text x="805.00" y="568.00" >G ○ GEMM；A ◇ Attention；E □ Elementwise</text>
+<text x="805.00" y="589.00" class="small">54 个组件点；精确重合处覆盖，编号在右表</text>
+<text x="805.00" y="608.00" class="small">完整 ID / 精确 AI 见 CSV 与各点悬浮标题</text>
+<text x="32.00" y="627.00" class="small">数据：report.json · 4169fc37698c5a98 · primitive η/β 迁移，非全模型验证 · 无实测点</text>
+</svg>

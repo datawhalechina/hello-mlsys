@@ -1,0 +1,5 @@
+node_id,model_id,input_tokens,output_tokens_target,status,release_ms,ready_ms,dependency_wait_ms,queue_wait_ms,first_compute_start_ms,arrival_ms,first_token_ms,completion_ms,error_code
+a,large,4,1,COMPLETED,0.0,0.0,0.0,0.0,0.0,0.0,10.0,10.0,
+b,small,4,2,COMPLETED,0.0,10.0,10.0,0.0,10.0,10.0,14.0,15.0,
+c,small,4,1,COMPLETED,0.0,10.0,10.0,5.0,15.0,10.0,19.0,19.0,
+d,large,4,1,COMPLETED,0.0,19.0,19.0,0.0,19.0,19.0,29.0,29.0,

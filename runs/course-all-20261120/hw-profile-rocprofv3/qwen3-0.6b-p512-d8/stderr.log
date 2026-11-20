@@ -1,0 +1,13 @@
+W1120 17:03:50.769831 2432996 simple_timer.cpp:55] [rocprofv3] tool initialization ::     0.000582 sec
+W1120 17:03:50.770259 2432996 simple_timer.cpp:55] [rocprofv3] '/home/luyzh/miniconda3/envs/torch/bin/python runs/course-all-20261120/scripts/prof_qwen_steps.py --model /mnt/public/models/Qwen3-0.6B --prompt-tokens 512 --decode-steps 8 --out runs/course-all-20261120/hw-profile-rocprofv3/qwen3-0.6b-p512-d8/result.json' ::     0.000000 sec
+W1120 17:03:54.066294 2432996 tool.cpp:3348] HSA version 1.21.0 initialized (instance=0)
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]W1120 17:03:54.535961 2433075 simple_timer.cpp:55] [rocprofv3] tool initialization ::     0.000541 sec
+W1120 17:03:54.536304 2433075 simple_timer.cpp:55] [rocprofv3] '/home/luyzh/miniconda3/envs/torch/bin/python -c from multiprocessing.resource_tracker import main;main(7)' ::     0.000000 sec
+Loading weights:   0%|          | 1/311 [00:00<01:56,  2.65it/s]Loading weights:  17%|█▋        | 54/311 [00:00<00:01, 146.32it/s]Loading weights:  35%|███▍      | 108/311 [00:00<00:00, 256.05it/s]Loading weights:  51%|█████▏    | 160/311 [00:00<00:00, 328.17it/s]Loading weights:  69%|██████▉   | 214/311 [00:00<00:00, 386.42it/s]Loading weights:  86%|████████▋ | 269/311 [00:00<00:00, 431.79it/s]Loading weights: 100%|██████████| 311/311 [00:00<00:00, 322.29it/s]
+W1120 17:03:57.175039 2432996 tool.cpp:3348] MARKER (ROCTx) version 1.3.5 initialized (instance=0)
+W1120 17:03:57.902342 2433075 simple_timer.cpp:55] [rocprofv3] output generation ::     0.002818 sec
+W1120 17:03:57.902400 2433075 simple_timer.cpp:55] [rocprofv3] tool finalization ::     0.002939 sec
+W1120 17:03:58.212094 2432996 simple_timer.cpp:55] [rocprofv3] '/home/luyzh/miniconda3/envs/torch/bin/python runs/course-all-20261120/scripts/prof_qwen_steps.py --model /mnt/public/models/Qwen3-0.6B --prompt-tokens 512 --decode-steps 8 --out runs/course-all-20261120/hw-profile-rocprofv3/qwen3-0.6b-p512-d8/result.json' ::     7.441833 sec
+E1120 17:03:58.541829 2432996 output_stream.cpp:110] Opened result file: runs/course-all-20261120/hw-profile-rocprofv3/qwen3-0.6b-p512-d8/z-lab-7900/2432996_results.json
+W1120 17:03:59.281007 2432996 simple_timer.cpp:55] [rocprofv3] output generation ::     1.058078 sec
+W1120 17:03:59.288443 2432996 simple_timer.cpp:55] [rocprofv3] tool finalization ::     1.065556 sec

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-label="ttft P99 延迟"><rect width="900" height="480" fill="white"/>
+<g font-family="sans-serif" fill="#172536">
+<text x="80" y="32" font-size="20">ttft P99 延迟 · CPU 模型预测</text>
+<text x="80" y="56" font-size="12">窗口完成吞吐取重复均值；经验 P99 合并全部重复的完成样本；非真机测量</text>
+<path d="M80 80 V370 H840" fill="none" stroke="#657486"/>
+<text x="68" y="374" text-anchor="end" font-size="12">0</text>
+<text x="68" y="301.5" text-anchor="end" font-size="12">904</text>
+<text x="68" y="229" text-anchor="end" font-size="12">1.81e+03</text>
+<text x="68" y="156.5" text-anchor="end" font-size="12">2.71e+03</text>
+<text x="68" y="84" text-anchor="end" font-size="12">3.61e+03</text>
+<path d="M80 289.775 H840" stroke="#a53b31" stroke-dasharray="7 5" fill="none"/>
+<text x="835" y="283.775" text-anchor="end" fill="#a53b31" font-size="12">SLO ≤ 1000 ms</text>
+<path d="M91.3095 368.957 L102.619 362.975" stroke="#23599a" fill="none"/>
+<path d="M102.619 362.975 L125.238 351.852" stroke="#23599a" fill="none"/>
+<path d="M125.238 351.852 L170.476 333.95" stroke="#23599a" fill="none"/>
+<path d="M170.476 333.95 L260.952 302.68" stroke="#23599a" fill="none"/>
+<path d="M260.952 302.68 L441.905 235.193" stroke="#23599a" fill="none"/>
+<path d="M441.905 235.193 L803.81 106.364" stroke="#23599a" fill="none"/>
+<circle cx="91.3095" cy="368.957" r="4" fill="#23599a"/>
+<text x="91.3095" y="392" text-anchor="middle" font-size="11">1</text>
+<text x="91.3095" y="409" text-anchor="middle" font-size="10">n=83</text>
+<circle cx="102.619" cy="362.975" r="4" fill="#23599a"/>
+<text x="102.619" y="392" text-anchor="middle" font-size="11">2</text>
+<text x="102.619" y="409" text-anchor="middle" font-size="10">n=85</text>
+<circle cx="125.238" cy="351.852" r="4" fill="#23599a"/>
+<text x="125.238" y="392" text-anchor="middle" font-size="11">4</text>
+<text x="125.238" y="409" text-anchor="middle" font-size="10">n=89</text>
+<circle cx="170.476" cy="333.95" r="4" fill="#23599a"/>
+<text x="170.476" y="392" text-anchor="middle" font-size="11">8</text>
+<text x="170.476" y="409" text-anchor="middle" font-size="10">n=97</text>
+<circle cx="260.952" cy="302.68" r="4" fill="#23599a"/>
+<text x="260.952" y="392" text-anchor="middle" font-size="11">16</text>
+<text x="260.952" y="409" text-anchor="middle" font-size="10">n=113</text>
+<circle cx="441.905" cy="235.193" r="4" fill="#23599a"/>
+<text x="441.905" y="392" text-anchor="middle" font-size="11">32</text>
+<text x="441.905" y="409" text-anchor="middle" font-size="10">n=146</text>
+<circle cx="803.81" cy="106.364" r="4" fill="#23599a"/>
+<text x="803.81" y="392" text-anchor="middle" font-size="11">64</text>
+<text x="803.81" y="409" text-anchor="middle" font-size="10">n=209</text>
+<text x="20" y="78" font-size="12">ms</text>
+<text x="460" y="438" text-anchor="middle" font-size="13">在线 client 数（非 batch 大小）</text>
+<text x="80" y="464" font-size="11">分位数仅来自完成请求；失败、超时、未完成会使整点 SLA 不通过。详见 report.json/points.csv。</text>
+</g></svg>

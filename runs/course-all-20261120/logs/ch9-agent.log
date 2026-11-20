@@ -1,0 +1,12 @@
+##### task-9.1
+curl-exit=0
+validate_agent_response: OK
+status succeeded requests 6
+##### task-9.2
+curl-exit=0
+validate_agent_response: OK
+status succeeded requests 12
+##### task-9.3
+curl-exit=0
+validate_agent_response: OK
+status succeeded requests 10

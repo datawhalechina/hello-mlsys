@@ -1,0 +1,33 @@
+<!doctype html><html lang='zh-CN'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>冻结 DAG 与模型池预测</title><style>
+body{margin:0;background:#f4f6f8;color:#162438;font:15px/1.6 system-ui,sans-serif}
+main{max-width:1200px;margin:32px auto;padding:32px;background:white;border-radius:12px}
+h1{margin-top:0;font-size:30px}h2{margin-top:32px;font-size:21px}.lead{color:#465a72}
+aside{padding:14px 18px;border-left:4px solid #bf7019;background:#fff6e8;margin:16px 0}
+.synthetic{border-color:#2563eb;background:#eff6ff}a{color:#174f9c}p{overflow-wrap:anywhere}
+.hash{font-size:12px;font-family:monospace}.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #dce3eb}
+th{background:#edf2f7;white-space:nowrap}td{overflow-wrap:anywhere;max-width:360px}
+.gantt{display:block;width:100%;height:auto;margin:20px 0;border:1px solid #dce3eb}
+@media(max-width:700px){main{margin:0;padding:18px;border-radius:0}h1{font-size:24px}}
+</style></head><body><main><h1>冻结 DAG 与模型池预测</h1>
+<p class='lead'>同一冻结请求图上的因果调度预测。时间单位为 ms。</p>
+<aside>所有时间、利用率和 KV 水位均为 CPU 模拟预测；即使使用实测 Profile，本次运行也不是 W7900D 端到端真机测量。</aside>
+<aside class='synthetic'><strong>人工教学轨迹。</strong>此轨迹不是采集的真实 Claude / claudecode deep-research 轨迹；示例中的 32B/7B 几何与硬件性能参数为显式解析假设。</aside>
+<p><strong>轨迹来源：</strong>synthetic_teaching_trace</p>
+<p>Hand-derived fork/join oracle: a10,b15,c19,d29 milliseconds; no hardware claim.</p>
+<p class='hash'><strong>Trace SHA256：</strong>e2b0b975cf0df640a1bb8bf71bf8286cbf083918420cd6eec6af8e3407d16661</p>
+<p><a href='report.json'>完整 JSON</a></p>
+<div class='table-scroll'><table><thead><tr><th scope='col'>整体状态</th><th scope='col'>任务 makespan</th><th scope='col'>观测 / 排空 elapsed</th><th scope='col'>节点全部完成</th><th scope='col'>资源已排空</th></tr></thead><tbody><tr><td>COMPLETED</td><td>29.000</td><td>29.000</td><td>True</td><td>True</td></tr></tbody></table></div>
+<p>任务 makespan 是全部节点最后输出 token 的最晚时刻；elapsed 包含必要资源排空。未全部完成的任务 makespan 为 —。依赖等待、初次排队与计算后的服务耗时分别记录。</p>
+<p><a href='nodes.csv'>节点 CSV</a> · <a href='devices.csv'>设备 CSV</a> · <a href='gantt.svg'>甘特图 SVG</a> · <a href='replay.plan.json'>离线重放计划</a></p>
+<h2>因果时间线</h2><img class='gantt' src='gantt.svg' alt='冻结 DAG 逐节点甘特图'>
+<p>灰色：依赖等待；琥珀色：初次排队；模型颜色：首次计算至请求完成的服务历时。图最多显示 500 个节点，完整节点数据保留在 JSON / CSV 中。</p>
+<h2>逐卡资源摘要</h2>
+<div class='table-scroll'><table><thead><tr><th scope='col'>设备</th><th scope='col'>模型池</th><th scope='col'>副本</th><th scope='col'>PP stage</th><th scope='col'>TP rank</th><th scope='col'>busy ms</th><th scope='col'>利用率</th><th scope='col'>峰值 KV GiB</th></tr></thead><tbody><tr><td>large-gpu</td><td>large</td><td>0</td><td>0</td><td>0</td><td>20.000</td><td>68.97%</td><td>0.000</td></tr><tr><td>small-gpu</td><td>small</td><td>0</td><td>0</td><td>0</td><td>9.000</td><td>31.03%</td><td>0.000</td></tr></tbody></table></div>
+<p>利用率是模型组或 PP stage 的 busy 时间除以整个观测 elapsed，不是实测 GPU occupancy。</p>
+<h2>逐节点摘要</h2>
+<div class='table-scroll'><table><thead><tr><th scope='col'>节点</th><th scope='col'>模型池</th><th scope='col'>状态</th><th scope='col'>ready</th><th scope='col'>依赖等待</th><th scope='col'>初次排队</th><th scope='col'>完成</th></tr></thead><tbody><tr><td>a</td><td>large</td><td>COMPLETED</td><td>0.000</td><td>0.000</td><td>0.000</td><td>10.000</td></tr><tr><td>b</td><td>small</td><td>COMPLETED</td><td>10.000</td><td>10.000</td><td>0.000</td><td>15.000</td></tr><tr><td>c</td><td>small</td><td>COMPLETED</td><td>10.000</td><td>10.000</td><td>5.000</td><td>19.000</td></tr><tr><td>d</td><td>large</td><td>COMPLETED</td><td>19.000</td><td>19.000</td><td>0.000</td><td>29.000</td></tr></tbody></table></div>
+<h2>观测依赖链</h2>
+<p>a → c → d</p>
+<p>该链包含资源排队与 release 间隙，不是隔离执行成本的理论下界。</p>
+<h2>模型边界</h2><ul><li>model pools own exclusive devices and independent links, host pools and DMA lanes</li><li>dispatch, DAG dependency evaluation and inter-model data transfer have zero modeled latency</li><li>request content and target model are frozen; generated semantic quality is not evaluated</li><li>quantized byte widths are declared analytical assumptions, not quantization kernel validation</li><li>per-device utilization is modeled busy time, not measured GPU occupancy</li></ul></main></body></html>

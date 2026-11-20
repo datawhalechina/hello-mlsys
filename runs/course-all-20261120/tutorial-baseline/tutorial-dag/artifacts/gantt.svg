@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="166" viewBox="0 0 1200 166" role="img" aria-label="DAG completion timeline">
+<rect width="100%" height="100%" fill="white"/>
+<text x="16" y="24" font-family="sans-serif" font-size="16">Frozen DAG: dependency wait, queue wait and serving time</text>
+<text x="12" y="60" font-family="sans-serif" font-size="11">a / large</text>
+<rect x="240.000" y="48" width="320.690" height="16" fill="#2563eb"/>
+<text x="12" y="84" font-family="sans-serif" font-size="11">b / small</text>
+<rect x="240.000" y="72" width="320.690" height="16" fill="#e5e7eb"/>
+<rect x="560.690" y="72" width="160.345" height="16" fill="#c2410c"/>
+<text x="12" y="108" font-family="sans-serif" font-size="11">c / small</text>
+<rect x="240.000" y="96" width="320.690" height="16" fill="#e5e7eb"/>
+<rect x="560.690" y="96" width="160.345" height="16" fill="#fbbf24"/>
+<rect x="721.034" y="96" width="128.276" height="16" fill="#c2410c"/>
+<text x="12" y="132" font-family="sans-serif" font-size="11">d / large</text>
+<rect x="240.000" y="120" width="609.310" height="16" fill="#e5e7eb"/>
+<rect x="849.310" y="120" width="320.690" height="16" fill="#2563eb"/>
+<text x="16" y="158" font-family="sans-serif" font-size="11">4 of 4 nodes; horizon 29.000 ms; gray: dependency wait, amber: initial queue, color: serving elapsed</text></svg>

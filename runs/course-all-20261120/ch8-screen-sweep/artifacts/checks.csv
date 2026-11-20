@@ -1,0 +1,109 @@
+candidate_id,id,category,scope,actual,operator,limit,unit,sample_count,verdict,normalized_headroom,reason
+fast-all-points,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fast-all-points,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fast-all-points,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fast-all-points,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",50,>=,40,requests,50,PASS,0.25,sufficient_completed_samples
+fast-all-points,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 0, ""replication"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+fast-all-points,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",0.5,<=,20,ms,50,PASS,0.975,within_limit
+fast-all-points,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",50,>=,40,requests/s,—,PASS,0.25,within_limit
+fast-all-points,load.classification,load,"{""point_index"": 0, ""replication"": 0}",observed_stable,'==,observed_stable_or_completed,status,50,PASS,—,declared_load_plan_gate
+fast-all-points,load.slo,load,"{""point_index"": 0, ""replication"": 0}",True,'==,True,boolean,50,PASS,—,declared_load_plan_gate
+fast-all-points,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fast-all-points,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fast-all-points,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fast-all-points,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",50,>=,40,requests,50,PASS,0.25,sufficient_completed_samples
+fast-all-points,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 0, ""replication"": 1}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+fast-all-points,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",0.5,<=,20,ms,50,PASS,0.975,within_limit
+fast-all-points,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",50,>=,40,requests/s,—,PASS,0.25,within_limit
+fast-all-points,load.classification,load,"{""point_index"": 0, ""replication"": 1}",observed_stable,'==,observed_stable_or_completed,status,50,PASS,—,declared_load_plan_gate
+fast-all-points,load.slo,load,"{""point_index"": 0, ""replication"": 1}",True,'==,True,boolean,50,PASS,—,declared_load_plan_gate
+fast-all-points,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fast-all-points,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fast-all-points,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fast-all-points,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",100,>=,40,requests,100,PASS,1.5,sufficient_completed_samples
+fast-all-points,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 1, ""replication"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+fast-all-points,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",0.5,<=,20,ms,100,PASS,0.975,within_limit
+fast-all-points,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",100,>=,40,requests/s,—,PASS,1.5,within_limit
+fast-all-points,load.classification,load,"{""point_index"": 1, ""replication"": 0}",observed_stable,'==,observed_stable_or_completed,status,100,PASS,—,declared_load_plan_gate
+fast-all-points,load.slo,load,"{""point_index"": 1, ""replication"": 0}",True,'==,True,boolean,100,PASS,—,declared_load_plan_gate
+fast-all-points,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fast-all-points,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fast-all-points,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fast-all-points,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",100,>=,40,requests,100,PASS,1.5,sufficient_completed_samples
+fast-all-points,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 1, ""replication"": 1}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+fast-all-points,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",0.5,<=,20,ms,100,PASS,0.975,within_limit
+fast-all-points,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",100,>=,40,requests/s,—,PASS,1.5,within_limit
+fast-all-points,load.classification,load,"{""point_index"": 1, ""replication"": 1}",observed_stable,'==,observed_stable_or_completed,status,100,PASS,—,declared_load_plan_gate
+fast-all-points,load.slo,load,"{""point_index"": 1, ""replication"": 1}",True,'==,True,boolean,100,PASS,—,declared_load_plan_gate
+fast-all-points,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fast-all-points,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fast-all-points,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fast-all-points,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",200,>=,40,requests,200,PASS,4,sufficient_completed_samples
+fast-all-points,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 2, ""replication"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+fast-all-points,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",0.5,<=,20,ms,200,PASS,0.975,within_limit
+fast-all-points,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",200,>=,40,requests/s,—,PASS,4,within_limit
+fast-all-points,load.classification,load,"{""point_index"": 2, ""replication"": 0}",observed_stable,'==,observed_stable_or_completed,status,200,PASS,—,declared_load_plan_gate
+fast-all-points,load.slo,load,"{""point_index"": 2, ""replication"": 0}",True,'==,True,boolean,200,PASS,—,declared_load_plan_gate
+fast-all-points,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+fast-all-points,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",0,<=,0,requests,—,PASS,—,all_requests_completed
+fast-all-points,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+fast-all-points,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",200,>=,40,requests,200,PASS,4,sufficient_completed_samples
+fast-all-points,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 2, ""replication"": 1}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+fast-all-points,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",0.5,<=,20,ms,200,PASS,0.975,within_limit
+fast-all-points,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",200,>=,40,requests/s,—,PASS,4,within_limit
+fast-all-points,load.classification,load,"{""point_index"": 2, ""replication"": 1}",observed_stable,'==,observed_stable_or_completed,status,200,PASS,—,declared_load_plan_gate
+fast-all-points,load.slo,load,"{""point_index"": 2, ""replication"": 1}",True,'==,True,boolean,200,PASS,—,declared_load_plan_gate
+slow-high-load-fails,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+slow-high-load-fails,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",0,<=,0,requests,—,PASS,—,all_requests_completed
+slow-high-load-fails,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+slow-high-load-fails,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",50,>=,40,requests,50,PASS,0.25,sufficient_completed_samples
+slow-high-load-fails,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 0, ""replication"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+slow-high-load-fails,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",10,<=,20,ms,50,PASS,0.5,within_limit
+slow-high-load-fails,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 0}",50,>=,40,requests/s,—,PASS,0.25,within_limit
+slow-high-load-fails,load.classification,load,"{""point_index"": 0, ""replication"": 0}",observed_stable,'==,observed_stable_or_completed,status,50,PASS,—,declared_load_plan_gate
+slow-high-load-fails,load.slo,load,"{""point_index"": 0, ""replication"": 0}",True,'==,True,boolean,50,PASS,—,declared_load_plan_gate
+slow-high-load-fails,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+slow-high-load-fails,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",0,<=,0,requests,—,PASS,—,all_requests_completed
+slow-high-load-fails,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+slow-high-load-fails,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",50,>=,40,requests,50,PASS,0.25,sufficient_completed_samples
+slow-high-load-fails,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 0, ""replication"": 1}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+slow-high-load-fails,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",10,<=,20,ms,50,PASS,0.5,within_limit
+slow-high-load-fails,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 0, ""replication"": 1}",50,>=,40,requests/s,—,PASS,0.25,within_limit
+slow-high-load-fails,load.classification,load,"{""point_index"": 0, ""replication"": 1}",observed_stable,'==,observed_stable_or_completed,status,50,PASS,—,declared_load_plan_gate
+slow-high-load-fails,load.slo,load,"{""point_index"": 0, ""replication"": 1}",True,'==,True,boolean,50,PASS,—,declared_load_plan_gate
+slow-high-load-fails,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+slow-high-load-fails,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",0,<=,0,requests,—,PASS,—,all_requests_completed
+slow-high-load-fails,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+slow-high-load-fails,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",100,>=,40,requests,100,PASS,1.5,sufficient_completed_samples
+slow-high-load-fails,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 1, ""replication"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+slow-high-load-fails,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",10,<=,20,ms,100,PASS,0.5,within_limit
+slow-high-load-fails,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 0}",100,>=,40,requests/s,—,PASS,1.5,within_limit
+slow-high-load-fails,load.classification,load,"{""point_index"": 1, ""replication"": 0}",observed_stable,'==,observed_stable_or_completed,status,100,PASS,—,declared_load_plan_gate
+slow-high-load-fails,load.slo,load,"{""point_index"": 1, ""replication"": 0}",True,'==,True,boolean,100,PASS,—,declared_load_plan_gate
+slow-high-load-fails,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+slow-high-load-fails,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",0,<=,0,requests,—,PASS,—,all_requests_completed
+slow-high-load-fails,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+slow-high-load-fails,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",100,>=,40,requests,100,PASS,1.5,sufficient_completed_samples
+slow-high-load-fails,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 1, ""replication"": 1}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+slow-high-load-fails,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",10,<=,20,ms,100,PASS,0.5,within_limit
+slow-high-load-fails,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 1, ""replication"": 1}",100,>=,40,requests/s,—,PASS,1.5,within_limit
+slow-high-load-fails,load.classification,load,"{""point_index"": 1, ""replication"": 1}",observed_stable,'==,observed_stable_or_completed,status,100,PASS,—,declared_load_plan_gate
+slow-high-load-fails,load.slo,load,"{""point_index"": 1, ""replication"": 1}",True,'==,True,boolean,100,PASS,—,declared_load_plan_gate
+slow-high-load-fails,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+slow-high-load-fails,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",0,<=,0,requests,—,PASS,—,all_requests_completed
+slow-high-load-fails,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+slow-high-load-fails,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",200,>=,40,requests,200,PASS,4,sufficient_completed_samples
+slow-high-load-fails,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 2, ""replication"": 0}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+slow-high-load-fails,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",995.05,<=,20,ms,200,FAIL,'-48.7525,limit_violated
+slow-high-load-fails,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 0}",100,>=,40,requests/s,—,PASS,1.5,within_limit
+slow-high-load-fails,load.classification,load,"{""point_index"": 2, ""replication"": 0}",observed_overloaded,'==,observed_stable_or_completed,status,200,FAIL,—,declared_load_plan_gate
+slow-high-load-fails,load.slo,load,"{""point_index"": 2, ""replication"": 0}",False,'==,True,boolean,200,FAIL,—,declared_load_plan_gate
+slow-high-load-fails,execution.status,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+slow-high-load-fails,execution.unsuccessful_requests,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",0,<=,0,requests,—,PASS,—,all_requests_completed
+slow-high-load-fails,execution.request_ledger,execution,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+slow-high-load-fails,samples.completed,samples,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",200,>=,40,requests,200,PASS,4,sufficient_completed_samples
+slow-high-load-fails,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0, ""point_index"": 2, ""replication"": 1}",9390080,<=,67108864,bytes,—,PASS,0.860077,within_limit
+slow-high-load-fails,latency.p99_e2e_ms,latency,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",995.05,<=,20,ms,200,FAIL,'-48.7525,limit_violated
+slow-high-load-fails,throughput.min_requests_per_s,throughput,"{""kind"": ""simulation"", ""point_index"": 2, ""replication"": 1}",100,>=,40,requests/s,—,PASS,1.5,within_limit
+slow-high-load-fails,load.classification,load,"{""point_index"": 2, ""replication"": 1}",observed_overloaded,'==,observed_stable_or_completed,status,200,FAIL,—,declared_load_plan_gate
+slow-high-load-fails,load.slo,load,"{""point_index"": 2, ""replication"": 1}",False,'==,True,boolean,200,FAIL,—,declared_load_plan_gate

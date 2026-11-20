@@ -1,0 +1,45 @@
+{
+  "concurrency_grid": [
+    1,
+    2,
+    4,
+    8,
+    16
+  ],
+  "drain_ms": 1000,
+  "min_completed_samples": 100,
+  "replications": 3,
+  "schema_version": 1,
+  "service_time": {
+    "kind": "empirical_step_scale",
+    "samples": [
+      0.7,
+      0.8,
+      1.0,
+      1.2,
+      1.3
+    ]
+  },
+  "slo": {
+    "p99_e2e_ms": 30,
+    "p99_ttft_ms": 30
+  },
+  "workload": {
+    "arrival": {
+      "duration_ms": 5000,
+      "max_requests": 2000,
+      "process": "closed_loop",
+      "think_ms": 0
+    },
+    "request_prefix": "closed-loop-lesson",
+    "schema_version": 1,
+    "seed": 42,
+    "tokens": {
+      "input": {
+        "max": 64,
+        "min": 16
+      },
+      "output": 1
+    }
+  }
+}

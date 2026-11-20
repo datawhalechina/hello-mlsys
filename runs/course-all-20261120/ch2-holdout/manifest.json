@@ -1,0 +1,28 @@
+{
+  "backend": "tool",
+  "dataset_sha256": "8db9b6d8cacf2a1d357f5e21dd6a695afb28d4ae055b828de3c52e4270923e8e",
+  "hardware_validated": false,
+  "input_files": [
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/v1/step_measurements.fixture.json",
+      "sha256": "0c477c6852500841b990951d0d9d92e292da017f7a2aa847c78b739f45ed3071"
+    }
+  ],
+  "mode": "validate",
+  "profile_sha256": "6cbb679408657fe8fee94c06cba7518296cf49be2b369b45e7aa61d1785cdc82",
+  "profile_version": "holdout-v1",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source": {
+    "kind": "test_fixture",
+    "reference": "Hand-calculated test fixture; no GPU measurements."
+  },
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059",
+  "split": {
+    "holdout_fraction": 0.25,
+    "holdout_groups": [
+      "prefill-16"
+    ],
+    "seed": 42
+  }
+}

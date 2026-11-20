@@ -1,0 +1,527 @@
+{
+  "hardware_validated": false,
+  "provenance": {
+    "arrival_process": "poisson",
+    "arrival_window_ms": [
+      0.0,
+      5000.0
+    ],
+    "arrival_window_rule": "half_open",
+    "generator_version": "open-loop-v1",
+    "kind": "open_loop",
+    "replication": 0,
+    "request_count": 50,
+    "requests_sha256": "a97bd46151c63df0b642f7b58381736205ce9a0199c46d158b097da387562c4c",
+    "rng": "python_random_sha256_independent_substreams_v1",
+    "seed": 42,
+    "spec_sha256": "2519a54673571c1946cd234ad5140a4b4d2278db257d715a366c6d7b103588f8",
+    "stream_names": [
+      "arrivals",
+      "input_lengths",
+      "output_lengths"
+    ]
+  },
+  "requests": [
+    {
+      "arrival_ms": 259.6582072169687,
+      "cache_namespace": "",
+      "input_tokens": 419,
+      "output_tokens": 42,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-0",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 316.48326286404466,
+      "cache_namespace": "",
+      "input_tokens": 794,
+      "output_tokens": 22,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-1",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 353.8804833986611,
+      "cache_namespace": "",
+      "input_tokens": 671,
+      "output_tokens": 20,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-2",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 600.8719339608206,
+      "cache_namespace": "",
+      "input_tokens": 750,
+      "output_tokens": 19,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-3",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 760.9820649873334,
+      "cache_namespace": "",
+      "input_tokens": 630,
+      "output_tokens": 61,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-4",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 770.4446789304787,
+      "cache_namespace": "",
+      "input_tokens": 276,
+      "output_tokens": 24,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-5",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 789.6296787994426,
+      "cache_namespace": "",
+      "input_tokens": 354,
+      "output_tokens": 51,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-6",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 840.8676088363814,
+      "cache_namespace": "",
+      "input_tokens": 830,
+      "output_tokens": 23,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-7",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1070.3028322782889,
+      "cache_namespace": "",
+      "input_tokens": 826,
+      "output_tokens": 39,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-8",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1095.8525996638764,
+      "cache_namespace": "",
+      "input_tokens": 477,
+      "output_tokens": 16,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-9",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1177.9832919168716,
+      "cache_namespace": "",
+      "input_tokens": 1008,
+      "output_tokens": 24,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-10",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1180.6173430312792,
+      "cache_namespace": "",
+      "input_tokens": 430,
+      "output_tokens": 30,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-11",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1322.6870620504528,
+      "cache_namespace": "",
+      "input_tokens": 545,
+      "output_tokens": 57,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-12",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1351.8268256063845,
+      "cache_namespace": "",
+      "input_tokens": 461,
+      "output_tokens": 37,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-13",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1401.7700982925228,
+      "cache_namespace": "",
+      "input_tokens": 637,
+      "output_tokens": 46,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-14",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1440.9331839079794,
+      "cache_namespace": "",
+      "input_tokens": 200,
+      "output_tokens": 18,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-15",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1659.1745136870375,
+      "cache_namespace": "",
+      "input_tokens": 580,
+      "output_tokens": 39,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-16",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1773.564548481485,
+      "cache_namespace": "",
+      "input_tokens": 477,
+      "output_tokens": 25,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-17",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 1810.665445943587,
+      "cache_namespace": "",
+      "input_tokens": 467,
+      "output_tokens": 46,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-18",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2085.8546690735516,
+      "cache_namespace": "",
+      "input_tokens": 386,
+      "output_tokens": 46,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-19",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2221.1898606418754,
+      "cache_namespace": "",
+      "input_tokens": 557,
+      "output_tokens": 58,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-20",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2260.0831022921566,
+      "cache_namespace": "",
+      "input_tokens": 309,
+      "output_tokens": 47,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-21",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2331.941701109292,
+      "cache_namespace": "",
+      "input_tokens": 860,
+      "output_tokens": 54,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-22",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2355.23232298486,
+      "cache_namespace": "",
+      "input_tokens": 934,
+      "output_tokens": 46,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-23",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2554.5528925409235,
+      "cache_namespace": "",
+      "input_tokens": 311,
+      "output_tokens": 31,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-24",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2560.4704110562766,
+      "cache_namespace": "",
+      "input_tokens": 685,
+      "output_tokens": 24,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-25",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2707.4821244716504,
+      "cache_namespace": "",
+      "input_tokens": 530,
+      "output_tokens": 25,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-26",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2754.020285469038,
+      "cache_namespace": "",
+      "input_tokens": 435,
+      "output_tokens": 27,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-27",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2820.3715406378205,
+      "cache_namespace": "",
+      "input_tokens": 454,
+      "output_tokens": 41,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-28",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 2867.042376344118,
+      "cache_namespace": "",
+      "input_tokens": 341,
+      "output_tokens": 63,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-29",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3017.6584232866926,
+      "cache_namespace": "",
+      "input_tokens": 323,
+      "output_tokens": 45,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-30",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3129.194306339709,
+      "cache_namespace": "",
+      "input_tokens": 243,
+      "output_tokens": 21,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-31",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3133.609425462139,
+      "cache_namespace": "",
+      "input_tokens": 907,
+      "output_tokens": 49,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-32",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3204.80486633283,
+      "cache_namespace": "",
+      "input_tokens": 445,
+      "output_tokens": 56,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-33",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3216.2244329971813,
+      "cache_namespace": "",
+      "input_tokens": 247,
+      "output_tokens": 34,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-34",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3391.897962287235,
+      "cache_namespace": "",
+      "input_tokens": 1003,
+      "output_tokens": 25,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-35",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3488.349697468141,
+      "cache_namespace": "",
+      "input_tokens": 302,
+      "output_tokens": 63,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-36",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 3538.198742277833,
+      "cache_namespace": "",
+      "input_tokens": 574,
+      "output_tokens": 40,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-37",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4033.1305105048596,
+      "cache_namespace": "",
+      "input_tokens": 690,
+      "output_tokens": 26,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-38",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4125.584205043073,
+      "cache_namespace": "",
+      "input_tokens": 652,
+      "output_tokens": 45,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-39",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4254.702077546433,
+      "cache_namespace": "",
+      "input_tokens": 322,
+      "output_tokens": 46,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-40",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4421.8155989930165,
+      "cache_namespace": "",
+      "input_tokens": 470,
+      "output_tokens": 26,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-41",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4460.923728384373,
+      "cache_namespace": "",
+      "input_tokens": 631,
+      "output_tokens": 22,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-42",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4520.815622940919,
+      "cache_namespace": "",
+      "input_tokens": 802,
+      "output_tokens": 41,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-43",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4523.791580153992,
+      "cache_namespace": "",
+      "input_tokens": 375,
+      "output_tokens": 16,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-44",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4545.270524385305,
+      "cache_namespace": "",
+      "input_tokens": 493,
+      "output_tokens": 23,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-45",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4663.314000886952,
+      "cache_namespace": "",
+      "input_tokens": 155,
+      "output_tokens": 25,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-46",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4706.610918398223,
+      "cache_namespace": "",
+      "input_tokens": 462,
+      "output_tokens": 17,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-47",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4787.477942398621,
+      "cache_namespace": "",
+      "input_tokens": 986,
+      "output_tokens": 54,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-48",
+      "timeout_ms": null
+    },
+    {
+      "arrival_ms": 4976.468251649483,
+      "cache_namespace": "",
+      "input_tokens": 795,
+      "output_tokens": 26,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "request_id": "frozen-teaching-workload-r0-49",
+      "timeout_ms": null
+    }
+  ],
+  "status": "COMPLETED"
+}

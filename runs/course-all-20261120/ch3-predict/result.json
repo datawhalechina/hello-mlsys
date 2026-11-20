@@ -1,0 +1,207 @@
+{
+  "assumptions": [
+    "Analyzes one phase batch containing every workload row, ignoring arrival times.",
+    "PP activations replicated per TP rank; identical independent links, no contention.",
+    "No sampling/feedback latency included in PP forward path.",
+    "Stage timings are analytical/synthetic, without measured calibration.",
+    "Profile calibration does not itself establish held-out hardware prediction accuracy."
+  ],
+  "backend": "simulated",
+  "communication": {
+    "decode_p2p_bytes_per_rank_per_boundary": 5120.0,
+    "decode_p2p_ms": 0.0,
+    "p2p_source": "analytical_uncalibrated",
+    "pp_boundaries": 0,
+    "prefill_p2p_bytes_per_rank_per_boundary": 81920.0,
+    "prefill_p2p_ms": 0.0
+  },
+  "hardware_validated": false,
+  "isolated_decode_step_ms": 1610.5997327999999,
+  "isolated_prefill_ms": 1621.8967056,
+  "memory": [
+    {
+      "allocatable_free_blocks": 1,
+      "budget_peak_bytes": 8051227648,
+      "device_id": "gpu0",
+      "device_memory_bytes": 17179869184,
+      "fixed_budget_bytes": 8051227648,
+      "free_blocks": 1,
+      "guard_blocks": 0,
+      "kv_block_bytes": 2359296,
+      "kv_bytes_per_token": 147456,
+      "kv_pool_reserved_bytes": 4194304,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 0,
+      "physical_peak_bytes": 8050179072,
+      "physical_reserved_bytes": 8050179072,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 1,
+      "pool_unusable_tail_bytes": 1835008,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 8044936192,
+      "workspace_last_source": "not_executed",
+      "workspace_peak_bytes": 0,
+      "workspace_source": "not_executed"
+    }
+  ],
+  "memory_check_details": {
+    "alone": false,
+    "cache_eviction_blocks": 0,
+    "phase": "prefill",
+    "proposed_allocations": {
+      "shape": 16
+    },
+    "ranks": [
+      {
+        "additional_blocks": 1,
+        "device_id": "gpu0",
+        "device_memory_bytes": 17179869184,
+        "guard_blocks": 0,
+        "logical_ok": true,
+        "physical_ok": true,
+        "pool_blocks": 1,
+        "proposed_used_blocks": 1,
+        "required_budget_bytes": 8052292608,
+        "stage_index": 0,
+        "tp_rank": 0,
+        "used_before_blocks": 0,
+        "workspace_bytes": 1064960,
+        "workspace_source": "analytical_assumption"
+      }
+    ],
+    "workspace_bytes": 1064960
+  },
+  "memory_error_code": null,
+  "mode": "predict",
+  "online_metrics": {
+    "goodput_requests_per_s": null,
+    "p99_ms": null,
+    "tpot_ms": null,
+    "ttft_ms": null
+  },
+  "online_metrics_reason": "SHAPE_ANALYSIS_HAS_NO_ARRIVALS_OR_QUEUEING",
+  "prefill_memory_feasible": true,
+  "profile_provenance": null,
+  "profile_version": "uncalibrated-v1",
+  "shape": {
+    "context_lengths": [
+      0
+    ],
+    "query_tokens": [
+      16
+    ],
+    "requests_in_batch": 1,
+    "serving_cache_and_chunk_policies_applied": false,
+    "within_batch_size_limit": true,
+    "within_batch_token_limit": true
+  },
+  "source": "analytical",
+  "stages": [
+    {
+      "decode_breakdown": {
+        "attention": {
+          "compute_ms": 0.020054016,
+          "duration_ms": 0.6913151999999999,
+          "flops_per_rank": 10027008.0,
+          "hbm_bytes_per_rank": 3096576.0,
+          "memory_ms": 0.6193152,
+          "overhead_ms": 0.072
+        },
+        "communication": {
+          "allreduce_count": 0,
+          "allreduce_ms": 0.0,
+          "allreduce_payload_bytes": 5120.0,
+          "duration_ms": 0.0,
+          "logits_allgather_ms": 0.0
+        },
+        "embedding_and_output": {
+          "compute_ms": 1.55582464,
+          "duration_ms": 155.6462624,
+          "flops_per_rank": 777912320.0,
+          "hbm_bytes_per_rank": 778221312.0,
+          "memory_ms": 155.6442624,
+          "overhead_ms": 0.002
+        },
+        "framework": {
+          "duration_ms": 0.005
+        },
+        "linear": {
+          "compute_ms": 14.53326336,
+          "duration_ms": 1453.5900287999998,
+          "flops_per_rank": 7266631680,
+          "hbm_bytes_per_rank": 7267590144.0,
+          "memory_ms": 1453.5180288,
+          "overhead_ms": 0.072
+        },
+        "misc": {
+          "compute_ms": 0.0044544,
+          "duration_ms": 0.6671264,
+          "flops_per_rank": 2227200,
+          "hbm_bytes_per_rank": 2245632.0,
+          "memory_ms": 0.4491264,
+          "overhead_ms": 0.218
+        }
+      },
+      "decode_source": "analytical_uncalibrated",
+      "decode_step_ms": 1610.5997327999999,
+      "device_ids": [
+        "gpu0"
+      ],
+      "layers": 36,
+      "prefill_breakdown": {
+        "attention": {
+          "compute_ms": 0.160432128,
+          "duration_ms": 2.431296,
+          "flops_per_rank": 80216064.0,
+          "hbm_bytes_per_rank": 11796480.0,
+          "memory_ms": 2.359296,
+          "overhead_ms": 0.072
+        },
+        "communication": {
+          "allreduce_count": 0,
+          "allreduce_ms": 0.0,
+          "allreduce_payload_bytes": 81920.0,
+          "duration_ms": 0.0,
+          "logits_allgather_ms": 0.0
+        },
+        "embedding_and_output": {
+          "compute_ms": 1.55582464,
+          "duration_ms": 155.6616224,
+          "flops_per_rank": 777912320.0,
+          "hbm_bytes_per_rank": 778298112.0,
+          "memory_ms": 155.6596224,
+          "overhead_ms": 0.002
+        },
+        "framework": {
+          "duration_ms": 0.005
+        },
+        "linear": {
+          "compute_ms": 232.53221376,
+          "duration_ms": 1456.4654208,
+          "flops_per_rank": 116266106880,
+          "hbm_bytes_per_rank": 7281967104.0,
+          "memory_ms": 1456.3934208,
+          "overhead_ms": 0.072
+        },
+        "misc": {
+          "compute_ms": 0.0712704,
+          "duration_ms": 7.3333664,
+          "flops_per_rank": 35635200,
+          "hbm_bytes_per_rank": 35576832.0,
+          "memory_ms": 7.1153664,
+          "overhead_ms": 0.218
+        }
+      },
+      "prefill_ms": 1621.8967056,
+      "prefill_source": "analytical_uncalibrated",
+      "stage": 0
+    }
+  ],
+  "status": "COMPLETED"
+}

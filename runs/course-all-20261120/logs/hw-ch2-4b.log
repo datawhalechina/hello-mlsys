@@ -1,0 +1,44 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   0%|          | 1/398 [00:00<03:10,  2.08it/s]Loading weights:   4%|▎         | 14/398 [00:00<00:12, 29.78it/s]Loading weights:   6%|▋         | 25/398 [00:00<00:07, 46.93it/s]Loading weights:   9%|▉         | 36/398 [00:00<00:05, 60.62it/s]Loading weights:  12%|█▏        | 47/398 [00:00<00:04, 70.93it/s]Loading weights:  15%|█▍        | 58/398 [00:01<00:04, 79.50it/s]Loading weights:  17%|█▋        | 69/398 [00:01<00:04, 79.25it/s]Loading weights:  20%|██        | 81/398 [00:01<00:03, 87.96it/s]Loading weights:  23%|██▎       | 92/398 [00:01<00:03, 84.06it/s]Loading weights:  27%|██▋       | 107/398 [00:01<00:02, 100.13it/s]Loading weights:  30%|██▉       | 118/398 [00:01<00:02, 102.60it/s]Loading weights:  32%|███▏      | 129/398 [00:01<00:02, 103.41it/s]Loading weights:  35%|███▌      | 140/398 [00:01<00:02, 101.46it/s]Loading weights:  39%|███▊      | 154/398 [00:01<00:02, 109.77it/s]Loading weights:  42%|████▏     | 167/398 [00:02<00:02, 115.39it/s]Loading weights:  45%|████▍     | 179/398 [00:02<00:02, 107.85it/s]Loading weights:  48%|████▊     | 191/398 [00:02<00:02, 101.62it/s]Loading weights:  51%|█████     | 202/398 [00:02<00:01, 99.36it/s] Loading weights:  54%|█████▎    | 213/398 [00:02<00:01, 99.74it/s]Loading weights:  56%|█████▋    | 224/398 [00:02<00:01, 97.72it/s]Loading weights:  59%|█████▉    | 235/398 [00:02<00:01, 98.72it/s]Loading weights:  62%|██████▏   | 245/398 [00:02<00:01, 96.21it/s]Loading weights:  65%|██████▍   | 257/398 [00:03<00:01, 102.23it/s]Loading weights:  67%|██████▋   | 268/398 [00:03<00:01, 101.60it/s]Loading weights:  70%|███████   | 279/398 [00:03<00:01, 99.63it/s] Loading weights:  73%|███████▎  | 290/398 [00:03<00:01, 98.58it/s]Loading weights:  75%|███████▌  | 300/398 [00:03<00:01, 78.97it/s]Loading weights:  78%|███████▊  | 311/398 [00:03<00:01, 83.08it/s]Loading weights:  81%|████████  | 321/398 [00:03<00:00, 86.72it/s]Loading weights:  83%|████████▎ | 332/398 [00:03<00:00, 88.61it/s]Loading weights:  86%|████████▋ | 344/398 [00:04<00:00, 86.39it/s]Loading weights:  89%|████████▉ | 355/398 [00:04<00:00, 90.51it/s]Loading weights:  92%|█████████▏| 367/398 [00:04<00:00, 95.90it/s]Loading weights:  95%|█████████▍| 378/398 [00:04<00:00, 95.94it/s]Loading weights:  98%|█████████▊| 389/398 [00:04<00:00, 96.69it/s]Loading weights: 100%|██████████| 398/398 [00:04<00:00, 88.19it/s]
+{
+  "model": "/mnt/public/models/Qwen3-4B",
+  "device": "cuda:0",
+  "dtype": "bfloat16",
+  "torch": "2.12.0+rocm10.0.0",
+  "transformers": "5.17.0",
+  "gpu": "AMD Radeon RX 7900 XTX",
+  "prompt_tokens": 512,
+  "output_tokens": 32,
+  "parameter_count": 4022468096,
+  "load_s": 6.438816070556641,
+  "vram_before_bytes": {
+    "0": 28581888,
+    "1": 13740204032
+  },
+  "vram_after_load_bytes": {
+    "0": 8332197888,
+    "1": 13740314624
+  },
+  "load_vram_delta_bytes": {
+    "0": 8303616000,
+    "1": 110592
+  },
+  "ttft_ms_runs": [
+    66.56090545654297,
+    66.37910461425781,
+    66.43901062011719
+  ],
+  "ttft_ms_p50": 66.43901062011719,
+  "ttft_ms_p99": 66.55846755981446,
+  "tpot_ms_runs": [
+    31.845088343466482,
+    28.889910667173325,
+    28.768064252791866
+  ],
+  "tpot_ms_p50": 28.889910667173325,
+  "tpot_ms_p99": 31.78598478994062,
+  "decode_tok_s_p50": 34.61416033855265,
+  "torch_peak_allocated_gib": 7.811246871948242,
+  "torch_peak_reserved_gib": 7.888671875,
+  "hardware_validated": true
+}

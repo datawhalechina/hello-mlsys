@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="715" viewBox="0 0 1150 715" role="img" aria-label="W7900D：待确认参数（仅展示 18 点 AI）">
+<title>W7900D：待确认参数（仅展示 18 点 AI）</title>
+<metadata>report.json sha256=46d48034bf3455f710ebb30919e72e43f653259a7b67aa1646162990c4b4907f; protocol=hello_mlsys_ch1_nominal_v1; hardware_validated=false</metadata>
+<style>text{font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172b3a;font-size:13px} .small{font-size:11px} .title{font-size:21px;font-weight:600}.grid{stroke:#d9e2e8;stroke-width:1} .axis{stroke:#607785;stroke-width:1}</style>
+<rect width="1150" height="715" fill="#fff"/>
+<text x="32" y="34" class="title">W7900D：待确认参数（仅展示 18 点 AI）</text>
+<text x="32.00" y="65.00" >峰值算力与带宽未知：无硬件 Roofline、无时间/吞吐预测，纵轴仅为配置索引。</text>
+<text x="32.00" y="87.00" >AI 来自算子计数，适用同一冻结 BF16 口径；此图不能替代 W7900D 验证。</text>
+<line x1="437.59" x2="437.59" y1="110" y2="625" class="grid"/>
+<text x="429.59" y="649.00" >1.0</text>
+<line x1="595.70" x2="595.70" y1="110" y2="625" class="grid"/>
+<text x="587.70" y="649.00" >10.0</text>
+<line x1="753.80" x2="753.80" y1="110" y2="625" class="grid"/>
+<text x="745.80" y="649.00" >100.0</text>
+<line x1="911.90" x2="911.90" y1="110" y2="625" class="grid"/>
+<text x="903.90" y="649.00" >1000.0</text>
+<text x="32.00" y="131.00" >01  Qwen3-0.6B prefill S128</text>
+<g><title>qwen3_0_6b_prefill_s128 gemm: AI=114.626866</title><circle cx="763.17" cy="127.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s128 attention: AI=85.3333333</title><path d="M742.91,123.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s128 elementwise: AI=2</title><rect x="482.19" y="124.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="159.00" >02  Qwen3-0.6B prefill S512</text>
+<g><title>qwen3_0_6b_prefill_s512 gemm: AI=349.090909</title><circle cx="839.64" cy="155.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s512 attention: AI=341.333333</title><path d="M838.09,151.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s512 elementwise: AI=2</title><rect x="482.19" y="152.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="187.00" >03  Qwen3-0.6B prefill S2048</text>
+<g><title>qwen3_0_6b_prefill_s2048 gemm: AI=714.418605</title><circle cx="888.81" cy="183.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s2048 attention: AI=1365.33333</title><path d="M933.28,179.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_prefill_s2048 elementwise: AI=2</title><rect x="482.19" y="180.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="215.00" >04  Qwen3-0.6B decode B1 ctx1024</text>
+<g><title>qwen3_0_6b_decode_b1 gemm: AI=1</title><circle cx="437.59" cy="211.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b1 attention: AI=2</title><path d="M485.19,207.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b1 elementwise: AI=2</title><rect x="482.19" y="208.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="243.00" >05  Qwen3-0.6B decode B4 ctx1024</text>
+<g><title>qwen3_0_6b_decode_b4 gemm: AI=4</title><circle cx="532.78" cy="239.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b4 attention: AI=2</title><path d="M485.19,235.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b4 elementwise: AI=2</title><rect x="482.19" y="236.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="271.00" >06  Qwen3-0.6B decode B16 ctx1024</text>
+<g><title>qwen3_0_6b_decode_b16 gemm: AI=16</title><circle cx="627.97" cy="267.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b16 attention: AI=2</title><path d="M485.19,263.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_0_6b_decode_b16 elementwise: AI=2</title><rect x="482.19" y="264.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="299.00" >07  Qwen3-1.7B prefill S128</text>
+<g><title>qwen3_1_7b_prefill_s128 gemm: AI=119.300971</title><circle cx="765.91" cy="295.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s128 attention: AI=85.3333333</title><path d="M742.91,291.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s128 elementwise: AI=2</title><rect x="482.19" y="292.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="327.00" >08  Qwen3-1.7B prefill S512</text>
+<g><title>qwen3_1_7b_prefill_s512 gemm: AI=396.387097</title><circle cx="848.36" cy="323.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s512 attention: AI=341.333333</title><path d="M838.09,319.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s512 elementwise: AI=2</title><rect x="482.19" y="320.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="355.00" >09  Qwen3-1.7B prefill S2048</text>
+<g><title>qwen3_1_7b_prefill_s2048 gemm: AI=945.230769</title><circle cx="908.03" cy="351.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s2048 attention: AI=1365.33333</title><path d="M933.28,347.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_prefill_s2048 elementwise: AI=2</title><rect x="482.19" y="348.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="383.00" >10  Qwen3-1.7B decode B1 ctx1024</text>
+<g><title>qwen3_1_7b_decode_b1 gemm: AI=1</title><circle cx="437.59" cy="379.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b1 attention: AI=2</title><path d="M485.19,375.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b1 elementwise: AI=2</title><rect x="482.19" y="376.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="411.00" >11  Qwen3-1.7B decode B4 ctx1024</text>
+<g><title>qwen3_1_7b_decode_b4 gemm: AI=4</title><circle cx="532.78" cy="407.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b4 attention: AI=2</title><path d="M485.19,403.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b4 elementwise: AI=2</title><rect x="482.19" y="404.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="439.00" >12  Qwen3-1.7B decode B16 ctx1024</text>
+<g><title>qwen3_1_7b_decode_b16 gemm: AI=16</title><circle cx="627.97" cy="435.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b16 attention: AI=2</title><path d="M485.19,431.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_1_7b_decode_b16 elementwise: AI=2</title><rect x="482.19" y="432.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="467.00" >13  Qwen3-4B prefill S128</text>
+<g><title>qwen3_4b_prefill_s128 gemm: AI=122.434783</title><circle cx="767.69" cy="463.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s128 attention: AI=102.4</title><path d="M755.43,459.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s128 elementwise: AI=2</title><rect x="482.19" y="460.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="495.00" >14  Qwen3-4B prefill S512</text>
+<g><title>qwen3_4b_prefill_s512 gemm: AI=433.230769</title><circle cx="854.46" cy="491.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s512 attention: AI=409.6</title><path d="M850.61,487.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s512 elementwise: AI=2</title><rect x="482.19" y="488.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="523.00" >15  Qwen3-4B prefill S2048</text>
+<g><title>qwen3_4b_prefill_s2048 gemm: AI=1185.68421</title><circle cx="923.59" cy="519.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s2048 attention: AI=1638.4</title><path d="M945.80,515.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_prefill_s2048 elementwise: AI=2</title><rect x="482.19" y="516.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="551.00" >16  Qwen3-4B decode B1 ctx1024</text>
+<g><title>qwen3_4b_decode_b1 gemm: AI=1</title><circle cx="437.59" cy="547.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b1 attention: AI=4</title><path d="M532.78,543.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b1 elementwise: AI=2</title><rect x="482.19" y="544.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="579.00" >17  Qwen3-4B decode B4 ctx1024</text>
+<g><title>qwen3_4b_decode_b4 gemm: AI=4</title><circle cx="532.78" cy="575.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b4 attention: AI=4</title><path d="M532.78,571.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b4 elementwise: AI=2</title><rect x="482.19" y="572.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="32.00" y="607.00" >18  Qwen3-4B decode B16 ctx1024</text>
+<g><title>qwen3_4b_decode_b16 gemm: AI=16</title><circle cx="627.97" cy="603.00" r="3.5" fill="white" stroke="#176b9b" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b16 attention: AI=4</title><path d="M532.78,599.00l4,4l-4,4l-4,-4z" fill="white" stroke="#b0521c" stroke-width="1.8"/></g>
+<g><title>qwen3_4b_decode_b16 elementwise: AI=2</title><rect x="482.19" y="600.00" width="6" height="6" fill="white" stroke="#27734d" stroke-width="1.8"/></g>
+<text x="412.00" y="677.00" >算术强度 AI（FLOP/byte，对数）；○ GEMM  ◇ Attention  □ Elementwise</text>
+<text x="32.00" y="701.00" class="small">数据：report.json · 46d48034bf3455f7 · nominal η=1 · 无实测点</text>
+</svg>

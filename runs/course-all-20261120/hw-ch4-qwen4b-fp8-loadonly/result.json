@@ -1,0 +1,22 @@
+{
+  "model": "/mnt/public/models/Qwen3-4B-FP8",
+  "load_s": 4.443038463592529,
+  "parameter_count": 4022689856,
+  "param_bytes_bf16": 8045379712,
+  "vram_before": {
+    "0": 28581888,
+    "1": 13740204032
+  },
+  "vram_after": {
+    "0": 5892722688,
+    "1": 13740376064
+  },
+  "load_delta": {
+    "0": 5864140800,
+    "1": 172032
+  },
+  "torch_allocated_gib": 4.115133285522461,
+  "torch_reserved_gib": 5.220703125,
+  "quantization_config": "FineGrainedFP8Config(quant_method='fp8')",
+  "hardware_validated": true
+}

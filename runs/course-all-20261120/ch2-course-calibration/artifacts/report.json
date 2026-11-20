@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "protocol": "hello_mlsys_ch2_primitive_eta_beta_v1",
+  "status": "COMPLETED",
+  "calibration_id": "course-eta-beta-1f22d360512ff23d",
+  "stored_at": "2026-11-20T05:46:37.914Z",
+  "source": {
+    "kind": "test_fixture",
+    "label": "hand-calculated-fixture"
+  },
+  "source_kind": "test_fixture",
+  "raw_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+  "source_text": "{\n  \"test_fixture\": true,\n  \"environment\": {\n    \"timestamp_utc\": \"2026-01-01T00:00:00\",\n    \"python\": \"test-fixture\",\n    \"torch\": \"test-fixture\",\n    \"rocm\": \"test-fixture\",\n    \"os\": \"hand-calculated fixture; no hardware was sampled\",\n    \"gpu\": \"test-fixture-no-gpu\",\n    \"gpu_arch\": {\n      \"test-fixture\": \"not-measured\"\n    },\n    \"vram_gib\": 1.0,\n    \"driver\": \"test-fixture\"\n  },\n  \"config\": {\n    \"seed\": 42,\n    \"protocol\": \"test fixture only: warmup10 x 50 x 3, event+sync shape; no sampling performed\"\n  },\n  \"nominal_constants\": {\n    \"peak_tflops\": 195.0,\n    \"bw_gbps\": 640.0,\n    \"ridge\": 304.7\n  },\n  \"calibration\": {\n    \"gemm\": {\n      \"2048^3\": {\n        \"flops\": 17179869184,\n        \"bytes\": 25165824,\n        \"ai\": 682.7,\n        \"t_comp_ms\": 0.0881,\n        \"t_mem_ms\": 0.03932,\n        \"t_nom_ms\": 0.0881,\n        \"binding\": \"compute\",\n        \"median_ms\": 0.35241,\n        \"per_round_ms\": [\n          0.34536,\n          0.35241,\n          0.35946\n        ],\n        \"ratio_meas_over_nom\": 4.0,\n        \"fit\": false,\n        \"eta_point\": 0.25\n      },\n      \"4096^3\": {\n        \"flops\": 137438953472,\n        \"bytes\": 100663296,\n        \"ai\": 1365.3,\n        \"t_comp_ms\": 0.70482,\n        \"t_mem_ms\": 0.15729,\n        \"t_nom_ms\": 0.70482,\n        \"binding\": \"compute\",\n        \"median_ms\": 1.40963,\n        \"per_round_ms\": [\n          1.38144,\n          1.40963,\n          1.43782\n        ],\n        \"ratio_meas_over_nom\": 2.0,\n        \"fit\": true,\n        \"eta_point\": 0.5\n      },\n      \"5120^3\": {\n        \"flops\": 268435456000,\n        \"bytes\": 157286400,\n        \"ai\": 1706.7,\n        \"t_comp_ms\": 1.37659,\n        \"t_mem_ms\": 0.24576,\n        \"t_nom_ms\": 1.37659,\n        \"binding\": \"compute\",\n        \"median_ms\": 2.75318,\n        \"per_round_ms\": [\n          2.69812,\n          2.75318,\n          2.80824\n        ],\n        \"ratio_meas_over_nom\": 2.0,\n        \"fit\": true,\n        \"eta_point\": 0.5\n      },\n      \"8192^3\": {\n        \"flops\": 1099511627776,\n        \"bytes\": 402653184,\n        \"ai\": 2730.7,\n        \"t_comp_ms\": 5.63852,\n        \"t_mem_ms\": 0.62915,\n        \"t_nom_ms\": 5.63852,\n        \"binding\": \"compute\",\n        \"median_ms\": 14.0963,\n        \"per_round_ms\": [\n          13.81437,\n          14.0963,\n          14.37823\n        ],\n        \"ratio_meas_over_nom\": 2.5,\n        \"fit\": false,\n        \"eta_point\": 0.4\n      }\n    },\n    \"ln\": {\n      \"2048x1024\": {\n        \"flops\": 8388608,\n        \"bytes\": 8388608,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 4e-05,\n        \"t_mem_ms\": 0.01311,\n        \"t_nom_ms\": 0.01311,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.02621,\n        \"per_round_ms\": [\n          0.02569,\n          0.02621,\n          0.02673\n        ],\n        \"ratio_meas_over_nom\": 2.0,\n        \"fit\": false,\n        \"beta_point\": 0.5001\n      },\n      \"8192x4096\": {\n        \"flops\": 134217728,\n        \"bytes\": 134217728,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 0.00069,\n        \"t_mem_ms\": 0.20972,\n        \"t_nom_ms\": 0.20972,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.26214,\n        \"per_round_ms\": [\n          0.2569,\n          0.26214,\n          0.26738\n        ],\n        \"ratio_meas_over_nom\": 1.25,\n        \"fit\": true,\n        \"beta_point\": 0.8\n      }\n    },\n    \"softmax\": {\n      \"4096x4096\": {\n        \"flops\": 67108864,\n        \"bytes\": 67108864,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 0.00034,\n        \"t_mem_ms\": 0.10486,\n        \"t_nom_ms\": 0.10486,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.08389,\n        \"per_round_ms\": [\n          0.08221,\n          0.08389,\n          0.08557\n        ],\n        \"ratio_meas_over_nom\": 0.8,\n        \"fit\": false,\n        \"beta_point\": 1.2499\n      },\n      \"8192x4096\": {\n        \"flops\": 134217728,\n        \"bytes\": 134217728,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 0.00069,\n        \"t_mem_ms\": 0.20972,\n        \"t_nom_ms\": 0.20972,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.26214,\n        \"per_round_ms\": [\n          0.2569,\n          0.26214,\n          0.26738\n        ],\n        \"ratio_meas_over_nom\": 1.25,\n        \"fit\": true,\n        \"beta_point\": 0.8\n      }\n    }\n  },\n  \"fit\": {\n    \"stored_at\": \"2026-01-01T00:00:00Z\",\n    \"eta\": 0.5,\n    \"beta\": 0.8,\n    \"eta_formula\": \"test fixture: sum(t_comp_ms)/sum(median_ms), selected GEMM only\",\n    \"beta_formula\": \"test fixture: sum(t_mem_ms)/sum(median_ms), selected streaming memory only\",\n    \"fit_points\": {\n      \"eta\": [\n        \"4096^3\",\n        \"5120^3\"\n      ],\n      \"beta\": [\n        \"ln_8192x4096\",\n        \"softmax_8192x4096\"\n      ]\n    },\n    \"eta_points\": {\n      \"2048^3\": 0.25,\n      \"4096^3\": 0.5,\n      \"5120^3\": 0.5,\n      \"8192^3\": 0.4\n    },\n    \"beta_points\": {\n      \"ln_2048x1024\": 0.5001,\n      \"ln_8192x4096\": 0.8,\n      \"softmax_4096x4096\": 1.2499,\n      \"softmax_8192x4096\": 0.8\n    }\n  },\n  \"holdout_prediction\": {\n    \"stored_at\": \"2026-01-01T00:00:00Z\",\n    \"predictions_ms\": {\n      \"gemm_6144\": 4.7575,\n      \"ln_16384x4096\": 0.52429,\n      \"softmax_16384x4096\": 0.52429,\n      \"attn_mha16_s512\": {\n        \"t_pred_cal_ms\": 0.01638,\n        \"binding_by_ai\": \"memory\",\n        \"ai\": 256.0\n      },\n      \"attn_mha16_s1024\": {\n        \"t_pred_cal_ms\": 0.0881,\n        \"binding_by_ai\": \"compute\",\n        \"ai\": 512.0\n      }\n    }\n  },\n  \"holdout_measured\": {\n    \"gemm_6144\": {\n      \"flops\": 463856467968,\n      \"bytes\": 226492416,\n      \"ai\": 2048.0,\n      \"t_comp_ms\": 2.37875,\n      \"t_mem_ms\": 0.35389,\n      \"t_nom_ms\": 2.37875,\n      \"binding\": \"compute\",\n      \"median_ms\": 4.85265,\n      \"per_round_ms\": [\n        4.7556,\n        4.85265,\n        4.9497\n      ],\n      \"ratio_meas_over_nom\": 2.04,\n      \"fit\": false,\n      \"eta_point\": 0.4902,\n      \"t_pred_cal_ms\": 4.7575,\n      \"pred_err_pct\": 2.0\n    },\n    \"ln_16384x4096\": {\n      \"flops\": 268435456,\n      \"bytes\": 268435456,\n      \"ai\": 1.0,\n      \"t_comp_ms\": 0.00138,\n      \"t_mem_ms\": 0.41943,\n      \"t_nom_ms\": 0.41943,\n      \"binding\": \"memory\",\n      \"median_ms\": 0.5138,\n      \"per_round_ms\": [\n        0.50352,\n        0.5138,\n        0.52408\n      ],\n      \"ratio_meas_over_nom\": 1.225,\n      \"fit\": false,\n      \"beta_point\": 0.8163,\n      \"t_pred_cal_ms\": 0.52429,\n      \"pred_err_pct\": -2.0\n    },\n    \"softmax_16384x4096\": {\n      \"flops\": 268435456,\n      \"bytes\": 268435456,\n      \"ai\": 1.0,\n      \"t_comp_ms\": 0.00138,\n      \"t_mem_ms\": 0.41943,\n      \"t_nom_ms\": 0.41943,\n      \"binding\": \"memory\",\n      \"median_ms\": 0.54002,\n      \"per_round_ms\": [\n        0.52922,\n        0.54002,\n        0.55082\n      ],\n      \"ratio_meas_over_nom\": 1.288,\n      \"fit\": false,\n      \"beta_point\": 0.7767,\n      \"t_pred_cal_ms\": 0.52429,\n      \"pred_err_pct\": 3.0\n    },\n    \"attn_mha16_s512\": {\n      \"flops\": 2147483648,\n      \"bytes\": 8388608,\n      \"ai\": 256.0,\n      \"t_comp_ms\": 0.01101,\n      \"t_mem_ms\": 0.01311,\n      \"t_nom_ms\": 0.01311,\n      \"binding\": \"memory\",\n      \"median_ms\": 0.03276,\n      \"per_round_ms\": [\n        0.0321,\n        0.03276,\n        0.03342\n      ],\n      \"ratio_meas_over_nom\": 2.499,\n      \"fit\": false,\n      \"achieved_tflops\": 65.6,\n      \"achieved_bw_gbps\": 256.1,\n      \"t_pred_cal_ms\": 0.01638,\n      \"pred_err_pct\": 100.0\n    },\n    \"attn_mha16_s1024\": {\n      \"flops\": 8589934592,\n      \"bytes\": 16777216,\n      \"ai\": 512.0,\n      \"t_comp_ms\": 0.04405,\n      \"t_mem_ms\": 0.02621,\n      \"t_nom_ms\": 0.04405,\n      \"binding\": \"compute\",\n      \"median_ms\": 0.13215,\n      \"per_round_ms\": [\n        0.12951,\n        0.13215,\n        0.13479\n      ],\n      \"ratio_meas_over_nom\": 3.0,\n      \"fit\": false,\n      \"achieved_tflops\": 65.0,\n      \"achieved_bw_gbps\": 127.0,\n      \"t_pred_cal_ms\": 0.0881,\n      \"pred_err_pct\": 50.0\n    }\n  },\n  \"holdout_err_pct\": {\n    \"gemm_6144\": 2.0,\n    \"ln_16384x4096\": -2.0,\n    \"softmax_16384x4096\": 3.0,\n    \"attn_mha16_s512\": 100.0,\n    \"attn_mha16_s1024\": 50.0\n  }\n}\n",
+  "source_environment": {
+    "timestamp_utc": "2026-01-01T00:00:00",
+    "python": "test-fixture",
+    "torch": "test-fixture",
+    "rocm": "test-fixture",
+    "os": "hand-calculated fixture; no hardware was sampled",
+    "gpu": "test-fixture-no-gpu",
+    "gpu_arch": {
+      "test-fixture": "not-measured"
+    },
+    "vram_gib": 1.0,
+    "driver": "test-fixture"
+  },
+  "nominal_constants": {
+    "peak_tflops": 195.0,
+    "bw_gbps": 640.0,
+    "ridge": 304.7
+  },
+  "source_config": {
+    "seed": 42,
+    "protocol": "test fixture only: warmup10 x 50 x 3, event+sync shape; no sampling performed"
+  },
+  "coefficients": {
+    "eta": 0.5,
+    "beta": 0.8
+  },
+  "fit": {
+    "source": {
+      "stored_at": "2026-01-01T00:00:00Z",
+      "eta": 0.5,
+      "beta": 0.8,
+      "eta_formula": "test fixture: sum(t_comp_ms)/sum(median_ms), selected GEMM only",
+      "beta_formula": "test fixture: sum(t_mem_ms)/sum(median_ms), selected streaming memory only",
+      "fit_points": {
+        "eta": [
+          "4096^3",
+          "5120^3"
+        ],
+        "beta": [
+          "ln_8192x4096",
+          "softmax_8192x4096"
+        ]
+      },
+      "eta_points": {
+        "2048^3": 0.25,
+        "4096^3": 0.5,
+        "5120^3": 0.5,
+        "8192^3": 0.4
+      },
+      "beta_points": {
+        "ln_2048x1024": 0.5001,
+        "ln_8192x4096": 0.8,
+        "softmax_4096x4096": 1.2499,
+        "softmax_8192x4096": 0.8
+      }
+    },
+    "recomputed_from_source_rounded_times": {
+      "eta": 0.500001201111749,
+      "beta": 0.8000305180437934
+    },
+    "recomputed_from_exact_counts": {
+      "eta": 0.5000005352301783,
+      "beta": 0.8000122072175174
+    },
+    "method": "sum_nominal_times_over_sum_measured_times; retain published four-decimal coefficients"
+  },
+  "calibration_records": [
+    {
+      "id": "gemm_2048^3",
+      "family": "gemm",
+      "shape": "2048^3",
+      "source_record": {
+        "flops": 17179869184,
+        "bytes": 25165824,
+        "ai": 682.7,
+        "t_comp_ms": 0.0881,
+        "t_mem_ms": 0.03932,
+        "t_nom_ms": 0.0881,
+        "binding": "compute",
+        "median_ms": 0.35241,
+        "per_round_ms": [
+          0.34536,
+          0.35241,
+          0.35946
+        ],
+        "ratio_meas_over_nom": 4.0,
+        "fit": false,
+        "eta_point": 0.25
+      }
+    },
+    {
+      "id": "gemm_4096^3",
+      "family": "gemm",
+      "shape": "4096^3",
+      "source_record": {
+        "flops": 137438953472,
+        "bytes": 100663296,
+        "ai": 1365.3,
+        "t_comp_ms": 0.70482,
+        "t_mem_ms": 0.15729,
+        "t_nom_ms": 0.70482,
+        "binding": "compute",
+        "median_ms": 1.40963,
+        "per_round_ms": [
+          1.38144,
+          1.40963,
+          1.43782
+        ],
+        "ratio_meas_over_nom": 2.0,
+        "fit": true,
+        "eta_point": 0.5
+      }
+    },
+    {
+      "id": "gemm_5120^3",
+      "family": "gemm",
+      "shape": "5120^3",
+      "source_record": {
+        "flops": 268435456000,
+        "bytes": 157286400,
+        "ai": 1706.7,
+        "t_comp_ms": 1.37659,
+        "t_mem_ms": 0.24576,
+        "t_nom_ms": 1.37659,
+        "binding": "compute",
+        "median_ms": 2.75318,
+        "per_round_ms": [
+          2.69812,
+          2.75318,
+          2.80824
+        ],
+        "ratio_meas_over_nom": 2.0,
+        "fit": true,
+        "eta_point": 0.5
+      }
+    },
+    {
+      "id": "gemm_8192^3",
+      "family": "gemm",
+      "shape": "8192^3",
+      "source_record": {
+        "flops": 1099511627776,
+        "bytes": 402653184,
+        "ai": 2730.7,
+        "t_comp_ms": 5.63852,
+        "t_mem_ms": 0.62915,
+        "t_nom_ms": 5.63852,
+        "binding": "compute",
+        "median_ms": 14.0963,
+        "per_round_ms": [
+          13.81437,
+          14.0963,
+          14.37823
+        ],
+        "ratio_meas_over_nom": 2.5,
+        "fit": false,
+        "eta_point": 0.4
+      }
+    },
+    {
+      "id": "ln_2048x1024",
+      "family": "ln",
+      "shape": "2048x1024",
+      "source_record": {
+        "flops": 8388608,
+        "bytes": 8388608,
+        "ai": 1.0,
+        "t_comp_ms": 4e-05,
+        "t_mem_ms": 0.01311,
+        "t_nom_ms": 0.01311,
+        "binding": "memory",
+        "median_ms": 0.02621,
+        "per_round_ms": [
+          0.02569,
+          0.02621,
+          0.02673
+        ],
+        "ratio_meas_over_nom": 2.0,
+        "fit": false,
+        "beta_point": 0.5001
+      }
+    },
+    {
+      "id": "ln_8192x4096",
+      "family": "ln",
+      "shape": "8192x4096",
+      "source_record": {
+        "flops": 134217728,
+        "bytes": 134217728,
+        "ai": 1.0,
+        "t_comp_ms": 0.00069,
+        "t_mem_ms": 0.20972,
+        "t_nom_ms": 0.20972,
+        "binding": "memory",
+        "median_ms": 0.26214,
+        "per_round_ms": [
+          0.2569,
+          0.26214,
+          0.26738
+        ],
+        "ratio_meas_over_nom": 1.25,
+        "fit": true,
+        "beta_point": 0.8
+      }
+    },
+    {
+      "id": "softmax_4096x4096",
+      "family": "softmax",
+      "shape": "4096x4096",
+      "source_record": {
+        "flops": 67108864,
+        "bytes": 67108864,
+        "ai": 1.0,
+        "t_comp_ms": 0.00034,
+        "t_mem_ms": 0.10486,
+        "t_nom_ms": 0.10486,
+        "binding": "memory",
+        "median_ms": 0.08389,
+        "per_round_ms": [
+          0.08221,
+          0.08389,
+          0.08557
+        ],
+        "ratio_meas_over_nom": 0.8,
+        "fit": false,
+        "beta_point": 1.2499
+      }
+    },
+    {
+      "id": "softmax_8192x4096",
+      "family": "softmax",
+      "shape": "8192x4096",
+      "source_record": {
+        "flops": 134217728,
+        "bytes": 134217728,
+        "ai": 1.0,
+        "t_comp_ms": 0.00069,
+        "t_mem_ms": 0.20972,
+        "t_nom_ms": 0.20972,
+        "binding": "memory",
+        "median_ms": 0.26214,
+        "per_round_ms": [
+          0.2569,
+          0.26214,
+          0.26738
+        ],
+        "ratio_meas_over_nom": 1.25,
+        "fit": true,
+        "beta_point": 0.8
+      }
+    }
+  ],
+  "holdout_records": [
+    {
+      "id": "gemm_6144",
+      "family": "gemm",
+      "shape": "6144^3",
+      "source_record": {
+        "flops": 463856467968,
+        "bytes": 226492416,
+        "ai": 2048.0,
+        "t_comp_ms": 2.37875,
+        "t_mem_ms": 0.35389,
+        "t_nom_ms": 2.37875,
+        "binding": "compute",
+        "median_ms": 4.85265,
+        "per_round_ms": [
+          4.7556,
+          4.85265,
+          4.9497
+        ],
+        "ratio_meas_over_nom": 2.04,
+        "fit": false,
+        "eta_point": 0.4902,
+        "t_pred_cal_ms": 4.7575,
+        "pred_err_pct": 2.0
+      },
+      "source_prediction_ms": 4.7575,
+      "source_error_pct": 2.0,
+      "recomputed_t_compute_ms": 4.7575022355692305,
+      "recomputed_t_memory_ms": 0.442368,
+      "recomputed_prediction_ms": 4.7575022355692305,
+      "recomputed_bound": "compute",
+      "recomputed_error_pct": 1.9999520697941309,
+      "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+      "scope": "source_declared_regime_new_shape",
+      "unseen_fit_shape": true
+    },
+    {
+      "id": "ln_16384x4096",
+      "family": "ln",
+      "shape": "16384x4096",
+      "source_record": {
+        "flops": 268435456,
+        "bytes": 268435456,
+        "ai": 1.0,
+        "t_comp_ms": 0.00138,
+        "t_mem_ms": 0.41943,
+        "t_nom_ms": 0.41943,
+        "binding": "memory",
+        "median_ms": 0.5138,
+        "per_round_ms": [
+          0.50352,
+          0.5138,
+          0.52408
+        ],
+        "ratio_meas_over_nom": 1.225,
+        "fit": false,
+        "beta_point": 0.8163,
+        "t_pred_cal_ms": 0.52429,
+        "pred_err_pct": -2.0
+      },
+      "source_prediction_ms": 0.52429,
+      "source_error_pct": -2.0,
+      "recomputed_t_compute_ms": 0.002753184164102564,
+      "recomputed_t_memory_ms": 0.524288,
+      "recomputed_prediction_ms": 0.524288,
+      "recomputed_bound": "memory",
+      "recomputed_error_pct": -2.000427246093739,
+      "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+      "scope": "source_declared_regime_new_shape",
+      "unseen_fit_shape": true
+    },
+    {
+      "id": "softmax_16384x4096",
+      "family": "softmax",
+      "shape": "16384x4096",
+      "source_record": {
+        "flops": 268435456,
+        "bytes": 268435456,
+        "ai": 1.0,
+        "t_comp_ms": 0.00138,
+        "t_mem_ms": 0.41943,
+        "t_nom_ms": 0.41943,
+        "binding": "memory",
+        "median_ms": 0.54002,
+        "per_round_ms": [
+          0.52922,
+          0.54002,
+          0.55082
+        ],
+        "ratio_meas_over_nom": 1.288,
+        "fit": false,
+        "beta_point": 0.7767,
+        "t_pred_cal_ms": 0.52429,
+        "pred_err_pct": 3.0
+      },
+      "source_prediction_ms": 0.52429,
+      "source_error_pct": 3.0,
+      "recomputed_t_compute_ms": 0.002753184164102564,
+      "recomputed_t_memory_ms": 0.524288,
+      "recomputed_prediction_ms": 0.524288,
+      "recomputed_bound": "memory",
+      "recomputed_error_pct": 3.000640869140625,
+      "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+      "scope": "source_declared_regime_new_shape",
+      "unseen_fit_shape": true
+    },
+    {
+      "id": "attn_mha16_s512",
+      "family": "attn",
+      "shape": "512",
+      "source_record": {
+        "flops": 2147483648,
+        "bytes": 8388608,
+        "ai": 256.0,
+        "t_comp_ms": 0.01101,
+        "t_mem_ms": 0.01311,
+        "t_nom_ms": 0.01311,
+        "binding": "memory",
+        "median_ms": 0.03276,
+        "per_round_ms": [
+          0.0321,
+          0.03276,
+          0.03342
+        ],
+        "ratio_meas_over_nom": 2.499,
+        "fit": false,
+        "achieved_tflops": 65.6,
+        "achieved_bw_gbps": 256.1,
+        "t_pred_cal_ms": 0.01638,
+        "pred_err_pct": 100.0
+      },
+      "source_prediction_ms": 0.01638,
+      "source_error_pct": 100.0,
+      "recomputed_t_compute_ms": 0.022025473312820513,
+      "recomputed_t_memory_ms": 0.016384,
+      "recomputed_prediction_ms": 0.022025473312820513,
+      "recomputed_bound": "compute",
+      "recomputed_error_pct": 48.736871778964975,
+      "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+      "scope": "out_of_fit_domain_attention",
+      "unseen_fit_shape": true
+    },
+    {
+      "id": "attn_mha16_s1024",
+      "family": "attn",
+      "shape": "1024",
+      "source_record": {
+        "flops": 8589934592,
+        "bytes": 16777216,
+        "ai": 512.0,
+        "t_comp_ms": 0.04405,
+        "t_mem_ms": 0.02621,
+        "t_nom_ms": 0.04405,
+        "binding": "compute",
+        "median_ms": 0.13215,
+        "per_round_ms": [
+          0.12951,
+          0.13215,
+          0.13479
+        ],
+        "ratio_meas_over_nom": 3.0,
+        "fit": false,
+        "achieved_tflops": 65.0,
+        "achieved_bw_gbps": 127.0,
+        "t_pred_cal_ms": 0.0881,
+        "pred_err_pct": 50.0
+      },
+      "source_prediction_ms": 0.0881,
+      "source_error_pct": 50.0,
+      "recomputed_t_compute_ms": 0.08810189325128205,
+      "recomputed_t_memory_ms": 0.032768,
+      "recomputed_prediction_ms": 0.08810189325128205,
+      "recomputed_bound": "compute",
+      "recomputed_error_pct": 49.99677659943698,
+      "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+      "scope": "out_of_fit_domain_attention",
+      "unseen_fit_shape": true
+    }
+  ],
+  "source_holdout_prediction": {
+    "stored_at": "2026-01-01T00:00:00Z",
+    "predictions_ms": {
+      "gemm_6144": 4.7575,
+      "ln_16384x4096": 0.52429,
+      "softmax_16384x4096": 0.52429,
+      "attn_mha16_s512": {
+        "t_pred_cal_ms": 0.01638,
+        "binding_by_ai": "memory",
+        "ai": 256.0
+      },
+      "attn_mha16_s1024": {
+        "t_pred_cal_ms": 0.0881,
+        "binding_by_ai": "compute",
+        "ai": 512.0
+      }
+    }
+  },
+  "calibration_patch": {
+    "kind": "calibration_spec_patch",
+    "requires": {
+      "backend": "analytical"
+    },
+    "patch": {
+      "compute_efficiency": 0.5,
+      "bandwidth_efficiency": 0.8,
+      "profile_version": "course-eta-beta-1f22d360512ff23d"
+    },
+    "apply_automatically": false,
+    "hardware_validated": false,
+    "source_kind": "test_fixture",
+    "raw_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+    "limitations": [
+      "来源是导入的课程历史参考或显式测试夹具；未执行新的 GPU 采集，hardware_validated=false。",
+      "拟合仅使用原始 fit 标记的 GEMM 与流式 LN/Softmax；留出点不参与重拟合。",
+      "原始预测时间戳不证明测量前已落盘；源脚本在全部留出测量结束后统一保存，缺少独立留出测量起止时间。",
+      "原始 Attention S512 按 nominal 访存侧选分支；此处另列双侧重算 max，保留原值不覆盖。",
+      "eta 来自大 GEMM，beta 来自流式 LN/Softmax；迁移到全模型、向量计算或 Attention 是域外假设。",
+      "事件计时不能识别 CPU T_launch 或框架开销；patch 不修改 launch_overhead_us / framework_overhead_us。",
+      "本导入不替代 whole-stage Profile、native PP 通信或 Workspace，不授予 TP/PP/缓存/swap/混合批处理硬件有效性。"
+    ]
+  },
+  "fitting_domain": {
+    "eta": "single-device BF16 square GEMM 4096^3 and 5120^3 saturated regime",
+    "beta": "single-device streaming BF16 LN/Softmax 8192x4096",
+    "timing_boundary": "isolated_operator_event_sync",
+    "tp": 1,
+    "pp": 1
+  },
+  "historical_prediction_before_measurement_established": false,
+  "hardware_validated": false,
+  "limitations": [
+    "来源是导入的课程历史参考或显式测试夹具；未执行新的 GPU 采集，hardware_validated=false。",
+    "拟合仅使用原始 fit 标记的 GEMM 与流式 LN/Softmax；留出点不参与重拟合。",
+    "原始预测时间戳不证明测量前已落盘；源脚本在全部留出测量结束后统一保存，缺少独立留出测量起止时间。",
+    "原始 Attention S512 按 nominal 访存侧选分支；此处另列双侧重算 max，保留原值不覆盖。",
+    "eta 来自大 GEMM，beta 来自流式 LN/Softmax；迁移到全模型、向量计算或 Attention 是域外假设。",
+    "事件计时不能识别 CPU T_launch 或框架开销；patch 不修改 launch_overhead_us / framework_overhead_us。",
+    "本导入不替代 whole-stage Profile、native PP 通信或 Workspace，不授予 TP/PP/缓存/swap/混合批处理硬件有效性。"
+  ],
+  "data_sha256": "fc4b7ef212c251b4a77aff63bcf052dcd84a6f73d3277a5258089612a1dd632a"
+}

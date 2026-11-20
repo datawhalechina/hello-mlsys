@@ -1,0 +1,5 @@
+candidate_id,verdict,constraint_verdict,objective,actual,unit,rank
+joint-pass,PASS,PASS,elapsed_ms,59.9,ms,1
+static-memory-fail,FAIL,FAIL,elapsed_ms,—,ms,—
+p99-only-fail,FAIL,FAIL,elapsed_ms,89.9,ms,—
+throughput-only-fail,FAIL,FAIL,elapsed_ms,149,ms,—

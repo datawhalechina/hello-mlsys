@@ -1,0 +1,12 @@
+##### simulate tp2
+Fri Nov 20 05:50:40 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-tp2/result.json", "status": "COMPLETED"}
+exit=0
+##### predict pp2
+Fri Nov 20 05:50:40 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-pp2/result.json", "status": "COMPLETED"}
+exit=0
+##### simulate combined tp2pp2
+Fri Nov 20 05:50:41 UTC 2026
+{"error_code": null, "next_actions": [], "result_path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch6-combined/result.json", "status": "COMPLETED"}
+exit=0

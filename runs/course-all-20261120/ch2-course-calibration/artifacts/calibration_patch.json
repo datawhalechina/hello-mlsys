@@ -1,0 +1,24 @@
+{
+  "kind": "calibration_spec_patch",
+  "requires": {
+    "backend": "analytical"
+  },
+  "patch": {
+    "compute_efficiency": 0.5,
+    "bandwidth_efficiency": 0.8,
+    "profile_version": "course-eta-beta-1f22d360512ff23d"
+  },
+  "apply_automatically": false,
+  "hardware_validated": false,
+  "source_kind": "test_fixture",
+  "raw_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+  "limitations": [
+    "来源是导入的课程历史参考或显式测试夹具；未执行新的 GPU 采集，hardware_validated=false。",
+    "拟合仅使用原始 fit 标记的 GEMM 与流式 LN/Softmax；留出点不参与重拟合。",
+    "原始预测时间戳不证明测量前已落盘；源脚本在全部留出测量结束后统一保存，缺少独立留出测量起止时间。",
+    "原始 Attention S512 按 nominal 访存侧选分支；此处另列双侧重算 max，保留原值不覆盖。",
+    "eta 来自大 GEMM，beta 来自流式 LN/Softmax；迁移到全模型、向量计算或 Attention 是域外假设。",
+    "事件计时不能识别 CPU T_launch 或框架开销；patch 不修改 launch_overhead_us / framework_overhead_us。",
+    "本导入不替代 whole-stage Profile、native PP 通信或 Workspace，不授予 TP/PP/缓存/swap/混合批处理硬件有效性。"
+  ]
+}

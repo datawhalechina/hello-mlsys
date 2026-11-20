@@ -1,0 +1,16 @@
+offered_rps,clients,replication,classification,slo_pass,eligible,completed,cohort_requests_per_s,window_completed_requests_per_s,ttft_p99_ms,tpot_p99_ms,e2e_p99_ms
+,1,0,observed_completed,True,504,504,100.8,100.6,13.0,,13.0
+,1,1,observed_completed,True,498,498,99.6,99.4,13.0,,13.0
+,1,2,observed_completed,True,500,500,100.0,99.8,13.0,,13.0
+,2,0,observed_completed,True,505,505,101.0,100.6,26.0,,26.0
+,2,1,observed_completed,True,499,499,99.8,99.4,26.0,,26.0
+,2,2,observed_completed,True,501,501,100.2,99.8,26.0,,26.0
+,4,0,observed_completed,False,507,507,101.4,100.6,50.0,,50.0
+,4,1,observed_completed,False,501,501,100.2,99.4,50.0,,50.0
+,4,2,observed_completed,False,503,503,100.6,99.8,49.0,,49.0
+,8,0,observed_completed,False,511,511,102.2,100.6,95.0,,95.0
+,8,1,observed_completed,False,505,505,101.0,99.4,94.0,,94.0
+,8,2,observed_completed,False,507,507,101.4,99.8,93.0,,93.0
+,16,0,observed_completed,False,519,519,103.8,100.6,178.82000000000005,,178.82000000000005
+,16,1,observed_completed,False,513,513,102.6,99.4,178.88,,178.88
+,16,2,observed_completed,False,515,515,103.0,99.8,181.0,,181.0

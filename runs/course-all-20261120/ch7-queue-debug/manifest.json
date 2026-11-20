@@ -1,0 +1,21 @@
+{
+  "backend": "tool",
+  "hardware_validated": false,
+  "historical_prediction_before_measurement_established": false,
+  "input_files": [
+    {
+      "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/inputs/ch7-queue-debug.experiment.json",
+      "sha256": "cb96b7a480e9318077e646fc469792205b065a43ec66b3a8fbcff3826f00695c"
+    },
+    {
+      "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/inputs/ch7-queue-debug.plan.json",
+      "sha256": "012ced5535485c478c30d4fdbef2df9fca6deb843023c6e206479e6ffd3ef22f"
+    }
+  ],
+  "mode": "sweep",
+  "prediction_id": "sweep-57821978f399daf7fe209693",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059",
+  "stored_at": "2026-11-20T05:53:03.262842+00:00"
+}

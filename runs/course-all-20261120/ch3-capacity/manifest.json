@@ -1,0 +1,49 @@
+{
+  "backend": "tool",
+  "collection_artifacts": {
+    "capacity_report": {
+      "file": "capacity_report.json",
+      "sha256": "37cb7dd5f4be873437c811633933cf76bc594ab65a0cc1284d5e48e7248a1d5c"
+    },
+    "dataset": {
+      "file": "dataset.json",
+      "sha256": "27e301584530adaa23da5fef9e729c3d4cf29575d2e2e46d8ab9c4c4f4c776b2"
+    },
+    "experiment": {
+      "file": "experiment.json",
+      "sha256": "31c354c415092f63ada1fd9fef69e2b31984f7f01ebbe844f9e426468cf5c3ee"
+    },
+    "inventory": {
+      "file": "inventory.json",
+      "sha256": "6eb4df0c81f49103303052474fe93fa6b25e8a278d9c0fc072b86e3a7e5b8936"
+    },
+    "raw_records": {
+      "file": "raw_records.json",
+      "sha256": "c3610f98a46a88cd64bd8cc8ed7a842d6e98c8fc6fb22d262a2ebc2fbcb23c9c"
+    }
+  },
+  "hardware_validated": false,
+  "input_files": [
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/v1_9/capacity-base.fixture.json",
+      "sha256": "fdafa6c8394e025ff716f78ecb254c4976db0915fd2a35842b8dfbd41b5df62f"
+    },
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/v1_9/capacity-measurements.fixture.json",
+      "sha256": "a86d3530e82dfc37467a14f65812c4a205b7af3f8b47fe64de1298bab03f3be8"
+    },
+    {
+      "path": "/tmp/mlsys-sim-tutorial/examples/v1_9/capacity.plan.fixture.json",
+      "sha256": "d2952f347bb6a44675d3186f627422734583a54df7449575ebc7e74be0e17bb0"
+    }
+  ],
+  "inventory_sha256": "6eb4df0c81f49103303052474fe93fa6b25e8a278d9c0fc072b86e3a7e5b8936",
+  "mode": "collect",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source": {
+    "kind": "test_fixture",
+    "reference": "CLI protocol fixture; no GPU or communication measurement"
+  },
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059"
+}

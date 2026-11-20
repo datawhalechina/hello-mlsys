@@ -1,0 +1,22 @@
+W1120 13:49:25.090000 2343576 site-packages/torch/distributed/run.py:982] 
+W1120 13:49:25.090000 2343576 site-packages/torch/distributed/run.py:982] *****************************************
+W1120 13:49:25.090000 2343576 site-packages/torch/distributed/run.py:982] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1120 13:49:25.090000 2343576 site-packages/torch/distributed/run.py:982] *****************************************
+[world=2] saved /tmp/ch5-run-20261120/results/gloo_semantics_2rank.json
+  sum_correct: True
+  consistent_across_ranks: True
+  in_place: True
+  dtype_bf16: supported
+  blocking: True
+  blocking_evidence: {'enter_spread_s': 3e-06, 'all_exit_ge_latest_enter': True}
+W1120 13:49:29.969000 2343713 site-packages/torch/distributed/run.py:982] 
+W1120 13:49:29.969000 2343713 site-packages/torch/distributed/run.py:982] *****************************************
+W1120 13:49:29.969000 2343713 site-packages/torch/distributed/run.py:982] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1120 13:49:29.969000 2343713 site-packages/torch/distributed/run.py:982] *****************************************
+[world=4] saved /tmp/ch5-run-20261120/results/gloo_semantics_4rank.json
+  sum_correct: True
+  consistent_across_ranks: True
+  in_place: True
+  dtype_bf16: supported
+  blocking: True
+  blocking_evidence: {'enter_spread_s': 4.1e-05, 'all_exit_ge_latest_enter': True}
