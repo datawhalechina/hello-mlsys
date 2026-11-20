@@ -19,6 +19,7 @@ export const parts = [
         title: '协议与纸面演练',
         summary: '教程定位、硬件图谱、统一测量协议、模拟器工具链与能力边界',
         status: '🚧',
+        module: '性能分析基础',
         lead: '本章说明本教程的定位与学习路径，建立贯穿全书的统一测量协议，并认识模拟器工具链能做什么、不能做什么。读完后，你应该能用模拟器输出填写一份字段完整的纸面实验底稿。',
         sections: [
           ['教程定位与学习路径', '说明本教程与 hello-rocm、hello-gpu 的分工，以及“预测 → 实测 → 校准 → 决策”的学习闭环。'],
@@ -45,6 +46,7 @@ export const parts = [
         title: '模拟器估算、Roofline 与瓶颈',
         summary: 'Roofline、算术强度、Compute-bound / Memory-bound 判定、计算时间量级估算',
         status: '🚧',
+        module: '性能分析基础',
         lead: '本章建立性能预测的第一层直觉：一个算子在给定硬件上的理论上限是多少，瓶颈落在计算还是访存。读完后，你应该能先用模拟器给出预测，再带着预测去看真机数据。',
         sections: [
           ['Roofline 模型', '理解 Attainable FLOPS = min(Peak FLOPS, AI × Peak Bandwidth) 的含义与适用边界。'],
@@ -62,6 +64,7 @@ export const parts = [
         title: '第一次真机 Profile 与性能校准',
         summary: '真机准入检查、最小 Profile 跑通、误差归因、校准集与留出验证',
         status: '🚧',
+        module: '性能分析基础',
         lead: '本章第一次把模拟器预测带上真机：先跑通最小 Profile，再用校准集拟合修正系数，最后在留出配置上检验修正能否泛化。读完后，你应该能完成一次完整的“预测 → 实测 → 校准 → 留出验证”。',
         sections: [
           ['真机准入检查', '确认硬件、驱动与软件版本满足实验要求，并记录实验环境。'],
@@ -81,6 +84,7 @@ export const parts = [
         title: '显存占用估算：模型权重与 KV Cache',
         summary: '权重显存、KV Cache、激活与碎片开销、最大可服务上下文与并发',
         status: '🚧',
+        module: '单机优化',
         lead: '本章回答“什么能放得下”：把显存拆成权重、KV Cache 与运行时开销三本账，先用公式手算，再与模拟器和真机读数对答案。',
         sections: [
           ['权重显存', '权重显存 = 参数量 × 每参数字节数。'],
@@ -100,6 +104,7 @@ export const parts = [
         title: '精度、量化方法与误差预算',
         summary: '数值格式、精度 / 延迟 / 显存三维权衡、误差预算分配',
         status: '🚧',
+        module: '单机优化',
         lead: '本章把量化当成一个多约束的设计问题：显存、延迟与质量三者同时有预算，哪个约束最先被撑破？读完后，你应该理解“显存减半”与“延迟下降”并不是一回事。',
         sections: [
           ['数值格式', '比较 FP16、BF16、FP8、INT8、INT4 的表示范围与精度差异。'],
@@ -119,6 +124,7 @@ export const parts = [
         title: '通信代价模型与 Scale-in / Scale-up',
         summary: '节点内与节点间互联、集合通信原语、α–β 代价模型',
         status: '🚧',
+        module: '进阶协同',
         lead: '本章建立通信的一阶代价模型 T ≈ α + β × Data，并区分“行为验证”与“性能验证”。读完后，你应该能判断一次集合通信处在延迟主导区还是带宽主导区。',
         sections: [
           ['节点内与节点间互联', '比较 PCIe、xGMI 等节点内链路与 InfiniBand、RoCEv2 等节点间网络的带宽与延迟量级。'],
@@ -138,6 +144,7 @@ export const parts = [
         title: '模型并行策略与显存 / 算力拆解',
         summary: 'DP / FSDP、TP、PP、切分收益被通信吃掉的判定条件',
         status: '🚧',
+        module: '进阶协同',
         lead: '本章以模拟器为主角，面对一个单卡放不下的模型做真实的切分决策。读完后，你应该能用每卡显存与通信占比两个指标比较不同并行方案。',
         sections: [
           ['DP / FSDP', '理解数据并行的显存冗余与梯度同步。'],
@@ -158,6 +165,7 @@ export const parts = [
         title: '服务、排队与 SLA',
         summary: 'TTFT、TPOT / ITL、分位数延迟、并发与吞吐、排队拐点、负载生成与压测',
         status: '🚧',
+        module: '服务评测',
         lead: '本章从单次推理走向在线服务：请求会排队，延迟有分布，SLA 由尾部决定。读完后，你应该能预测并实测出“SLA 即将被突破”的并发水位。',
         sections: [
           ['服务延迟指标', '定义 TTFT、TPOT / ITL 与端到端延迟。'],
@@ -177,6 +185,7 @@ export const parts = [
         title: '推理框架的系统取舍、Profile 与性能分析',
         summary: '框架级取舍、框架级 Profile、配置空间预测与失败模式',
         status: '🚧',
+        module: '单机优化',
         lead: '本章是第 1 篇的收口章：用前面建立的 Roofline、显存、量化与排队模型，解释不同推理框架在同一场景下的差异，并据此做出框架与配置选择。',
         sections: [
           ['框架级系统取舍', '理解显存碎片与吞吐、调度开销与批处理收益之间的权衡。'],
@@ -203,6 +212,7 @@ export const parts = [
         title: '端侧部署助手',
         summary: '资源受限场景下的模型、精度、上下文与 KV 配置选型',
         status: '🚧',
+        module: '单机优化',
         lead: '本章在资源受限的端侧约束下，与 AI 一起完成一次部署选型：先用模拟器筛选候选方案，再选少量配置实测，把采纳、修改或否决的理由写进决策日志。',
         sections: [
           ['端侧约束与候选方案', '明确显存、首 token 延迟与解码速度约束，列出模型与量化候选。'],
@@ -220,6 +230,7 @@ export const parts = [
         title: '单机服务满足 SLA',
         summary: '单卡容量规划：显存上界与排队上界、实测拐点与留出验证',
         status: '🚧',
+        module: '单机优化',
         lead: '本章综合运用量化、排队与推理框架三章的模型，在单机上通过框架参数、量化与并发限制满足给定 SLA。',
         sections: [
           ['SLA 目标与容量上界', '用显存模型预测可开的最大 KV Cache，用排队模型预测目标 SLA 下的最大安全并发，两者取小。'],
@@ -237,6 +248,7 @@ export const parts = [
         title: '负载启发的推理集群设计',
         summary: '冻结的 deep-research 轨迹上以总墙钟最短为目标：32B/7B 两档模型协作与多种并行策略，先模拟筛选配置，再在 W7900D 48 G 多卡集群实测',
         status: '🚧',
+        module: '进阶协同',
         lead: '本章是全书的结营章：给定一条冻结的 claudecode deep-research 轨迹（50+ subagent、32B/7B 两档请求），在 W7900D 48 G 多卡集群上用多种并行策略与多档模型协作，使总墙钟最短。先用模拟器完成配置筛选并留存预测，再实测验证，明确区分实测与外推。',
         sections: [
           ['冻结轨迹与约束', '固定的 deep-research 轨迹：50+ subagent、多控制节点 RAG、32B/7B 两档请求；请求内容冻结不可改，infra 策略是唯一决策变量。'],
@@ -263,6 +275,7 @@ export const parts = [
         title: '选修与案例库',
         summary: '优先选修实验与扩展案例卡',
         status: '🚧',
+        module: '选修',
         lead: '必修章节之后的优先选修与扩展案例卡。案例卡统一按“场景 → 预测 → 验证 → 复盘”组织：学生页先给问题、约束与模拟入口，实测答案和原因放复盘页。',
         sections: [
           ['C05（优先选修）：KV 搬运 vs 重算', '已有解析计算器；补 AMD 实际传输与重算参数、路径分解和边界验证。'],
@@ -292,6 +305,7 @@ export const parts = [
       title,
       summary: '待补充',
       status: '🚧',
+      module: '——',
       lead: '待补充。',
       sections: []
     }))

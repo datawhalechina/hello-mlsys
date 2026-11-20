@@ -150,10 +150,10 @@ Qwen3-8B 是 GQA：32 个 query head、8 个 KV head。TP=2 时按 rank 切为
 - **Qwen3-14B @ 2×16 GB vs 48 GB**：TP2 / PP2 在 16 GB 上都是 **16.832 ✗**，
   必须升到 **TP4 / PP4 = 8.705 ✓**；而单张 48 GB 卡上 14B 权重 27.509 + KV 5.0 +
   激活 0.039 + 0.5 = **33.048 ✓** 直接单卡可放——
-  **切分决策取决于卡容量档位**，这正是 Feishu 要求的"真实切分决策"压力场景。
+  **切分决策取决于卡容量档位**，这正是本章要练的"真实切分决策"压力场景。
 
 ::: info W7900D 48 GB 参数
-48 GB 卡的显存档位（可用 42.7 GiB）为**容量占位**，具体卡参数 TODO 嘉航，
+48 GB 卡的显存档位（可用 42.7 GiB）为**容量档**；W7900D 官方标称参数见第 0 章 §0.2，本章未实测，
 正文只消费"48 GB 容量"这一档，不对其带宽/算力做断言。
 :::
 
@@ -303,7 +303,7 @@ prefill 必须节点内（`must_innode`），decode 连节点内都不可行（`
 
 ## 6.6 训练口径：DP / FSDP
 
-Feishu 核心内容之一。`training_caliber` 块对 Qwen3-8B（n_tok=8、S=4096、P=2、
+本章核心内容之一。`training_caliber` 块对 Qwen3-8B（n_tok=8、S=4096、P=2、
 混合精度 16 B/param、fwd+bwd ≈ 3×F，Ch2 常数）给出 DP 与 FSDP 的**方案间对比账本**
 （注意：**不是单卡可行性**，而是两种方案的显存/通信相对量级）：
 
@@ -498,7 +498,7 @@ q_norm / k_norm**（q/k 投影后、RoPE 前的逐 head RMSNorm，权重 [hd]）
 | rank4_real_hw | 本机仅 2 GPU，P=4 真机切分不可行（P=4 仅模拟器口径） |
 | gpu_gpu_collective_perf | GPU 侧集合通信性能 = Ch5 not_covered（2-process RCCL kernel 互等死锁，vendor 级） |
 | rccl_tp_pp | 同上：真机 TP/PP 走 gloo（行为口径），RCCL 路径未产出 |
-| w7900d_real | W7900D 48 GB 参数 TODO 嘉航，仅容量占位 |
+| w7900d_real | W7900D 48 GB 未实测（官方标称参数见第 0 章 §0.2），仅用容量档 |
 | training_fsdp_real_hw | 训练口径（DP 梯度同步 / FSDP）仅账本对照（6.6），未上真机 |
 
 ### 动画交付

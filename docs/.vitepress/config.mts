@@ -4,7 +4,7 @@ import { navItems, repoUrl, sidebar } from './outline.mjs'
 export default defineConfig({
   lang: 'zh-CN',
   title: 'Hello MLSys',
-  description: '用模拟器预测驱动 LLM 推理系统设计，并在 AMD GPU 上实测验证与校准的实战教程',
+  description: '连接设备，搭建平台，让每一份 AI 算力更高效：基于 AMD 硬件，以 vLLM 等开源推理框架为实践载体，学习从单机部署到多机 LLM 服务',
   base: '/hello-mlsys/',
 
   cleanUrls: true,

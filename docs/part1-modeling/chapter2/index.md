@@ -225,7 +225,7 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 
 ## 2.7 CPU 参照线（无 GPU 学员的预测入口）
 
-&emsp;&emsp;前面 §2.1–§2.6 全部在 9070 XT 上跑。本章补一条**CPU 参照线**，做两件成本低、教学价值高的事：① 量化"GPU 加速到底有多少"——同一个 GGUF、同一套参数，纯 CPU 与全层上卡各跑一遍，直接取 CPU→GPU 的 speedup；② 给**没有 GPU 的学员**一条可复现的 CPU 预测入口（飞书 C01 缺口"补 CPU 预测入口"的落点，呼应 Ch0 §0.2 无设备替代路径：第 1 章 Roofline、第 3 章显存账纯 CPU 即可完成，只缺本 §2.1–§2.6 的真机校准）。
+&emsp;&emsp;前面 §2.1–§2.6 全部在 9070 XT 上跑。本章补一条**CPU 参照线**，做两件成本低、教学价值高的事：① 量化"GPU 加速到底有多少"——同一个 GGUF、同一套参数，纯 CPU 与全层上卡各跑一遍，直接取 CPU→GPU 的 speedup；② 给**没有 GPU 的学员**一条可复现的 CPU 预测入口（呼应 Ch0 §0.2 无设备替代路径：第 1 章 Roofline、第 3 章显存账纯 CPU 即可完成，只缺本 §2.1–§2.6 的真机校准）。
 
 **方法**（`cpu_refline.py`，产物 `results/cpu_refline_9070xt.json`）：llama.cpp 0.9.0-dev（build 1），同一 Qwen3-0.6B **F16** GGUF（由 HF BF16 转出），`llama-bench` 默认双测（**pp512** 预填充 + **tg128** 逐 token 生成，batch=1），`-r 5`（另有 1 次内置 warmup）。**CPU**：`-ngl 0`（0 层上卡 = 纯 CPU）+ `-t 12`（物理核数；SMT 对 GEMM 帮助有限）；**9070 XT**：`HIP_VISIBLE_DEVICES=1`（容器内设备号 1）+ `-ngl 999`（全部层上卡）。取每条 **median tok/s**——首个实测 rep 有 warmup 凹陷（prefill 首样本可低近一半），median 对它免疫；decode 五次样本本身极紧（std 0.18 / 1.38 tok/s，CPU / GPU）。
 

@@ -45,7 +45,7 @@ For larger changes (new chapters, restructuring chapters, new experiments), plea
 | Raw measurement records | `code/<part>/<chapter>/results/`, with a device suffix in the file name, e.g. `cal_9070xt.json` |
 | Plotting scripts | `code/<part>/<chapter>/figs/make_figs.py`, reading data from `results/` to generate figures |
 | Templates for readers to download | `docs/public/<part>/<chapter>/` |
-| Chapter title, summary, status | `docs/.vitepress/outline.mjs` (see "Editing the Outline" below) |
+| Chapter title, summary, module, status | `docs/.vitepress/outline.mjs` (see "Editing the Outline" below) |
 
 ## Chapter Writing Conventions
 
@@ -73,7 +73,7 @@ The core discipline of this tutorial is **record the prediction first, then meas
 
 ## Editing the Outline
 
-Chapter titles, summaries, status, and section skeletons are maintained in `docs/.vitepress/outline.mjs`. After editing it, run from the repository root:
+Chapter titles, summaries, modules (`module`), status, and section skeletons are maintained in `docs/.vitepress/outline.mjs`. After editing it, run from the repository root:
 
 ```bash
 npm run docs:sync-outline
@@ -81,14 +81,14 @@ npm run docs:sync-outline
 
 This syncs:
 
-- the Contents table in `README.md`;
-- the curriculum page `docs/curriculum/index.md`;
+- the Contents table in `README.md`, including the note above it, the module column, and a "code" link added automatically when the chapter's `code/` directory contains files;
+- the curriculum page `docs/curriculum/index.md` (each chapter is tagged with its module);
 - each chapter's frontmatter and top-level heading (existing text is not overwritten);
 - skeleton files for new chapters (generated only when the file does not exist).
 
 Notes:
 
-- The Contents table in `README_en.md` is not synced automatically; update the matching rows by hand after editing the outline.
+- The Contents table in `README_en.md` is not synced automatically; update the matching rows by hand after editing the outline (including the Module column and code links).
 - `npm run docs:sync-outline -- --write-stubs` **overwrites existing chapter text** with skeletons. It is for initialization only; do not use it day to day.
 
 ## Local Preview and Checks

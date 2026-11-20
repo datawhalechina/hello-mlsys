@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { existsSync } from 'node:fs'
+import { existsSync, readdirSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { chapterHeading, chapters, parts } from './outline.mjs'
 
@@ -67,18 +67,27 @@ async function syncChapters() {
   }
 }
 
+function hasChapterCode(chapter) {
+  if (!chapter.code) return false
+  const dir = join(repoRoot, chapter.code)
+  return existsSync(dir) && readdirSync(dir).some((name) => name !== '.gitkeep')
+}
+
 function readmeDirectory() {
   const lines = [
     '## 目录',
     '',
-    '| 章节名 | 简介 | 状态 |',
-    '| ---- | ---- | ---- |',
+    '> 章节顺序就是推荐的学习顺序。全书内容覆盖「单机部署、服务评测、单机优化、多机服务、进阶协同」五个模块，其中「单机部署」与「多机服务」正在编写，完成后插入相应位置。vLLM 走通主线，llama.cpp 做对照与端侧；涉及 Radeon 多卡张量并行的结论（第 5、6 章）以本书实测为准。',
+    '',
+    '| 章节名 | 简介 | 所属模块 | 状态 |',
+    '| ---- | ---- | ---- | ---- |',
   ]
 
   for (const part of parts) {
-    lines.push(`| **${part.readmeTitle}** | | |`)
+    lines.push(`| **${part.readmeTitle}** | | | |`)
     for (const chapter of chapters.filter((item) => item.part === part)) {
-      lines.push(`| [${chapterHeading(chapter)}](./${chapter.source}) | ${chapter.summary} | ${chapter.status} |`)
+      const code = hasChapterCode(chapter) ? ` · [代码](./${chapter.code})` : ''
+      lines.push(`| [${chapterHeading(chapter)}](./${chapter.source})${code} | ${chapter.summary} | ${chapter.module} | ${chapter.status} |`)
     }
   }
 
@@ -107,7 +116,7 @@ async function syncCurriculum() {
     '',
     '# 全书目录',
     '',
-    '从入门开始，依次学习建模与校准，再完成与 AI 一起设计的综合实践。选修案例和附录可按需查阅。',
+    '章节顺序就是推荐的学习顺序。全书内容覆盖「单机部署、服务评测、单机优化、多机服务、进阶协同」五个模块，每章后标注了所属模块；「单机部署」与「多机服务」正在编写，完成后插入相应位置。选修案例和附录可按需查阅。',
     '',
     '::: info 阅读说明',
     '教程处于 Alpha 阶段，部分章节仍为大纲或待补充内容，请以各章现有正文与验证记录为准。',
@@ -117,7 +126,8 @@ async function syncCurriculum() {
   for (const part of parts) {
     lines.push('', `## ${part.readmeTitle}`, '')
     for (const chapter of chapters.filter((item) => item.part === part)) {
-      lines.push(`- [${chapterHeading(chapter)}](${chapter.path}) — ${chapter.summary}`)
+      const module = chapter.module && chapter.module !== '——' ? `（${chapter.module}）` : ''
+      lines.push(`- [${chapterHeading(chapter)}](${chapter.path}) — ${chapter.summary}${module}`)
     }
   }
 

@@ -45,7 +45,7 @@ hello-mlsys/
 | 原始测量记录 | `code/<part>/<chapter>/results/`，文件名带设备后缀，例如 `cal_9070xt.json` |
 | 图表脚本 | `code/<part>/<chapter>/figs/make_figs.py`，从 `results/` 读取数据生成配图 |
 | 供读者下载的模板 | `docs/public/<part>/<chapter>/` |
-| 章节标题、简介、状态 | `docs/.vitepress/outline.mjs`（见下文“修改大纲”） |
+| 章节标题、简介、所属模块、状态 | `docs/.vitepress/outline.mjs`（见下文“修改大纲”） |
 
 ## 章节写作约定
 
@@ -73,7 +73,7 @@ frontmatter 与一级标题由大纲同步脚本维护，请不要手动修改�
 
 ## 修改大纲
 
-章节标题、简介、状态和小节骨架统一维护在 `docs/.vitepress/outline.mjs`。修改后在仓库根目录运行：
+章节标题、简介、所属模块（`module`）、状态和小节骨架统一维护在 `docs/.vitepress/outline.mjs`。修改后在仓库根目录运行：
 
 ```bash
 npm run docs:sync-outline
@@ -81,14 +81,14 @@ npm run docs:sync-outline
 
 它会同步：
 
-- `README.md` 中的「目录」表格；
-- 全书目录页 `docs/curriculum/index.md`；
+- `README.md` 中的「目录」表格：包括表格上方的说明、「所属模块」列，以及章节对应的 `code/` 目录中有文件时自动加上的「代码」链接；
+- 全书目录页 `docs/curriculum/index.md`（每章后标注所属模块）；
 - 各章的 frontmatter 与一级标题（已有正文不会被覆盖）；
 - 新增章节的骨架文件（文件不存在时才生成）。
 
 注意：
 
-- `README_en.md` 的目录表格不会自动同步，修改大纲后请手动更新对应行。
+- `README_en.md` 的目录表格不会自动同步，修改大纲后请手动更新对应行（含 Module 列与 code 链接）。
 - `npm run docs:sync-outline -- --write-stubs` 会用骨架**覆盖已有章节正文**，仅用于初始化，日常请勿使用。
 
 ## 本地预览与检查

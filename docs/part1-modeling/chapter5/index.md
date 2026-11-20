@@ -41,7 +41,7 @@ All-Gather：        T_AG = (P−1)·α + (P−1)/P · Data / BW
 | ---- | ---- | ---- | ---- | ---- | ---- |
 | **PCIe 4.0 ×16** | 节点内 · scale-up | 经 CPU 根复合体（本机双卡即此档） | 31.5 GB/s（16 GT/s ×16 lane，128b/130b） | **25 GB/s**（~79% 有效） | **2 µs/跳** |
 | **xGMI 环网**（MI300 类） | 节点内 · scale-up | 片间高速环网（AMD 专有） | 8 链 × 64 GB/s 双向/链 | **64 GB/s** | **1 µs/跳** |
-| **NVLink**（300 GB/s） | 节点内 · scale-up · 专用 | GPU 间专用物理层（Feishu 指定口径，对应 A100 单向） | 300 GB/s | **300 GB/s** | **1 µs/跳** |
+| **NVLink**（300 GB/s） | 节点内 · scale-up · 专用 | GPU 间专用物理层（教学取值，对应 A100 单向） | 300 GB/s | **300 GB/s** | **1 µs/跳** |
 | **100G RoCEv2** | 节点间 · scale-in | 跨节点 RDMA over Converged Ethernet | 12.5 GB/s | **11 GB/s**（~88% 有效） | **2 µs/跳** |
 
 **量级判读**（这是本章反复回扣的一张表）：
@@ -83,7 +83,7 @@ D* = P · α · BW
 
 ## 5.3 模拟器账本：四档拓扑的 Ring-AR 曲线与拐点
 
-**预测**（测前留存，`comm_ledger.py` → `results/comm_ledger.json`，run `ch5-ledger-20261116T063929Z`）：对 §5.1 的四档拓扑、P∈{2,4}，在 `Data ∈ [1 KB, 1 GB]`（log 网格 21 点）上按 §5.2 公式算 Ring-AR 与 All-Gather 时间，并解出每档的拐点 D\*。**公式级对账**：与自研 msys-simulator（commit `2d9d4de`）逐点核对，48 点 `max_rel_err = 2.15e-16`——两套实现**机器精度一致**，排除了"代码算错"这一类误差来源。
+**预测**（测前留存，`comm_ledger.py` → `results/comm_ledger.json`，run `ch5-ledger-20261116T063929Z`）：对 §5.1 的四档拓扑、P∈{2,4}，在 `Data ∈ [1 KB, 1 GB]`（log 网格 21 点）上按 §5.2 公式算 Ring-AR 与 All-Gather 时间，并解出每档的拐点 D\*。**公式级对账**：与自研 mlsys-simulator（commit `2d9d4de`）逐点核对，48 点 `max_rel_err = 2.15e-16`——两套实现**机器精度一致**，排除了"代码算错"这一类误差来源。
 
 **四档拓扑的拐点 D\*（P=2 / P=4）**：
 
@@ -187,7 +187,7 @@ draft 的 `prediction`（`stored_at` 先于测量）预测 H2D/D2H 稳态带宽�
 
 ## 5.7 行为验证：gloo 多进程集合通信语义
 
-飞书 CH5 明确要求**把"行为验证"与"性能验证"分开**：用 CPU `gloo` 后端、单节点多进程跑 All-Reduce，**目标是验证分布式通信原语的代码行为、同步机制与数值语义一致性，脱离昂贵的多卡硬件依赖**——这里的绝对耗时**不代表多卡集群性能**（走的是 CPU/共享内存路径）。`gloo_semantics.py` → `results/gloo_semantics.json`，2 rank 与 4 rank 各跑一遍：
+本章刻意**把"行为验证"与"性能验证"分开**：用 CPU `gloo` 后端、单节点多进程跑 All-Reduce，**目标是验证分布式通信原语的代码行为、同步机制与数值语义一致性，脱离昂贵的多卡硬件依赖**——这里的绝对耗时**不代表多卡集群性能**（走的是 CPU/共享内存路径）。`gloo_semantics.py` → `results/gloo_semantics.json`，2 rank 与 4 rank 各跑一遍：
 
 | 检查项 | 2 rank | 4 rank | 含义 |
 | ---- | ---- | ---- | ---- |
@@ -205,8 +205,10 @@ gloo 这段**只证明"API 和拓扑感知逻辑长什么样、语义对不对"*
 
 ## 5.8 引擎口径：双卡 RCCL All-Reduce——本机 not_covered
 
-TODO 
-**结论**：本机双卡 RCCL all_reduce **无法完成首个集合通信 
+**结论**：本机双卡 RCCL all_reduce **无法完成首个集合通信**。平台层已通过 ReBAR 打通（aperture + peer 转发），裸 P2P DMA 实测可以走通（13.22 / 12.91 GB/s），剩余卡点是与传输无关的 2-process 跨 GPU kernel 互等死锁（4 个通道同一签名，单 rank 全部通过）。因此本机 PCIe 2-hop 层的引擎口径记为 `not_covered`，NVLink 层的引擎口径由 §5.9 在 v100x2 上补齐。
+
+::: warning 待补充
+10 次 run 的完整法医记录正在整理；诊断脚本见 `code/part1-modeling/chapter5/` 下的 `rccl_minidiag.py` 与 `run_rccl_diag*.sh`。
 :::
 
 ## 5.9 引擎口径（补充）：NVLink 层在 v100x2 宿主实测（V100 ×2，NV6 bond）
@@ -274,7 +276,7 @@ TODO
 
 ## 实验设计
 
-- **模拟器实验（预测 → 对账闭环，`comm_ledger.py` → `results/comm_ledger.json`）**：四档 nominal 拓扑（PCIe 4.0 ×16 / xGMI 环网 / 100G RoCEv2 / NVLink 300，测前冻结）× P∈{2,4} × Data∈[1KB,1GB]（log 21 点）→ Ring-AR/All-Gather 曲线 + 拐点 D\* + TP=2/4 单层通信占比 + NVLink 收益区间 + 真机预测（2-hop 25 GB/s/4 µs）。与 msys-simulator（commit `2d9d4de`）48 点公式级对账 `max_rel_err=2.15e-16`。
+- **模拟器实验（预测 → 对账闭环，`comm_ledger.py` → `results/comm_ledger.json`）**：四档 nominal 拓扑（PCIe 4.0 ×16 / xGMI 环网 / 100G RoCEv2 / NVLink 300，测前冻结）× P∈{2,4} × Data∈[1KB,1GB]（log 21 点）→ Ring-AR/All-Gather 曲线 + 拐点 D\* + TP=2/4 单层通信占比 + NVLink 收益区间 + 真机预测（2-hop 25 GB/s/4 µs）。与 mlsys-simulator（commit `2d9d4de`）48 点公式级对账 `max_rel_err=2.15e-16`。
 - **真机实验（宿主 miniconda3 直跑 torch 2.16.0.dev20261019+rocm10.1，driver 6.16.13；补充宿主 v100x2：venv torch 2.10.0+cu128，driver 580.65.06，6×V100-SXM2，仅用 GPU 4/5）**：
   - **设备口径**：`pcie_probe.py` → `results/pcie_probe_7900xtx.json`（7900 XTX pinned H2D/D2H，64KB–1GB + pageable 对照；主卡 9070 XT 被他人任务占用 `not_covered`）；
   - **行为验证**：`gloo_semantics.py` → `results/gloo_semantics.json`（CPU gloo 2/4 rank All-Reduce：求和正确/跨 rank 一致/in-place/bf16 边界/阻塞语义；**非多卡性能**）；
@@ -285,7 +287,7 @@ TODO
   - **校准（解释误差）**：三口径对账表 + 残差归因（α gap 公式 × 设备 = 口径差，引擎部分 unresolved；BW gap = 链路效率/DMA 路径，残差 unresolved；PCIe 2-hop 引擎口径 not_covered，闭合记录 = §5.8 法医；**NVLink 层引擎口径 v100x2 补齐，2.94× gap 分解闭合（代际 2.07× × 引擎效率 70.7%，裸互联单向 raw 实测 144.61 GB/s），§5.9**）；
   - **决策（提交）**：消息体量预测/实测曲线、α–β 三口径参数、TP 通信占比、端到端外推边界（**注明设备/行为口径不代表多卡卡间性能**）。
 - **not_covered**（`experiment-draft.yaml`）：`rccl_dual_gpu_perf`（双卡 RCCL all_reduce 本机无法完成：平台层已被 ReBAR 打通（aperture + peer 转发），剩余卡点 = 传输无关的 2-process 跨 GPU kernel 互等死锁（4 通道同签名、单 rank 全过、裸 P2P DMA 实测走通 13.22/12.91 GB/s），10 次 run 法医 §5.8）、`rocm_bandwidth_test`（宿主未装且 apt 无包，PCIe 基线由 torch pinned 承担）、`pcie_h2d_d2h_pin_9070xt`（主卡占用）、`xgmi_ring_real` / `roce100g_real`（本机无对应硬件，仅 nominal 档案）、`nvlink300_real`（本机无 NVLink 硬件；NVLink **层**引擎口径已在 v100x2 补齐（V100 NVLink2，§5.9），但 A100 口径的 nvlink300 硬件本身仍 not_covered，代际差如实记录）。
-- **动画交付（homework ②）**：Ring-AR / All-Gather 消息传递与主导区过渡的动画演示，数据源 = msys-simulator 通信模型输出（带 run 标识、可复现）——本章正文以 §5.3 的静态曲线 + 拐点标注呈现同一数据，动画为课程作业侧产物。
+- **动画交付（homework ②）**：Ring-AR / All-Gather 消息传递与主导区过渡的动画演示，数据源 = mlsys-simulator 通信模型输出（带 run 标识、可复现）——本章正文以 §5.3 的静态曲线 + 拐点标注呈现同一数据，动画为课程作业侧产物。
 
 ## 本章小结
 

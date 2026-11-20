@@ -15,7 +15,7 @@ description: "Hello MLSys · 第 0 章 协议与纸面演练 · 教程定位、�
 
 ## 教学目标
 
-- 能说明本教程与 hello-rocm（跑起来）、hello-gpu（算子做快）、MLSys·im（系统建模）的分工，并复述"预测 → 实测 → 校准 → 决策"的学习闭环；
+- 能说明本教程在 AMD Hello 系列中的位置（hello-rocm 入门实践、hello-gpu 计算优化、hello-mlsys 服务平台），以及 MLSys·im 与 mlsys-simulator 两个模拟器的分工，并复述"预测 → 实测 → 校准 → 决策"的学习闭环；
 - 能列出目标 AMD 卡的算力、显存带宽、显存容量与互联参数，并注明参数来源，区分**标称值**与**实测有效值**；
 - 能执行统一测量协议：token / GB-GiB / 延迟 / 功耗口径，预热、重复次数与方差记录，校准集与留出配置的预先划分；
 - 能说清模拟器工具链能建模什么（性能、显存、排队、通信）、不能建模什么，以及缺项时最小教学分析模型的定位；
@@ -43,17 +43,22 @@ T ≈ D / BW  +  O / (R · η)  +  L
 
 ### 这本书和它的姐妹教程
 
-&emsp;&emsp;datawhale 的这条线里，每本教程回答一个不同的问题：
+&emsp;&emsp;本书属于 AMD Hello 系列。三个项目可以独立学习，也能通过同一个模型串联实践：在 hello-rocm 中训练、微调和使用模型，在 hello-gpu 中理解并优化计算，在 hello-mlsys 中将模型部署为高效的共享服务。
 
 | 教程 | 回答的问题 | 本书与它的关系 |
 | --- | --- | --- |
-| **hello-rocm** | 环境怎么装，程序怎么跑起来 | 环境安装与 ROCm 部署一律引用它，本书不复述 |
-| **hello-gpu** | 单个算子为什么慢、怎么优化（kernel 级） | 算子/kernel 调优是它的主场；本书把算子当"黑盒成本"，只关心它的 FLOPs 与字节数 |
-| **MLSys·im** | 系统建模的方法与现成模拟器（roofline、372 个公式、102 份硬件参数） | **参考模拟器**：本书解析层借它的方法与公式，兼作对照学生手算的第三方标尺 |
-| **mlsys-simulator**（自研） | 课程自研的确定性 CPU 服务模拟器——服务级性能怎么估（continuous batching、KV 内存压力、TP/PP、Prefix Cache、Chunked Prefill、多副本路由） | 本书的主工具（§1.1/§1.4 的 simulate/predict 六元组接口即它）；解析层借 MLSys·im 的方法与公式；v1.15 起支持声明式量化权重/KV 存储与反量化开销；私有仓库，许可证待定 |
-| **hello-mlsys（本书）** | **应该设计什么系统、怎么知道它有效** | 用模拟指导系统设计，在 AMD 真机上验证和校准 |
+| **hello-rocm** | AI 入门实践：环境准备、模型推理、训练、微调与 Agent 开发 | 环境安装、模型使用与微调一律引用它，本书不复述 |
+| **hello-gpu** | GPU 计算优化：GPU 编程、数据类型、GEMM 与算子优化（kernel 级） | 算子/kernel 调优是它的主场；本书把算子当"黑盒成本"，只关心它的 FLOPs 与字节数 |
+| **hello-mlsys（本书）** | **LLM 服务平台：怎样把模型部署成高效的共享服务，怎么知道它有效** | 以 vLLM 为主线，在 AMD 设备上从单机部署走到多机服务，用模拟预测、用真机验证和校准 |
 
-一句话分工：**hello-rocm 教你跑起来，hello-gpu 教你把算子做快，MLSys·im（mlsysim）提供广泛使用的系统建模方法与参考模拟器，hello-mlsys 用自研 msys-simulator（确定性 CPU 服务模拟器）教你用模拟指导系统设计，并在 AMD 真机上验证和校准。** 训练显存优化、K8s 集群调度属于平台侧，作为选读指向 hello-ai-infra-platform，不在本书主线。
+&emsp;&emsp;本书做"先预测、再实测"时用到两个模拟器：
+
+| 工具 | 是什么 | 本书怎么用 |
+| --- | --- | --- |
+| **MLSys·im** | mlsysbook.ai 配套的系统建模方法与参考模拟器（Roofline 等解析公式与硬件参数档案） | **参考模拟器**：本书解析层借它的方法与公式，兼作对照学生手算的第三方标尺 |
+| **[mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator)** | 课程自研的确定性 CPU 服务模拟器：请求到达、continuous batching、KV 内存压力、抢占与重算、TP/PP、Prefix Cache、Chunked Prefill、多副本路由 | 本书的主工具（§1.1/§1.4 的 simulate/predict 六元组接口即它）；源码公开在 GitHub，许可证尚在选定中 |
+
+一句话分工：**hello-rocm 带你从零跑起模型并完成训练与微调，hello-gpu 教你看懂并优化每一次计算，hello-mlsys 教你把模型部署成高效的共享服务，并用模拟预测、用 AMD 真机验证和校准。** 训练显存优化、集群调度平台不在本书主线。
 
 ### 全书的学习闭环：预测 → 实测 → 校准 → 决策
 
@@ -90,7 +95,7 @@ T ≈ D / BW  +  O / (R · η)  +  L
 | 用 PyTorch 能跑模型，但说不清系统性能从哪来 | 一套"把系统行为翻译成 FLOPs/字节/带宽"的方法 |
 | 想进 MLSys / AI Infra 方向 | 与 CMU 15-442 大纲对齐的建模主线 + 可复现的校准实验 |
 | 做容量规划、量化选型、框架选型，缺判断依据 | 每章一个可量化的决策：显存账本、误差预算、α-β 通信、SLA 容量 |
-| 想以 AMD GPU 为主力学习环境 | 9070 XT 为主线的完整真机路径 + W7900D 集群章 + 无设备替代路径 |
+| 想以 AMD 设备为主力学习环境 | 9070 XT 为主线的完整真机路径 + W7900D 多卡章节 + Ryzen AI MAX+ 395 端侧适配（进行中）+ 无设备替代路径 |
 
 **边界声明**：
 
@@ -100,20 +105,22 @@ T ≈ D / BW  +  O / (R · η)  +  L
 
 ### 学习路线图
 
-| 部分 | 章节 | 你会完成什么 | 对应课程周次 |
+&emsp;&emsp;本书内容覆盖「**单机部署、服务评测、单机优化、多机服务、进阶协同**」五个模块，**章节顺序就是推荐的学习顺序**，第 0–2 章是贯穿全书的性能分析基础。「单机部署」与「多机服务」两个模块正在编写，下表只列现有章节，并标出每章所属模块：
+
+| 部分 | 章节 | 你会完成什么 | 所属模块 |
 | --- | --- | --- | --- |
-| **Part 0** | 第 0 章（本章） | 填出一份字段完整的纸面实验底稿（含纯纸面手算） | 课前 + 第 1 周前半 |
-| **Part 1** 建模与校准 | 第 1 章 | Roofline 预测：矩阵乘 / LayerNorm / FlashAttention 的瓶颈判定与时间量级 | 第 1 周 |
-| | 第 2 章 | 第一次真机校准：拟合 η_compute、η_mem、T_launch，留出集验证 | 第 2 周 |
-| | 第 3 章 | 显存账本：权重 + KV 缓存，容量上限与并发上限 | 第 3 周 |
-| | 第 4 章 | 量化误差预算：位宽、算子敏感度、质量-性能折中 | 第 3–4 周 |
-| | 第 5 章 | 通信建模：α-β 模型，PCIe/链路带宽实测 | 第 4 周 |
-| | 第 6 章 | 模型并行：TP/PP 的显存与通信代价 | 第 4–5 周 |
-| | 第 7 章 | 服务排队：连续批处理、SLA 容量边界 | 第 5 周 |
-| | 第 8 章 | 框架取舍：vLLM / SGLang 等的系统级对比 | 第 5 周 |
-| **Part 2** 与 AI 一起设计 | 第 9.1–9.3 章 | 三个实战：端侧部署助手、单机 SLA、W7900D 多卡集群设计 | 第 6–8 周 |
-| **Part 3** | 选读与案例库 | KV 搬运 vs 重算等专题 + 案例卡 | 随时 |
-| **附录 A–F** | 硬件卡 / 模型卡 / 术语 / 参考 / 社区 / 排错 | 全书查询手册 | 随时 |
+| **Part 0** | 第 0 章（本章） | 填出一份字段完整的纸面实验底稿（含纯纸面手算） | 性能分析基础 |
+| **Part 1** 建模与校准 | 第 1 章 | Roofline 预测：prefill / decode 宏观拆解、瓶颈判定与时间量级 | 性能分析基础 |
+| | 第 2 章 | 第一次真机校准：拟合 η_compute、η_mem、T_launch，留出集验证 | 性能分析基础 |
+| | 第 3 章 | 显存账本：权重 + KV 缓存，容量上限与并发上限 | 单机优化 |
+| | 第 4 章 | 量化误差预算：位宽、显存 / 速度 / 质量折中 | 单机优化 |
+| | 第 5 章 | 通信建模：α-β 模型，PCIe / 链路带宽实测 | 进阶协同 |
+| | 第 6 章 | 模型并行：DP / TP / PP 的显存与通信代价 | 进阶协同 |
+| | 第 7 章 | 服务排队：连续批处理、SLA 容量边界与压测规程 | 服务评测 |
+| | 第 8 章 | 框架取舍：vLLM 与 llama.cpp 等的系统级对比 | 单机优化 |
+| **Part 2** 与 AI 一起设计 | 第 9.1–9.3 章 | 三个实战：端侧部署助手、单机 SLA、W7900D 多卡集群设计 | 单机优化（9.1 / 9.2）· 进阶协同（9.3） |
+| **Part 3** | 选读与案例库 | KV 搬运 vs 重算等专题 + 案例卡 | 选读 |
+| **附录 A–F** | 硬件卡 / 模型卡 / 术语 / 参考 / 社区 / 排错 | 全书查询手册 | —— |
 
 ## 0.2 AMD GPU 硬件图谱
 
@@ -123,9 +130,11 @@ T ≈ D / BW  +  O / (R · η)  +  L
 
 | 档位 | 硬件 | 角色 | 状态 |
 | --- | --- | --- | --- |
-| **T1** | RX 9070 XT 16 GB（单卡） | 主线真机：Part 1 全部实验 + 9.1 / 9.2 | 参数已核实（下表） |
-| **T2** | W7900D 48 GB（单卡） | 适配 / 云端：T1 装不下或需更大显存的场景 | 型号待资源方确认（TODO：@嘉航） |
-| **T3** | W7900D 48 GB 多卡集群（≥4 卡） | 第 9.3 章：32B + 7B deep-research 负载的集群设计 | 同上 |
+| **T1** | RX 9070 XT 16 GB（单卡） | 主线真机：Part 1 实验 + 9.1 / 9.2 | 参数已核实（下表） |
+| 辅助 | RX 7900 XTX 24 GB（RDNA 3，960 GB/s） | 辅助测量：第 4 章留出验证、第 5 章 PCIe 实测 | 实验时记录参数 |
+| **T2** | W7900D 48 GB（单卡） | T1 装不下或需更大显存的场景 | 官方参数见下表；ROCm 10.2.0 起官方支持 |
+| **T3** | W7900D 48 GB 多卡（≥4 卡） | 第 9.3 章：32B + 7B 级 deep-research 负载的集群设计 | 同上 |
+| 端侧 | Ryzen AI MAX+ 395（CPU / GPU 共享统一内存） | 端侧部署与资源受限场景（第 9.1 章） | 适配中 |
 | **T4** | 无 GPU / 云端 | 替代路径：纯 CPU 预测（Part 1 全部可完成）或云端 ROCm 环境 | 始终可用 |
 
 ### 为什么选 AMD
@@ -143,7 +152,7 @@ T ≈ D / BW  +  O / (R · η)  +  L
 
 | 参数 | 标称值 | 来源 / 备注 |
 | --- | --- | --- |
-| 架构 | RDNA 4（Navi 48），64 CU / 4096 SP | [AMD 官方页](https://www.amd.com/en/products/graphics/desktop/rx-9000/rx-9070-xt.html) |
+| 架构 | RDNA 4（Navi 48，gfx1201），64 CU / 4096 SP | [AMD 官方页](https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070xt.html) |
 | 加速频率 | ≤ 2970 MHz（游戏频率 2400 MHz） | AMD 官方页 |
 | FP32 向量峰值 | 48.7 TFLOPS | AMD 官方页 |
 | FP16 矩阵峰值 | 195 TFLOPS（矩阵指令路径） | AMD 官方页 |
@@ -163,11 +172,42 @@ T ≈ D / BW  +  O / (R · η)  +  L
 
 ### W7900D（T2 / T3）
 
-| 参数 | 值 | 状态 |
+| 参数 | 值 | 来源 / 状态 |
 | --- | --- | --- |
-| 显存 | 48 GB | 已确认（第 9.3 章场景定义） |
-| 集群规模 | ≥ 4 卡 | 已确认（32B + 7B deep-research 负载） |
-| 精确型号 / 算力 / 带宽 / 互联 | —— | **待资源方确认后回填**（TODO：@嘉航）；回填前 W7900D 相关实验一律先走 T4 纯 CPU 预测路径 |
+| 架构 | RDNA 3（gfx1100），Radeon PRO 工作站卡 | [AMD 官方页（中文站）](https://www.amd.com/zh-cn/products/graphics/workstations/radeon-pro/w7900d.html) |
+| 显存 | 48 GB GDDR6 ECC，384-bit | AMD 官方页 |
+| 显存带宽 | 864 GB/s | AMD 官方页 |
+| FP16 矩阵峰值 / FP32 峰值 | 106 TFLOPS / 53 TFLOPS | AMD 官方页 |
+| 板卡功耗 | 295 W | AMD 官方页 |
+| 软件支持 | ROCm 10.2.0 起列入官方支持；更早的 ROCm 版本未列出此卡 | [ROCm 兼容性矩阵](https://rocm.docs.amd.com/en/latest/compatibility/compatibility-matrix.html) |
+| 集群规模 / 互联拓扑 | ≥ 4 卡；拓扑与链路实验时记录 | 第 9.3 章场景定义 |
+
+&emsp;&emsp;教学用 ridge 点（推导值）：FP16 矩阵路径 106e12 / 864e9 ≈ **123 FLOP/byte**。W7900D 实测前，相关实验先走 T4 纯 CPU 预测路径。
+
+### Ryzen AI MAX+ 395（端侧，适配中）
+
+| 参数 | 值 | 来源 / 备注 |
+| --- | --- | --- |
+| GPU | Radeon 8060S，40 CU（gfx1151） | [AMD 官方页](https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html) |
+| 内存 | 最高 128 GB LPDDR5x-8000，256-bit，CPU / GPU 共享统一内存 | AMD 官方页 |
+| 内存带宽 | ≈ 256 GB/s（256-bit × 8000 MT/s） | 由上式推导；AMD 博客给出同一数值 |
+| GPU 可用内存 | Windows：可变显存（VGM）最高 96 GB（128 GB 机型）；Linux：默认约为系统内存的 50%，可调高 | AMD 博客；[ROCm 系统优化文档](https://rocm.docs.amd.com/en/latest/reference/system-optimization/rdna3-5.html) |
+
+&emsp;&emsp;端侧设备的特点是**容量大、带宽低**：能放下 16 GB 显卡放不下的模型，但 decode 的权重扫描受 ≈256 GB/s 限制，比 RX 9070 XT 的 640 GB/s 慢得多——这正是第 9.1 章端侧选型要权衡的地方。
+
+### 推理框架支持（截至 2026 年 11 月）
+
+&emsp;&emsp;同一个框架在不同 AMD 设备上的支持程度差别很大，选型前先核对官方文档：
+
+| 框架 | RX 9070 XT / RX 7900 XTX / W7900D | Ryzen AI MAX+ 395 | 本书用法 |
+| --- | --- | --- | --- |
+| **vLLM** | ✅ 官方支持（Linux；W7900D 按 gfx1100 覆盖） | ✅ 官方支持（Linux，需 ROCm ≥ 7.0.2） | 主线框架 |
+| **llama.cpp**（`llama-server`） | ✅ 官方提供 ROCm 与 Vulkan 构建 | ✅ 官方提供 ROCm 与 Vulkan 构建 | 对照实验与端侧部署 |
+| **SGLang** | ❌ 上游只支持 Instinct 数据中心 GPU；AMD 自建镜像提供"初步"Radeon 支持，有已知问题 | ⚠️ 仅有实验性镜像，上游未列为支持目标 | 本书暂不使用 |
+
+&emsp;&emsp;**Radeon 多卡张量并行**：vLLM 在 Radeon 上走 RCCL，官方文档没有给出多卡支持说明，社区有 TP=2 启动失败的公开问题；第 5 章本机双卡 RCCL 也没有跑通。本书涉及 Radeon 多卡的结论一律以实测为准，并注明"行为验证"还是"性能验证"。
+
+来源：[vLLM 安装文档（ROCm）](https://docs.vllm.ai/en/latest/getting_started/installation/gpu/)、[llama.cpp 构建文档](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md)、[SGLang AMD GPU 文档](https://docs.sglang.io/docs/hardware-platforms/amd_gpu.md)、[AMD ROCm 上的 SGLang](https://rocm.docs.amd.com/projects/ai-ecosystem/en/latest/inference/sglang.html)、[SGLang issue #46900](https://github.com/sgl-project/sglang/issues/46900)、[vLLM issue #38587](https://github.com/vllm-project/vllm/issues/38587)。
 
 ### 模型档位
 
@@ -178,7 +218,7 @@ T ≈ D / BW  +  O / (R · η)  +  L
 | **Qwen3-0.6B** | 28 层，hidden 1024，16 q-heads / 8 kv-heads，head_dim 128，embedding 与 LM head 共享 | 第 1/2 章建模与校准 | 最小、最快，profile 友好，校准集首选 |
 | **Qwen3-1.7B** | 28 层，hidden 2048，16 / 8 heads，inter 6144 | 第 2 章 kernel 归因（认知用途）、第 4/5/7 章对比 | 中档，暴露更多算子结构 |
 | **Qwen3-4B** | 36 层，hidden 2560，32 / 8 heads，inter 9728 | 第 7/8 章服务负载 | 16 GB 显存下最直观的主力档位 |
-| Qwen3-7B / 32B | —— | 第 9.3 章集群 | 32B 单卡装不下 → 强制做出切分决策 |
+| Qwen3-8B / Qwen3-32B | —— | 第 6 章并行切分、第 9.3 章集群（7B–8B 级与 32B 两档） | 32B 单卡装不下 → 强制做出切分决策 |
 
 ::: tip 命名口径
 模型名统一使用 Hugging Face 仓库 ID：`Qwen/Qwen3-0.6B` / `Qwen/Qwen3-1.7B` / `Qwen/Qwen3-4B`（0.6B 为 0.59 B 参数）。引用实验脚本与模型卡时以仓库 ID 为准。
@@ -202,7 +242,7 @@ vllm --version                                  # 若使用 vLLM
 | 场景 | 替代 |
 | --- | --- |
 | 无 9070 XT | 第 1 章（Roofline 预测）与第 3 章（显存账本）**纯 CPU 可完成**，只缺第 2 章真机校准 |
-| 需要 W7900D 而未到位 | 先以 T1 参数跑模拟器，底稿标注 `pending: W7900D spec`，回填后重跑 |
+| 需要 W7900D 而未到位 | 先以 §0.2 的 W7900D 官方标称参数跑模拟器，底稿标注 `pending: W7900D measured`，实测后重跑 |
 | 完全无 GPU | 云端 ROCm 环境（如 AMD Radeon Cloud）；测量协议不变，`config_id` 中的 device 字段如实填写 |
 
 ## 0.3 统一测量协议
@@ -215,7 +255,7 @@ vllm --version                                  # 若使用 vLLM
 - **没有预热**：首请求承担冷启动、缓存未命中、JIT 编译成本，TTFT 偏差一个数量级；
 - **先看答案再拟合**：在测量集上拟合参数再自称"验证"——那叫回拟合。
 
-协议的目的不是流程繁琐，而是让**任何一章、任何人、任何时候的测量结果都可以互相比较**。完整协议见 `curriculum/measurement-protocol.md`；本节是每章必须遵守的最小集。
+协议的目的不是流程繁琐，而是让**任何一章、任何人、任何时候的测量结果都可以互相比较**。本节就是全书统一的测量协议，每章都必须遵守。
 
 ### 单位口径
 
@@ -231,7 +271,7 @@ vllm --version                                  # 若使用 vLLM
 
 ### 四种身份标识
 
-&emsp;&emsp;测量记录的唯一键由四个 ID 构成（`measurement-protocol.md` §6）：
+&emsp;&emsp;测量记录的唯一键由四个 ID 构成：
 
 | ID | 含义 | 不变量 |
 | --- | --- | --- |
@@ -291,7 +331,7 @@ calibrate 校准集实测 → 新的参数版本（η_compute / η_mem / T_launc
 
 ### 预测从哪来：三层结构
 
-&emsp;&emsp;本书的模拟器（开发计划见 `simulator-development-plan.md`）分三层，**公式化而不是写死几个固定数字**：
+&emsp;&emsp;本书的模拟器（[mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator)，系统规范见其仓库文档）分三层，**公式化而不是写死几个固定数字**：
 
 ```text
 ┌─ 校准层：标称值 → 真机有效值（η_compute / η_mem / T_launch），带版本与适用域
@@ -320,15 +360,18 @@ simulate(workload, infra, strategy, calibration, evaluation, execution)
 | 机制 | 状态 | 依赖章节 |
 | --- | --- | --- |
 | 性能：prefill / decode 步时间 | ✅ 解析模型 + 真机校准 | 第 1、2 章 |
-| 显存：权重 / KV 账本 | ✅ 解析模型 | 第 3、4、9.1 章 |
-| 排队 / batch 组织 / 连续批处理 | ✅ DES（V0.5） | 第 7、9.2 章 |
-| 通信：α-β 模型（AllReduce 等） | 🚧 模型已定义；**真机链路参数待校准** | 第 5、6 章 |
-| TP / PP 切分 | 🚧 建设中（V1.0 范围） | 第 6、9.3 章 |
-| 抢占 / KV 驱逐 | 🚧 建设中 | 第 7（归因）、9.3 |
-| 前缀缓存（PagedAttention/Radix 风格） | 🚧 建设中 | 第 7、9.2 |
+| 显存：权重 / KV 账本（含量化存储的字节账与反量化开销） | ✅ 解析模型 | 第 3、4、9.1 章 |
+| 排队 / batch 组织 / 连续批处理 | ✅ DES | 第 7、9.2 章 |
+| 抢占与重算 / 可选 CPU KV swap | ✅ DES | 第 7（归因）、9.3 章 |
+| 前缀缓存 / 分块预填充（Chunked Prefill） | ✅ DES | 第 7、9.2 章 |
+| 多副本路由与负载均衡 | ✅ DES | 多机服务、第 9.3 章 |
+| TP / PP 切分 | ✅ TP 在线建模、PP 解析建模 | 第 6、9.3 章 |
+| 通信：α-β 模型（AllReduce 等） | 🚧 模型已定义；真机链路参数部分标定（第 5 章 PCIe 实测，Radeon 双卡 RCCL 尚未覆盖） | 第 5、6 章 |
 | 投机解码 / MoE 路由 | ⬜ 选读（案例卡） | Part 3 |
 | **答案质量** | ❌ `not_evaluated`——模拟器不判质量，质量必须真评 | 第 4、9.1 章 |
 | kernel 级执行 / 框架调度器内部 | ❌ 黑盒，只经测量观察 | 第 8 章 |
+
+&emsp;&emsp;上表以 mlsys-simulator 当前版本为准。**软件支持某个机制，不等于该配置已在 AMD 真机上验证了精度**——精度结论只来自本书各章的留出验证。
 
 &emsp;&emsp;一条硬规则：**不支持的机制显式拒绝运行或返回 `not_covered`，不静默忽略参数**（`E_MECHANISM_UNSUPPORTED`）。宁可报错，不可假装支持——"未核实项不写成上游已支持"。
 
@@ -344,7 +387,7 @@ simulate(workload, infra, strategy, calibration, evaluation, execution)
 ### 模拟器告诉不了你的事（以及怎么办）
 
 - **质量**：量化掉点多少、提示词变了体验如何——必须真评（第 4 章误差预算 + 第 9.1 章评测集）；
-- **框架调度器的真实行为**：模拟器建模的是"应有的批处理语义"，真实 vLLM/SGLang 的调度细节以测量为准（第 8 章）；
+- **框架调度器的真实行为**：模拟器建模的是"应有的批处理语义"，真实 vLLM、llama.cpp 等框架的调度细节以测量为准（第 8 章）；
 - **kernel 级性能**：某个 kernel 在 RDNA4 上有没有跑满——hello-gpu 的主场，本书只引用其结论。
 
 &emsp;&emsp;预测与实测**分歧时**，按四类偏差归因：测量噪音 / 参数漂移（η、L 过期）/ 机制缺失（`not_covered` 被漏标）/ 实现语义差异（模拟器与真机的 refill、批处理规则不一致）。第 2 章第一次完整走一遍这个归因流程。
@@ -457,7 +500,7 @@ KV 容量 ≈ 11.2 GiB ÷ 112 KiB/token ≈ 105,000 token
 ## 本章小结
 
 - 本书的闭环是"定义场景 → 留存预测 → 选点 → 实测 → 校准 → 留出验证 → 决策"，四条纪律（预测留痕、校准/留出不混用、重复≠泛化、结论带证据等级）贯穿全书；
-- 硬件图谱：T1 RX 9070 XT（标称 640 GB/s、FP16 矩阵 195 TFLOPS，来源 AMD 官方页；ridge 点 ≈305 / ≈76 FLOP/byte），T2/T3 W7900D 48 GB 待型号确认，T4 无设备可走纯 CPU 预测；
+- 硬件图谱：T1 RX 9070 XT（标称 640 GB/s、FP16 矩阵 195 TFLOPS，来源 AMD 官方页；ridge 点 ≈305 / ≈76 FLOP/byte），RX 7900 XTX 作辅助测量，T2/T3 W7900D 48 GB（864 GB/s，ROCm 10.2.0 起官方支持），Ryzen AI MAX+ 395 端侧适配中（统一内存最高 128 GB、≈256 GB/s），T4 无设备可走纯 CPU 预测；推理框架以 vLLM 为主线、llama.cpp 做对照与端侧，SGLang 暂不使用；
 - 测量协议最小集：容量 GiB / 带宽 GB/s、四种 ID、10 预热 + 50 测量 × 3 轮、闭环并发补位规则、校准集/留出集冻结、50 样本不支撑 p99 结论；
 - 模拟器三层（解析 / DES / 校准）+ 显式边界：质量 `not_evaluated`、kernel 级黑盒、不支持的机制显式拒绝不静默忽略；
 - 交付物：一份字段完整的纸面实验底稿——Qwen3-0.6B 在 T1 上的 decode 步手算（≈2.0–2.3 ms/step，memory-bound）与显存账本（KV 容量 ≈10.5 万 token）。
@@ -466,7 +509,7 @@ KV 容量 ≈ 11.2 GiB ÷ 112 KiB/token ≈ 105,000 token
 
 - [mlsysbook.ai](https://mlsysbook.ai/) ——《Machine Learning Systems》Vol I（Harvard CS249r，Vijay Janapa Reddi 等，MIT Press，CC BY-NC-SA 4.0）：第 1 章 "The World Rushing to Build AI Systems" 与 "Iron Law of ML Systems" 是本章 0.1 的直接来源；同站 [MLSys·im 页面](https://mlsysbook.ai/#mlsys-im) 介绍本书解析层所用的解析建模框架。
 - [CMU 15-442/15-642: Machine Learning Systems](https://mlsyscourse.org/)（Tianqi Chen, Zhihao Jia）：Week 1 "Why ML Systems?" 与全书主题排序（GPU 架构 → 并行化 → 显存 → LLM serving）可作为对照大纲。
-- [hello-gpu](https://github.com/datawhalechina/hello-gpu)：同硬件（RX 9070 XT + ROCm）的算子/kernel 级教程，第 5 章通信校准会引用其 profile 结论。
-- [hello-rocm](https://github.com/datawhalechina/hello-rocm)：ROCm 环境与部署。
+- [hello-gpu](https://github.com/datawhalechina/hello-gpu)：同硬件（RX 9070 XT + ROCm）的 GPU 编程与算子优化教程；本书把算子视为黑盒成本，kernel 级细节以它为准。
+- [hello-rocm](https://github.com/datawhalechina/hello-rocm)：AMD 平台上的环境准备、模型推理、训练、微调与 Agent 入门。
 - Williams, Waterman & Patterson, *Roofline: An Insightful Visual Performance Model for Multicore Architectures*（CACM 2009）——第 1 章 Roofline 图的原始文献。
-- 仓库内：`curriculum/measurement-protocol.md`（0.3 节协议的完整版）、`simulator-development-plan.md`（0.4 节工具链的开发计划）、附录 A 硬件卡 / 附录 B 模型卡（发布后替换本章 §0.2 的表格）。
+- [mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator)：本书主工具的源码与文档（校准、验证规范、课程工作流）；附录 A 硬件卡 / 附录 B 模型卡（发布后替换本章 §0.2 的表格）。
