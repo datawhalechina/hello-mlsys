@@ -1,0 +1,5 @@
+{
+  "error_code": "INVALID_ARGUMENT",
+  "message": "Native communication validation requires --profile and an independent holdout dataset; split options are unsupported",
+  "status": "FAILED"
+}

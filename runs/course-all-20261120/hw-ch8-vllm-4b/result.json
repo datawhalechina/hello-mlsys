@@ -1,0 +1,70 @@
+{
+  "model": "/mnt/public/models/Qwen3-4B",
+  "device": "AMD Radeon RX 7900 XTX (GPU0)",
+  "framework": "vllm-0.29.0",
+  "prompt_tokens_approx": 256,
+  "max_tokens": 64,
+  "hardware_validated": true,
+  "sweep": [
+    {
+      "concurrency": 1,
+      "requests": 3,
+      "wall_s": 1.967,
+      "throughput_tok_s": 97.6,
+      "ttft_p50_ms": 19.98,
+      "ttft_p99_ms": 20.11,
+      "tpot_p50_ms": 10.08,
+      "tpot_p99_ms": 10.09,
+      "e2e_p50_ms": 655.13,
+      "e2e_p99_ms": 655.45
+    },
+    {
+      "concurrency": 2,
+      "requests": 4,
+      "wall_s": 1.36,
+      "throughput_tok_s": 188.19,
+      "ttft_p50_ms": 34.05,
+      "ttft_p99_ms": 36.07,
+      "tpot_p50_ms": 10.22,
+      "tpot_p99_ms": 10.26,
+      "e2e_p50_ms": 676.99,
+      "e2e_p99_ms": 682.48
+    },
+    {
+      "concurrency": 4,
+      "requests": 8,
+      "wall_s": 1.463,
+      "throughput_tok_s": 349.99,
+      "ttft_p50_ms": 35.47,
+      "ttft_p99_ms": 44.56,
+      "tpot_p50_ms": 10.97,
+      "tpot_p99_ms": 11.02,
+      "e2e_p50_ms": 727.51,
+      "e2e_p99_ms": 734.64
+    },
+    {
+      "concurrency": 8,
+      "requests": 16,
+      "wall_s": 1.714,
+      "throughput_tok_s": 597.32,
+      "ttft_p50_ms": 42.58,
+      "ttft_p99_ms": 49.59,
+      "tpot_p50_ms": 12.87,
+      "tpot_p99_ms": 12.96,
+      "e2e_p50_ms": 852.76,
+      "e2e_p99_ms": 860.86
+    },
+    {
+      "concurrency": 16,
+      "requests": 32,
+      "wall_s": 1.826,
+      "throughput_tok_s": 1121.81,
+      "ttft_p50_ms": 59.84,
+      "ttft_p99_ms": 75.41,
+      "tpot_p50_ms": 13.39,
+      "tpot_p99_ms": 13.67,
+      "e2e_p50_ms": 903.75,
+      "e2e_p99_ms": 918.6
+    }
+  ]
+}

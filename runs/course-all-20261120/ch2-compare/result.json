@@ -1,0 +1,438 @@
+{
+  "comparison_contract": {
+    "evaluation": {
+      "drain": true,
+      "max_drain_ms": null,
+      "measurement_window_ms": null,
+      "tpot_sla_ms": 2.0,
+      "ttft_sla_ms": 20.0
+    },
+    "execution": {
+      "initial_state": "empty_cache",
+      "max_simulated_ms": 180000.0,
+      "seed": 42,
+      "warmup": []
+    },
+    "identity": {
+      "devices": [
+        {
+          "compute_tflops": 1.0,
+          "id": "gpu0",
+          "memory_bandwidth_gbps": 10.0,
+          "memory_bytes": 67108864,
+          "name": "toy-device"
+        }
+      ],
+      "execution": {
+        "communication_buffer_bytes": 0,
+        "graph_bytes": 0,
+        "kv_block_tokens": 16,
+        "runtime_bytes": 1048576
+      },
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "auto",
+        "head_dim": 16,
+        "hidden_size": 128,
+        "intermediate_size": 512,
+        "kv_bytes": 2.0,
+        "kv_dtype": "auto",
+        "name": "toy-dense-gqa",
+        "num_attention_heads": 8,
+        "num_kv_heads": 2,
+        "num_layers": 4,
+        "revision": "unspecified",
+        "vocab_size": 256,
+        "weight_bytes": 2.0,
+        "weight_dtype": "auto"
+      },
+      "parallelism": {
+        "pipeline_parallel_size": 1,
+        "shard_plan": "megatron_dense_no_sp",
+        "stage_layers": [
+          4
+        ],
+        "tensor_parallel_size": 1
+      },
+      "runtime": {
+        "driver_version": "not-applicable",
+        "name": "fixture-runtime",
+        "rccl_version": "not-applicable",
+        "rocm_version": "not-applicable",
+        "timing_boundary": "step_includes_output_and_sampling_v1",
+        "version": "fixture-1"
+      },
+      "topology": {
+        "link_bandwidth_gbps": 20.0,
+        "link_latency_us": 5.0,
+        "name": "single-node-uncontended"
+      }
+    },
+    "schema_version": 1,
+    "strategy": {
+      "chunked_prefill": false,
+      "max_batch_size": 8,
+      "max_batch_tokens": 4096,
+      "max_preemptions_per_request": 100,
+      "memory": {
+        "communication_buffer_bytes": 0,
+        "cpu_swap_bytes": 0,
+        "graph_bytes": 0,
+        "guard_blocks": 0,
+        "kv_block_tokens": 16,
+        "kv_pool_bytes": 4194304,
+        "other_bytes": 0,
+        "runtime_bytes": 1048576,
+        "safety_margin_bytes": 1048576,
+        "swap_d2h_bandwidth_gbps": 12.0,
+        "swap_h2d_bandwidth_gbps": 12.0,
+        "swap_latency_us": 10.0,
+        "workspace_base_bytes": 1048576,
+        "workspace_bytes_per_token": 1024
+      },
+      "mixed_batching": false,
+      "model": {
+        "activation_bytes": 2.0,
+        "activation_dtype": "auto",
+        "architecture_config_sha256": "",
+        "final_norm": false,
+        "head_dim": 16,
+        "hidden_size": 128,
+        "intermediate_size": 512,
+        "kv_bytes": 2.0,
+        "kv_dtype": "auto",
+        "name": "toy-dense-gqa",
+        "num_attention_heads": 8,
+        "num_kv_heads": 2,
+        "num_layers": 4,
+        "qk_norm": false,
+        "revision": "unspecified",
+        "tie_word_embeddings": false,
+        "vocab_size": 256,
+        "weight_bytes": 2.0,
+        "weight_dequant": "none",
+        "weight_dtype": "auto"
+      },
+      "pipeline_feedback_latency_us": 0.0,
+      "pipeline_max_inflight_microbatches": 8,
+      "pipeline_microbatch_size": 1,
+      "pipeline_p2p": true,
+      "pipeline_parallel_size": 1,
+      "pipeline_transport": "full_hidden",
+      "pipeline_transport_max_tokens": 0,
+      "preemption": "recompute",
+      "prefill_chunk_tokens": 512,
+      "prefix_cache": false,
+      "prefix_cache_max_blocks": 128,
+      "replica_routing": "least_loaded",
+      "replicas": 1,
+      "scheduler": "fifo",
+      "stage_layers": [
+        4
+      ],
+      "swap_fallback": "none",
+      "tensor_parallel_size": 1
+    },
+    "timing_boundary": "step_includes_output_and_sampling_v1",
+    "workload_sha256": "c86856998ebb6f785335be239a6bd40026790388a1e1defd57bad1cc11893340"
+  },
+  "coverage": {
+    "compared_metrics": 19,
+    "complete": true,
+    "fraction": 1.0,
+    "total_metrics": 19
+  },
+  "focus_metric": {
+    "comparison": {
+      "absolute_error": 2.842170943040401e-14,
+      "agreement": null,
+      "observed": 120.48192771084337,
+      "predicted": 120.4819277108434,
+      "reason": null,
+      "relative_error": 2.3590018827235326e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "requests/s"
+    },
+    "higher_is_better": true,
+    "name": "goodput_requests_per_s"
+  },
+  "hardware_validated": false,
+  "limitations": [
+    "This comparison does not establish general hardware prediction accuracy.",
+    "Tail latency requires sample counts, repeated runs and uncertainty analysis.",
+    "Errors are reported in each metric's own units; no mixed-unit mean is computed."
+  ],
+  "metrics": {
+    "completion_rate": {
+      "absolute_error": 0.0,
+      "agreement": null,
+      "observed": 1.0,
+      "predicted": 1.0,
+      "reason": null,
+      "relative_error": 0.0,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "fraction"
+    },
+    "end_to_end_p50_ms": {
+      "absolute_error": 1.7763568394002505e-15,
+      "agreement": null,
+      "observed": 8.3,
+      "predicted": 8.299999999999999,
+      "reason": null,
+      "relative_error": 2.1401889631328316e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "end_to_end_p95_ms": {
+      "absolute_error": 1.7763568394002505e-15,
+      "agreement": null,
+      "observed": 8.3,
+      "predicted": 8.299999999999999,
+      "reason": null,
+      "relative_error": 2.1401889631328316e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "end_to_end_p99_ms": {
+      "absolute_error": 1.7763568394002505e-15,
+      "agreement": null,
+      "observed": 8.3,
+      "predicted": 8.299999999999999,
+      "reason": null,
+      "relative_error": 2.1401889631328316e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "goodput_output_tokens_per_s": {
+      "absolute_error": 5.684341886080802e-14,
+      "agreement": null,
+      "observed": 361.4457831325301,
+      "predicted": 361.44578313253015,
+      "reason": null,
+      "relative_error": 1.5726679218156885e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "tokens/s"
+    },
+    "goodput_requests_per_s": {
+      "absolute_error": 2.842170943040401e-14,
+      "agreement": null,
+      "observed": 120.48192771084337,
+      "predicted": 120.4819277108434,
+      "reason": null,
+      "relative_error": 2.3590018827235326e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "requests/s"
+    },
+    "itl_p50_ms": {
+      "absolute_error": 4.440892098500626e-16,
+      "agreement": null,
+      "observed": 1.1,
+      "predicted": 1.0999999999999996,
+      "reason": null,
+      "relative_error": 4.037174635000569e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "itl_p95_ms": {
+      "absolute_error": 6.661338147750939e-16,
+      "agreement": null,
+      "observed": 1.19,
+      "predicted": 1.1899999999999993,
+      "reason": null,
+      "relative_error": 5.597763149370537e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "itl_p99_ms": {
+      "absolute_error": 6.661338147750939e-16,
+      "agreement": null,
+      "observed": 1.198,
+      "predicted": 1.1979999999999993,
+      "reason": null,
+      "relative_error": 5.560382427171068e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "request_count": {
+      "absolute_error": 0.0,
+      "agreement": null,
+      "observed": 1.0,
+      "predicted": 1.0,
+      "reason": null,
+      "relative_error": 0.0,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "requests"
+    },
+    "sla_satisfied": {
+      "absolute_error": null,
+      "agreement": true,
+      "observed": true,
+      "predicted": true,
+      "reason": null,
+      "relative_error": null,
+      "status": "compared",
+      "unit": "boolean"
+    },
+    "throughput_output_tokens_per_s": {
+      "absolute_error": 5.684341886080802e-14,
+      "agreement": null,
+      "observed": 361.4457831325301,
+      "predicted": 361.44578313253015,
+      "reason": null,
+      "relative_error": 1.5726679218156885e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "tokens/s"
+    },
+    "throughput_requests_per_s": {
+      "absolute_error": 2.842170943040401e-14,
+      "agreement": null,
+      "observed": 120.48192771084337,
+      "predicted": 120.4819277108434,
+      "reason": null,
+      "relative_error": 2.3590018827235326e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "requests/s"
+    },
+    "tpot_p50_ms": {
+      "absolute_error": 4.440892098500626e-16,
+      "agreement": null,
+      "observed": 1.1,
+      "predicted": 1.0999999999999996,
+      "reason": null,
+      "relative_error": 4.037174635000569e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "tpot_p95_ms": {
+      "absolute_error": 4.440892098500626e-16,
+      "agreement": null,
+      "observed": 1.1,
+      "predicted": 1.0999999999999996,
+      "reason": null,
+      "relative_error": 4.037174635000569e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "tpot_p99_ms": {
+      "absolute_error": 4.440892098500626e-16,
+      "agreement": null,
+      "observed": 1.1,
+      "predicted": 1.0999999999999996,
+      "reason": null,
+      "relative_error": 4.037174635000569e-16,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "ttft_p50_ms": {
+      "absolute_error": 0.0,
+      "agreement": null,
+      "observed": 6.1,
+      "predicted": 6.1,
+      "reason": null,
+      "relative_error": 0.0,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "ttft_p95_ms": {
+      "absolute_error": 0.0,
+      "agreement": null,
+      "observed": 6.1,
+      "predicted": 6.1,
+      "reason": null,
+      "relative_error": 0.0,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    },
+    "ttft_p99_ms": {
+      "absolute_error": 0.0,
+      "agreement": null,
+      "observed": 6.1,
+      "predicted": 6.1,
+      "reason": null,
+      "relative_error": 0.0,
+      "relative_error_reason": null,
+      "status": "compared",
+      "unit": "ms"
+    }
+  },
+  "observation_sha256": "f2d314a36a46199471f8119ccc240a9d937a78927483fd5cd4a0ca011375482b",
+  "predicted_source": "test_fixture_profile",
+  "prediction_status": "COMPLETED",
+  "request_comparison": {
+    "available": true,
+    "complete_pairing": true,
+    "observed_count": 1,
+    "paired_count": 1,
+    "predicted_count": 1,
+    "reason": null,
+    "rows": [
+      {
+        "metrics": {
+          "end_to_end_ms": {
+            "absolute_error": 1.7763568394002505e-15,
+            "agreement": null,
+            "observed": 8.3,
+            "predicted": 8.299999999999999,
+            "reason": null,
+            "relative_error": 2.1401889631328316e-16,
+            "relative_error_reason": null,
+            "status": "compared",
+            "unit": "ms"
+          },
+          "tpot_ms": {
+            "absolute_error": 4.440892098500626e-16,
+            "agreement": null,
+            "observed": 1.1,
+            "predicted": 1.0999999999999996,
+            "reason": null,
+            "relative_error": 4.037174635000569e-16,
+            "relative_error_reason": null,
+            "status": "compared",
+            "unit": "ms"
+          },
+          "ttft_ms": {
+            "absolute_error": 0.0,
+            "agreement": null,
+            "observed": 6.1,
+            "predicted": 6.1,
+            "reason": null,
+            "relative_error": 0.0,
+            "relative_error_reason": null,
+            "status": "compared",
+            "unit": "ms"
+          }
+        },
+        "request_id": "demo"
+      }
+    ],
+    "unpaired_observed_ids": [],
+    "unpaired_predicted_ids": []
+  },
+  "sample_count": 1.0,
+  "schema_version": 1,
+  "sla_judgment_agreement": true,
+  "source": {
+    "kind": "test_fixture",
+    "reference": "Hand-calculated online fixture, not collected on hardware."
+  },
+  "status": "COMPLETED",
+  "tail_latency_evidence": "limited"
+}

@@ -1,0 +1,16 @@
+{
+  "communication_group_count": 0,
+  "hardware_validated": false,
+  "mode": "calibrate",
+  "parent_profile_version": null,
+  "profile_id": "hand-calculated-step-fixture:fixture-v1",
+  "profile_kind": "step_profile",
+  "profile_version": "fixture-v1",
+  "shape_count": 5,
+  "source": {
+    "kind": "test_fixture",
+    "reference": "Hand-calculated test fixture; no GPU measurements."
+  },
+  "status": "COMPLETED",
+  "training_record_count": 6
+}

@@ -1,0 +1,1519 @@
+{
+  "backend": "simulated",
+  "configuration_sha256": "a42186b8a60d471d442c5e0162a0a485312b5f48b7f4b50f637b18764678e9db",
+  "counts": {
+    "blocked_dependency": 0,
+    "completed": 4,
+    "failed": 0,
+    "timed_out": 0,
+    "total": 4,
+    "unfinished": 0
+  },
+  "critical_path": {
+    "definition": "observed_latest_parent_chain_including_resource_and_release_wait",
+    "elapsed_ms": 29.0,
+    "isolated_service_lower_bound": false,
+    "node_elapsed_ms": [
+      10.0,
+      9.0,
+      10.0
+    ],
+    "nodes": [
+      "a",
+      "c",
+      "d"
+    ],
+    "release_wait_ms": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "devices": [
+    {
+      "allocatable_free_blocks": 512,
+      "budget_peak_bytes": 9377792,
+      "busy_ms": 20.0,
+      "device_id": "large-gpu",
+      "device_memory_bytes": 67108864,
+      "fixed_budget_bytes": 8325120,
+      "free_blocks": 512,
+      "guard_blocks": 0,
+      "kv_block_bytes": 8192,
+      "kv_bytes_per_token": 512,
+      "kv_pool_reserved_bytes": 4194304,
+      "kv_used_bytes": 0,
+      "model_id": "large",
+      "peak_kv_used_bytes": 8192,
+      "peak_used_blocks": 1,
+      "physical_peak_bytes": 8329216,
+      "physical_reserved_bytes": 7276544,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 512,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "replica_index": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "utilization": 0.6896551724137931,
+      "utilization_scope": "modeled_step_or_stage_busy_fraction",
+      "utilization_window_ms": 29.0,
+      "weights_bytes": 2033664,
+      "workspace_last_source": "analytical_assumption",
+      "workspace_peak_bytes": 1052672,
+      "workspace_source": "analytical_assumption"
+    },
+    {
+      "allocatable_free_blocks": 512,
+      "budget_peak_bytes": 9377792,
+      "busy_ms": 9.0,
+      "device_id": "small-gpu",
+      "device_memory_bytes": 67108864,
+      "fixed_budget_bytes": 8325120,
+      "free_blocks": 512,
+      "guard_blocks": 0,
+      "kv_block_bytes": 8192,
+      "kv_bytes_per_token": 512,
+      "kv_pool_reserved_bytes": 4194304,
+      "kv_used_bytes": 0,
+      "model_id": "small",
+      "peak_kv_used_bytes": 8192,
+      "peak_used_blocks": 1,
+      "physical_peak_bytes": 8329216,
+      "physical_reserved_bytes": 7276544,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 512,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "replica_index": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "utilization": 0.3103448275862069,
+      "utilization_scope": "modeled_step_or_stage_busy_fraction",
+      "utilization_window_ms": 29.0,
+      "weights_bytes": 2033664,
+      "workspace_last_source": "analytical_assumption",
+      "workspace_peak_bytes": 1052672,
+      "workspace_source": "analytical_assumption"
+    }
+  ],
+  "elapsed_ms": 29.0,
+  "error_code": null,
+  "events": [
+    {
+      "event": "REQUEST_ARRIVAL",
+      "model_id": "large",
+      "request_id": "a",
+      "timestamp_ms": 0.0
+    },
+    {
+      "assumptions": [
+        "Fixed duration per phase batch; not a hardware prediction."
+      ],
+      "breakdown": {
+        "synthetic_fixed_batch_ms": 10.0
+      },
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 10.0,
+      "event": "STEP_START",
+      "memory": [
+        {
+          "allocatable_free_blocks": 511,
+          "budget_peak_bytes": 9377792,
+          "device_id": "large-gpu",
+          "device_memory_bytes": 67108864,
+          "fixed_budget_bytes": 8325120,
+          "free_blocks": 511,
+          "guard_blocks": 0,
+          "kv_block_bytes": 8192,
+          "kv_bytes_per_token": 512,
+          "kv_pool_reserved_bytes": 4194304,
+          "kv_used_bytes": 8192,
+          "peak_used_blocks": 1,
+          "physical_peak_bytes": 8329216,
+          "physical_reserved_bytes": 7276544,
+          "pipeline_buffer_reserved_bytes": 0,
+          "pool_blocks": 512,
+          "pool_unusable_tail_bytes": 0,
+          "prefix_cached_blocks": 0,
+          "prefix_pinned_blocks": 0,
+          "prefix_shared_blocks": 0,
+          "private_blocks": 1,
+          "stage_index": 0,
+          "tp_rank": 0,
+          "used_blocks": 1,
+          "weights_bytes": 2033664,
+          "workspace_last_source": "analytical_assumption",
+          "workspace_peak_bytes": 1052672,
+          "workspace_source": "analytical_assumption"
+        }
+      ],
+      "model_id": "large",
+      "phase": "prefill",
+      "query_tokens": [
+        4
+      ],
+      "request_ids": [
+        "a"
+      ],
+      "source": "synthetic",
+      "timestamp_ms": 0.0
+    },
+    {
+      "event": "STEP_COMPLETE",
+      "model_id": "large",
+      "phase": "prefill",
+      "request_ids": [
+        "a"
+      ],
+      "timestamp_ms": 10.0
+    },
+    {
+      "event": "TOKEN_READY",
+      "model_id": "large",
+      "output_token_index": 1,
+      "request_id": "a",
+      "timestamp_ms": 10.0
+    },
+    {
+      "error_code": null,
+      "event": "REQUEST_FINISH",
+      "kv_release_deferred": false,
+      "model_id": "large",
+      "request_id": "a",
+      "status": "COMPLETED",
+      "timestamp_ms": 10.0
+    },
+    {
+      "event": "REQUEST_ARRIVAL",
+      "model_id": "small",
+      "request_id": "b",
+      "timestamp_ms": 10.0
+    },
+    {
+      "event": "REQUEST_ARRIVAL",
+      "model_id": "small",
+      "request_id": "c",
+      "timestamp_ms": 10.0
+    },
+    {
+      "assumptions": [
+        "Fixed duration per phase batch; not a hardware prediction."
+      ],
+      "breakdown": {
+        "synthetic_fixed_batch_ms": 4.0
+      },
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 4.0,
+      "event": "STEP_START",
+      "memory": [
+        {
+          "allocatable_free_blocks": 511,
+          "budget_peak_bytes": 9377792,
+          "device_id": "small-gpu",
+          "device_memory_bytes": 67108864,
+          "fixed_budget_bytes": 8325120,
+          "free_blocks": 511,
+          "guard_blocks": 0,
+          "kv_block_bytes": 8192,
+          "kv_bytes_per_token": 512,
+          "kv_pool_reserved_bytes": 4194304,
+          "kv_used_bytes": 8192,
+          "peak_used_blocks": 1,
+          "physical_peak_bytes": 8329216,
+          "physical_reserved_bytes": 7276544,
+          "pipeline_buffer_reserved_bytes": 0,
+          "pool_blocks": 512,
+          "pool_unusable_tail_bytes": 0,
+          "prefix_cached_blocks": 0,
+          "prefix_pinned_blocks": 0,
+          "prefix_shared_blocks": 0,
+          "private_blocks": 1,
+          "stage_index": 0,
+          "tp_rank": 0,
+          "used_blocks": 1,
+          "weights_bytes": 2033664,
+          "workspace_last_source": "analytical_assumption",
+          "workspace_peak_bytes": 1052672,
+          "workspace_source": "analytical_assumption"
+        }
+      ],
+      "model_id": "small",
+      "phase": "prefill",
+      "query_tokens": [
+        4
+      ],
+      "request_ids": [
+        "b"
+      ],
+      "source": "synthetic",
+      "timestamp_ms": 10.0
+    },
+    {
+      "event": "STEP_COMPLETE",
+      "model_id": "small",
+      "phase": "prefill",
+      "request_ids": [
+        "b"
+      ],
+      "timestamp_ms": 14.0
+    },
+    {
+      "event": "TOKEN_READY",
+      "model_id": "small",
+      "output_token_index": 1,
+      "request_id": "b",
+      "timestamp_ms": 14.0
+    },
+    {
+      "assumptions": [
+        "Fixed duration per phase batch; not a hardware prediction."
+      ],
+      "breakdown": {
+        "synthetic_fixed_batch_ms": 1.0
+      },
+      "context_lengths": [
+        4
+      ],
+      "duration_ms": 1.0,
+      "event": "STEP_START",
+      "memory": [
+        {
+          "allocatable_free_blocks": 511,
+          "budget_peak_bytes": 9377792,
+          "device_id": "small-gpu",
+          "device_memory_bytes": 67108864,
+          "fixed_budget_bytes": 8325120,
+          "free_blocks": 511,
+          "guard_blocks": 0,
+          "kv_block_bytes": 8192,
+          "kv_bytes_per_token": 512,
+          "kv_pool_reserved_bytes": 4194304,
+          "kv_used_bytes": 8192,
+          "peak_used_blocks": 1,
+          "physical_peak_bytes": 8329216,
+          "physical_reserved_bytes": 7276544,
+          "pipeline_buffer_reserved_bytes": 0,
+          "pool_blocks": 512,
+          "pool_unusable_tail_bytes": 0,
+          "prefix_cached_blocks": 0,
+          "prefix_pinned_blocks": 0,
+          "prefix_shared_blocks": 0,
+          "private_blocks": 1,
+          "stage_index": 0,
+          "tp_rank": 0,
+          "used_blocks": 1,
+          "weights_bytes": 2033664,
+          "workspace_last_source": "analytical_assumption",
+          "workspace_peak_bytes": 1052672,
+          "workspace_source": "analytical_assumption"
+        }
+      ],
+      "model_id": "small",
+      "phase": "decode",
+      "query_tokens": [
+        1
+      ],
+      "request_ids": [
+        "b"
+      ],
+      "source": "synthetic",
+      "timestamp_ms": 14.0
+    },
+    {
+      "event": "STEP_COMPLETE",
+      "model_id": "small",
+      "phase": "decode",
+      "request_ids": [
+        "b"
+      ],
+      "timestamp_ms": 15.0
+    },
+    {
+      "event": "TOKEN_READY",
+      "model_id": "small",
+      "output_token_index": 2,
+      "request_id": "b",
+      "timestamp_ms": 15.0
+    },
+    {
+      "error_code": null,
+      "event": "REQUEST_FINISH",
+      "kv_release_deferred": false,
+      "model_id": "small",
+      "request_id": "b",
+      "status": "COMPLETED",
+      "timestamp_ms": 15.0
+    },
+    {
+      "assumptions": [
+        "Fixed duration per phase batch; not a hardware prediction."
+      ],
+      "breakdown": {
+        "synthetic_fixed_batch_ms": 4.0
+      },
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 4.0,
+      "event": "STEP_START",
+      "memory": [
+        {
+          "allocatable_free_blocks": 511,
+          "budget_peak_bytes": 9377792,
+          "device_id": "small-gpu",
+          "device_memory_bytes": 67108864,
+          "fixed_budget_bytes": 8325120,
+          "free_blocks": 511,
+          "guard_blocks": 0,
+          "kv_block_bytes": 8192,
+          "kv_bytes_per_token": 512,
+          "kv_pool_reserved_bytes": 4194304,
+          "kv_used_bytes": 8192,
+          "peak_used_blocks": 1,
+          "physical_peak_bytes": 8329216,
+          "physical_reserved_bytes": 7276544,
+          "pipeline_buffer_reserved_bytes": 0,
+          "pool_blocks": 512,
+          "pool_unusable_tail_bytes": 0,
+          "prefix_cached_blocks": 0,
+          "prefix_pinned_blocks": 0,
+          "prefix_shared_blocks": 0,
+          "private_blocks": 1,
+          "stage_index": 0,
+          "tp_rank": 0,
+          "used_blocks": 1,
+          "weights_bytes": 2033664,
+          "workspace_last_source": "analytical_assumption",
+          "workspace_peak_bytes": 1052672,
+          "workspace_source": "analytical_assumption"
+        }
+      ],
+      "model_id": "small",
+      "phase": "prefill",
+      "query_tokens": [
+        4
+      ],
+      "request_ids": [
+        "c"
+      ],
+      "source": "synthetic",
+      "timestamp_ms": 15.0
+    },
+    {
+      "event": "STEP_COMPLETE",
+      "model_id": "small",
+      "phase": "prefill",
+      "request_ids": [
+        "c"
+      ],
+      "timestamp_ms": 19.0
+    },
+    {
+      "event": "TOKEN_READY",
+      "model_id": "small",
+      "output_token_index": 1,
+      "request_id": "c",
+      "timestamp_ms": 19.0
+    },
+    {
+      "error_code": null,
+      "event": "REQUEST_FINISH",
+      "kv_release_deferred": false,
+      "model_id": "small",
+      "request_id": "c",
+      "status": "COMPLETED",
+      "timestamp_ms": 19.0
+    },
+    {
+      "event": "REQUEST_ARRIVAL",
+      "model_id": "large",
+      "request_id": "d",
+      "timestamp_ms": 19.0
+    },
+    {
+      "assumptions": [
+        "Fixed duration per phase batch; not a hardware prediction."
+      ],
+      "breakdown": {
+        "synthetic_fixed_batch_ms": 10.0
+      },
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 10.0,
+      "event": "STEP_START",
+      "memory": [
+        {
+          "allocatable_free_blocks": 511,
+          "budget_peak_bytes": 9377792,
+          "device_id": "large-gpu",
+          "device_memory_bytes": 67108864,
+          "fixed_budget_bytes": 8325120,
+          "free_blocks": 511,
+          "guard_blocks": 0,
+          "kv_block_bytes": 8192,
+          "kv_bytes_per_token": 512,
+          "kv_pool_reserved_bytes": 4194304,
+          "kv_used_bytes": 8192,
+          "peak_used_blocks": 1,
+          "physical_peak_bytes": 8329216,
+          "physical_reserved_bytes": 7276544,
+          "pipeline_buffer_reserved_bytes": 0,
+          "pool_blocks": 512,
+          "pool_unusable_tail_bytes": 0,
+          "prefix_cached_blocks": 0,
+          "prefix_pinned_blocks": 0,
+          "prefix_shared_blocks": 0,
+          "private_blocks": 1,
+          "stage_index": 0,
+          "tp_rank": 0,
+          "used_blocks": 1,
+          "weights_bytes": 2033664,
+          "workspace_last_source": "analytical_assumption",
+          "workspace_peak_bytes": 1052672,
+          "workspace_source": "analytical_assumption"
+        }
+      ],
+      "model_id": "large",
+      "phase": "prefill",
+      "query_tokens": [
+        4
+      ],
+      "request_ids": [
+        "d"
+      ],
+      "source": "synthetic",
+      "timestamp_ms": 19.0
+    },
+    {
+      "event": "STEP_COMPLETE",
+      "model_id": "large",
+      "phase": "prefill",
+      "request_ids": [
+        "d"
+      ],
+      "timestamp_ms": 29.0
+    },
+    {
+      "event": "TOKEN_READY",
+      "model_id": "large",
+      "output_token_index": 1,
+      "request_id": "d",
+      "timestamp_ms": 29.0
+    },
+    {
+      "error_code": null,
+      "event": "REQUEST_FINISH",
+      "kv_release_deferred": false,
+      "model_id": "large",
+      "request_id": "d",
+      "status": "COMPLETED",
+      "timestamp_ms": 29.0
+    }
+  ],
+  "events_processed": 9,
+  "execution": {
+    "detailed_events": true,
+    "initial_state": "empty_cache",
+    "max_events": 1000000,
+    "max_simulated_ms": 180000.0,
+    "seed": 42,
+    "warmup": []
+  },
+  "frozen_nodes": [
+    {
+      "cache_namespace": "",
+      "dependencies": [],
+      "input_tokens": 4,
+      "model_id": "large",
+      "node_id": "a",
+      "output_tokens": 1,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    },
+    {
+      "cache_namespace": "",
+      "dependencies": [
+        "a"
+      ],
+      "input_tokens": 4,
+      "model_id": "small",
+      "node_id": "b",
+      "output_tokens": 2,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    },
+    {
+      "cache_namespace": "",
+      "dependencies": [
+        "a"
+      ],
+      "input_tokens": 4,
+      "model_id": "small",
+      "node_id": "c",
+      "output_tokens": 1,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    },
+    {
+      "cache_namespace": "",
+      "dependencies": [
+        "b",
+        "c"
+      ],
+      "input_tokens": 4,
+      "model_id": "large",
+      "node_id": "d",
+      "output_tokens": 1,
+      "priority": 0,
+      "prompt_token_ids": [],
+      "release_ms": 0.0,
+      "timeout_ms": null
+    }
+  ],
+  "hardware_validated": false,
+  "kind": "dag",
+  "limitations": [
+    "model pools own exclusive devices and independent links, host pools and DMA lanes",
+    "dispatch, DAG dependency evaluation and inter-model data transfer have zero modeled latency",
+    "request content and target model are frozen; generated semantic quality is not evaluated",
+    "quantized byte widths are declared analytical assumptions, not quantization kernel validation",
+    "per-device utilization is modeled busy time, not measured GPU occupancy"
+  ],
+  "makespan_ms": 29.0,
+  "nodes": [
+    {
+      "arrival_ms": 0.0,
+      "blocked_by": [],
+      "completion_ms": 10.0,
+      "dependencies": [],
+      "dependency_wait_ms": 0.0,
+      "end_to_end_ms": 10.0,
+      "error_code": null,
+      "first_compute_start_ms": 0.0,
+      "first_token_ms": 10.0,
+      "input_tokens": 4,
+      "itl_ms": [],
+      "kv_residency": "NONE",
+      "memory_wait_ms": 0.0,
+      "model_id": "large",
+      "node_id": "a",
+      "num_computed_tokens": 4,
+      "output_tokens_actual": 1,
+      "output_tokens_target": 1,
+      "preemption_count": 0,
+      "prefill_chunks": 1,
+      "prefill_computed_tokens": 4,
+      "prefix_cached_tokens": 0,
+      "priority": 0,
+      "queue_wait_ms": 0.0,
+      "ready_ms": 0.0,
+      "recompute_ms": 0.0,
+      "recompute_target": 0,
+      "recomputed_tokens": 0,
+      "release_ms": 0.0,
+      "request_id": "a",
+      "status": "COMPLETED",
+      "swap_in_bytes": 0,
+      "swap_in_count": 0,
+      "swap_ms": 0.0,
+      "swap_out_bytes": 0,
+      "swap_out_count": 0,
+      "timeout_ms": null,
+      "token_times_ms": [
+        10.0
+      ],
+      "tpot_ms": null,
+      "ttft_ms": 10.0
+    },
+    {
+      "arrival_ms": 10.0,
+      "blocked_by": [],
+      "completion_ms": 15.0,
+      "dependencies": [
+        "a"
+      ],
+      "dependency_wait_ms": 10.0,
+      "end_to_end_ms": 5.0,
+      "error_code": null,
+      "first_compute_start_ms": 10.0,
+      "first_token_ms": 14.0,
+      "input_tokens": 4,
+      "itl_ms": [
+        1.0
+      ],
+      "kv_residency": "NONE",
+      "memory_wait_ms": 0.0,
+      "model_id": "small",
+      "node_id": "b",
+      "num_computed_tokens": 5,
+      "output_tokens_actual": 2,
+      "output_tokens_target": 2,
+      "preemption_count": 0,
+      "prefill_chunks": 1,
+      "prefill_computed_tokens": 4,
+      "prefix_cached_tokens": 0,
+      "priority": 0,
+      "queue_wait_ms": 0.0,
+      "ready_ms": 10.0,
+      "recompute_ms": 0.0,
+      "recompute_target": 0,
+      "recomputed_tokens": 0,
+      "release_ms": 0.0,
+      "request_id": "b",
+      "status": "COMPLETED",
+      "swap_in_bytes": 0,
+      "swap_in_count": 0,
+      "swap_ms": 0.0,
+      "swap_out_bytes": 0,
+      "swap_out_count": 0,
+      "timeout_ms": null,
+      "token_times_ms": [
+        14.0,
+        15.0
+      ],
+      "tpot_ms": 1.0,
+      "ttft_ms": 4.0
+    },
+    {
+      "arrival_ms": 10.0,
+      "blocked_by": [],
+      "completion_ms": 19.0,
+      "dependencies": [
+        "a"
+      ],
+      "dependency_wait_ms": 10.0,
+      "end_to_end_ms": 9.0,
+      "error_code": null,
+      "first_compute_start_ms": 15.0,
+      "first_token_ms": 19.0,
+      "input_tokens": 4,
+      "itl_ms": [],
+      "kv_residency": "NONE",
+      "memory_wait_ms": 0.0,
+      "model_id": "small",
+      "node_id": "c",
+      "num_computed_tokens": 4,
+      "output_tokens_actual": 1,
+      "output_tokens_target": 1,
+      "preemption_count": 0,
+      "prefill_chunks": 1,
+      "prefill_computed_tokens": 4,
+      "prefix_cached_tokens": 0,
+      "priority": 0,
+      "queue_wait_ms": 5.0,
+      "ready_ms": 10.0,
+      "recompute_ms": 0.0,
+      "recompute_target": 0,
+      "recomputed_tokens": 0,
+      "release_ms": 0.0,
+      "request_id": "c",
+      "status": "COMPLETED",
+      "swap_in_bytes": 0,
+      "swap_in_count": 0,
+      "swap_ms": 0.0,
+      "swap_out_bytes": 0,
+      "swap_out_count": 0,
+      "timeout_ms": null,
+      "token_times_ms": [
+        19.0
+      ],
+      "tpot_ms": null,
+      "ttft_ms": 9.0
+    },
+    {
+      "arrival_ms": 19.0,
+      "blocked_by": [],
+      "completion_ms": 29.0,
+      "dependencies": [
+        "b",
+        "c"
+      ],
+      "dependency_wait_ms": 19.0,
+      "end_to_end_ms": 10.0,
+      "error_code": null,
+      "first_compute_start_ms": 19.0,
+      "first_token_ms": 29.0,
+      "input_tokens": 4,
+      "itl_ms": [],
+      "kv_residency": "NONE",
+      "memory_wait_ms": 0.0,
+      "model_id": "large",
+      "node_id": "d",
+      "num_computed_tokens": 4,
+      "output_tokens_actual": 1,
+      "output_tokens_target": 1,
+      "preemption_count": 0,
+      "prefill_chunks": 1,
+      "prefill_computed_tokens": 4,
+      "prefix_cached_tokens": 0,
+      "priority": 0,
+      "queue_wait_ms": 0.0,
+      "ready_ms": 19.0,
+      "recompute_ms": 0.0,
+      "recompute_target": 0,
+      "recomputed_tokens": 0,
+      "release_ms": 0.0,
+      "request_id": "d",
+      "status": "COMPLETED",
+      "swap_in_bytes": 0,
+      "swap_in_count": 0,
+      "swap_ms": 0.0,
+      "swap_out_bytes": 0,
+      "swap_out_count": 0,
+      "timeout_ms": null,
+      "token_times_ms": [
+        29.0
+      ],
+      "tpot_ms": null,
+      "ttft_ms": 10.0
+    }
+  ],
+  "nodes_completed": true,
+  "pools": [
+    {
+      "configuration": {
+        "calibration": {
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "backend": "synthetic",
+          "bandwidth_efficiency": 0.5,
+          "compute_efficiency": 0.5,
+          "decode_ms": 1.0,
+          "dequant_flops_per_weight": 1.0,
+          "driver_version": "unspecified",
+          "framework_overhead_us": 5.0,
+          "launch_overhead_us": 2.0,
+          "mixed_ms": 10.0,
+          "native_pp_communication_allow_extrapolation": false,
+          "native_pp_communication_profile_path": null,
+          "native_pp_communication_profile_version": "",
+          "prefill_ms": 10.0,
+          "profile_path": null,
+          "profile_version": "uncalibrated-v1",
+          "rccl_version": "unspecified",
+          "recompute_ms": 10.0,
+          "replica_native_pp_communication_profile_paths": [],
+          "replica_profile_paths": [],
+          "replica_workspace_profile_paths": [],
+          "rocm_version": "unspecified",
+          "runtime_config_sha256": "",
+          "runtime_name": "unspecified",
+          "runtime_version": "unspecified",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "workspace_profile_path": null,
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "drain": true,
+          "max_drain_ms": null,
+          "measurement_window_ms": null,
+          "tpot_sla_ms": null,
+          "ttft_sla_ms": null
+        },
+        "execution": {
+          "detailed_events": true,
+          "initial_state": "empty_cache",
+          "max_events": 1000000,
+          "max_simulated_ms": 180000.0,
+          "seed": 42,
+          "warmup": []
+        },
+        "infra": {
+          "devices": [
+            {
+              "compute_tflops": 1.0,
+              "id": "large-gpu",
+              "memory_bandwidth_gbps": 10.0,
+              "memory_bytes": 67108864,
+              "name": "toy-device"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "schema_version": 1,
+        "strategy": {
+          "chunked_prefill": false,
+          "max_batch_size": 8,
+          "max_batch_tokens": 4096,
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "communication_buffer_bytes": 0,
+            "cpu_swap_bytes": 0,
+            "graph_bytes": 0,
+            "guard_blocks": 0,
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 4194304,
+            "other_bytes": 0,
+            "runtime_bytes": 1048576,
+            "safety_margin_bytes": 1048576,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0,
+            "workspace_base_bytes": 1048576,
+            "workspace_bytes_per_token": 1024
+          },
+          "mixed_batching": false,
+          "model": {
+            "activation_bytes": 2.0,
+            "activation_dtype": "auto",
+            "architecture_config_sha256": "",
+            "final_norm": false,
+            "head_dim": 16,
+            "hidden_size": 128,
+            "intermediate_size": 512,
+            "kv_bytes": 2.0,
+            "kv_dtype": "auto",
+            "name": "toy-dense-gqa",
+            "num_attention_heads": 8,
+            "num_kv_heads": 2,
+            "num_layers": 4,
+            "qk_norm": false,
+            "revision": "unspecified",
+            "tie_word_embeddings": false,
+            "vocab_size": 256,
+            "weight_bytes": 2.0,
+            "weight_dequant": "none",
+            "weight_dtype": "auto"
+          },
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_microbatch_size": 1,
+          "pipeline_p2p": true,
+          "pipeline_parallel_size": 1,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "preemption": "recompute",
+          "prefill_chunk_tokens": 512,
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "replica_routing": "least_loaded",
+          "replicas": 1,
+          "scheduler": "fifo",
+          "stage_layers": [],
+          "swap_fallback": "none",
+          "tensor_parallel_size": 1
+        },
+        "workload": []
+      },
+      "configuration_sha256": "58baaeda5570823ba218b79fd4a7509300635ae6f5703c10738c8d9d9d1708e5",
+      "model_id": "large",
+      "profile_inputs": [],
+      "requests": [
+        {
+          "arrival_ms": 0.0,
+          "completion_ms": 10.0,
+          "end_to_end_ms": 10.0,
+          "error_code": null,
+          "first_token_ms": 10.0,
+          "itl_ms": [],
+          "kv_residency": "NONE",
+          "memory_wait_ms": 0.0,
+          "num_computed_tokens": 4,
+          "output_tokens_actual": 1,
+          "preemption_count": 0,
+          "prefill_chunks": 1,
+          "prefill_computed_tokens": 4,
+          "prefix_cached_tokens": 0,
+          "recompute_ms": 0.0,
+          "recompute_target": 0,
+          "recomputed_tokens": 0,
+          "request_id": "a",
+          "status": "COMPLETED",
+          "swap_in_bytes": 0,
+          "swap_in_count": 0,
+          "swap_ms": 0.0,
+          "swap_out_bytes": 0,
+          "swap_out_count": 0,
+          "token_times_ms": [
+            10.0
+          ],
+          "tpot_ms": null,
+          "ttft_ms": 10.0
+        },
+        {
+          "arrival_ms": 19.0,
+          "completion_ms": 29.0,
+          "end_to_end_ms": 10.0,
+          "error_code": null,
+          "first_token_ms": 29.0,
+          "itl_ms": [],
+          "kv_residency": "NONE",
+          "memory_wait_ms": 0.0,
+          "num_computed_tokens": 4,
+          "output_tokens_actual": 1,
+          "preemption_count": 0,
+          "prefill_chunks": 1,
+          "prefill_computed_tokens": 4,
+          "prefix_cached_tokens": 0,
+          "recompute_ms": 0.0,
+          "recompute_target": 0,
+          "recomputed_tokens": 0,
+          "request_id": "d",
+          "status": "COMPLETED",
+          "swap_in_bytes": 0,
+          "swap_in_count": 0,
+          "swap_ms": 0.0,
+          "swap_out_bytes": 0,
+          "swap_out_count": 0,
+          "token_times_ms": [
+            29.0
+          ],
+          "tpot_ms": null,
+          "ttft_ms": 10.0
+        }
+      ],
+      "result": {
+        "admitted_count": 2,
+        "backend": "simulated",
+        "batching": {
+          "compute_busy_ms_semantics": "single_group_time",
+          "mixed_batches_admitted": 0,
+          "mixed_batches_completed": 0,
+          "mixed_batching": false,
+          "mixed_compute_busy_ms": 0.0,
+          "policy": "homogeneous_phase_batches",
+          "recompute_policy": "homogeneous_recovery_batches"
+        },
+        "calibration_source": "synthetic",
+        "cohort_completion_rate": 1.0,
+        "completion_rate": 1.0,
+        "completion_rate_denominator": 2,
+        "compute_busy_ms": 20.0,
+        "counts": {
+          "completed": 2,
+          "failed": 0,
+          "not_admitted": 0,
+          "timed_out": 0,
+          "total": 2,
+          "unfinished": 0
+        },
+        "error_code": null,
+        "evaluation_count": 2,
+        "events_processed": 4,
+        "goodput": {
+          "eligible_requests": 2,
+          "output_tokens_per_s": 68.96551724137932,
+          "requests_per_s": 68.96551724137932,
+          "rule": "completed_requests_satisfying_all_declared_slas",
+          "sla_declared": false,
+          "window_ms": 29.0
+        },
+        "hardware_validated": false,
+        "latency_ms": {
+          "end_to_end": {
+            "p50": 10.0,
+            "p95": 10.0,
+            "p99": 10.0
+          },
+          "itl": {
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tpot": {
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "ttft": {
+            "p50": 10.0,
+            "p95": 10.0,
+            "p99": 10.0
+          }
+        },
+        "limitations": [
+          "uncalibrated CPU model",
+          "single replica; homogeneous phase batches",
+          "fixed KV pool; allocator fragmentation is not simulated",
+          "prefill-first admission; pressure drains active requests before recovery"
+        ],
+        "measurement_contract": {
+          "arrival_window_ms": null,
+          "arrival_window_rule": "half_open",
+          "completion_denominator": "requests_eligible_for_arrival_window",
+          "drain": true,
+          "failed_timed_out_unfinished_in_completion_denominator": true,
+          "initial_state": "empty_cache",
+          "max_drain_ms": null,
+          "outside_window_in_completion_denominator": false
+        },
+        "memory": [
+          {
+            "allocatable_free_blocks": 512,
+            "budget_peak_bytes": 9377792,
+            "device_id": "large-gpu",
+            "device_memory_bytes": 67108864,
+            "fixed_budget_bytes": 8325120,
+            "free_blocks": 512,
+            "guard_blocks": 0,
+            "kv_block_bytes": 8192,
+            "kv_bytes_per_token": 512,
+            "kv_pool_reserved_bytes": 4194304,
+            "kv_used_bytes": 0,
+            "peak_used_blocks": 1,
+            "physical_peak_bytes": 8329216,
+            "physical_reserved_bytes": 7276544,
+            "pipeline_buffer_reserved_bytes": 0,
+            "pool_blocks": 512,
+            "pool_unusable_tail_bytes": 0,
+            "prefix_cached_blocks": 0,
+            "prefix_pinned_blocks": 0,
+            "prefix_shared_blocks": 0,
+            "private_blocks": 0,
+            "stage_index": 0,
+            "tp_rank": 0,
+            "used_blocks": 0,
+            "weights_bytes": 2033664,
+            "workspace_last_source": "analytical_assumption",
+            "workspace_peak_bytes": 1052672,
+            "workspace_source": "analytical_assumption"
+          }
+        ],
+        "preemption_count": 0,
+        "prefill": {
+          "batch_policy": "homogeneous_phase_batches",
+          "chunk_token_limit": null,
+          "chunked": false,
+          "completed_chunks": 2,
+          "computed_tokens": 8,
+          "reused_prefix_tokens": 0
+        },
+        "prefix_cache": {
+          "abandoned_hit_tokens": 0,
+          "abandoned_lookups": 0,
+          "attached_block_references": 0,
+          "block_tokens": 16,
+          "bypassed_requests": 0,
+          "cached_blocks": 0,
+          "capacity_blocks": 128,
+          "deduplicated_blocks": 0,
+          "enabled": false,
+          "entries": [],
+          "evictable_blocks": 0,
+          "evicted_blocks": 0,
+          "hit_rate": null,
+          "hit_requests": 0,
+          "hit_tokens": 0,
+          "identity": "sha256_parent_digest_and_unsigned_8byte_big_endian_block_token_ids",
+          "lookup_requests": 0,
+          "miss_requests": 0,
+          "peak_cached_blocks": 0,
+          "pinned_blocks": 0,
+          "policy": "full_prompt_blocks_sha256_ancestry_and_namespace_lru_unreferenced_only",
+          "private_blocks": 0,
+          "published_blocks": 0,
+          "shared_blocks": 0
+        },
+        "profile_provenance": null,
+        "profile_version": "uncalibrated-v1",
+        "quality_status": "not_evaluated",
+        "recompute_execution_ms": 0.0,
+        "recomputed_tokens": 0,
+        "simulated_ms": 29.0,
+        "sla_satisfied": null,
+        "status": "COMPLETED",
+        "throughput": {
+          "output_tokens_per_s": 68.96551724137932,
+          "requests_per_s": 68.96551724137932,
+          "window_ms": 29.0,
+          "window_rule": "zero_to_simulation_end"
+        },
+        "warmup": {
+          "cache_effect": "none; measured run starts with empty KV",
+          "enabled": false,
+          "status": "NOT_REQUESTED"
+        }
+      },
+      "role": "model"
+    },
+    {
+      "configuration": {
+        "calibration": {
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "backend": "synthetic",
+          "bandwidth_efficiency": 0.5,
+          "compute_efficiency": 0.5,
+          "decode_ms": 1.0,
+          "dequant_flops_per_weight": 1.0,
+          "driver_version": "unspecified",
+          "framework_overhead_us": 5.0,
+          "launch_overhead_us": 2.0,
+          "mixed_ms": 10.0,
+          "native_pp_communication_allow_extrapolation": false,
+          "native_pp_communication_profile_path": null,
+          "native_pp_communication_profile_version": "",
+          "prefill_ms": 4.0,
+          "profile_path": null,
+          "profile_version": "uncalibrated-v1",
+          "rccl_version": "unspecified",
+          "recompute_ms": 10.0,
+          "replica_native_pp_communication_profile_paths": [],
+          "replica_profile_paths": [],
+          "replica_workspace_profile_paths": [],
+          "rocm_version": "unspecified",
+          "runtime_config_sha256": "",
+          "runtime_name": "unspecified",
+          "runtime_version": "unspecified",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "workspace_profile_path": null,
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "drain": true,
+          "max_drain_ms": null,
+          "measurement_window_ms": null,
+          "tpot_sla_ms": null,
+          "ttft_sla_ms": null
+        },
+        "execution": {
+          "detailed_events": true,
+          "initial_state": "empty_cache",
+          "max_events": 1000000,
+          "max_simulated_ms": 180000.0,
+          "seed": 42,
+          "warmup": []
+        },
+        "infra": {
+          "devices": [
+            {
+              "compute_tflops": 1.0,
+              "id": "small-gpu",
+              "memory_bandwidth_gbps": 10.0,
+              "memory_bytes": 67108864,
+              "name": "toy-device"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "schema_version": 1,
+        "strategy": {
+          "chunked_prefill": false,
+          "max_batch_size": 8,
+          "max_batch_tokens": 4096,
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "communication_buffer_bytes": 0,
+            "cpu_swap_bytes": 0,
+            "graph_bytes": 0,
+            "guard_blocks": 0,
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 4194304,
+            "other_bytes": 0,
+            "runtime_bytes": 1048576,
+            "safety_margin_bytes": 1048576,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0,
+            "workspace_base_bytes": 1048576,
+            "workspace_bytes_per_token": 1024
+          },
+          "mixed_batching": false,
+          "model": {
+            "activation_bytes": 2.0,
+            "activation_dtype": "auto",
+            "architecture_config_sha256": "",
+            "final_norm": false,
+            "head_dim": 16,
+            "hidden_size": 128,
+            "intermediate_size": 512,
+            "kv_bytes": 2.0,
+            "kv_dtype": "auto",
+            "name": "toy-dense-gqa",
+            "num_attention_heads": 8,
+            "num_kv_heads": 2,
+            "num_layers": 4,
+            "qk_norm": false,
+            "revision": "unspecified",
+            "tie_word_embeddings": false,
+            "vocab_size": 256,
+            "weight_bytes": 2.0,
+            "weight_dequant": "none",
+            "weight_dtype": "auto"
+          },
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_microbatch_size": 1,
+          "pipeline_p2p": true,
+          "pipeline_parallel_size": 1,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "preemption": "recompute",
+          "prefill_chunk_tokens": 512,
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "replica_routing": "least_loaded",
+          "replicas": 1,
+          "scheduler": "fifo",
+          "stage_layers": [],
+          "swap_fallback": "none",
+          "tensor_parallel_size": 1
+        },
+        "workload": []
+      },
+      "configuration_sha256": "daed2c77b0bc72958caa785300a6f0e6baddc92f89f1b2827432790a7cc5b0fc",
+      "model_id": "small",
+      "profile_inputs": [],
+      "requests": [
+        {
+          "arrival_ms": 10.0,
+          "completion_ms": 15.0,
+          "end_to_end_ms": 5.0,
+          "error_code": null,
+          "first_token_ms": 14.0,
+          "itl_ms": [
+            1.0
+          ],
+          "kv_residency": "NONE",
+          "memory_wait_ms": 0.0,
+          "num_computed_tokens": 5,
+          "output_tokens_actual": 2,
+          "preemption_count": 0,
+          "prefill_chunks": 1,
+          "prefill_computed_tokens": 4,
+          "prefix_cached_tokens": 0,
+          "recompute_ms": 0.0,
+          "recompute_target": 0,
+          "recomputed_tokens": 0,
+          "request_id": "b",
+          "status": "COMPLETED",
+          "swap_in_bytes": 0,
+          "swap_in_count": 0,
+          "swap_ms": 0.0,
+          "swap_out_bytes": 0,
+          "swap_out_count": 0,
+          "token_times_ms": [
+            14.0,
+            15.0
+          ],
+          "tpot_ms": 1.0,
+          "ttft_ms": 4.0
+        },
+        {
+          "arrival_ms": 10.0,
+          "completion_ms": 19.0,
+          "end_to_end_ms": 9.0,
+          "error_code": null,
+          "first_token_ms": 19.0,
+          "itl_ms": [],
+          "kv_residency": "NONE",
+          "memory_wait_ms": 0.0,
+          "num_computed_tokens": 4,
+          "output_tokens_actual": 1,
+          "preemption_count": 0,
+          "prefill_chunks": 1,
+          "prefill_computed_tokens": 4,
+          "prefix_cached_tokens": 0,
+          "recompute_ms": 0.0,
+          "recompute_target": 0,
+          "recomputed_tokens": 0,
+          "request_id": "c",
+          "status": "COMPLETED",
+          "swap_in_bytes": 0,
+          "swap_in_count": 0,
+          "swap_ms": 0.0,
+          "swap_out_bytes": 0,
+          "swap_out_count": 0,
+          "token_times_ms": [
+            19.0
+          ],
+          "tpot_ms": null,
+          "ttft_ms": 9.0
+        }
+      ],
+      "result": {
+        "admitted_count": 2,
+        "backend": "simulated",
+        "batching": {
+          "compute_busy_ms_semantics": "single_group_time",
+          "mixed_batches_admitted": 0,
+          "mixed_batches_completed": 0,
+          "mixed_batching": false,
+          "mixed_compute_busy_ms": 0.0,
+          "policy": "homogeneous_phase_batches",
+          "recompute_policy": "homogeneous_recovery_batches"
+        },
+        "calibration_source": "synthetic",
+        "cohort_completion_rate": 1.0,
+        "completion_rate": 1.0,
+        "completion_rate_denominator": 2,
+        "compute_busy_ms": 9.0,
+        "counts": {
+          "completed": 2,
+          "failed": 0,
+          "not_admitted": 0,
+          "timed_out": 0,
+          "total": 2,
+          "unfinished": 0
+        },
+        "error_code": null,
+        "evaluation_count": 2,
+        "events_processed": 5,
+        "goodput": {
+          "eligible_requests": 2,
+          "output_tokens_per_s": 103.44827586206897,
+          "requests_per_s": 68.96551724137932,
+          "rule": "completed_requests_satisfying_all_declared_slas",
+          "sla_declared": false,
+          "window_ms": 29.0
+        },
+        "hardware_validated": false,
+        "latency_ms": {
+          "end_to_end": {
+            "p50": 7.0,
+            "p95": 8.8,
+            "p99": 8.96
+          },
+          "itl": {
+            "p50": 1.0,
+            "p95": 1.0,
+            "p99": 1.0
+          },
+          "tpot": {
+            "p50": 1.0,
+            "p95": 1.0,
+            "p99": 1.0
+          },
+          "ttft": {
+            "p50": 6.5,
+            "p95": 8.75,
+            "p99": 8.95
+          }
+        },
+        "limitations": [
+          "uncalibrated CPU model",
+          "single replica; homogeneous phase batches",
+          "fixed KV pool; allocator fragmentation is not simulated",
+          "prefill-first admission; pressure drains active requests before recovery"
+        ],
+        "measurement_contract": {
+          "arrival_window_ms": null,
+          "arrival_window_rule": "half_open",
+          "completion_denominator": "requests_eligible_for_arrival_window",
+          "drain": true,
+          "failed_timed_out_unfinished_in_completion_denominator": true,
+          "initial_state": "empty_cache",
+          "max_drain_ms": null,
+          "outside_window_in_completion_denominator": false
+        },
+        "memory": [
+          {
+            "allocatable_free_blocks": 512,
+            "budget_peak_bytes": 9377792,
+            "device_id": "small-gpu",
+            "device_memory_bytes": 67108864,
+            "fixed_budget_bytes": 8325120,
+            "free_blocks": 512,
+            "guard_blocks": 0,
+            "kv_block_bytes": 8192,
+            "kv_bytes_per_token": 512,
+            "kv_pool_reserved_bytes": 4194304,
+            "kv_used_bytes": 0,
+            "peak_used_blocks": 1,
+            "physical_peak_bytes": 8329216,
+            "physical_reserved_bytes": 7276544,
+            "pipeline_buffer_reserved_bytes": 0,
+            "pool_blocks": 512,
+            "pool_unusable_tail_bytes": 0,
+            "prefix_cached_blocks": 0,
+            "prefix_pinned_blocks": 0,
+            "prefix_shared_blocks": 0,
+            "private_blocks": 0,
+            "stage_index": 0,
+            "tp_rank": 0,
+            "used_blocks": 0,
+            "weights_bytes": 2033664,
+            "workspace_last_source": "analytical_assumption",
+            "workspace_peak_bytes": 1052672,
+            "workspace_source": "analytical_assumption"
+          }
+        ],
+        "preemption_count": 0,
+        "prefill": {
+          "batch_policy": "homogeneous_phase_batches",
+          "chunk_token_limit": null,
+          "chunked": false,
+          "completed_chunks": 2,
+          "computed_tokens": 8,
+          "reused_prefix_tokens": 0
+        },
+        "prefix_cache": {
+          "abandoned_hit_tokens": 0,
+          "abandoned_lookups": 0,
+          "attached_block_references": 0,
+          "block_tokens": 16,
+          "bypassed_requests": 0,
+          "cached_blocks": 0,
+          "capacity_blocks": 128,
+          "deduplicated_blocks": 0,
+          "enabled": false,
+          "entries": [],
+          "evictable_blocks": 0,
+          "evicted_blocks": 0,
+          "hit_rate": null,
+          "hit_requests": 0,
+          "hit_tokens": 0,
+          "identity": "sha256_parent_digest_and_unsigned_8byte_big_endian_block_token_ids",
+          "lookup_requests": 0,
+          "miss_requests": 0,
+          "peak_cached_blocks": 0,
+          "pinned_blocks": 0,
+          "policy": "full_prompt_blocks_sha256_ancestry_and_namespace_lru_unreferenced_only",
+          "private_blocks": 0,
+          "published_blocks": 0,
+          "shared_blocks": 0
+        },
+        "profile_provenance": null,
+        "profile_version": "uncalibrated-v1",
+        "quality_status": "not_evaluated",
+        "recompute_execution_ms": 0.0,
+        "recomputed_tokens": 0,
+        "simulated_ms": 29.0,
+        "sla_satisfied": null,
+        "status": "COMPLETED",
+        "throughput": {
+          "output_tokens_per_s": 103.44827586206897,
+          "requests_per_s": 68.96551724137932,
+          "window_ms": 29.0,
+          "window_rule": "zero_to_simulation_end"
+        },
+        "warmup": {
+          "cache_effect": "none; measured run starts with empty KV",
+          "enabled": false,
+          "status": "NOT_REQUESTED"
+        }
+      },
+      "role": "model"
+    }
+  ],
+  "resources_drained": true,
+  "schema_version": 1,
+  "status": "COMPLETED",
+  "trace_description": "Hand-derived fork/join oracle: a10,b15,c19,d29 milliseconds; no hardware claim.",
+  "trace_sha256": "e2b0b975cf0df640a1bb8bf71bf8286cbf083918420cd6eec6af8e3407d16661",
+  "trace_source": "synthetic_teaching_trace"
+}

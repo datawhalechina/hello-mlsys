@@ -1,0 +1,16 @@
+{
+  "communication_group_count": 0,
+  "hardware_validated": false,
+  "mode": "calibrate",
+  "parent_profile_version": null,
+  "profile_id": "rx7900xtx-qwen3-0.6b-step-real:rx7900xtx-real-v1",
+  "profile_kind": "step_profile",
+  "profile_version": "rx7900xtx-real-v1",
+  "shape_count": 5,
+  "source": {
+    "kind": "measured",
+    "reference": "Measured on GPU0 AMD Radeon RX 7900 XTX (gfx1100) using torch.cuda.Event with Qwen3-0.6B BF16."
+  },
+  "status": "COMPLETED",
+  "training_record_count": 15
+}

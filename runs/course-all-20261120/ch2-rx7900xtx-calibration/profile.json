@@ -1,0 +1,211 @@
+{
+  "identity": {
+    "devices": [
+      {
+        "compute_tflops": 122.8,
+        "id": "gpu0",
+        "memory_bandwidth_gbps": 960.0,
+        "memory_bytes": 25753026560,
+        "name": "AMD Radeon RX 7900 XTX"
+      }
+    ],
+    "execution": {
+      "communication_buffer_bytes": 0,
+      "graph_bytes": 0,
+      "kv_block_tokens": 16,
+      "runtime_bytes": 1192639488
+    },
+    "model": {
+      "activation_bytes": 2.0,
+      "activation_dtype": "bfloat16",
+      "head_dim": 128,
+      "hidden_size": 1024,
+      "intermediate_size": 3072,
+      "kv_bytes": 2.0,
+      "kv_dtype": "bfloat16",
+      "name": "Qwen3-0.6B",
+      "num_attention_heads": 16,
+      "num_kv_heads": 8,
+      "num_layers": 28,
+      "revision": "local",
+      "vocab_size": 151936,
+      "weight_bytes": 2.0,
+      "weight_dtype": "bfloat16"
+    },
+    "parallelism": {
+      "pipeline_parallel_size": 1,
+      "shard_plan": "megatron_dense_no_sp",
+      "stage_layers": [
+        28
+      ],
+      "tensor_parallel_size": 1
+    },
+    "runtime": {
+      "driver_version": "amdgpu",
+      "name": "pytorch-eager",
+      "rccl_version": "not-applicable",
+      "rocm_version": "7.15.26333",
+      "timing_boundary": "step_includes_output_and_sampling_v1",
+      "version": "2.12.0+rocm10.0.0"
+    },
+    "topology": {
+      "link_bandwidth_gbps": 20.0,
+      "link_latency_us": 5.0,
+      "name": "single-node-uncontended"
+    }
+  },
+  "method": "lookup",
+  "notes": {
+    "dataset_id": "rx7900xtx-qwen3-0.6b-step-real",
+    "fit": "mean_duration_and_max_observed_workspace",
+    "parent_samples_reused": false,
+    "record_count": 15,
+    "repeat_statistics": [
+      {
+        "duration_max_ms": 29.6126,
+        "duration_min_ms": 28.5061,
+        "duration_sample_stdev_ms": 0.6231685833972488,
+        "sample_count": 3,
+        "shape_key": "[\"decode\",0,[1],[128]]"
+      },
+      {
+        "duration_max_ms": 24.2246,
+        "duration_min_ms": 24.1521,
+        "duration_sample_stdev_ms": 0.03847817563242727,
+        "sample_count": 3,
+        "shape_key": "[\"decode\",0,[1],[512]]"
+      },
+      {
+        "duration_max_ms": 29.825,
+        "duration_min_ms": 25.9081,
+        "duration_sample_stdev_ms": 2.0682421626427914,
+        "sample_count": 3,
+        "shape_key": "[\"prefill\",0,[128],[0]]"
+      },
+      {
+        "duration_max_ms": 31.6486,
+        "duration_min_ms": 26.509,
+        "duration_sample_stdev_ms": 2.593687530010762,
+        "sample_count": 3,
+        "shape_key": "[\"prefill\",0,[256],[0]]"
+      },
+      {
+        "duration_max_ms": 30.95,
+        "duration_min_ms": 27.6016,
+        "duration_sample_stdev_ms": 1.7935326927602957,
+        "sample_count": 3,
+        "shape_key": "[\"prefill\",0,[512],[0]]"
+      }
+    ]
+  },
+  "profile_id": "rx7900xtx-qwen3-0.6b-step-real:rx7900xtx-real-v1",
+  "profile_version": "rx7900xtx-real-v1",
+  "samples": [
+    {
+      "context_lengths": [
+        128
+      ],
+      "duration_ms": 29.224933333333333,
+      "phase": "decode",
+      "query_tokens": [
+        1
+      ],
+      "sample_count": 3,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1326902784
+    },
+    {
+      "context_lengths": [
+        512
+      ],
+      "duration_ms": 24.1958,
+      "phase": "decode",
+      "query_tokens": [
+        1
+      ],
+      "sample_count": 3,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1519221760
+    },
+    {
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 28.250433333333334,
+      "phase": "prefill",
+      "query_tokens": [
+        128
+      ],
+      "sample_count": 3,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1326170112
+    },
+    {
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 28.876033333333332,
+      "phase": "prefill",
+      "query_tokens": [
+        256
+      ],
+      "sample_count": 3,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1380008960
+    },
+    {
+      "context_lengths": [
+        0
+      ],
+      "duration_ms": 28.9044,
+      "phase": "prefill",
+      "query_tokens": [
+        512
+      ],
+      "sample_count": 3,
+      "stage_index": 0,
+      "workspace_peak_bytes": 1487686656
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "kind": "measured",
+    "reference": "Measured on GPU0 AMD Radeon RX 7900 XTX (gfx1100) using torch.cuda.Event with Qwen3-0.6B BF16."
+  },
+  "timing_includes_communication": true,
+  "training": {
+    "dataset_sha256": "c819a56a4530fad62fb25ebe7ed1a54ec0fa22589e1a0a9d061e6452e3a6c6af",
+    "group_ids": [
+      "decode-128",
+      "decode-512",
+      "prefill-128",
+      "prefill-256",
+      "prefill-512"
+    ],
+    "parent_profile_version": null,
+    "record_ids": [
+      "d128-r0",
+      "d128-r1",
+      "d128-r2",
+      "d512-r0",
+      "d512-r1",
+      "d512-r2",
+      "p128-r0",
+      "p128-r1",
+      "p128-r2",
+      "p256-r0",
+      "p256-r1",
+      "p256-r2",
+      "p512-r0",
+      "p512-r1",
+      "p512-r2"
+    ],
+    "shape_keys": [
+      "[\"decode\",0,[1],[128]]",
+      "[\"decode\",0,[1],[512]]",
+      "[\"prefill\",0,[128],[0]]",
+      "[\"prefill\",0,[256],[0]]",
+      "[\"prefill\",0,[512],[0]]"
+    ]
+  }
+}

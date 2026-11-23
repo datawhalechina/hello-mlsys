@@ -1,0 +1,528 @@
+{
+  "assumptions": [
+    "Every workload row forms the same isolated phase batch on each replica for shape comparison.",
+    "No arrival routing, queueing, cache reuse, chunking or mixed online batching is executed.",
+    "Replica resources and paired TP/PP links are independent; shared fabric contention is not modeled.",
+    "Profile calibration does not itself establish held-out hardware prediction accuracy."
+  ],
+  "backend": "simulated",
+  "calibration_source": "analytical",
+  "hardware_validated": false,
+  "memory": [
+    {
+      "allocatable_free_blocks": 1820,
+      "budget_peak_bytes": 14487387136,
+      "device_id": "gpu0",
+      "device_memory_bytes": 17179869184,
+      "fixed_budget_bytes": 14487387136,
+      "free_blocks": 1820,
+      "guard_blocks": 0,
+      "kv_block_bytes": 2359296,
+      "kv_bytes_per_token": 147456,
+      "kv_pool_reserved_bytes": 4294967296,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 0,
+      "physical_peak_bytes": 13413645312,
+      "physical_reserved_bytes": 13413645312,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 1820,
+      "pool_unusable_tail_bytes": 1048576,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "replica_index": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 8044936192,
+      "workspace_last_source": "not_executed",
+      "workspace_peak_bytes": 0,
+      "workspace_source": "not_executed"
+    },
+    {
+      "allocatable_free_blocks": 1820,
+      "budget_peak_bytes": 14487387136,
+      "device_id": "gpu1",
+      "device_memory_bytes": 17179869184,
+      "fixed_budget_bytes": 14487387136,
+      "free_blocks": 1820,
+      "guard_blocks": 0,
+      "kv_block_bytes": 2359296,
+      "kv_bytes_per_token": 147456,
+      "kv_pool_reserved_bytes": 4294967296,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 0,
+      "physical_peak_bytes": 13413645312,
+      "physical_reserved_bytes": 13413645312,
+      "pipeline_buffer_reserved_bytes": 0,
+      "pool_blocks": 1820,
+      "pool_unusable_tail_bytes": 1048576,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "replica_index": 1,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 8044936192,
+      "workspace_last_source": "not_executed",
+      "workspace_peak_bytes": 0,
+      "workspace_source": "not_executed"
+    }
+  ],
+  "mode": "predict",
+  "online_metrics": {
+    "goodput_requests_per_s": null,
+    "p99_ms": null,
+    "tpot_ms": null,
+    "ttft_ms": null
+  },
+  "online_metrics_reason": "SHAPE_ANALYSIS_HAS_NO_ARRIVALS_OR_QUEUEING",
+  "prefill_memory_feasible": true,
+  "profile_provenance": null,
+  "profile_version": "uncalibrated-v1",
+  "profile_versions": [
+    {
+      "profile_version": "uncalibrated-v1",
+      "replica_index": 0
+    },
+    {
+      "profile_version": "uncalibrated-v1",
+      "replica_index": 1
+    }
+  ],
+  "replica_count": 2,
+  "replica_predictions": [
+    {
+      "device_ids": [
+        "gpu0"
+      ],
+      "prediction": {
+        "assumptions": [
+          "Analyzes one phase batch containing every workload row, ignoring arrival times.",
+          "PP activations replicated per TP rank; identical independent links, no contention.",
+          "No sampling/feedback latency included in PP forward path.",
+          "Stage timings are analytical/synthetic, without measured calibration.",
+          "Profile calibration does not itself establish held-out hardware prediction accuracy."
+        ],
+        "backend": "simulated",
+        "communication": {
+          "decode_p2p_bytes_per_rank_per_boundary": 5120.0,
+          "decode_p2p_ms": 0.0,
+          "p2p_source": "analytical_uncalibrated",
+          "pp_boundaries": 0,
+          "prefill_p2p_bytes_per_rank_per_boundary": 5242880.0,
+          "prefill_p2p_ms": 0.0
+        },
+        "hardware_validated": false,
+        "isolated_decode_step_ms": 14.51984029158383,
+        "isolated_prefill_ms": 69.31363394203318,
+        "memory": [
+          {
+            "allocatable_free_blocks": 1820,
+            "budget_peak_bytes": 14487387136,
+            "device_id": "gpu0",
+            "device_memory_bytes": 17179869184,
+            "fixed_budget_bytes": 14487387136,
+            "free_blocks": 1820,
+            "guard_blocks": 0,
+            "kv_block_bytes": 2359296,
+            "kv_bytes_per_token": 147456,
+            "kv_pool_reserved_bytes": 4294967296,
+            "kv_used_bytes": 0,
+            "peak_used_blocks": 0,
+            "physical_peak_bytes": 13413645312,
+            "physical_reserved_bytes": 13413645312,
+            "pipeline_buffer_reserved_bytes": 0,
+            "pool_blocks": 1820,
+            "pool_unusable_tail_bytes": 1048576,
+            "prefix_cached_blocks": 0,
+            "prefix_pinned_blocks": 0,
+            "prefix_shared_blocks": 0,
+            "private_blocks": 0,
+            "stage_index": 0,
+            "tp_rank": 0,
+            "used_blocks": 0,
+            "weights_bytes": 8044936192,
+            "workspace_last_source": "not_executed",
+            "workspace_peak_bytes": 0,
+            "workspace_source": "not_executed"
+          }
+        ],
+        "memory_check_details": {
+          "alone": false,
+          "cache_eviction_blocks": 0,
+          "phase": "prefill",
+          "proposed_allocations": {
+            "ch6-shape": 1024
+          },
+          "ranks": [
+            {
+              "additional_blocks": 64,
+              "device_id": "gpu0",
+              "device_memory_bytes": 17179869184,
+              "guard_blocks": 0,
+              "logical_ok": true,
+              "physical_ok": true,
+              "pool_blocks": 1820,
+              "proposed_used_blocks": 64,
+              "required_budget_bytes": 14772599808,
+              "stage_index": 0,
+              "tp_rank": 0,
+              "used_before_blocks": 0,
+              "workspace_bytes": 285212672,
+              "workspace_source": "analytical_assumption"
+            }
+          ],
+          "workspace_bytes": 285212672
+        },
+        "memory_error_code": null,
+        "mode": "predict",
+        "online_metrics": {
+          "goodput_requests_per_s": null,
+          "p99_ms": null,
+          "tpot_ms": null,
+          "ttft_ms": null
+        },
+        "online_metrics_reason": "SHAPE_ANALYSIS_HAS_NO_ARRIVALS_OR_QUEUEING",
+        "prefill_memory_feasible": true,
+        "profile_provenance": null,
+        "profile_version": "uncalibrated-v1",
+        "shape": {
+          "context_lengths": [
+            0
+          ],
+          "query_tokens": [
+            1024
+          ],
+          "requests_in_batch": 1,
+          "serving_cache_and_chunk_policies_applied": false,
+          "within_batch_size_limit": true,
+          "within_batch_token_limit": true
+        },
+        "source": "analytical",
+        "stages": [
+          {
+            "decode_breakdown": {
+              "attention": {
+                "compute_ms": 0.004966133146046649,
+                "duration_ms": 0.33385288270377733,
+                "flops_per_rank": 604569600.0,
+                "hbm_bytes_per_rank": 151732224.0,
+                "memory_ms": 0.2618528827037773,
+                "overhead_ms": 0.072
+              },
+              "communication": {
+                "allreduce_count": 0,
+                "allreduce_ms": 0.0,
+                "allreduce_payload_bytes": 5120.0,
+                "duration_ms": 0.0,
+                "logits_allgather_ms": 0.0
+              },
+              "embedding_and_output": {
+                "compute_ms": 0.006390027148354876,
+                "duration_ms": 1.3450205434062292,
+                "flops_per_rank": 777912320.0,
+                "hbm_bytes_per_rank": 778221312.0,
+                "memory_ms": 1.3430205434062292,
+                "overhead_ms": 0.002
+              },
+              "framework": {
+                "duration_ms": 0.005
+              },
+              "linear": {
+                "compute_ms": 0.05969049791150704,
+                "duration_ms": 12.614091451292246,
+                "flops_per_rank": 7266631680,
+                "hbm_bytes_per_rank": 7267590144.0,
+                "memory_ms": 12.542091451292247,
+                "overhead_ms": 0.072
+              },
+              "misc": {
+                "compute_ms": 1.829495188457226e-05,
+                "duration_ms": 0.2218754141815772,
+                "flops_per_rank": 2227200,
+                "hbm_bytes_per_rank": 2245632.0,
+                "memory_ms": 0.0038754141815772036,
+                "overhead_ms": 0.218
+              }
+            },
+            "decode_source": "analytical_uncalibrated",
+            "decode_step_ms": 14.51984029158383,
+            "device_ids": [
+              "gpu0"
+            ],
+            "layers": 36,
+            "prefill_breakdown": {
+              "attention": {
+                "compute_ms": 2.5426601707758842,
+                "duration_ms": 2.6146601707758843,
+                "flops_per_rank": 309539635200.0,
+                "hbm_bytes_per_rank": 754974720.0,
+                "memory_ms": 1.3029025844930417,
+                "overhead_ms": 0.072
+              },
+              "communication": {
+                "allreduce_count": 0,
+                "allreduce_ms": 0.0,
+                "allreduce_payload_bytes": 5242880.0,
+                "duration_ms": 0.0,
+                "logits_allgather_ms": 0.0
+              },
+              "embedding_and_output": {
+                "compute_ms": 0.006390027148354876,
+                "duration_ms": 1.3540596421471174,
+                "flops_per_rank": 777912320.0,
+                "hbm_bytes_per_rank": 783459072.0,
+                "memory_ms": 1.3520596421471174,
+                "overhead_ms": 0.002
+              },
+              "framework": {
+                "duration_ms": 0.005
+              },
+              "linear": {
+                "compute_ms": 61.12306986138321,
+                "duration_ms": 61.19506986138321,
+                "flops_per_rank": 7441030840320,
+                "hbm_bytes_per_rank": 8248098816.0,
+                "memory_ms": 14.234210735586482,
+                "overhead_ms": 0.072
+              },
+              "misc": {
+                "compute_ms": 0.018734030729801995,
+                "duration_ms": 4.144844267726972,
+                "flops_per_rank": 2280652800,
+                "hbm_bytes_per_rank": 2275433472.0,
+                "memory_ms": 3.9268442677269717,
+                "overhead_ms": 0.218
+              }
+            },
+            "prefill_ms": 69.31363394203318,
+            "prefill_source": "analytical_uncalibrated",
+            "stage": 0
+          }
+        ],
+        "status": "COMPLETED"
+      },
+      "replica_index": 0
+    },
+    {
+      "device_ids": [
+        "gpu1"
+      ],
+      "prediction": {
+        "assumptions": [
+          "Analyzes one phase batch containing every workload row, ignoring arrival times.",
+          "PP activations replicated per TP rank; identical independent links, no contention.",
+          "No sampling/feedback latency included in PP forward path.",
+          "Stage timings are analytical/synthetic, without measured calibration.",
+          "Profile calibration does not itself establish held-out hardware prediction accuracy."
+        ],
+        "backend": "simulated",
+        "communication": {
+          "decode_p2p_bytes_per_rank_per_boundary": 5120.0,
+          "decode_p2p_ms": 0.0,
+          "p2p_source": "analytical_uncalibrated",
+          "pp_boundaries": 0,
+          "prefill_p2p_bytes_per_rank_per_boundary": 5242880.0,
+          "prefill_p2p_ms": 0.0
+        },
+        "hardware_validated": false,
+        "isolated_decode_step_ms": 14.51984029158383,
+        "isolated_prefill_ms": 69.31363394203318,
+        "memory": [
+          {
+            "allocatable_free_blocks": 1820,
+            "budget_peak_bytes": 14487387136,
+            "device_id": "gpu1",
+            "device_memory_bytes": 17179869184,
+            "fixed_budget_bytes": 14487387136,
+            "free_blocks": 1820,
+            "guard_blocks": 0,
+            "kv_block_bytes": 2359296,
+            "kv_bytes_per_token": 147456,
+            "kv_pool_reserved_bytes": 4294967296,
+            "kv_used_bytes": 0,
+            "peak_used_blocks": 0,
+            "physical_peak_bytes": 13413645312,
+            "physical_reserved_bytes": 13413645312,
+            "pipeline_buffer_reserved_bytes": 0,
+            "pool_blocks": 1820,
+            "pool_unusable_tail_bytes": 1048576,
+            "prefix_cached_blocks": 0,
+            "prefix_pinned_blocks": 0,
+            "prefix_shared_blocks": 0,
+            "private_blocks": 0,
+            "stage_index": 0,
+            "tp_rank": 0,
+            "used_blocks": 0,
+            "weights_bytes": 8044936192,
+            "workspace_last_source": "not_executed",
+            "workspace_peak_bytes": 0,
+            "workspace_source": "not_executed"
+          }
+        ],
+        "memory_check_details": {
+          "alone": false,
+          "cache_eviction_blocks": 0,
+          "phase": "prefill",
+          "proposed_allocations": {
+            "ch6-shape": 1024
+          },
+          "ranks": [
+            {
+              "additional_blocks": 64,
+              "device_id": "gpu1",
+              "device_memory_bytes": 17179869184,
+              "guard_blocks": 0,
+              "logical_ok": true,
+              "physical_ok": true,
+              "pool_blocks": 1820,
+              "proposed_used_blocks": 64,
+              "required_budget_bytes": 14772599808,
+              "stage_index": 0,
+              "tp_rank": 0,
+              "used_before_blocks": 0,
+              "workspace_bytes": 285212672,
+              "workspace_source": "analytical_assumption"
+            }
+          ],
+          "workspace_bytes": 285212672
+        },
+        "memory_error_code": null,
+        "mode": "predict",
+        "online_metrics": {
+          "goodput_requests_per_s": null,
+          "p99_ms": null,
+          "tpot_ms": null,
+          "ttft_ms": null
+        },
+        "online_metrics_reason": "SHAPE_ANALYSIS_HAS_NO_ARRIVALS_OR_QUEUEING",
+        "prefill_memory_feasible": true,
+        "profile_provenance": null,
+        "profile_version": "uncalibrated-v1",
+        "shape": {
+          "context_lengths": [
+            0
+          ],
+          "query_tokens": [
+            1024
+          ],
+          "requests_in_batch": 1,
+          "serving_cache_and_chunk_policies_applied": false,
+          "within_batch_size_limit": true,
+          "within_batch_token_limit": true
+        },
+        "source": "analytical",
+        "stages": [
+          {
+            "decode_breakdown": {
+              "attention": {
+                "compute_ms": 0.004966133146046649,
+                "duration_ms": 0.33385288270377733,
+                "flops_per_rank": 604569600.0,
+                "hbm_bytes_per_rank": 151732224.0,
+                "memory_ms": 0.2618528827037773,
+                "overhead_ms": 0.072
+              },
+              "communication": {
+                "allreduce_count": 0,
+                "allreduce_ms": 0.0,
+                "allreduce_payload_bytes": 5120.0,
+                "duration_ms": 0.0,
+                "logits_allgather_ms": 0.0
+              },
+              "embedding_and_output": {
+                "compute_ms": 0.006390027148354876,
+                "duration_ms": 1.3450205434062292,
+                "flops_per_rank": 777912320.0,
+                "hbm_bytes_per_rank": 778221312.0,
+                "memory_ms": 1.3430205434062292,
+                "overhead_ms": 0.002
+              },
+              "framework": {
+                "duration_ms": 0.005
+              },
+              "linear": {
+                "compute_ms": 0.05969049791150704,
+                "duration_ms": 12.614091451292246,
+                "flops_per_rank": 7266631680,
+                "hbm_bytes_per_rank": 7267590144.0,
+                "memory_ms": 12.542091451292247,
+                "overhead_ms": 0.072
+              },
+              "misc": {
+                "compute_ms": 1.829495188457226e-05,
+                "duration_ms": 0.2218754141815772,
+                "flops_per_rank": 2227200,
+                "hbm_bytes_per_rank": 2245632.0,
+                "memory_ms": 0.0038754141815772036,
+                "overhead_ms": 0.218
+              }
+            },
+            "decode_source": "analytical_uncalibrated",
+            "decode_step_ms": 14.51984029158383,
+            "device_ids": [
+              "gpu1"
+            ],
+            "layers": 36,
+            "prefill_breakdown": {
+              "attention": {
+                "compute_ms": 2.5426601707758842,
+                "duration_ms": 2.6146601707758843,
+                "flops_per_rank": 309539635200.0,
+                "hbm_bytes_per_rank": 754974720.0,
+                "memory_ms": 1.3029025844930417,
+                "overhead_ms": 0.072
+              },
+              "communication": {
+                "allreduce_count": 0,
+                "allreduce_ms": 0.0,
+                "allreduce_payload_bytes": 5242880.0,
+                "duration_ms": 0.0,
+                "logits_allgather_ms": 0.0
+              },
+              "embedding_and_output": {
+                "compute_ms": 0.006390027148354876,
+                "duration_ms": 1.3540596421471174,
+                "flops_per_rank": 777912320.0,
+                "hbm_bytes_per_rank": 783459072.0,
+                "memory_ms": 1.3520596421471174,
+                "overhead_ms": 0.002
+              },
+              "framework": {
+                "duration_ms": 0.005
+              },
+              "linear": {
+                "compute_ms": 61.12306986138321,
+                "duration_ms": 61.19506986138321,
+                "flops_per_rank": 7441030840320,
+                "hbm_bytes_per_rank": 8248098816.0,
+                "memory_ms": 14.234210735586482,
+                "overhead_ms": 0.072
+              },
+              "misc": {
+                "compute_ms": 0.018734030729801995,
+                "duration_ms": 4.144844267726972,
+                "flops_per_rank": 2280652800,
+                "hbm_bytes_per_rank": 2275433472.0,
+                "memory_ms": 3.9268442677269717,
+                "overhead_ms": 0.218
+              }
+            },
+            "prefill_ms": 69.31363394203318,
+            "prefill_source": "analytical_uncalibrated",
+            "stage": 0
+          }
+        ],
+        "status": "COMPLETED"
+      },
+      "replica_index": 1
+    }
+  ],
+  "replica_routing_applied": false,
+  "source": "analytical",
+  "status": "COMPLETED"
+}

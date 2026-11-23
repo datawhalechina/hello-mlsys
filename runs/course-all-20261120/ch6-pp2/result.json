@@ -1,0 +1,358 @@
+{
+  "assumptions": [
+    "Analyzes one phase batch containing every workload row, ignoring arrival times.",
+    "PP activations replicated per TP rank; identical independent links, no contention.",
+    "No sampling/feedback latency included in PP forward path.",
+    "Stage timings are analytical/synthetic, without measured calibration.",
+    "Profile calibration does not itself establish held-out hardware prediction accuracy."
+  ],
+  "backend": "simulated",
+  "communication": {
+    "decode_p2p_bytes_per_rank_per_boundary": 768.0,
+    "decode_p2p_ms": 0.0050384,
+    "p2p_source": "analytical_uncalibrated",
+    "pp_boundaries": 1,
+    "prefill_p2p_bytes_per_rank_per_boundary": 196608.0,
+    "prefill_p2p_ms": 0.0148304
+  },
+  "hardware_validated": false,
+  "isolated_decode_step_ms": 0.5192671999999999,
+  "isolated_prefill_ms": 4.749428096,
+  "memory": [
+    {
+      "allocatable_free_blocks": 2048,
+      "budget_peak_bytes": 15221248,
+      "device_id": "gpu0",
+      "device_memory_bytes": 67108864,
+      "fixed_budget_bytes": 15221248,
+      "free_blocks": 2048,
+      "guard_blocks": 0,
+      "kv_block_bytes": 2048,
+      "kv_bytes_per_token": 128,
+      "kv_pool_reserved_bytes": 4194304,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 0,
+      "physical_peak_bytes": 14172672,
+      "physical_reserved_bytes": 14172672,
+      "pipeline_buffer_reserved_bytes": 8388608,
+      "pool_blocks": 2048,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 541184,
+      "workspace_last_source": "not_executed",
+      "workspace_peak_bytes": 0,
+      "workspace_source": "not_executed"
+    },
+    {
+      "allocatable_free_blocks": 682,
+      "budget_peak_bytes": 16172544,
+      "device_id": "gpu1",
+      "device_memory_bytes": 67108864,
+      "fixed_budget_bytes": 16172544,
+      "free_blocks": 682,
+      "guard_blocks": 0,
+      "kv_block_bytes": 6144,
+      "kv_bytes_per_token": 384,
+      "kv_pool_reserved_bytes": 4194304,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 0,
+      "physical_peak_bytes": 15123968,
+      "physical_reserved_bytes": 15123968,
+      "pipeline_buffer_reserved_bytes": 8388608,
+      "pool_blocks": 682,
+      "pool_unusable_tail_bytes": 4096,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 1,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 1492480,
+      "workspace_last_source": "not_executed",
+      "workspace_peak_bytes": 0,
+      "workspace_source": "not_executed"
+    }
+  ],
+  "memory_check_details": {
+    "alone": false,
+    "cache_eviction_blocks": 0,
+    "phase": "prefill",
+    "proposed_allocations": {
+      "long": 384,
+      "medium": 256,
+      "short": 128
+    },
+    "ranks": [
+      {
+        "additional_blocks": 48,
+        "device_id": "gpu0",
+        "device_memory_bytes": 67108864,
+        "guard_blocks": 0,
+        "logical_ok": true,
+        "physical_ok": true,
+        "pool_blocks": 2048,
+        "proposed_used_blocks": 48,
+        "required_budget_bytes": 17056256,
+        "stage_index": 0,
+        "tp_rank": 0,
+        "used_before_blocks": 0,
+        "workspace_bytes": 1835008,
+        "workspace_source": "analytical_assumption"
+      },
+      {
+        "additional_blocks": 48,
+        "device_id": "gpu1",
+        "device_memory_bytes": 67108864,
+        "guard_blocks": 0,
+        "logical_ok": true,
+        "physical_ok": true,
+        "pool_blocks": 682,
+        "proposed_used_blocks": 48,
+        "required_budget_bytes": 18007552,
+        "stage_index": 1,
+        "tp_rank": 0,
+        "used_before_blocks": 0,
+        "workspace_bytes": 1835008,
+        "workspace_source": "analytical_assumption"
+      }
+    ],
+    "workspace_bytes": 1835008
+  },
+  "memory_error_code": null,
+  "mode": "predict",
+  "online_metrics": {
+    "goodput_requests_per_s": null,
+    "p99_ms": null,
+    "tpot_ms": null,
+    "ttft_ms": null
+  },
+  "online_metrics_reason": "SHAPE_ANALYSIS_HAS_NO_ARRIVALS_OR_QUEUEING",
+  "prefill_memory_feasible": true,
+  "profile_provenance": null,
+  "profile_version": "uncalibrated-v1",
+  "shape": {
+    "context_lengths": [
+      0,
+      0,
+      0
+    ],
+    "query_tokens": [
+      128,
+      256,
+      384
+    ],
+    "requests_in_batch": 3,
+    "serving_cache_and_chunk_policies_applied": false,
+    "within_batch_size_limit": true,
+    "within_batch_token_limit": true
+  },
+  "source": "analytical",
+  "stages": [
+    {
+      "decode_breakdown": {
+        "attention": {
+          "compute_ms": 0.000789504,
+          "duration_ms": 0.022044800000000003,
+          "flops_per_rank": 394752.0,
+          "hbm_bytes_per_rank": 100224.0,
+          "memory_ms": 0.0200448,
+          "overhead_ms": 0.002
+        },
+        "communication": {
+          "allreduce_count": 0,
+          "allreduce_ms": 0.0,
+          "allreduce_payload_bytes": 768.0,
+          "duration_ms": 0.0,
+          "logits_allgather_ms": 0.0
+        },
+        "embedding_and_output": {
+          "compute_ms": 0.0,
+          "duration_ms": 0.0021536,
+          "flops_per_rank": 0.0,
+          "hbm_bytes_per_rank": 768.0,
+          "memory_ms": 0.0001536,
+          "overhead_ms": 0.002
+        },
+        "framework": {
+          "duration_ms": 0.005
+        },
+        "linear": {
+          "compute_ms": 0.002850816,
+          "duration_ms": 0.0976416,
+          "flops_per_rank": 1425408,
+          "hbm_bytes_per_rank": 478208.0,
+          "memory_ms": 0.0956416,
+          "overhead_ms": 0.002
+        },
+        "misc": {
+          "compute_ms": 9.216e-06,
+          "duration_ms": 0.0032288,
+          "flops_per_rank": 4608,
+          "hbm_bytes_per_rank": 6144.0,
+          "memory_ms": 0.0012288,
+          "overhead_ms": 0.002
+        }
+      },
+      "decode_source": "analytical_uncalibrated",
+      "decode_step_ms": 0.13006879999999998,
+      "device_ids": [
+        "gpu0"
+      ],
+      "layers": 1,
+      "prefill_breakdown": {
+        "attention": {
+          "compute_ms": 0.117833728,
+          "duration_ms": 0.119833728,
+          "flops_per_rank": 58916864.0,
+          "hbm_bytes_per_rank": 491520.0,
+          "memory_ms": 0.098304,
+          "overhead_ms": 0.002
+        },
+        "communication": {
+          "allreduce_count": 0,
+          "allreduce_ms": 0.0,
+          "allreduce_payload_bytes": 196608.0,
+          "duration_ms": 0.0,
+          "logits_allgather_ms": 0.0
+        },
+        "embedding_and_output": {
+          "compute_ms": 0.0,
+          "duration_ms": 0.0413216,
+          "flops_per_rank": 0.0,
+          "hbm_bytes_per_rank": 196608.0,
+          "memory_ms": 0.0393216,
+          "overhead_ms": 0.002
+        },
+        "framework": {
+          "duration_ms": 0.005
+        },
+        "linear": {
+          "compute_ms": 0.729808896,
+          "duration_ms": 0.731808896,
+          "flops_per_rank": 364904448,
+          "hbm_bytes_per_rank": 1261568.0,
+          "memory_ms": 0.2523136,
+          "overhead_ms": 0.002
+        },
+        "misc": {
+          "compute_ms": 0.002359296,
+          "duration_ms": 0.3165728,
+          "flops_per_rank": 1179648,
+          "hbm_bytes_per_rank": 1572864.0,
+          "memory_ms": 0.3145728,
+          "overhead_ms": 0.002
+        }
+      },
+      "prefill_ms": 1.214537024,
+      "prefill_source": "analytical_uncalibrated",
+      "stage": 0
+    },
+    {
+      "decode_breakdown": {
+        "attention": {
+          "compute_ms": 0.002368512,
+          "duration_ms": 0.0661344,
+          "flops_per_rank": 1184256.0,
+          "hbm_bytes_per_rank": 300672.0,
+          "memory_ms": 0.0601344,
+          "overhead_ms": 0.006
+        },
+        "communication": {
+          "allreduce_count": 0,
+          "allreduce_ms": 0.0,
+          "allreduce_payload_bytes": 768.0,
+          "duration_ms": 0.0,
+          "logits_allgather_ms": 0.0
+        },
+        "embedding_and_output": {
+          "compute_ms": 0.000393216,
+          "duration_ms": 0.0154144,
+          "flops_per_rank": 196608.0,
+          "hbm_bytes_per_rank": 67072.0,
+          "memory_ms": 0.0134144,
+          "overhead_ms": 0.002
+        },
+        "framework": {
+          "duration_ms": 0.0
+        },
+        "linear": {
+          "compute_ms": 0.008552448,
+          "duration_ms": 0.2929248,
+          "flops_per_rank": 4276224,
+          "hbm_bytes_per_rank": 1434624.0,
+          "memory_ms": 0.2869248,
+          "overhead_ms": 0.006
+        },
+        "misc": {
+          "compute_ms": 2.7648e-05,
+          "duration_ms": 0.0096864,
+          "flops_per_rank": 13824,
+          "hbm_bytes_per_rank": 18432.0,
+          "memory_ms": 0.0036864,
+          "overhead_ms": 0.006
+        }
+      },
+      "decode_source": "analytical_uncalibrated",
+      "decode_step_ms": 0.38416,
+      "device_ids": [
+        "gpu1"
+      ],
+      "layers": 3,
+      "prefill_breakdown": {
+        "attention": {
+          "compute_ms": 0.353501184,
+          "duration_ms": 0.35950118400000003,
+          "flops_per_rank": 176750592.0,
+          "hbm_bytes_per_rank": 1474560.0,
+          "memory_ms": 0.294912,
+          "overhead_ms": 0.006
+        },
+        "communication": {
+          "allreduce_count": 0,
+          "allreduce_ms": 0.0,
+          "allreduce_payload_bytes": 196608.0,
+          "duration_ms": 0.0,
+          "logits_allgather_ms": 0.0
+        },
+        "embedding_and_output": {
+          "compute_ms": 0.000393216,
+          "duration_ms": 0.0154144,
+          "flops_per_rank": 196608.0,
+          "hbm_bytes_per_rank": 67072.0,
+          "memory_ms": 0.0134144,
+          "overhead_ms": 0.002
+        },
+        "framework": {
+          "duration_ms": 0.0
+        },
+        "linear": {
+          "compute_ms": 2.189426688,
+          "duration_ms": 2.195426688,
+          "flops_per_rank": 1094713344,
+          "hbm_bytes_per_rank": 3784704.0,
+          "memory_ms": 0.7569408,
+          "overhead_ms": 0.006
+        },
+        "misc": {
+          "compute_ms": 0.007077888,
+          "duration_ms": 0.9497184,
+          "flops_per_rank": 3538944,
+          "hbm_bytes_per_rank": 4718592.0,
+          "memory_ms": 0.9437184,
+          "overhead_ms": 0.006
+        }
+      },
+      "prefill_ms": 3.520060672,
+      "prefill_source": "analytical_uncalibrated",
+      "stage": 1
+    }
+  ],
+  "status": "COMPLETED"
+}

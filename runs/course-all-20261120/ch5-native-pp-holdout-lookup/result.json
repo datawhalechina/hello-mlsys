@@ -1,0 +1,284 @@
+{
+  "by_message_size": [
+    {
+      "coverage": {
+        "evaluated_records": 1,
+        "fraction": 1.0,
+        "rejected_records": 0,
+        "total_records": 1
+      },
+      "mean_target_absolute_error_ms": 0.0,
+      "mean_target_relative_error": 0.0,
+      "message_bytes": 192,
+      "metrics": {
+        "mae_ms": 0.0,
+        "mape": 0.0,
+        "max_absolute_error_ms": 0.0
+      },
+      "observed_distribution_ms": {
+        "count": 1,
+        "max": 0.11,
+        "mean": 0.11,
+        "min": 0.11,
+        "p10": 0.11,
+        "p50": 0.11,
+        "p90": 0.11,
+        "p99": 0.11,
+        "stddev": 0.0
+      },
+      "observed_mean_ms": 0.11,
+      "predicted_mean_ms": 0.11,
+      "primitive": "p2p",
+      "sample_mape": 0.0,
+      "stage_index": 1,
+      "tp_rank": 0,
+      "training_size_relation": "unseen"
+    },
+    {
+      "coverage": {
+        "evaluated_records": 0,
+        "fraction": 0.0,
+        "rejected_records": 1,
+        "total_records": 1
+      },
+      "mean_target_absolute_error_ms": null,
+      "mean_target_relative_error": null,
+      "message_bytes": 384,
+      "metrics": {
+        "mae_ms": null,
+        "mape": null,
+        "max_absolute_error_ms": null
+      },
+      "observed_distribution_ms": {
+        "count": 1,
+        "max": 0.07,
+        "mean": 0.07,
+        "min": 0.07,
+        "p10": 0.07,
+        "p50": 0.07,
+        "p90": 0.07,
+        "p99": 0.07,
+        "stddev": 0.0
+      },
+      "observed_mean_ms": 0.07,
+      "predicted_mean_ms": null,
+      "primitive": "p2p",
+      "sample_mape": null,
+      "stage_index": 1,
+      "tp_rank": 0,
+      "training_size_relation": "unseen"
+    },
+    {
+      "coverage": {
+        "evaluated_records": 1,
+        "fraction": 1.0,
+        "rejected_records": 0,
+        "total_records": 1
+      },
+      "mean_target_absolute_error_ms": 0.0,
+      "mean_target_relative_error": 0.0,
+      "message_bytes": 768,
+      "metrics": {
+        "mae_ms": 0.0,
+        "mape": 0.0,
+        "max_absolute_error_ms": 0.0
+      },
+      "observed_distribution_ms": {
+        "count": 1,
+        "max": 0.03,
+        "mean": 0.03,
+        "min": 0.03,
+        "p10": 0.03,
+        "p50": 0.03,
+        "p90": 0.03,
+        "p99": 0.03,
+        "stddev": 0.0
+      },
+      "observed_mean_ms": 0.03,
+      "predicted_mean_ms": 0.03,
+      "primitive": "p2p",
+      "sample_mape": 0.0,
+      "stage_index": 1,
+      "tp_rank": 0,
+      "training_size_relation": "unseen"
+    }
+  ],
+  "coverage": {
+    "evaluated_records": 2,
+    "fraction": 0.6666666666666666,
+    "rejected_records": 1,
+    "total_records": 3
+  },
+  "dataset_id": "public-small-message-holdout",
+  "exact_vs_unseen": {
+    "classification_basis": "retained_lookup_knots",
+    "exact": {
+      "coverage": {
+        "evaluated_records": 0,
+        "fraction": null,
+        "rejected_records": 0,
+        "total_records": 0
+      },
+      "metrics": {
+        "mae_ms": null,
+        "mape": null,
+        "max_absolute_error_ms": null
+      }
+    },
+    "unknown": {
+      "coverage": {
+        "evaluated_records": 0,
+        "fraction": null,
+        "rejected_records": 0,
+        "total_records": 0
+      },
+      "metrics": {
+        "mae_ms": null,
+        "mape": null,
+        "max_absolute_error_ms": null
+      }
+    },
+    "unseen": {
+      "coverage": {
+        "evaluated_records": 2,
+        "fraction": 0.6666666666666666,
+        "rejected_records": 1,
+        "total_records": 3
+      },
+      "metrics": {
+        "mae_ms": 0.0,
+        "mape": 0.0,
+        "max_absolute_error_ms": 0.0
+      }
+    }
+  },
+  "hardware_validated": false,
+  "kind": "native_pp_communication_validation",
+  "mean_target_metrics": {
+    "evaluated_sizes": 2,
+    "mae_ms": 0.0,
+    "mape": 0.0,
+    "rejected_sizes": 1,
+    "total_sizes": 3
+  },
+  "metrics": {
+    "mae_ms": 0.0,
+    "mape": 0.0,
+    "max_absolute_error_ms": 0.0
+  },
+  "model_method": "piecewise_size_lookup_v1",
+  "notes": {
+    "mean_target_requires_complete_size_coverage": true,
+    "rate_or_runtime_accuracy_inferred": false,
+    "record_and_group_leakage_rejected": true,
+    "rejected_records_are_not_zero_error": true,
+    "training_parameters_refit": false
+  },
+  "profile_id": "public-small-message-train:small-message-fixture-v1",
+  "profile_version": "small-message-fixture-v1",
+  "records": [
+    {
+      "absolute_error_ms": 0.0,
+      "contributors": [
+        {
+          "mean_ms": 0.1,
+          "message_bytes": 128,
+          "sample_count": 5
+        },
+        {
+          "mean_ms": 0.12,
+          "message_bytes": 256,
+          "sample_count": 5
+        }
+      ],
+      "exact": false,
+      "extrapolated": false,
+      "group_id": "independent-holdout-192",
+      "interpolation": "linear_bytes",
+      "message_bytes": 192,
+      "model_method": "piecewise_size_lookup_v1",
+      "observed_ms": 0.11,
+      "predicted_ms": 0.11,
+      "primitive": "p2p",
+      "record_id": "independent-holdout-192-0",
+      "relative_error": 0.0,
+      "stage_index": 1,
+      "status": "EVALUATED",
+      "tp_rank": 0,
+      "training_size_relation": "unseen"
+    },
+    {
+      "absolute_error_ms": null,
+      "extrapolated": false,
+      "group_id": "independent-holdout-384",
+      "message_bytes": 384,
+      "observed_ms": 0.07,
+      "predicted_ms": null,
+      "primitive": "p2p",
+      "reason": "Piecewise size lookup refuses the training downward_jump interval",
+      "record_id": "independent-holdout-384-0",
+      "relative_error": null,
+      "stage_index": 1,
+      "status": "OUT_OF_DOMAIN",
+      "tp_rank": 0,
+      "training_size_relation": "unseen"
+    },
+    {
+      "absolute_error_ms": 0.0,
+      "contributors": [
+        {
+          "mean_ms": 0.02,
+          "message_bytes": 512,
+          "sample_count": 5
+        },
+        {
+          "mean_ms": 0.04,
+          "message_bytes": 1024,
+          "sample_count": 5
+        }
+      ],
+      "exact": false,
+      "extrapolated": false,
+      "group_id": "independent-holdout-768",
+      "interpolation": "linear_bytes",
+      "message_bytes": 768,
+      "model_method": "piecewise_size_lookup_v1",
+      "observed_ms": 0.03,
+      "predicted_ms": 0.03,
+      "primitive": "p2p",
+      "record_id": "independent-holdout-768-0",
+      "relative_error": 0.0,
+      "stage_index": 1,
+      "status": "EVALUATED",
+      "tp_rank": 0,
+      "training_size_relation": "unseen"
+    }
+  ],
+  "schema_version": 1,
+  "small_messages": {
+    "coverage": {
+      "evaluated_records": 2,
+      "fraction": 0.6666666666666666,
+      "rejected_records": 1,
+      "total_records": 3
+    },
+    "mean_target_metrics": {
+      "evaluated_sizes": 2,
+      "mae_ms": 0.0,
+      "mape": 0.0,
+      "rejected_sizes": 1,
+      "total_sizes": 3
+    },
+    "metrics": {
+      "mae_ms": 0.0,
+      "mape": 0.0,
+      "max_absolute_error_ms": 0.0
+    },
+    "threshold_bytes": 65536
+  },
+  "source": {
+    "kind": "test_fixture",
+    "reference": "Independent standalone native PP communication holdout evaluation"
+  },
+  "status": "COMPLETED"
+}

@@ -308,7 +308,9 @@ export const parts = [
       module: '——',
       lead: '待补充。',
       sections: []
-    }))
+    })).map((chapter) => chapter.title === '常见失败模式与排查清单'
+      ? { ...chapter, summary: '含 rocprofv3 PMC 修复记录' }
+      : chapter)
   }
 ]
 
