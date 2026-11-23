@@ -1,0 +1,5 @@
+{
+  "error_code": "INVALID_COMMUNICATION_FIT",
+  "message": "Native PP primitive fit: Communication fit needs a positive finite time-per-byte slope",
+  "status": "FAILED"
+}

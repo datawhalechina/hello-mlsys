@@ -1,0 +1,2526 @@
+{
+  "artifacts": {
+    "calibration_patch": "artifacts/calibration_patch.json",
+    "calibration_report": "artifacts/report.html",
+    "chapter1_report": "artifacts/chapter1-calibrated/report.html"
+  },
+  "calibrated_chapter1": {
+    "applied_calibration": {
+      "beta": 0.8,
+      "calibration_id": "course-eta-beta-1f22d360512ff23d",
+      "eta": 0.5,
+      "fitting_domain": {
+        "beta": "single-device streaming BF16 LN/Softmax 8192x4096",
+        "eta": "single-device BF16 square GEMM 4096^3 and 5120^3 saturated regime",
+        "pp": 1,
+        "timing_boundary": "isolated_operator_event_sync",
+        "tp": 1
+      },
+      "hardware_validated": false,
+      "import_report_sha256": "fc4b7ef212c251b4a77aff63bcf052dcd84a6f73d3277a5258089612a1dd632a",
+      "launch_framework_overheads_identified": false,
+      "raw_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+      "source": {
+        "kind": "test_fixture",
+        "label": "hand-calculated-fixture"
+      },
+      "source_kind": "test_fixture",
+      "whole_model_validation_established": false
+    },
+    "base_formula_version": "hello_mlsys_ch1_nominal_v1",
+    "data_sha256": "4169fc37698c5a981f1783be3b6b8c99521b9745299fa719b27721d3d6393b06",
+    "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+    "formulas": {
+      "component_time": "t_ms=max(t_compute_nominal/eta,t_memory_nominal/beta); recompute bound and effective ridge",
+      "decode_attention": "F=4*L*B*ctx*d_q; D=4*L*B*ctx*d_kv; ctx includes current position",
+      "decode_gemm": "F=2*(P_linear+P_head)*B; D=2*(P_linear+P_head)+a_decode*L*h*B",
+      "effective_ridge": "pipeline_peak_TFLOPS*1000*eta/(bandwidth_GBps*beta)",
+      "elementwise": "F=f_elementwise*L*h*tokens; D=d_elementwise*L*h*tokens; vector pipeline",
+      "layernorm": "S=2048,h=1024; F=4*S*h; D=4*S*h; affine/reduction extras omitted teaching count",
+      "linear_parameters": "P_linear=L*(2*h*d_q+2*h*d_kv+3*h*intermediate); P_head=h*vocab",
+      "matmul": "M=N=K=4096; F=2*M*N*K; D=2*(M*K+K*N+M*N)",
+      "naive_attention": "D_naive=D_flash+4*L*q_heads*S*S; same declared F; asymptotic AI=head_dim",
+      "prefill_attention": "F=4*L*d_q*S*S; D=2*S*(2*d_q+2*d_kv)*L; full square, not causal triangle",
+      "prefill_gemm": "F=2*P_linear*S; D=2*P_linear+a_prefill*L*h*S; optional last-token head adds 2*P_head to F,D",
+      "step_time": "t_step_ms=sum(component.t_ms)+t_fixed_ms; global AI is display only",
+      "units": "ms, bytes, decimal GB/s and TFLOP/s; BF16=2 bytes; FMA=2 FLOPs"
+    },
+    "hardware_validated": false,
+    "plan": {
+      "axes": {
+        "decode_batch_sizes": [
+          1,
+          4,
+          16
+        ],
+        "decode_context": 1024,
+        "prefill_lengths": [
+          128,
+          512,
+          2048
+        ]
+      },
+      "calibration": {
+        "eta": 1.0,
+        "t_fixed_ms": 0.0,
+        "version": "nominal"
+      },
+      "counting": {
+        "bf16_bytes": 2,
+        "decode_context_includes_current": true,
+        "decode_gemm_activation_bytes_per_layer_hidden": 0.0,
+        "elementwise_bytes_per_layer_hidden": 4.0,
+        "elementwise_flops_per_layer_hidden": 8.0,
+        "prefill_attention": "full_square",
+        "prefill_gemm_activation_bytes_per_layer_hidden": 28.0,
+        "prefill_lm_head": "omitted"
+      },
+      "course_source": {
+        "commit_sha": "7df2dae493eb30c0f7e845b6d587b905288c0d7a",
+        "path": "docs/part1-modeling/chapter1/index.md",
+        "repository": "amdjiahangpan/hello-mlsys",
+        "sha256": "0c0c01a90d35b1b107cc88ccd2c48e776de141bb698356d4b8696baa401ec231"
+      },
+      "experiment_id": "qwen3_nominal_18",
+      "hardware": {
+        "bandwidth_gbps": 640.0,
+        "id": "rx9070xt",
+        "matrix_tflops": 195.0,
+        "name": "RX 9070 XT",
+        "source": "Hello MLSys chapter 1 declared nominal inputs; not independently measured specifications",
+        "status": "course_nominal",
+        "vector_tflops": 48.7
+      },
+      "models": [
+        {
+          "hf_config": {
+            "architectures": [
+              "Qwen3ForCausalLM"
+            ],
+            "attention_bias": false,
+            "attention_dropout": 0.0,
+            "head_dim": 128,
+            "hidden_act": "silu",
+            "hidden_size": 1024,
+            "intermediate_size": 3072,
+            "max_position_embeddings": 40960,
+            "model_type": "qwen3",
+            "num_attention_heads": 16,
+            "num_hidden_layers": 28,
+            "num_key_value_heads": 8,
+            "rms_norm_eps": 1e-06,
+            "rope_scaling": null,
+            "rope_theta": 1000000,
+            "sliding_window": null,
+            "tie_word_embeddings": true,
+            "torch_dtype": "bfloat16",
+            "use_cache": true,
+            "use_sliding_window": false,
+            "vocab_size": 151936
+          },
+          "id": "qwen3_0_6b",
+          "name": "Qwen3-0.6B",
+          "revision": "course-7df2dae493eb-geometry",
+          "source": "https://github.com/amdjiahangpan/hello-mlsys/blob/7df2dae493eb30c0f7e845b6d587b905288c0d7a/docs/part0-intro/chapter0/index.md"
+        },
+        {
+          "hf_config": {
+            "architectures": [
+              "Qwen3ForCausalLM"
+            ],
+            "attention_bias": false,
+            "attention_dropout": 0.0,
+            "head_dim": 128,
+            "hidden_act": "silu",
+            "hidden_size": 2048,
+            "intermediate_size": 6144,
+            "max_position_embeddings": 40960,
+            "model_type": "qwen3",
+            "num_attention_heads": 16,
+            "num_hidden_layers": 28,
+            "num_key_value_heads": 8,
+            "rms_norm_eps": 1e-06,
+            "rope_scaling": null,
+            "rope_theta": 1000000,
+            "sliding_window": null,
+            "tie_word_embeddings": true,
+            "torch_dtype": "bfloat16",
+            "use_cache": true,
+            "use_sliding_window": false,
+            "vocab_size": 151936
+          },
+          "id": "qwen3_1_7b",
+          "name": "Qwen3-1.7B",
+          "revision": "course-7df2dae493eb-geometry",
+          "source": "https://github.com/amdjiahangpan/hello-mlsys/blob/7df2dae493eb30c0f7e845b6d587b905288c0d7a/docs/part0-intro/chapter0/index.md"
+        },
+        {
+          "hf_config": {
+            "architectures": [
+              "Qwen3ForCausalLM"
+            ],
+            "attention_bias": false,
+            "attention_dropout": 0.0,
+            "head_dim": 128,
+            "hidden_act": "silu",
+            "hidden_size": 2560,
+            "intermediate_size": 9728,
+            "max_position_embeddings": 40960,
+            "model_type": "qwen3",
+            "num_attention_heads": 32,
+            "num_hidden_layers": 36,
+            "num_key_value_heads": 8,
+            "rms_norm_eps": 1e-06,
+            "rope_scaling": null,
+            "rope_theta": 1000000,
+            "sliding_window": null,
+            "tie_word_embeddings": true,
+            "torch_dtype": "bfloat16",
+            "use_cache": true,
+            "use_sliding_window": false,
+            "vocab_size": 151936
+          },
+          "id": "qwen3_4b",
+          "name": "Qwen3-4B",
+          "revision": "course-7df2dae493eb-geometry",
+          "source": "https://github.com/amdjiahangpan/hello-mlsys/blob/7df2dae493eb30c0f7e845b6d587b905288c0d7a/docs/part0-intro/chapter0/index.md"
+        }
+      ],
+      "pending_hardware": {
+        "bandwidth_gbps": null,
+        "id": "w7900d",
+        "matrix_tflops": null,
+        "name": "W7900D",
+        "source": "Hello MLSys chapter 1: parameters pending confirmation",
+        "status": "pending_parameters",
+        "vector_tflops": null
+      },
+      "protocol": "hello_mlsys_ch1_nominal_v1",
+      "schema_version": 1
+    },
+    "point_count": 18,
+    "points": [
+      {
+        "aggregate_tokens_per_s": 62877.26358148893,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 114.6268656716418,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 983564288.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 112742891520,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.5781686744615384,
+              "t_memory_ms": 1.5368192,
+              "t_ms": 1.5368192
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 1.1563373489230768,
+            "t_memory_ms": 1.921024,
+            "t_ms": 1.921024
+          },
+          {
+            "ai": 85.33333333333333,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 44040192,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 3758096384,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.01927228914871795,
+              "t_memory_ms": 0.0688128,
+              "t_ms": 0.0688128
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0385445782974359,
+            "t_memory_ms": 0.08601599999999998,
+            "t_ms": 0.08601599999999998
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 14680064.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 29360128.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.0006028773716632444,
+              "t_memory_ms": 0.0229376,
+              "t_ms": 0.0229376
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.0012057547433264888,
+            "t_memory_ms": 0.028671999999999996,
+            "t_ms": 0.028671999999999996
+          }
+        ],
+        "config_id": "qwen3_0_6b_prefill_s128",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 111.80281690140845,
+        "global_bytes": 1042284544.0,
+        "global_flops": 116530348032.0,
+        "hardware_validated": false,
+        "head_parameters": 155582464,
+        "linear_parameters": 440401920,
+        "model_id": "qwen3_0_6b",
+        "model_name": "Qwen3-0.6B",
+        "nominal_t_step_ms": 1.6285696,
+        "per_request_tokens_per_s": 62877.26358148893,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_0_6b_prefill_s128_63bb668dbf6f7ad8",
+        "sequence_length": 128,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 2.035712,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 95580.33098815734,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 349.09090909090907,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 1291845632.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 450971566080,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 2.3126746978461536,
+              "t_memory_ms": 2.0185088,
+              "t_ms": 2.3126746978461536
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 4.625349395692307,
+            "t_memory_ms": 2.523136,
+            "t_ms": 4.625349395692307
+          },
+          {
+            "ai": 341.3333333333333,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 176160768,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 60129542144,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.3083566263794872,
+              "t_memory_ms": 0.2752512,
+              "t_ms": 0.3083566263794872
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.6167132527589744,
+            "t_memory_ms": 0.3440639999999999,
+            "t_ms": 0.6167132527589744
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 58720256.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 117440512.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.0024115094866529775,
+              "t_memory_ms": 0.0917504,
+              "t_ms": 0.0917504
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.004823018973305955,
+            "t_memory_ms": 0.11468799999999998,
+            "t_ms": 0.11468799999999998
+          }
+        ],
+        "config_id": "qwen3_0_6b_prefill_s512",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 334.84615384615387,
+        "global_bytes": 1526726656.0,
+        "global_flops": 511218548736.0,
+        "hardware_validated": false,
+        "head_parameters": 155582464,
+        "linear_parameters": 440401920,
+        "model_id": "qwen3_0_6b",
+        "model_name": "Qwen3-0.6B",
+        "nominal_t_step_ms": 2.712781724225641,
+        "per_request_tokens_per_s": 95580.33098815734,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_0_6b_prefill_s512_63bb668dbf6f7ad8",
+        "sequence_length": 512,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 5.356750648451282,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 71043.12277622639,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 714.4186046511628,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 2524971008.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 1803886264320,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 9.250698791384615,
+              "t_memory_ms": 3.9452672,
+              "t_ms": 9.250698791384615
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 18.50139758276923,
+            "t_memory_ms": 4.931584,
+            "t_ms": 18.50139758276923
+          },
+          {
+            "ai": 1365.3333333333333,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 704643072,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 962072674304,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 4.933706022071795,
+              "t_memory_ms": 1.1010048,
+              "t_ms": 4.933706022071795
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 9.86741204414359,
+            "t_memory_ms": 1.3762559999999997,
+            "t_ms": 9.86741204414359
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 234881024.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 469762048.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.00964603794661191,
+              "t_memory_ms": 0.3670016,
+              "t_ms": 0.3670016
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.01929207589322382,
+            "t_memory_ms": 0.45875199999999994,
+            "t_ms": 0.45875199999999994
+          }
+        ],
+        "config_id": "qwen3_0_6b_prefill_s2048",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 798.5084745762712,
+        "global_bytes": 3464495104.0,
+        "global_flops": 2766428700672.0,
+        "hardware_validated": false,
+        "head_parameters": 155582464,
+        "linear_parameters": 440401920,
+        "model_id": "qwen3_0_6b",
+        "model_name": "Qwen3-0.6B",
+        "nominal_t_step_ms": 14.551406413456409,
+        "per_request_tokens_per_s": 71043.12277622639,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_0_6b_prefill_s2048_63bb668dbf6f7ad8",
+        "sequence_length": 2048,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 28.827561626912818,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 390.98177086591517,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 1.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 1191968768.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 1191968768,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.006112660348717948,
+              "t_memory_ms": 1.8624512,
+              "t_ms": 1.8624512
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.012225320697435897,
+            "t_memory_ms": 2.328064,
+            "t_ms": 2.328064
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 117440512,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 234881024,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.0012045180717948718,
+              "t_memory_ms": 0.1835008,
+              "t_ms": 0.1835008
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0024090361435897436,
+            "t_memory_ms": 0.22937599999999997,
+            "t_ms": 0.22937599999999997
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 114688.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 229376.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 4.709979466119097e-06,
+              "t_memory_ms": 0.0001792,
+              "t_ms": 0.0001792
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 9.419958932238193e-06,
+            "t_memory_ms": 0.00022399999999999997,
+            "t_ms": 0.00022399999999999997
+          }
+        ],
+        "config_id": "qwen3_0_6b_decode_b1",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 1.0897694145908141,
+        "global_bytes": 1309523968.0,
+        "global_flops": 1427079168.0,
+        "hardware_validated": false,
+        "head_parameters": 155582464,
+        "linear_parameters": 440401920,
+        "model_id": "qwen3_0_6b",
+        "model_name": "Qwen3-0.6B",
+        "nominal_t_step_ms": 2.0461312,
+        "per_request_tokens_per_s": 390.98177086591517,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_0_6b_decode_b1_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 2.557664,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 1232.1097661948509,
+        "batch_size": 4,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 4.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 1191968768.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 4767875072,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.024450641394871794,
+              "t_memory_ms": 1.8624512,
+              "t_ms": 1.8624512
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.04890128278974359,
+            "t_memory_ms": 2.328064,
+            "t_ms": 2.328064
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 469762048,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 939524096,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.004818072287179487,
+              "t_memory_ms": 0.7340032,
+              "t_ms": 0.7340032
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.009636144574358975,
+            "t_memory_ms": 0.9175039999999999,
+            "t_ms": 0.9175039999999999
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 458752.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 917504.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 1.8839917864476387e-05,
+              "t_memory_ms": 0.0007168,
+              "t_ms": 0.0007168
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 3.7679835728952774e-05,
+            "t_memory_ms": 0.0008959999999999999,
+            "t_ms": 0.0008959999999999999
+          }
+        ],
+        "config_id": "qwen3_0_6b_decode_b4",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 3.4342151953633246,
+        "global_bytes": 1662189568.0,
+        "global_flops": 5708316672.0,
+        "hardware_validated": false,
+        "head_parameters": 155582464,
+        "linear_parameters": 440401920,
+        "model_id": "qwen3_0_6b",
+        "model_name": "Qwen3-0.6B",
+        "nominal_t_step_ms": 2.5971712,
+        "per_request_tokens_per_s": 308.0274415487127,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_0_6b_decode_b4_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 3.2464639999999996,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 2665.9273161576525,
+        "batch_size": 16,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 16.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 1191968768.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 19071500288,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.09780256557948717,
+              "t_memory_ms": 1.8624512,
+              "t_ms": 1.8624512
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.19560513115897435,
+            "t_memory_ms": 2.328064,
+            "t_ms": 2.328064
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 1879048192,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 3758096384,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.01927228914871795,
+              "t_memory_ms": 2.9360128,
+              "t_ms": 2.9360128
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0385445782974359,
+            "t_memory_ms": 3.6700159999999995,
+            "t_ms": 3.6700159999999995
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 1835008.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 3670016.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 7.535967145790555e-05,
+              "t_memory_ms": 0.0028672,
+              "t_ms": 0.0028672
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.0001507193429158111,
+            "t_memory_ms": 0.0035839999999999995,
+            "t_ms": 0.0035839999999999995
+          }
+        ],
+        "config_id": "qwen3_0_6b_decode_b16",
+        "context_includes_current": true,
+        "dominant_component": "attention",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 7.430643234942843,
+        "global_bytes": 3072851968.0,
+        "global_flops": 22833266688.0,
+        "hardware_validated": false,
+        "head_parameters": 155582464,
+        "linear_parameters": 440401920,
+        "model_id": "qwen3_0_6b",
+        "model_name": "Qwen3-0.6B",
+        "nominal_t_step_ms": 4.8013312,
+        "per_request_tokens_per_s": 166.62045725985328,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_0_6b_decode_b16_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 6.001663999999999,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 21157.75220040623,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 119.30097087378641,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 3024093184.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 360777252864,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 1.850139758276923,
+              "t_memory_ms": 4.7251456,
+              "t_ms": 4.7251456
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 3.700279516553846,
+            "t_memory_ms": 5.906432,
+            "t_ms": 5.906432
+          },
+          {
+            "ai": 85.33333333333333,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 44040192,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 3758096384,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.01927228914871795,
+              "t_memory_ms": 0.0688128,
+              "t_ms": 0.0688128
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0385445782974359,
+            "t_memory_ms": 0.08601599999999998,
+            "t_ms": 0.08601599999999998
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 29360128.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 58720256.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.0012057547433264888,
+              "t_memory_ms": 0.0458752,
+              "t_ms": 0.0458752
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.0024115094866529775,
+            "t_memory_ms": 0.05734399999999999,
+            "t_ms": 0.05734399999999999
+          }
+        ],
+        "config_id": "qwen3_1_7b_prefill_s128",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 117.70616113744076,
+        "global_bytes": 3097493504.0,
+        "global_flops": 364594069504.0,
+        "hardware_validated": false,
+        "head_parameters": 311164928,
+        "linear_parameters": 1409286144,
+        "model_id": "qwen3_1_7b",
+        "model_name": "Qwen3-1.7B",
+        "nominal_t_step_ms": 4.8398336,
+        "per_request_tokens_per_s": 21157.75220040623,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_1_7b_prefill_s128_63bb668dbf6f7ad8",
+        "sequence_length": 128,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 6.049792,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 32721.493974143916,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 396.38709677419354,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 3640655872.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 1443109011456,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 7.400559033107692,
+              "t_memory_ms": 5.6885248,
+              "t_ms": 7.400559033107692
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 14.801118066215384,
+            "t_memory_ms": 7.110656,
+            "t_ms": 14.801118066215384
+          },
+          {
+            "ai": 341.3333333333333,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 176160768,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 60129542144,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.3083566263794872,
+              "t_memory_ms": 0.2752512,
+              "t_ms": 0.3083566263794872
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.6167132527589744,
+            "t_memory_ms": 0.3440639999999999,
+            "t_ms": 0.6167132527589744
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 117440512.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 234881024.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.004823018973305955,
+              "t_memory_ms": 0.1835008,
+              "t_ms": 0.1835008
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.00964603794661191,
+            "t_memory_ms": 0.22937599999999997,
+            "t_ms": 0.22937599999999997
+          }
+        ],
+        "config_id": "qwen3_1_7b_prefill_s512",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 382.14925373134326,
+        "global_bytes": 3934257152.0,
+        "global_flops": 1503473434624.0,
+        "hardware_validated": false,
+        "head_parameters": 311164928,
+        "linear_parameters": 1409286144,
+        "model_id": "qwen3_1_7b",
+        "model_name": "Qwen3-1.7B",
+        "nominal_t_step_ms": 7.892416459487179,
+        "per_request_tokens_per_s": 32721.493974143916,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_1_7b_prefill_s512_63bb668dbf6f7ad8",
+        "sequence_length": 512,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 15.647207318974358,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 29261.578783315297,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 945.2307692307693,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 6106906624.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 5772436045824,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 29.602236132430768,
+              "t_memory_ms": 9.5420416,
+              "t_ms": 29.602236132430768
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 59.204472264861536,
+            "t_memory_ms": 11.927551999999999,
+            "t_ms": 59.204472264861536
+          },
+          {
+            "ai": 1365.3333333333333,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 704643072,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 962072674304,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 4.933706022071795,
+              "t_memory_ms": 1.1010048,
+              "t_ms": 4.933706022071795
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 9.86741204414359,
+            "t_memory_ms": 1.3762559999999997,
+            "t_ms": 9.86741204414359
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 469762048.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 939524096.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.01929207589322382,
+              "t_memory_ms": 0.7340032,
+              "t_ms": 0.7340032
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.03858415178644764,
+            "t_memory_ms": 0.9175039999999999,
+            "t_ms": 0.9175039999999999
+          }
+        ],
+        "config_id": "qwen3_1_7b_prefill_s2048",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 925.0322580645161,
+        "global_bytes": 7281311744.0,
+        "global_flops": 6735448244224.0,
+        "hardware_validated": false,
+        "head_parameters": 311164928,
+        "linear_parameters": 1409286144,
+        "model_id": "qwen3_1_7b",
+        "model_name": "Qwen3-1.7B",
+        "nominal_t_step_ms": 35.26994535450256,
+        "per_request_tokens_per_s": 29261.578783315297,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_1_7b_prefill_s2048_63bb668dbf6f7ad8",
+        "sequence_length": 2048,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 69.98938830900512,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 143.87793626092324,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 1.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 3440902144.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 3440902144,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.017645652020512822,
+              "t_memory_ms": 5.3764096,
+              "t_ms": 5.3764096
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.035291304041025644,
+            "t_memory_ms": 6.720511999999999,
+            "t_ms": 6.720511999999999
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 117440512,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 234881024,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.0012045180717948718,
+              "t_memory_ms": 0.1835008,
+              "t_ms": 0.1835008
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0024090361435897436,
+            "t_memory_ms": 0.22937599999999997,
+            "t_ms": 0.22937599999999997
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 229376.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 458752.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 9.419958932238193e-06,
+              "t_memory_ms": 0.0003584,
+              "t_ms": 0.0003584
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 1.8839917864476387e-05,
+            "t_memory_ms": 0.00044799999999999994,
+            "t_ms": 0.00044799999999999994
+          }
+        ],
+        "config_id": "qwen3_1_7b_decode_b1",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 1.0330666028232305,
+        "global_bytes": 3558572032.0,
+        "global_flops": 3676241920.0,
+        "hardware_validated": false,
+        "head_parameters": 311164928,
+        "linear_parameters": 1409286144,
+        "model_id": "qwen3_1_7b",
+        "model_name": "Qwen3-1.7B",
+        "nominal_t_step_ms": 5.560268799999999,
+        "per_request_tokens_per_s": 143.87793626092324,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_1_7b_decode_b1_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 6.950335999999999,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 523.5733672888115,
+        "batch_size": 4,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 4.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 3440902144.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 13763608576,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.07058260808205129,
+              "t_memory_ms": 5.3764096,
+              "t_ms": 5.3764096
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.14116521616410257,
+            "t_memory_ms": 6.720511999999999,
+            "t_ms": 6.720511999999999
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 469762048,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 939524096,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.004818072287179487,
+              "t_memory_ms": 0.7340032,
+              "t_ms": 0.7340032
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.009636144574358975,
+            "t_memory_ms": 0.9175039999999999,
+            "t_ms": 0.9175039999999999
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 917504.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 1835008.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 3.7679835728952774e-05,
+              "t_memory_ms": 0.0014336,
+              "t_ms": 0.0014336
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 7.535967145790555e-05,
+            "t_memory_ms": 0.0017919999999999998,
+            "t_ms": 0.0017919999999999998
+          }
+        ],
+        "config_id": "qwen3_1_7b_decode_b4",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 3.7593405488724323,
+        "global_bytes": 3911581696.0,
+        "global_flops": 14704967680.0,
+        "hardware_validated": false,
+        "head_parameters": 311164928,
+        "linear_parameters": 1409286144,
+        "model_id": "qwen3_1_7b",
+        "model_name": "Qwen3-1.7B",
+        "nominal_t_step_ms": 6.111846399999999,
+        "per_request_tokens_per_s": 130.89334182220287,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_1_7b_decode_b4_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 7.6398079999999995,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 1538.8024423872369,
+        "batch_size": 16,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 16.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 3440902144.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 55054434304,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.28233043232820515,
+              "t_memory_ms": 5.3764096,
+              "t_ms": 5.3764096
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.5646608646564103,
+            "t_memory_ms": 6.720511999999999,
+            "t_ms": 6.720511999999999
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 1879048192,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 3758096384,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.01927228914871795,
+              "t_memory_ms": 2.9360128,
+              "t_ms": 2.9360128
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0385445782974359,
+            "t_memory_ms": 3.6700159999999995,
+            "t_ms": 3.6700159999999995
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 3670016.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 7340032.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.0001507193429158111,
+              "t_memory_ms": 0.0057344,
+              "t_ms": 0.0057344
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.0003014386858316222,
+            "t_memory_ms": 0.007167999999999999,
+            "t_ms": 0.007167999999999999
+          }
+        ],
+        "config_id": "qwen3_1_7b_decode_b16",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 11.048847744731141,
+        "global_bytes": 5323620352.0,
+        "global_flops": 58819870720.0,
+        "hardware_validated": false,
+        "head_parameters": 311164928,
+        "linear_parameters": 1409286144,
+        "model_id": "qwen3_1_7b",
+        "model_name": "Qwen3-1.7B",
+        "nominal_t_step_ms": 8.318156799999999,
+        "per_request_tokens_per_s": 96.1751526492023,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_1_7b_decode_b16_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 10.397695999999998,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 8468.834688346884,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 122.43478260869566,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 7596933120.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 930128855040,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 4.7698915643076925,
+              "t_memory_ms": 11.870208,
+              "t_ms": 11.870208
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 9.539783128615385,
+            "t_memory_ms": 14.83776,
+            "t_ms": 14.83776
+          },
+          {
+            "ai": 102.4,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 94371840,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 9663676416,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.04955731495384615,
+              "t_memory_ms": 0.147456,
+              "t_ms": 0.147456
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0991146299076923,
+            "t_memory_ms": 0.18431999999999998,
+            "t_ms": 0.18431999999999998
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 47185920.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 94371840.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.0019378201232032855,
+              "t_memory_ms": 0.073728,
+              "t_ms": 0.073728
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.003875640246406571,
+            "t_memory_ms": 0.09215999999999999,
+            "t_ms": 0.09215999999999999
+          }
+        ],
+        "config_id": "qwen3_4b_prefill_s128",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 121.4560975609756,
+        "global_bytes": 7738490880.0,
+        "global_flops": 939886903296.0,
+        "hardware_validated": false,
+        "head_parameters": 388956160,
+        "linear_parameters": 3633315840,
+        "model_id": "qwen3_4b",
+        "model_name": "Qwen3-4B",
+        "nominal_t_step_ms": 12.091391999999999,
+        "per_request_tokens_per_s": 8468.834688346884,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_4b_prefill_s128_63bb668dbf6f7ad8",
+        "sequence_length": 128,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 15.114239999999999,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 12763.74884948746,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 433.2307692307692,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 8587837440.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 3720515420160,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 19.07956625723077,
+              "t_memory_ms": 13.418496,
+              "t_ms": 19.07956625723077
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 38.15913251446154,
+            "t_memory_ms": 16.77312,
+            "t_ms": 38.15913251446154
+          },
+          {
+            "ai": 409.6,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 377487360,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 154618822656,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.7929170392615384,
+              "t_memory_ms": 0.589824,
+              "t_ms": 0.7929170392615384
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 1.585834078523077,
+            "t_memory_ms": 0.7372799999999999,
+            "t_ms": 1.585834078523077
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 188743680.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 377487360.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.007751280492813142,
+              "t_memory_ms": 0.294912,
+              "t_ms": 0.294912
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.015502560985626284,
+            "t_memory_ms": 0.36863999999999997,
+            "t_ms": 0.36863999999999997
+          }
+        ],
+        "config_id": "qwen3_4b_prefill_s512",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 423.36494845360824,
+        "global_bytes": 9154068480.0,
+        "global_flops": 3875511730176.0,
+        "hardware_validated": false,
+        "head_parameters": 388956160,
+        "linear_parameters": 3633315840,
+        "model_id": "qwen3_4b",
+        "model_name": "Qwen3-4B",
+        "nominal_t_step_ms": 20.16739529649231,
+        "per_request_tokens_per_s": 12763.74884948746,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_4b_prefill_s512_63bb668dbf6f7ad8",
+        "sequence_length": 512,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 40.11360659298462,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 11410.460168396541,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 1185.6842105263158,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 12551454720.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 14882061680640,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 76.31826502892308,
+              "t_memory_ms": 19.611648,
+              "t_ms": 76.31826502892308
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 152.63653005784616,
+            "t_memory_ms": 24.514559999999996,
+            "t_ms": 152.63653005784616
+          },
+          {
+            "ai": 1638.4,
+            "beta_applied": 0.8,
+            "bound": "compute",
+            "bytes": 1509949440,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 2473901162496,
+            "nominal": {
+              "bound": "compute",
+              "ridge": 304.6875,
+              "t_compute_ms": 12.686672628184615,
+              "t_memory_ms": 2.359296,
+              "t_ms": 12.686672628184615
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 25.37334525636923,
+            "t_memory_ms": 2.9491199999999997,
+            "t_ms": 25.37334525636923
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 754974720.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 1509949440.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.031005121971252568,
+              "t_memory_ms": 1.179648,
+              "t_ms": 1.179648
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.062010243942505136,
+            "t_memory_ms": 1.4745599999999999,
+            "t_ms": 1.4745599999999999
+          }
+        ],
+        "config_id": "qwen3_4b_prefill_s2048",
+        "context_includes_current": false,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 1171.5057324840764,
+        "global_bytes": 14816378880.0,
+        "global_flops": 17357472792576.0,
+        "hardware_validated": false,
+        "head_parameters": 388956160,
+        "linear_parameters": 3633315840,
+        "model_id": "qwen3_4b",
+        "model_name": "Qwen3-4B",
+        "nominal_t_step_ms": 90.18458565710769,
+        "per_request_tokens_per_s": 11410.460168396541,
+        "phase": "prefill",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_4b_prefill_s2048_63bb668dbf6f7ad8",
+        "sequence_length": 2048,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 179.48443531421538,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 62.47020171378254,
+        "batch_size": 1,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 1.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 8044544000.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 8044544000,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.0412540717948718,
+              "t_memory_ms": 12.5696,
+              "t_ms": 12.5696
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0825081435897436,
+            "t_memory_ms": 15.711999999999998,
+            "t_ms": 15.711999999999998
+          },
+          {
+            "ai": 4.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 150994944,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 603979776,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.0030973321846153846,
+              "t_memory_ms": 0.2359296,
+              "t_ms": 0.2359296
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.006194664369230769,
+            "t_memory_ms": 0.29491199999999995,
+            "t_ms": 0.29491199999999995
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 368640.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 737280.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 1.5139219712525668e-05,
+              "t_memory_ms": 0.000576,
+              "t_ms": 0.000576
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 3.0278439425051336e-05,
+            "t_memory_ms": 0.0007199999999999999,
+            "t_ms": 0.0007199999999999999
+          }
+        ],
+        "config_id": "qwen3_4b_decode_b1",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 1.055314614928679,
+        "global_bytes": 8195907584.0,
+        "global_flops": 8649261056.0,
+        "hardware_validated": false,
+        "head_parameters": 388956160,
+        "linear_parameters": 3633315840,
+        "model_id": "qwen3_4b",
+        "model_name": "Qwen3-4B",
+        "nominal_t_step_ms": 12.806105599999999,
+        "per_request_tokens_per_s": 62.47020171378254,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_4b_decode_b1_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 16.007631999999997,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 236.76305132644134,
+        "batch_size": 4,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 4.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 8044544000.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 32178176000,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.1650162871794872,
+              "t_memory_ms": 12.5696,
+              "t_ms": 12.5696
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.3300325743589744,
+            "t_memory_ms": 15.711999999999998,
+            "t_ms": 15.711999999999998
+          },
+          {
+            "ai": 4.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 603979776,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 2415919104,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.012389328738461538,
+              "t_memory_ms": 0.9437184,
+              "t_ms": 0.9437184
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.024778657476923076,
+            "t_memory_ms": 1.1796479999999998,
+            "t_ms": 1.1796479999999998
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 1474560.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 2949120.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 6.055687885010267e-05,
+              "t_memory_ms": 0.002304,
+              "t_ms": 0.002304
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.00012111375770020534,
+            "t_memory_ms": 0.0028799999999999997,
+            "t_ms": 0.0028799999999999997
+          }
+        ],
+        "config_id": "qwen3_4b_decode_b4",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 3.99965906120609,
+        "global_bytes": 8649998336.0,
+        "global_flops": 34597044224.0,
+        "hardware_validated": false,
+        "head_parameters": 388956160,
+        "linear_parameters": 3633315840,
+        "model_id": "qwen3_4b",
+        "model_name": "Qwen3-4B",
+        "nominal_t_step_ms": 13.5156224,
+        "per_request_tokens_per_s": 59.190762831610336,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_4b_decode_b4_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 16.894527999999998,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      },
+      {
+        "aggregate_tokens_per_s": 782.6979912838752,
+        "batch_size": 16,
+        "calibration_version": "course-eta-beta-1f22d360512ff23d",
+        "components": [
+          {
+            "ai": 16.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 8044544000.0,
+            "component": "gemm",
+            "eta_applied": 0.5,
+            "flops": 128712704000,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.6600651487179487,
+              "t_memory_ms": 12.5696,
+              "t_ms": 12.5696
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 1.3201302974358975,
+            "t_memory_ms": 15.711999999999998,
+            "t_ms": 15.711999999999998
+          },
+          {
+            "ai": 4.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 2415919104,
+            "component": "attention",
+            "eta_applied": 0.5,
+            "flops": 9663676416,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 304.6875,
+              "t_compute_ms": 0.04955731495384615,
+              "t_memory_ms": 3.7748736,
+              "t_ms": 3.7748736
+            },
+            "pipeline": "matrix",
+            "ridge": 190.4296875,
+            "t_compute_ms": 0.0991146299076923,
+            "t_memory_ms": 4.718591999999999,
+            "t_ms": 4.718591999999999
+          },
+          {
+            "ai": 2.0,
+            "beta_applied": 0.8,
+            "bound": "memory",
+            "bytes": 5898240.0,
+            "component": "elementwise",
+            "eta_applied": 0.5,
+            "flops": 11796480.0,
+            "nominal": {
+              "bound": "memory",
+              "ridge": 76.09375,
+              "t_compute_ms": 0.0002422275154004107,
+              "t_memory_ms": 0.009216,
+              "t_ms": 0.009216
+            },
+            "pipeline": "vector",
+            "ridge": 47.55859375,
+            "t_compute_ms": 0.0004844550308008214,
+            "t_memory_ms": 0.011519999999999999,
+            "t_ms": 0.011519999999999999
+          }
+        ],
+        "config_id": "qwen3_4b_decode_b16",
+        "context_includes_current": true,
+        "dominant_component": "gemm",
+        "formula_version": "hello_mlsys_ch1_eta_beta_transfer_v1",
+        "global_ai_display_only": 13.222186044181736,
+        "global_bytes": 10466361344.0,
+        "global_flops": 138388176896.0,
+        "hardware_validated": false,
+        "head_parameters": 388956160,
+        "linear_parameters": 3633315840,
+        "model_id": "qwen3_4b",
+        "model_name": "Qwen3-4B",
+        "nominal_t_step_ms": 16.3536896,
+        "per_request_tokens_per_s": 48.9186244552422,
+        "phase": "decode",
+        "prediction_id": "pred_ch2_qwen3_nominal_18_qwen3_4b_decode_b16_63bb668dbf6f7ad8",
+        "sequence_length": 1024,
+        "stored_at": "2026-11-20T05:46:38.191Z",
+        "t_step_ms": 20.442111999999998,
+        "validation_scope": "primitive_to_dense_model_domain_transfer_not_hardware_validation"
+      }
+    ],
+    "prediction_status": "primitive_to_dense_domain_transfer_complete_not_whole_model_validation",
+    "primitives": [
+      {
+        "ai": 1365.3333333333333,
+        "beta_applied": 0.8,
+        "bound": "compute",
+        "bytes": 100663296,
+        "component": "matmul_4096_bf16",
+        "eta_applied": 0.5,
+        "flops": 137438953472,
+        "nominal": {
+          "bound": "compute",
+          "ridge": 304.6875,
+          "t_compute_ms": 0.7048151460102564,
+          "t_memory_ms": 0.1572864,
+          "t_ms": 0.7048151460102564
+        },
+        "pipeline": "matrix",
+        "ridge": 190.4296875,
+        "t_compute_ms": 1.4096302920205128,
+        "t_memory_ms": 0.19660799999999998,
+        "t_ms": 1.4096302920205128
+      },
+      {
+        "ai": 1.0,
+        "beta_applied": 0.8,
+        "bound": "memory",
+        "bytes": 8388608,
+        "component": "layernorm_2048_1024_bf16",
+        "eta_applied": 0.5,
+        "flops": 8388608,
+        "nominal": {
+          "bound": "memory",
+          "ridge": 76.09375,
+          "t_compute_ms": 0.00017225067761806982,
+          "t_memory_ms": 0.0131072,
+          "t_ms": 0.0131072
+        },
+        "pipeline": "vector",
+        "ridge": 47.55859375,
+        "t_compute_ms": 0.00034450135523613964,
+        "t_memory_ms": 0.016384,
+        "t_ms": 0.016384
+      },
+      {
+        "ai": 341.3333333333333,
+        "beta_applied": 0.8,
+        "bound": "compute",
+        "bytes": 176160768,
+        "component": "attention_flash_s512_28_layers",
+        "eta_applied": 0.5,
+        "flops": 60129542144,
+        "nominal": {
+          "bound": "compute",
+          "ridge": 304.6875,
+          "t_compute_ms": 0.3083566263794872,
+          "t_memory_ms": 0.2752512,
+          "t_ms": 0.3083566263794872
+        },
+        "pipeline": "matrix",
+        "ridge": 190.4296875,
+        "t_compute_ms": 0.6167132527589744,
+        "t_memory_ms": 0.3440639999999999,
+        "t_ms": 0.6167132527589744
+      },
+      {
+        "ai": 93.0909090909091,
+        "beta_applied": 0.8,
+        "bound": "memory",
+        "bytes": 645922816,
+        "component": "attention_naive",
+        "eta_applied": 0.5,
+        "flops": 60129542144,
+        "nominal": {
+          "bound": "memory",
+          "ridge": 304.6875,
+          "t_compute_ms": 0.3083566263794872,
+          "t_memory_ms": 1.0092544,
+          "t_ms": 1.0092544
+        },
+        "pipeline": "matrix",
+        "ridge": 190.4296875,
+        "t_compute_ms": 0.6167132527589744,
+        "t_memory_ms": 1.261568,
+        "t_ms": 1.261568
+      }
+    ],
+    "protocol": "hello_mlsys_ch1_eta_beta_transfer_v1",
+    "provenance": {
+      "course_calibration_raw_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+      "course_calibration_report_sha256": "fc4b7ef212c251b4a77aff63bcf052dcd84a6f73d3277a5258089612a1dd632a",
+      "course_source": {
+        "commit_sha": "7df2dae493eb30c0f7e845b6d587b905288c0d7a",
+        "path": "docs/part1-modeling/chapter1/index.md",
+        "repository": "amdjiahangpan/hello-mlsys",
+        "sha256": "0c0c01a90d35b1b107cc88ccd2c48e776de141bb698356d4b8696baa401ec231"
+      },
+      "formulas_sha256": "3a19dbb63080e7354c098d2bbf5f32f468a4cfd352bf31e9791ae42a0000a1e7",
+      "historical_prediction_before_measurement_established": false,
+      "implementation_sha256": "f87c554fc21944c1c1e202be8f5352c5838f46f0969d1e03eaa575038d4a2ca0",
+      "measurement_sources": [],
+      "model_config_sha256": {
+        "qwen3_0_6b": "13821125e420ff4a91ced19b27dc4df59f39d0ad9abf06c5ccf0391f0c79cedd",
+        "qwen3_1_7b": "e72cb1018ad12766e7bb06281840980ba74ae0d411b751c622ad71c475abd376",
+        "qwen3_4b": "89dd42cbf510e2c508c00184a4dd3c3c8f17c76ddb047448fb21c3c722f4cccf"
+      },
+      "nominal_data_sha256": "b8a529b8f302881c66111da15acb4b8588ffe65dcbe23d322af6b61e74c7ec62",
+      "plan_sha256": "d3378bc69b3af2fe25a47bc0a4cd652812f7d6fda586a700bc9e13993ce4923a"
+    },
+    "reconciliation": {
+      "kind": "formula_and_rounding_reconciliation_not_hardware_error",
+      "naive_attention": {
+        "course_claimed_asymptotic_ai": 0.5,
+        "explanation": "\u539f\u6587 F=4*L*q_heads*head_dim*S\u00b2\u3001\u989d\u5916 D=4*L*q_heads*S\u00b2\uff0c\u6545\u6781\u9650\u4e3a head_dim=128\uff1b\u4e0d\u80fd\u540c\u65f6\u5f97\u52300.5\u3002",
+        "formula_derived_asymptotic_ai": 128,
+        "s512_nominal_ai": 93.0909090909091,
+        "status": "course_formula_inconsistency"
+      },
+      "notes": [
+        "\u65f6\u95f4\u5bf9\u8d26\u4f7f\u7528\u8bfe\u7a0b\u7b97\u4f8b B/C \u7684\u7ea6\u6570\uff0c\u672a\u5c06\u5176\u5f53\u4f5c\u6807\u5b9a\u76ee\u6807\u6216\u6d4b\u91cf\u6570\u636e\u3002",
+        "0.6B \u7cbe\u786e P_linear=440401920\u3001P_linear+P_head=595984384\uff1b\u8bfe\u7a0b\u5199\u7ea6440M/596M\u3002",
+        "prefill \u6fc0\u6d3b\u6d41\u91cf\u7cfb\u6570\u4e0e elementwise \u662f\u660e\u786e\u5047\u8bbe\uff1b\u5404\u7ec4\u4ef6\u6c42\u548c\u53ef\u80fd\u65e0\u6cd5\u590d\u73b0\u8fd1\u4f3c\u8868\u7684\u5355\u6b65\u820d\u5165\u3002",
+        "prefill LM head=omitted\uff1b\u8bfe\u7a0b\u4e3b\u9879\u7701\u7565\u672b token head\uff0c\u4efb\u52a1\u8868\u6cdb\u79f0\u5305\u542b head\u3002",
+        "\u4e0d\u5bf9 FlashAttention \u7edf\u4e00\u4e581.13\uff1a\u539f\u658713%\u662f\u5916\u90e8\u7b97\u5b50\u6d4b\u4f8b\u6bd4\u503c\uff0c\u975e\u672c\u6a21\u578b\u51bb\u7ed3\u516c\u5f0f\u3002"
+      ],
+      "time_rows": [
+        {
+          "config_id": "qwen3_0_6b_prefill_s128",
+          "course_approximate_ms": 1.5,
+          "difference_ms": 0.12856960000000006,
+          "matches_one_decimal_rounding": false,
+          "nominal_ms": 1.6285696
+        },
+        {
+          "config_id": "qwen3_0_6b_prefill_s512",
+          "course_approximate_ms": 2.7,
+          "difference_ms": 0.012781724225640723,
+          "matches_one_decimal_rounding": true,
+          "nominal_ms": 2.712781724225641
+        },
+        {
+          "config_id": "qwen3_0_6b_prefill_s2048",
+          "course_approximate_ms": 14.0,
+          "difference_ms": 0.5514064134564087,
+          "matches_one_decimal_rounding": false,
+          "nominal_ms": 14.551406413456409
+        },
+        {
+          "config_id": "qwen3_0_6b_decode_b1",
+          "course_approximate_ms": 2.1,
+          "difference_ms": -0.05386880000000005,
+          "matches_one_decimal_rounding": false,
+          "nominal_ms": 2.0461312
+        },
+        {
+          "config_id": "qwen3_0_6b_decode_b4",
+          "course_approximate_ms": 2.6,
+          "difference_ms": -0.0028288000000000757,
+          "matches_one_decimal_rounding": true,
+          "nominal_ms": 2.5971712
+        },
+        {
+          "config_id": "qwen3_0_6b_decode_b16",
+          "course_approximate_ms": 4.9,
+          "difference_ms": -0.09866880000000045,
+          "matches_one_decimal_rounding": false,
+          "nominal_ms": 4.8013312
+        }
+      ],
+      "time_rows_scope": "nominal_baseline_before_eta_beta_transfer"
+    },
+    "report_id": "ch1_eta_beta_63bb668dbf6f7ad8",
+    "schema_version": 1,
+    "status": "COMPLETED",
+    "stored_at": "2026-11-20T05:46:38.191Z",
+    "warnings": [
+      "\u03b7/\u03b2 \u4ece primitive \u8fc1\u79fb\u5230 dense \u5168\u6a21\u578b\uff0c\u5c5e\u4e8e\u57df\u5916\u5047\u8bbe\uff1b\u65e0\u65b0 GPU \u5b9e\u6d4b\u6216\u5168\u6a21\u578b\u786c\u4ef6PASS\u3002",
+      "\u672c\u6b21 stored_at \u662f\u5f53\u524d\u8fd0\u884c\u65f6\u95f4\uff0c\u4e0d\u8bc1\u660e\u65e9\u4e8e\u8bfe\u7a0b\u5df2\u6709\u5b9e\u6d4b\uff1b\u672a\u6765\u6d4b\u91cf\u987b\u53e6\u884c\u5173\u8054 prediction_id\u3002",
+      "\u672c\u534f\u8bae\u4f7f\u7528 full-square attention\uff1b\u9ed8\u8ba4\u670d\u52a1\u6a21\u62df\u5668\u548c\u65e2\u6709 Profile \u4ecd\u4f7f\u7528\u539f\u53e3\u5f84\u3002",
+      "GEMM \u6fc0\u6d3b\u53ca elementwise \u662f plan \u4e2d\u516c\u5f00\u7684\u6d41\u91cf\u5047\u8bbe\uff0c\u5e76\u975e\u4ece\u8bfe\u7a0b\u8fd1\u4f3c\u65f6\u95f4\u53cd\u63a8\u7684\u6548\u7387\u3002",
+      "W7900D \u7b97\u529b/\u5e26\u5bbd\u5f85\u786e\u8ba4\uff1bAI \u793a\u610f\u4e0d\u662f\u8be5\u786c\u4ef6\u7684 Roofline \u6216\u65f6\u95f4\u9884\u6d4b\u3002",
+      "\u672c\u7ae0\u65f6\u95f4\u4e0d\u5305\u542b\u6392\u961f\u3001launch\u3001\u901a\u4fe1\u6216\u5bb9\u91cf/OOM \u5224\u5b9a\uff1b\u5e26\u5bbd\u53d7\u9650\u4e0d\u7b49\u4e8e\u663e\u5b58\u88c5\u4e0d\u4e0b\u3002",
+      "\u6765\u6e90\u662f\u5bfc\u5165\u7684\u8bfe\u7a0b\u5386\u53f2\u53c2\u8003\u6216\u663e\u5f0f\u6d4b\u8bd5\u5939\u5177\uff1b\u672a\u6267\u884c\u65b0\u7684 GPU \u91c7\u96c6\uff0chardware_validated=false\u3002",
+      "\u62df\u5408\u4ec5\u4f7f\u7528\u539f\u59cb fit \u6807\u8bb0\u7684 GEMM \u4e0e\u6d41\u5f0f LN/Softmax\uff1b\u7559\u51fa\u70b9\u4e0d\u53c2\u4e0e\u91cd\u62df\u5408\u3002",
+      "\u539f\u59cb\u9884\u6d4b\u65f6\u95f4\u6233\u4e0d\u8bc1\u660e\u6d4b\u91cf\u524d\u5df2\u843d\u76d8\uff1b\u6e90\u811a\u672c\u5728\u5168\u90e8\u7559\u51fa\u6d4b\u91cf\u7ed3\u675f\u540e\u7edf\u4e00\u4fdd\u5b58\uff0c\u7f3a\u5c11\u72ec\u7acb\u7559\u51fa\u6d4b\u91cf\u8d77\u6b62\u65f6\u95f4\u3002",
+      "\u539f\u59cb Attention S512 \u6309 nominal \u8bbf\u5b58\u4fa7\u9009\u5206\u652f\uff1b\u6b64\u5904\u53e6\u5217\u53cc\u4fa7\u91cd\u7b97 max\uff0c\u4fdd\u7559\u539f\u503c\u4e0d\u8986\u76d6\u3002",
+      "eta \u6765\u81ea\u5927 GEMM\uff0cbeta \u6765\u81ea\u6d41\u5f0f LN/Softmax\uff1b\u8fc1\u79fb\u5230\u5168\u6a21\u578b\u3001\u5411\u91cf\u8ba1\u7b97\u6216 Attention \u662f\u57df\u5916\u5047\u8bbe\u3002",
+      "\u4e8b\u4ef6\u8ba1\u65f6\u4e0d\u80fd\u8bc6\u522b CPU T_launch \u6216\u6846\u67b6\u5f00\u9500\uff1bpatch \u4e0d\u4fee\u6539 launch_overhead_us / framework_overhead_us\u3002",
+      "\u672c\u5bfc\u5165\u4e0d\u66ff\u4ee3 whole-stage Profile\u3001native PP \u901a\u4fe1\u6216 Workspace\uff0c\u4e0d\u6388\u4e88 TP/PP/\u7f13\u5b58/swap/\u6df7\u5408\u6279\u5904\u7406\u786c\u4ef6\u6709\u6548\u6027\u3002",
+      "\u540c\u4e00 GEMM \u03b7 \u540c\u65f6\u7528\u4e8e\u77e9\u9635/\u5411\u91cf\u8ba1\u7b97\u662f\u663e\u5f0f\u8fc1\u79fb\u5047\u8bbe\uff1b\u5411\u91cf\u8ba1\u7b97\u5cf0\u503c\u6548\u7387\u5e76\u672a\u5355\u72ec\u8bc6\u522b\u3002",
+      "\u8bfe\u7a0b B/C \u8fd1\u4f3c\u8868\u7684 reconciliation \u4fdd\u7559 nominal \u57fa\u7ebf\uff1b\u4e0d\u80fd\u7528\u6821\u51c6\u540e\u7ed3\u679c\u53cd\u6807\u8fd1\u4f3c\u8868\u7684\u8ba1\u6570\u6b63\u786e\u6027\u3002"
+    ]
+  },
+  "calibration": {
+    "calibration_id": "course-eta-beta-1f22d360512ff23d",
+    "calibration_patch": {
+      "apply_automatically": false,
+      "hardware_validated": false,
+      "kind": "calibration_spec_patch",
+      "limitations": [
+        "\u6765\u6e90\u662f\u5bfc\u5165\u7684\u8bfe\u7a0b\u5386\u53f2\u53c2\u8003\u6216\u663e\u5f0f\u6d4b\u8bd5\u5939\u5177\uff1b\u672a\u6267\u884c\u65b0\u7684 GPU \u91c7\u96c6\uff0chardware_validated=false\u3002",
+        "\u62df\u5408\u4ec5\u4f7f\u7528\u539f\u59cb fit \u6807\u8bb0\u7684 GEMM \u4e0e\u6d41\u5f0f LN/Softmax\uff1b\u7559\u51fa\u70b9\u4e0d\u53c2\u4e0e\u91cd\u62df\u5408\u3002",
+        "\u539f\u59cb\u9884\u6d4b\u65f6\u95f4\u6233\u4e0d\u8bc1\u660e\u6d4b\u91cf\u524d\u5df2\u843d\u76d8\uff1b\u6e90\u811a\u672c\u5728\u5168\u90e8\u7559\u51fa\u6d4b\u91cf\u7ed3\u675f\u540e\u7edf\u4e00\u4fdd\u5b58\uff0c\u7f3a\u5c11\u72ec\u7acb\u7559\u51fa\u6d4b\u91cf\u8d77\u6b62\u65f6\u95f4\u3002",
+        "\u539f\u59cb Attention S512 \u6309 nominal \u8bbf\u5b58\u4fa7\u9009\u5206\u652f\uff1b\u6b64\u5904\u53e6\u5217\u53cc\u4fa7\u91cd\u7b97 max\uff0c\u4fdd\u7559\u539f\u503c\u4e0d\u8986\u76d6\u3002",
+        "eta \u6765\u81ea\u5927 GEMM\uff0cbeta \u6765\u81ea\u6d41\u5f0f LN/Softmax\uff1b\u8fc1\u79fb\u5230\u5168\u6a21\u578b\u3001\u5411\u91cf\u8ba1\u7b97\u6216 Attention \u662f\u57df\u5916\u5047\u8bbe\u3002",
+        "\u4e8b\u4ef6\u8ba1\u65f6\u4e0d\u80fd\u8bc6\u522b CPU T_launch \u6216\u6846\u67b6\u5f00\u9500\uff1bpatch \u4e0d\u4fee\u6539 launch_overhead_us / framework_overhead_us\u3002",
+        "\u672c\u5bfc\u5165\u4e0d\u66ff\u4ee3 whole-stage Profile\u3001native PP \u901a\u4fe1\u6216 Workspace\uff0c\u4e0d\u6388\u4e88 TP/PP/\u7f13\u5b58/swap/\u6df7\u5408\u6279\u5904\u7406\u786c\u4ef6\u6709\u6548\u6027\u3002"
+      ],
+      "patch": {
+        "bandwidth_efficiency": 0.8,
+        "compute_efficiency": 0.5,
+        "profile_version": "course-eta-beta-1f22d360512ff23d"
+      },
+      "raw_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+      "requires": {
+        "backend": "analytical"
+      },
+      "source_kind": "test_fixture"
+    },
+    "calibration_records": [
+      {
+        "family": "gemm",
+        "id": "gemm_2048^3",
+        "shape": "2048^3",
+        "source_record": {
+          "ai": 682.7,
+          "binding": "compute",
+          "bytes": 25165824,
+          "eta_point": 0.25,
+          "fit": false,
+          "flops": 17179869184,
+          "median_ms": 0.35241,
+          "per_round_ms": [
+            0.34536,
+            0.35241,
+            0.35946
+          ],
+          "ratio_meas_over_nom": 4.0,
+          "t_comp_ms": 0.0881,
+          "t_mem_ms": 0.03932,
+          "t_nom_ms": 0.0881
+        }
+      },
+      {
+        "family": "gemm",
+        "id": "gemm_4096^3",
+        "shape": "4096^3",
+        "source_record": {
+          "ai": 1365.3,
+          "binding": "compute",
+          "bytes": 100663296,
+          "eta_point": 0.5,
+          "fit": true,
+          "flops": 137438953472,
+          "median_ms": 1.40963,
+          "per_round_ms": [
+            1.38144,
+            1.40963,
+            1.43782
+          ],
+          "ratio_meas_over_nom": 2.0,
+          "t_comp_ms": 0.70482,
+          "t_mem_ms": 0.15729,
+          "t_nom_ms": 0.70482
+        }
+      },
+      {
+        "family": "gemm",
+        "id": "gemm_5120^3",
+        "shape": "5120^3",
+        "source_record": {
+          "ai": 1706.7,
+          "binding": "compute",
+          "bytes": 157286400,
+          "eta_point": 0.5,
+          "fit": true,
+          "flops": 268435456000,
+          "median_ms": 2.75318,
+          "per_round_ms": [
+            2.69812,
+            2.75318,
+            2.80824
+          ],
+          "ratio_meas_over_nom": 2.0,
+          "t_comp_ms": 1.37659,
+          "t_mem_ms": 0.24576,
+          "t_nom_ms": 1.37659
+        }
+      },
+      {
+        "family": "gemm",
+        "id": "gemm_8192^3",
+        "shape": "8192^3",
+        "source_record": {
+          "ai": 2730.7,
+          "binding": "compute",
+          "bytes": 402653184,
+          "eta_point": 0.4,
+          "fit": false,
+          "flops": 1099511627776,
+          "median_ms": 14.0963,
+          "per_round_ms": [
+            13.81437,
+            14.0963,
+            14.37823
+          ],
+          "ratio_meas_over_nom": 2.5,
+          "t_comp_ms": 5.63852,
+          "t_mem_ms": 0.62915,
+          "t_nom_ms": 5.63852
+        }
+      },
+      {
+        "family": "ln",
+        "id": "ln_2048x1024",
+        "shape": "2048x1024",
+        "source_record": {
+          "ai": 1.0,
+          "beta_point": 0.5001,
+          "binding": "memory",
+          "bytes": 8388608,
+          "fit": false,
+          "flops": 8388608,
+          "median_ms": 0.02621,
+          "per_round_ms": [
+            0.02569,
+            0.02621,
+            0.02673
+          ],
+          "ratio_meas_over_nom": 2.0,
+          "t_comp_ms": 4e-05,
+          "t_mem_ms": 0.01311,
+          "t_nom_ms": 0.01311
+        }
+      },
+      {
+        "family": "ln",
+        "id": "ln_8192x4096",
+        "shape": "8192x4096",
+        "source_record": {
+          "ai": 1.0,
+          "beta_point": 0.8,
+          "binding": "memory",
+          "bytes": 134217728,
+          "fit": true,
+          "flops": 134217728,
+          "median_ms": 0.26214,
+          "per_round_ms": [
+            0.2569,
+            0.26214,
+            0.26738
+          ],
+          "ratio_meas_over_nom": 1.25,
+          "t_comp_ms": 0.00069,
+          "t_mem_ms": 0.20972,
+          "t_nom_ms": 0.20972
+        }
+      },
+      {
+        "family": "softmax",
+        "id": "softmax_4096x4096",
+        "shape": "4096x4096",
+        "source_record": {
+          "ai": 1.0,
+          "beta_point": 1.2499,
+          "binding": "memory",
+          "bytes": 67108864,
+          "fit": false,
+          "flops": 67108864,
+          "median_ms": 0.08389,
+          "per_round_ms": [
+            0.08221,
+            0.08389,
+            0.08557
+          ],
+          "ratio_meas_over_nom": 0.8,
+          "t_comp_ms": 0.00034,
+          "t_mem_ms": 0.10486,
+          "t_nom_ms": 0.10486
+        }
+      },
+      {
+        "family": "softmax",
+        "id": "softmax_8192x4096",
+        "shape": "8192x4096",
+        "source_record": {
+          "ai": 1.0,
+          "beta_point": 0.8,
+          "binding": "memory",
+          "bytes": 134217728,
+          "fit": true,
+          "flops": 134217728,
+          "median_ms": 0.26214,
+          "per_round_ms": [
+            0.2569,
+            0.26214,
+            0.26738
+          ],
+          "ratio_meas_over_nom": 1.25,
+          "t_comp_ms": 0.00069,
+          "t_mem_ms": 0.20972,
+          "t_nom_ms": 0.20972
+        }
+      }
+    ],
+    "coefficients": {
+      "beta": 0.8,
+      "eta": 0.5
+    },
+    "data_sha256": "fc4b7ef212c251b4a77aff63bcf052dcd84a6f73d3277a5258089612a1dd632a",
+    "fit": {
+      "method": "sum_nominal_times_over_sum_measured_times; retain published four-decimal coefficients",
+      "recomputed_from_exact_counts": {
+        "beta": 0.8000122072175174,
+        "eta": 0.5000005352301783
+      },
+      "recomputed_from_source_rounded_times": {
+        "beta": 0.8000305180437934,
+        "eta": 0.500001201111749
+      },
+      "source": {
+        "beta": 0.8,
+        "beta_formula": "test fixture: sum(t_mem_ms)/sum(median_ms), selected streaming memory only",
+        "beta_points": {
+          "ln_2048x1024": 0.5001,
+          "ln_8192x4096": 0.8,
+          "softmax_4096x4096": 1.2499,
+          "softmax_8192x4096": 0.8
+        },
+        "eta": 0.5,
+        "eta_formula": "test fixture: sum(t_comp_ms)/sum(median_ms), selected GEMM only",
+        "eta_points": {
+          "2048^3": 0.25,
+          "4096^3": 0.5,
+          "5120^3": 0.5,
+          "8192^3": 0.4
+        },
+        "fit_points": {
+          "beta": [
+            "ln_8192x4096",
+            "softmax_8192x4096"
+          ],
+          "eta": [
+            "4096^3",
+            "5120^3"
+          ]
+        },
+        "stored_at": "2026-01-01T00:00:00Z"
+      }
+    },
+    "fitting_domain": {
+      "beta": "single-device streaming BF16 LN/Softmax 8192x4096",
+      "eta": "single-device BF16 square GEMM 4096^3 and 5120^3 saturated regime",
+      "pp": 1,
+      "timing_boundary": "isolated_operator_event_sync",
+      "tp": 1
+    },
+    "hardware_validated": false,
+    "historical_prediction_before_measurement_established": false,
+    "holdout_records": [
+      {
+        "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+        "family": "gemm",
+        "id": "gemm_6144",
+        "recomputed_bound": "compute",
+        "recomputed_error_pct": 1.9999520697941309,
+        "recomputed_prediction_ms": 4.7575022355692305,
+        "recomputed_t_compute_ms": 4.7575022355692305,
+        "recomputed_t_memory_ms": 0.442368,
+        "scope": "source_declared_regime_new_shape",
+        "shape": "6144^3",
+        "source_error_pct": 2.0,
+        "source_prediction_ms": 4.7575,
+        "source_record": {
+          "ai": 2048.0,
+          "binding": "compute",
+          "bytes": 226492416,
+          "eta_point": 0.4902,
+          "fit": false,
+          "flops": 463856467968,
+          "median_ms": 4.85265,
+          "per_round_ms": [
+            4.7556,
+            4.85265,
+            4.9497
+          ],
+          "pred_err_pct": 2.0,
+          "ratio_meas_over_nom": 2.04,
+          "t_comp_ms": 2.37875,
+          "t_mem_ms": 0.35389,
+          "t_nom_ms": 2.37875,
+          "t_pred_cal_ms": 4.7575
+        },
+        "unseen_fit_shape": true
+      },
+      {
+        "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+        "family": "ln",
+        "id": "ln_16384x4096",
+        "recomputed_bound": "memory",
+        "recomputed_error_pct": -2.000427246093739,
+        "recomputed_prediction_ms": 0.524288,
+        "recomputed_t_compute_ms": 0.002753184164102564,
+        "recomputed_t_memory_ms": 0.524288,
+        "scope": "source_declared_regime_new_shape",
+        "shape": "16384x4096",
+        "source_error_pct": -2.0,
+        "source_prediction_ms": 0.52429,
+        "source_record": {
+          "ai": 1.0,
+          "beta_point": 0.8163,
+          "binding": "memory",
+          "bytes": 268435456,
+          "fit": false,
+          "flops": 268435456,
+          "median_ms": 0.5138,
+          "per_round_ms": [
+            0.50352,
+            0.5138,
+            0.52408
+          ],
+          "pred_err_pct": -2.0,
+          "ratio_meas_over_nom": 1.225,
+          "t_comp_ms": 0.00138,
+          "t_mem_ms": 0.41943,
+          "t_nom_ms": 0.41943,
+          "t_pred_cal_ms": 0.52429
+        },
+        "unseen_fit_shape": true
+      },
+      {
+        "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+        "family": "softmax",
+        "id": "softmax_16384x4096",
+        "recomputed_bound": "memory",
+        "recomputed_error_pct": 3.000640869140625,
+        "recomputed_prediction_ms": 0.524288,
+        "recomputed_t_compute_ms": 0.002753184164102564,
+        "recomputed_t_memory_ms": 0.524288,
+        "scope": "source_declared_regime_new_shape",
+        "shape": "16384x4096",
+        "source_error_pct": 3.0,
+        "source_prediction_ms": 0.52429,
+        "source_record": {
+          "ai": 1.0,
+          "beta_point": 0.7767,
+          "binding": "memory",
+          "bytes": 268435456,
+          "fit": false,
+          "flops": 268435456,
+          "median_ms": 0.54002,
+          "per_round_ms": [
+            0.52922,
+            0.54002,
+            0.55082
+          ],
+          "pred_err_pct": 3.0,
+          "ratio_meas_over_nom": 1.288,
+          "t_comp_ms": 0.00138,
+          "t_mem_ms": 0.41943,
+          "t_nom_ms": 0.41943,
+          "t_pred_cal_ms": 0.52429
+        },
+        "unseen_fit_shape": true
+      },
+      {
+        "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+        "family": "attn",
+        "id": "attn_mha16_s512",
+        "recomputed_bound": "compute",
+        "recomputed_error_pct": 48.736871778964975,
+        "recomputed_prediction_ms": 0.022025473312820513,
+        "recomputed_t_compute_ms": 0.022025473312820513,
+        "recomputed_t_memory_ms": 0.016384,
+        "scope": "out_of_fit_domain_attention",
+        "shape": "512",
+        "source_error_pct": 100.0,
+        "source_prediction_ms": 0.01638,
+        "source_record": {
+          "achieved_bw_gbps": 256.1,
+          "achieved_tflops": 65.6,
+          "ai": 256.0,
+          "binding": "memory",
+          "bytes": 8388608,
+          "fit": false,
+          "flops": 2147483648,
+          "median_ms": 0.03276,
+          "per_round_ms": [
+            0.0321,
+            0.03276,
+            0.03342
+          ],
+          "pred_err_pct": 100.0,
+          "ratio_meas_over_nom": 2.499,
+          "t_comp_ms": 0.01101,
+          "t_mem_ms": 0.01311,
+          "t_nom_ms": 0.01311,
+          "t_pred_cal_ms": 0.01638
+        },
+        "unseen_fit_shape": true
+      },
+      {
+        "error_definition": "(measured_ms / prediction_ms - 1) * 100; positive = prediction optimistic",
+        "family": "attn",
+        "id": "attn_mha16_s1024",
+        "recomputed_bound": "compute",
+        "recomputed_error_pct": 49.99677659943698,
+        "recomputed_prediction_ms": 0.08810189325128205,
+        "recomputed_t_compute_ms": 0.08810189325128205,
+        "recomputed_t_memory_ms": 0.032768,
+        "scope": "out_of_fit_domain_attention",
+        "shape": "1024",
+        "source_error_pct": 50.0,
+        "source_prediction_ms": 0.0881,
+        "source_record": {
+          "achieved_bw_gbps": 127.0,
+          "achieved_tflops": 65.0,
+          "ai": 512.0,
+          "binding": "compute",
+          "bytes": 16777216,
+          "fit": false,
+          "flops": 8589934592,
+          "median_ms": 0.13215,
+          "per_round_ms": [
+            0.12951,
+            0.13215,
+            0.13479
+          ],
+          "pred_err_pct": 50.0,
+          "ratio_meas_over_nom": 3.0,
+          "t_comp_ms": 0.04405,
+          "t_mem_ms": 0.02621,
+          "t_nom_ms": 0.04405,
+          "t_pred_cal_ms": 0.0881
+        },
+        "unseen_fit_shape": true
+      }
+    ],
+    "limitations": [
+      "\u6765\u6e90\u662f\u5bfc\u5165\u7684\u8bfe\u7a0b\u5386\u53f2\u53c2\u8003\u6216\u663e\u5f0f\u6d4b\u8bd5\u5939\u5177\uff1b\u672a\u6267\u884c\u65b0\u7684 GPU \u91c7\u96c6\uff0chardware_validated=false\u3002",
+      "\u62df\u5408\u4ec5\u4f7f\u7528\u539f\u59cb fit \u6807\u8bb0\u7684 GEMM \u4e0e\u6d41\u5f0f LN/Softmax\uff1b\u7559\u51fa\u70b9\u4e0d\u53c2\u4e0e\u91cd\u62df\u5408\u3002",
+      "\u539f\u59cb\u9884\u6d4b\u65f6\u95f4\u6233\u4e0d\u8bc1\u660e\u6d4b\u91cf\u524d\u5df2\u843d\u76d8\uff1b\u6e90\u811a\u672c\u5728\u5168\u90e8\u7559\u51fa\u6d4b\u91cf\u7ed3\u675f\u540e\u7edf\u4e00\u4fdd\u5b58\uff0c\u7f3a\u5c11\u72ec\u7acb\u7559\u51fa\u6d4b\u91cf\u8d77\u6b62\u65f6\u95f4\u3002",
+      "\u539f\u59cb Attention S512 \u6309 nominal \u8bbf\u5b58\u4fa7\u9009\u5206\u652f\uff1b\u6b64\u5904\u53e6\u5217\u53cc\u4fa7\u91cd\u7b97 max\uff0c\u4fdd\u7559\u539f\u503c\u4e0d\u8986\u76d6\u3002",
+      "eta \u6765\u81ea\u5927 GEMM\uff0cbeta \u6765\u81ea\u6d41\u5f0f LN/Softmax\uff1b\u8fc1\u79fb\u5230\u5168\u6a21\u578b\u3001\u5411\u91cf\u8ba1\u7b97\u6216 Attention \u662f\u57df\u5916\u5047\u8bbe\u3002",
+      "\u4e8b\u4ef6\u8ba1\u65f6\u4e0d\u80fd\u8bc6\u522b CPU T_launch \u6216\u6846\u67b6\u5f00\u9500\uff1bpatch \u4e0d\u4fee\u6539 launch_overhead_us / framework_overhead_us\u3002",
+      "\u672c\u5bfc\u5165\u4e0d\u66ff\u4ee3 whole-stage Profile\u3001native PP \u901a\u4fe1\u6216 Workspace\uff0c\u4e0d\u6388\u4e88 TP/PP/\u7f13\u5b58/swap/\u6df7\u5408\u6279\u5904\u7406\u786c\u4ef6\u6709\u6548\u6027\u3002"
+    ],
+    "nominal_constants": {
+      "bw_gbps": 640.0,
+      "peak_tflops": 195.0,
+      "ridge": 304.7
+    },
+    "protocol": "hello_mlsys_ch2_primitive_eta_beta_v1",
+    "raw_sha256": "1f22d360512ff23dbcb0b7e0fbba913ede387612faadfd32fe2d5bf5194c5d6a",
+    "schema_version": 1,
+    "source": {
+      "kind": "test_fixture",
+      "label": "hand-calculated-fixture"
+    },
+    "source_config": {
+      "protocol": "test fixture only: warmup10 x 50 x 3, event+sync shape; no sampling performed",
+      "seed": 42
+    },
+    "source_environment": {
+      "driver": "test-fixture",
+      "gpu": "test-fixture-no-gpu",
+      "gpu_arch": {
+        "test-fixture": "not-measured"
+      },
+      "os": "hand-calculated fixture; no hardware was sampled",
+      "python": "test-fixture",
+      "rocm": "test-fixture",
+      "timestamp_utc": "2026-01-01T00:00:00",
+      "torch": "test-fixture",
+      "vram_gib": 1.0
+    },
+    "source_holdout_prediction": {
+      "predictions_ms": {
+        "attn_mha16_s1024": {
+          "ai": 512.0,
+          "binding_by_ai": "compute",
+          "t_pred_cal_ms": 0.0881
+        },
+        "attn_mha16_s512": {
+          "ai": 256.0,
+          "binding_by_ai": "memory",
+          "t_pred_cal_ms": 0.01638
+        },
+        "gemm_6144": 4.7575,
+        "ln_16384x4096": 0.52429,
+        "softmax_16384x4096": 0.52429
+      },
+      "stored_at": "2026-01-01T00:00:00Z"
+    },
+    "source_kind": "test_fixture",
+    "source_text": "{\n  \"test_fixture\": true,\n  \"environment\": {\n    \"timestamp_utc\": \"2026-01-01T00:00:00\",\n    \"python\": \"test-fixture\",\n    \"torch\": \"test-fixture\",\n    \"rocm\": \"test-fixture\",\n    \"os\": \"hand-calculated fixture; no hardware was sampled\",\n    \"gpu\": \"test-fixture-no-gpu\",\n    \"gpu_arch\": {\n      \"test-fixture\": \"not-measured\"\n    },\n    \"vram_gib\": 1.0,\n    \"driver\": \"test-fixture\"\n  },\n  \"config\": {\n    \"seed\": 42,\n    \"protocol\": \"test fixture only: warmup10 x 50 x 3, event+sync shape; no sampling performed\"\n  },\n  \"nominal_constants\": {\n    \"peak_tflops\": 195.0,\n    \"bw_gbps\": 640.0,\n    \"ridge\": 304.7\n  },\n  \"calibration\": {\n    \"gemm\": {\n      \"2048^3\": {\n        \"flops\": 17179869184,\n        \"bytes\": 25165824,\n        \"ai\": 682.7,\n        \"t_comp_ms\": 0.0881,\n        \"t_mem_ms\": 0.03932,\n        \"t_nom_ms\": 0.0881,\n        \"binding\": \"compute\",\n        \"median_ms\": 0.35241,\n        \"per_round_ms\": [\n          0.34536,\n          0.35241,\n          0.35946\n        ],\n        \"ratio_meas_over_nom\": 4.0,\n        \"fit\": false,\n        \"eta_point\": 0.25\n      },\n      \"4096^3\": {\n        \"flops\": 137438953472,\n        \"bytes\": 100663296,\n        \"ai\": 1365.3,\n        \"t_comp_ms\": 0.70482,\n        \"t_mem_ms\": 0.15729,\n        \"t_nom_ms\": 0.70482,\n        \"binding\": \"compute\",\n        \"median_ms\": 1.40963,\n        \"per_round_ms\": [\n          1.38144,\n          1.40963,\n          1.43782\n        ],\n        \"ratio_meas_over_nom\": 2.0,\n        \"fit\": true,\n        \"eta_point\": 0.5\n      },\n      \"5120^3\": {\n        \"flops\": 268435456000,\n        \"bytes\": 157286400,\n        \"ai\": 1706.7,\n        \"t_comp_ms\": 1.37659,\n        \"t_mem_ms\": 0.24576,\n        \"t_nom_ms\": 1.37659,\n        \"binding\": \"compute\",\n        \"median_ms\": 2.75318,\n        \"per_round_ms\": [\n          2.69812,\n          2.75318,\n          2.80824\n        ],\n        \"ratio_meas_over_nom\": 2.0,\n        \"fit\": true,\n        \"eta_point\": 0.5\n      },\n      \"8192^3\": {\n        \"flops\": 1099511627776,\n        \"bytes\": 402653184,\n        \"ai\": 2730.7,\n        \"t_comp_ms\": 5.63852,\n        \"t_mem_ms\": 0.62915,\n        \"t_nom_ms\": 5.63852,\n        \"binding\": \"compute\",\n        \"median_ms\": 14.0963,\n        \"per_round_ms\": [\n          13.81437,\n          14.0963,\n          14.37823\n        ],\n        \"ratio_meas_over_nom\": 2.5,\n        \"fit\": false,\n        \"eta_point\": 0.4\n      }\n    },\n    \"ln\": {\n      \"2048x1024\": {\n        \"flops\": 8388608,\n        \"bytes\": 8388608,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 4e-05,\n        \"t_mem_ms\": 0.01311,\n        \"t_nom_ms\": 0.01311,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.02621,\n        \"per_round_ms\": [\n          0.02569,\n          0.02621,\n          0.02673\n        ],\n        \"ratio_meas_over_nom\": 2.0,\n        \"fit\": false,\n        \"beta_point\": 0.5001\n      },\n      \"8192x4096\": {\n        \"flops\": 134217728,\n        \"bytes\": 134217728,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 0.00069,\n        \"t_mem_ms\": 0.20972,\n        \"t_nom_ms\": 0.20972,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.26214,\n        \"per_round_ms\": [\n          0.2569,\n          0.26214,\n          0.26738\n        ],\n        \"ratio_meas_over_nom\": 1.25,\n        \"fit\": true,\n        \"beta_point\": 0.8\n      }\n    },\n    \"softmax\": {\n      \"4096x4096\": {\n        \"flops\": 67108864,\n        \"bytes\": 67108864,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 0.00034,\n        \"t_mem_ms\": 0.10486,\n        \"t_nom_ms\": 0.10486,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.08389,\n        \"per_round_ms\": [\n          0.08221,\n          0.08389,\n          0.08557\n        ],\n        \"ratio_meas_over_nom\": 0.8,\n        \"fit\": false,\n        \"beta_point\": 1.2499\n      },\n      \"8192x4096\": {\n        \"flops\": 134217728,\n        \"bytes\": 134217728,\n        \"ai\": 1.0,\n        \"t_comp_ms\": 0.00069,\n        \"t_mem_ms\": 0.20972,\n        \"t_nom_ms\": 0.20972,\n        \"binding\": \"memory\",\n        \"median_ms\": 0.26214,\n        \"per_round_ms\": [\n          0.2569,\n          0.26214,\n          0.26738\n        ],\n        \"ratio_meas_over_nom\": 1.25,\n        \"fit\": true,\n        \"beta_point\": 0.8\n      }\n    }\n  },\n  \"fit\": {\n    \"stored_at\": \"2026-01-01T00:00:00Z\",\n    \"eta\": 0.5,\n    \"beta\": 0.8,\n    \"eta_formula\": \"test fixture: sum(t_comp_ms)/sum(median_ms), selected GEMM only\",\n    \"beta_formula\": \"test fixture: sum(t_mem_ms)/sum(median_ms), selected streaming memory only\",\n    \"fit_points\": {\n      \"eta\": [\n        \"4096^3\",\n        \"5120^3\"\n      ],\n      \"beta\": [\n        \"ln_8192x4096\",\n        \"softmax_8192x4096\"\n      ]\n    },\n    \"eta_points\": {\n      \"2048^3\": 0.25,\n      \"4096^3\": 0.5,\n      \"5120^3\": 0.5,\n      \"8192^3\": 0.4\n    },\n    \"beta_points\": {\n      \"ln_2048x1024\": 0.5001,\n      \"ln_8192x4096\": 0.8,\n      \"softmax_4096x4096\": 1.2499,\n      \"softmax_8192x4096\": 0.8\n    }\n  },\n  \"holdout_prediction\": {\n    \"stored_at\": \"2026-01-01T00:00:00Z\",\n    \"predictions_ms\": {\n      \"gemm_6144\": 4.7575,\n      \"ln_16384x4096\": 0.52429,\n      \"softmax_16384x4096\": 0.52429,\n      \"attn_mha16_s512\": {\n        \"t_pred_cal_ms\": 0.01638,\n        \"binding_by_ai\": \"memory\",\n        \"ai\": 256.0\n      },\n      \"attn_mha16_s1024\": {\n        \"t_pred_cal_ms\": 0.0881,\n        \"binding_by_ai\": \"compute\",\n        \"ai\": 512.0\n      }\n    }\n  },\n  \"holdout_measured\": {\n    \"gemm_6144\": {\n      \"flops\": 463856467968,\n      \"bytes\": 226492416,\n      \"ai\": 2048.0,\n      \"t_comp_ms\": 2.37875,\n      \"t_mem_ms\": 0.35389,\n      \"t_nom_ms\": 2.37875,\n      \"binding\": \"compute\",\n      \"median_ms\": 4.85265,\n      \"per_round_ms\": [\n        4.7556,\n        4.85265,\n        4.9497\n      ],\n      \"ratio_meas_over_nom\": 2.04,\n      \"fit\": false,\n      \"eta_point\": 0.4902,\n      \"t_pred_cal_ms\": 4.7575,\n      \"pred_err_pct\": 2.0\n    },\n    \"ln_16384x4096\": {\n      \"flops\": 268435456,\n      \"bytes\": 268435456,\n      \"ai\": 1.0,\n      \"t_comp_ms\": 0.00138,\n      \"t_mem_ms\": 0.41943,\n      \"t_nom_ms\": 0.41943,\n      \"binding\": \"memory\",\n      \"median_ms\": 0.5138,\n      \"per_round_ms\": [\n        0.50352,\n        0.5138,\n        0.52408\n      ],\n      \"ratio_meas_over_nom\": 1.225,\n      \"fit\": false,\n      \"beta_point\": 0.8163,\n      \"t_pred_cal_ms\": 0.52429,\n      \"pred_err_pct\": -2.0\n    },\n    \"softmax_16384x4096\": {\n      \"flops\": 268435456,\n      \"bytes\": 268435456,\n      \"ai\": 1.0,\n      \"t_comp_ms\": 0.00138,\n      \"t_mem_ms\": 0.41943,\n      \"t_nom_ms\": 0.41943,\n      \"binding\": \"memory\",\n      \"median_ms\": 0.54002,\n      \"per_round_ms\": [\n        0.52922,\n        0.54002,\n        0.55082\n      ],\n      \"ratio_meas_over_nom\": 1.288,\n      \"fit\": false,\n      \"beta_point\": 0.7767,\n      \"t_pred_cal_ms\": 0.52429,\n      \"pred_err_pct\": 3.0\n    },\n    \"attn_mha16_s512\": {\n      \"flops\": 2147483648,\n      \"bytes\": 8388608,\n      \"ai\": 256.0,\n      \"t_comp_ms\": 0.01101,\n      \"t_mem_ms\": 0.01311,\n      \"t_nom_ms\": 0.01311,\n      \"binding\": \"memory\",\n      \"median_ms\": 0.03276,\n      \"per_round_ms\": [\n        0.0321,\n        0.03276,\n        0.03342\n      ],\n      \"ratio_meas_over_nom\": 2.499,\n      \"fit\": false,\n      \"achieved_tflops\": 65.6,\n      \"achieved_bw_gbps\": 256.1,\n      \"t_pred_cal_ms\": 0.01638,\n      \"pred_err_pct\": 100.0\n    },\n    \"attn_mha16_s1024\": {\n      \"flops\": 8589934592,\n      \"bytes\": 16777216,\n      \"ai\": 512.0,\n      \"t_comp_ms\": 0.04405,\n      \"t_mem_ms\": 0.02621,\n      \"t_nom_ms\": 0.04405,\n      \"binding\": \"compute\",\n      \"median_ms\": 0.13215,\n      \"per_round_ms\": [\n        0.12951,\n        0.13215,\n        0.13479\n      ],\n      \"ratio_meas_over_nom\": 3.0,\n      \"fit\": false,\n      \"achieved_tflops\": 65.0,\n      \"achieved_bw_gbps\": 127.0,\n      \"t_pred_cal_ms\": 0.0881,\n      \"pred_err_pct\": 50.0\n    }\n  },\n  \"holdout_err_pct\": {\n    \"gemm_6144\": 2.0,\n    \"ln_16384x4096\": -2.0,\n    \"softmax_16384x4096\": 3.0,\n    \"attn_mha16_s512\": 100.0,\n    \"attn_mha16_s1024\": 50.0\n  }\n}\n",
+    "status": "COMPLETED",
+    "stored_at": "2026-11-20T05:46:37.914Z"
+  },
+  "hardware_validated": false,
+  "kind": "import_course_calibration",
+  "status": "COMPLETED"
+}

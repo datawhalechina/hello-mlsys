@@ -1,0 +1,21 @@
+{
+  "device": "AMD Radeon RX 7900 XTX (GPU0)",
+  "model": "/mnt/public/models/Qwen3-4B",
+  "dtype": "bfloat16",
+  "load_s": 85.952,
+  "parameter_count": 4022468096,
+  "theoretical_weight_bytes": 8044936192,
+  "theoretical_weight_gib": 7.4924,
+  "rocm_smi_total_bytes": 25753026560,
+  "rocm_smi_used_before_bytes": 28585984,
+  "rocm_smi_used_after_bytes": 8332541952,
+  "rocm_smi_delta_bytes": 8303955968,
+  "rocm_smi_delta_gib": 7.7337,
+  "torch_allocated_after_bytes": 8044955648,
+  "torch_allocated_after_gib": 7.4924,
+  "torch_reserved_after_bytes": 8048869376,
+  "torch_reserved_after_gib": 7.4961,
+  "driver_and_allocator_overhead_bytes": 259019776,
+  "driver_and_allocator_overhead_gib": 0.2412,
+  "hardware_validated": true
+}

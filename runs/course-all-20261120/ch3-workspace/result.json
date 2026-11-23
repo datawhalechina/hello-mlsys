@@ -1,0 +1,510 @@
+{
+  "admitted_count": 1,
+  "backend": "simulated",
+  "batching": {
+    "compute_busy_ms_semantics": "aggregate_stage_time",
+    "mixed_batches_admitted": 0,
+    "mixed_batches_completed": 0,
+    "mixed_batching": true,
+    "mixed_compute_busy_ms": 0.0,
+    "policy": "decode_first_then_prefill_with_remaining_budget",
+    "recompute_policy": "homogeneous_recovery_batches"
+  },
+  "calibration_source": "synthetic",
+  "cohort_completion_rate": 1.0,
+  "completion_rate": 1.0,
+  "completion_rate_denominator": 1,
+  "compute_busy_ms": 3.0,
+  "compute_busy_ms_semantics": "aggregate_stage_time",
+  "counts": {
+    "completed": 1,
+    "failed": 0,
+    "not_admitted": 0,
+    "timed_out": 0,
+    "total": 1,
+    "unfinished": 0
+  },
+  "error_code": null,
+  "evaluation_count": 1,
+  "events_processed": 11,
+  "goodput": {
+    "eligible_requests": 1,
+    "output_tokens_per_s": 657.6755116715481,
+    "requests_per_s": 328.83775583577403,
+    "rule": "completed_requests_satisfying_all_declared_slas",
+    "sla_declared": false,
+    "window_ms": 3.0410133333333333
+  },
+  "hardware_validated": false,
+  "latency_ms": {
+    "end_to_end": {
+      "p50": 3.0410133333333333,
+      "p95": 3.0410133333333333,
+      "p99": 3.0410133333333333
+    },
+    "itl": {
+      "p50": 1.0190026666666667,
+      "p95": 1.0190026666666667,
+      "p99": 1.0190026666666667
+    },
+    "tpot": {
+      "p50": 1.0190026666666667,
+      "p95": 1.0190026666666667,
+      "p99": 1.0190026666666667
+    },
+    "ttft": {
+      "p50": 2.0220106666666666,
+      "p95": 2.0220106666666666,
+      "p99": 2.0220106666666666
+    }
+  },
+  "limitations": [
+    "uncalibrated CPU model",
+    "one replica; stage groups and paired TP links are independently serialized",
+    "decode-first mixed prefill/decode microbatches; recomputation stays homogeneous",
+    "prefix sharing requires explicit token identities; no shared-link contention",
+    "all-stage KV reservation and persistent activation-buffer bounds are conservative",
+    "pressure recovery quiesces waves; DMA and GPU execution do not overlap",
+    "feedback is a configured end-to-end delay without control-link contention"
+  ],
+  "measurement_contract": {
+    "arrival_window_ms": null,
+    "arrival_window_rule": "half_open",
+    "completion_denominator": "requests_eligible_for_arrival_window",
+    "drain": true,
+    "failed_timed_out_unfinished_in_completion_denominator": true,
+    "initial_state": "empty_cache",
+    "max_drain_ms": null,
+    "outside_window_in_completion_denominator": false
+  },
+  "memory": [
+    {
+      "allocatable_free_blocks": 5,
+      "budget_peak_bytes": 2208809984,
+      "device_id": "replica0-stage0-rank0",
+      "device_memory_bytes": 17179869184,
+      "fixed_budget_bytes": 2208805888,
+      "free_blocks": 5,
+      "guard_blocks": 0,
+      "kv_block_bytes": 147456,
+      "kv_bytes_per_token": 36864,
+      "kv_pool_reserved_bytes": 737280,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 2,
+      "physical_peak_bytes": 2207761408,
+      "physical_reserved_bytes": 2207757312,
+      "pipeline_buffer_breakdown": {
+        "incoming_inflight_bytes": 0,
+        "incoming_slice_backing_bytes": 0,
+        "max_padded_tokens": 8,
+        "outgoing_inflight_bytes": 81920,
+        "outgoing_retention_slack_bytes": 81920,
+        "persistent_input_copy_bytes": 0,
+        "scope": "native_pp_full_resident_per_rank_upper_bound"
+      },
+      "pipeline_buffer_reserved_bytes": 163840,
+      "pool_blocks": 5,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 0,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 2205807616,
+      "workspace_last_source": "workspace_profile",
+      "workspace_peak_bytes": 4096,
+      "workspace_profile_provenance": {
+        "attribution": {
+          "complete": true,
+          "excluded_categories": [
+            "weights",
+            "kv_pool",
+            "graphs",
+            "runtime",
+            "pp_buffers",
+            "communication_buffers"
+          ],
+          "includes_non_torch": true,
+          "method": "runtime_workspace_ledger_v1",
+          "scope": "exclusive_dynamic_workspace"
+        },
+        "domain_policy": "exact_only",
+        "method": "exact_rank_max_v1",
+        "origin_profile_path": "/tmp/mlsys-sim-tutorial/examples/v1_9/workspace.profile.fixture.json",
+        "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-workspace/workspace-profiles/replica-0.json",
+        "profile_id": "workspace-rank-max-fixture:workspace-fixture-v1",
+        "profile_sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "profile_version": "workspace-fixture-v1",
+        "scope": "replacement_for_dynamic_workspace_only",
+        "sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "sha256_scope": "file_bytes",
+        "snapshot_file": "workspace-profiles/replica-0.json",
+        "source_kind": "test_fixture",
+        "source_reference": "Hand-calculated complete per-rank Workspace fixture, including an observed zero; no GPU execution."
+      },
+      "workspace_source": "workspace_profile"
+    },
+    {
+      "allocatable_free_blocks": 5,
+      "budget_peak_bytes": 2208818176,
+      "device_id": "replica0-stage0-rank1",
+      "device_memory_bytes": 17179869184,
+      "fixed_budget_bytes": 2208805888,
+      "free_blocks": 5,
+      "guard_blocks": 0,
+      "kv_block_bytes": 147456,
+      "kv_bytes_per_token": 36864,
+      "kv_pool_reserved_bytes": 737280,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 2,
+      "physical_peak_bytes": 2207769600,
+      "physical_reserved_bytes": 2207757312,
+      "pipeline_buffer_breakdown": {
+        "incoming_inflight_bytes": 0,
+        "incoming_slice_backing_bytes": 0,
+        "max_padded_tokens": 8,
+        "outgoing_inflight_bytes": 81920,
+        "outgoing_retention_slack_bytes": 81920,
+        "persistent_input_copy_bytes": 0,
+        "scope": "native_pp_full_resident_per_rank_upper_bound"
+      },
+      "pipeline_buffer_reserved_bytes": 163840,
+      "pool_blocks": 5,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 0,
+      "tp_rank": 1,
+      "used_blocks": 0,
+      "weights_bytes": 2205807616,
+      "workspace_last_source": "workspace_profile",
+      "workspace_peak_bytes": 12288,
+      "workspace_profile_provenance": {
+        "attribution": {
+          "complete": true,
+          "excluded_categories": [
+            "weights",
+            "kv_pool",
+            "graphs",
+            "runtime",
+            "pp_buffers",
+            "communication_buffers"
+          ],
+          "includes_non_torch": true,
+          "method": "runtime_workspace_ledger_v1",
+          "scope": "exclusive_dynamic_workspace"
+        },
+        "domain_policy": "exact_only",
+        "method": "exact_rank_max_v1",
+        "origin_profile_path": "/tmp/mlsys-sim-tutorial/examples/v1_9/workspace.profile.fixture.json",
+        "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-workspace/workspace-profiles/replica-0.json",
+        "profile_id": "workspace-rank-max-fixture:workspace-fixture-v1",
+        "profile_sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "profile_version": "workspace-fixture-v1",
+        "scope": "replacement_for_dynamic_workspace_only",
+        "sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "sha256_scope": "file_bytes",
+        "snapshot_file": "workspace-profiles/replica-0.json",
+        "source_kind": "test_fixture",
+        "source_reference": "Hand-calculated complete per-rank Workspace fixture, including an observed zero; no GPU execution."
+      },
+      "workspace_source": "workspace_profile"
+    },
+    {
+      "allocatable_free_blocks": 5,
+      "budget_peak_bytes": 2208909312,
+      "device_id": "replica0-stage1-rank0",
+      "device_memory_bytes": 17179869184,
+      "fixed_budget_bytes": 2208892928,
+      "free_blocks": 5,
+      "guard_blocks": 0,
+      "kv_block_bytes": 147456,
+      "kv_bytes_per_token": 36864,
+      "kv_pool_reserved_bytes": 737280,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 2,
+      "physical_peak_bytes": 2207860736,
+      "physical_reserved_bytes": 2207844352,
+      "pipeline_buffer_breakdown": {
+        "incoming_inflight_bytes": 81920,
+        "incoming_slice_backing_bytes": 81920,
+        "max_padded_tokens": 8,
+        "outgoing_inflight_bytes": 0,
+        "outgoing_retention_slack_bytes": 0,
+        "persistent_input_copy_bytes": 81920,
+        "scope": "native_pp_full_resident_per_rank_upper_bound"
+      },
+      "pipeline_buffer_reserved_bytes": 245760,
+      "pool_blocks": 5,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 1,
+      "tp_rank": 0,
+      "used_blocks": 0,
+      "weights_bytes": 2205812736,
+      "workspace_last_source": "workspace_profile",
+      "workspace_peak_bytes": 16384,
+      "workspace_profile_provenance": {
+        "attribution": {
+          "complete": true,
+          "excluded_categories": [
+            "weights",
+            "kv_pool",
+            "graphs",
+            "runtime",
+            "pp_buffers",
+            "communication_buffers"
+          ],
+          "includes_non_torch": true,
+          "method": "runtime_workspace_ledger_v1",
+          "scope": "exclusive_dynamic_workspace"
+        },
+        "domain_policy": "exact_only",
+        "method": "exact_rank_max_v1",
+        "origin_profile_path": "/tmp/mlsys-sim-tutorial/examples/v1_9/workspace.profile.fixture.json",
+        "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-workspace/workspace-profiles/replica-0.json",
+        "profile_id": "workspace-rank-max-fixture:workspace-fixture-v1",
+        "profile_sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "profile_version": "workspace-fixture-v1",
+        "scope": "replacement_for_dynamic_workspace_only",
+        "sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "sha256_scope": "file_bytes",
+        "snapshot_file": "workspace-profiles/replica-0.json",
+        "source_kind": "test_fixture",
+        "source_reference": "Hand-calculated complete per-rank Workspace fixture, including an observed zero; no GPU execution."
+      },
+      "workspace_source": "workspace_profile"
+    },
+    {
+      "allocatable_free_blocks": 5,
+      "budget_peak_bytes": 2208917504,
+      "device_id": "replica0-stage1-rank1",
+      "device_memory_bytes": 17179869184,
+      "fixed_budget_bytes": 2208892928,
+      "free_blocks": 5,
+      "guard_blocks": 0,
+      "kv_block_bytes": 147456,
+      "kv_bytes_per_token": 36864,
+      "kv_pool_reserved_bytes": 737280,
+      "kv_used_bytes": 0,
+      "peak_used_blocks": 2,
+      "physical_peak_bytes": 2207868928,
+      "physical_reserved_bytes": 2207844352,
+      "pipeline_buffer_breakdown": {
+        "incoming_inflight_bytes": 81920,
+        "incoming_slice_backing_bytes": 81920,
+        "max_padded_tokens": 8,
+        "outgoing_inflight_bytes": 0,
+        "outgoing_retention_slack_bytes": 0,
+        "persistent_input_copy_bytes": 81920,
+        "scope": "native_pp_full_resident_per_rank_upper_bound"
+      },
+      "pipeline_buffer_reserved_bytes": 245760,
+      "pool_blocks": 5,
+      "pool_unusable_tail_bytes": 0,
+      "prefix_cached_blocks": 0,
+      "prefix_pinned_blocks": 0,
+      "prefix_shared_blocks": 0,
+      "private_blocks": 0,
+      "stage_index": 1,
+      "tp_rank": 1,
+      "used_blocks": 0,
+      "weights_bytes": 2205812736,
+      "workspace_last_source": "workspace_profile",
+      "workspace_peak_bytes": 24576,
+      "workspace_profile_provenance": {
+        "attribution": {
+          "complete": true,
+          "excluded_categories": [
+            "weights",
+            "kv_pool",
+            "graphs",
+            "runtime",
+            "pp_buffers",
+            "communication_buffers"
+          ],
+          "includes_non_torch": true,
+          "method": "runtime_workspace_ledger_v1",
+          "scope": "exclusive_dynamic_workspace"
+        },
+        "domain_policy": "exact_only",
+        "method": "exact_rank_max_v1",
+        "origin_profile_path": "/tmp/mlsys-sim-tutorial/examples/v1_9/workspace.profile.fixture.json",
+        "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/runs/course-all-20261120/ch3-workspace/workspace-profiles/replica-0.json",
+        "profile_id": "workspace-rank-max-fixture:workspace-fixture-v1",
+        "profile_sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "profile_version": "workspace-fixture-v1",
+        "scope": "replacement_for_dynamic_workspace_only",
+        "sha256": "25d996bdc7f289d9a181fc2a0cb5423e1a3ee68e7f9cb13db3e70f19de5f95c2",
+        "sha256_scope": "file_bytes",
+        "snapshot_file": "workspace-profiles/replica-0.json",
+        "source_kind": "test_fixture",
+        "source_reference": "Hand-calculated complete per-rank Workspace fixture, including an observed zero; no GPU execution."
+      },
+      "workspace_source": "workspace_profile"
+    }
+  ],
+  "pipeline": {
+    "activation_buffer_policy": "native full input copies, per-wave payload and retained slice backing upper bounds",
+    "communication_profile_provenance": {
+      "application": {
+        "explicit_native_boundary_only": true,
+        "no_global_infra_patch": true,
+        "no_local_stage_collectives": true,
+        "parent_parameters_reused": false
+      },
+      "benchmark": {
+        "allgather_bytes": "full_output",
+        "allocation_in_timing": false,
+        "backend": "nccl",
+        "barrier_in_timing": false,
+        "buffer_policy": "preallocated_out_of_place",
+        "launch": {
+          "hardware_executed": false,
+          "kind": "hand_calculated_test_fixture"
+        },
+        "p2p_direction": "unidirectional",
+        "protocol": "native_pp_primitives_v1",
+        "rank_reduction": "maximum_local_duration",
+        "stack": {
+          "hip_version": "fixture-only",
+          "kind": "hand_calculated_test_fixture",
+          "rccl_library_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "rccl_version": "fixture-only",
+          "torch_version": "fixture-only"
+        },
+        "startup_in_timing": false,
+        "timing_boundary": "synchronized_host_primitive_completion_v1",
+        "warmup_in_records": false
+      },
+      "origin_profile_path": "/tmp/mlsys-sim-tutorial/examples/v1_8/communication.profile.fixture.json",
+      "profile_id": "native-communication-train-fixture:native-comm-fixture-v1",
+      "profile_sha256": "ad056ce37e96240d0313e082089dfff447be7ff7e743c8fb84e713e6b1858cc5",
+      "profile_version": "native-comm-fixture-v1",
+      "protocol": "native_pp_primitives_v1",
+      "sha256_scope": "file_bytes",
+      "snapshot_file": "communication-profiles/replica-0.json",
+      "source_kind": "test_fixture",
+      "source_reference": "Hand-calculated independent primitive fixture; no GPU or network execution.",
+      "timing_boundary": "synchronized_host_primitive_completion_v1"
+    },
+    "feedback_latency_us": 0.0,
+    "idle_fraction": 0.506743366246339,
+    "idle_fraction_scope": "Includes arrival idle time, fill/drain, feedback and pressure stalls",
+    "inflight_microbatches": 0,
+    "links": [
+      {
+        "boundary": 0,
+        "busy_ms": 0.041013333333333346,
+        "completed_bytes": 51200
+      }
+    ],
+    "microbatches_admitted": 2,
+    "p2p_enabled": true,
+    "peak_inflight_microbatches": 1,
+    "pipeline_transport": "vllm_native",
+    "recovery_policy": "quiesce all waves before request eviction or DMA",
+    "stage_busy_ms": [
+      1.5,
+      1.5
+    ],
+    "stage_queue_wait_ms": [
+      0.0,
+      0.0
+    ],
+    "stage_utilization": [
+      0.4932566337536611,
+      0.4932566337536611
+    ],
+    "stages": 2,
+    "tensor_parallel_size": 2
+  },
+  "preemption_count": 0,
+  "prefill": {
+    "batch_policy": "decode_first_mixed_batches",
+    "chunk_token_limit": 4,
+    "chunked": true,
+    "completed_chunks": 1,
+    "computed_tokens": 4,
+    "reused_prefix_tokens": 0
+  },
+  "prefix_cache": {
+    "abandoned_hit_tokens": 0,
+    "abandoned_lookups": 0,
+    "attached_block_references": 0,
+    "block_tokens": 4,
+    "bypassed_requests": 1,
+    "cached_blocks": 0,
+    "capacity_blocks": 8,
+    "deduplicated_blocks": 0,
+    "enabled": true,
+    "entries": [],
+    "evictable_blocks": 0,
+    "evicted_blocks": 0,
+    "hit_rate": null,
+    "hit_requests": 0,
+    "hit_tokens": 0,
+    "identity": "sha256_parent_digest_and_unsigned_8byte_big_endian_block_token_ids",
+    "lookup_requests": 1,
+    "miss_requests": 0,
+    "peak_cached_blocks": 0,
+    "pinned_blocks": 0,
+    "policy": "full_prompt_blocks_sha256_ancestry_and_namespace_lru_unreferenced_only",
+    "private_blocks": 0,
+    "published_blocks": 0,
+    "shared_blocks": 0
+  },
+  "profile_provenance": null,
+  "profile_version": "uncalibrated-v1",
+  "quality_status": "not_evaluated",
+  "recompute_execution_ms": 0.0,
+  "recomputed_tokens": 0,
+  "simulated_ms": 3.0410133333333333,
+  "sla_satisfied": null,
+  "status": "COMPLETED",
+  "swap": {
+    "block_aligned_kv_bytes": true,
+    "busy_until_ms": 0.0,
+    "cancelled_transfer_bytes": 0,
+    "completed_bytes_by_direction": {
+      "D2H": 0,
+      "H2D": 0
+    },
+    "completed_dma_busy_ms": 0.0,
+    "completed_transfers_by_direction": {
+      "D2H": 0,
+      "H2D": 0
+    },
+    "dma_busy_ms": 0.0,
+    "entries": [],
+    "host_capacity_bytes": 67108864,
+    "host_free_bytes": 67108864,
+    "host_peak_reserved_bytes": 0,
+    "host_reserved_bytes": 0,
+    "model": "serialized_bidirectional_dma_no_early_buffer_reuse",
+    "pending_transferred_bytes_by_direction": {
+      "D2H": 0.0,
+      "H2D": 0.0
+    },
+    "pending_transfers": [],
+    "source": "analytical_assumption"
+  },
+  "throughput": {
+    "output_tokens_per_s": 657.6755116715481,
+    "requests_per_s": 328.83775583577403,
+    "window_ms": 3.0410133333333333,
+    "window_rule": "zero_to_simulation_end"
+  },
+  "warmup": {
+    "cache_effect": "none; measured run starts with empty KV",
+    "enabled": false,
+    "status": "NOT_REQUESTED"
+  }
+}

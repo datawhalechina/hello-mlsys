@@ -1,0 +1,1606 @@
+{
+  "run_id": "ch5-ledger-20261120",
+  "env": {
+    "timestamp_utc": "2026-11-20T05:49:01Z",
+    "python": "3.13.11",
+    "os": "Linux-6.14.0-37-generic-x86_64-with-glibc2.41",
+    "gpus": [
+      {
+        "name": "AMD Radeon RX 7900 XTX",
+        "arch": "gfx1100",
+        "vram_gib": 23.98
+      },
+      {
+        "name": "AMD Radeon RX 9070 XT",
+        "arch": "gfx1201",
+        "vram_gib": 15.92
+      }
+    ],
+    "driver": "6.16.13",
+    "p2p_link_line": "GPU1   PCIE         0"
+  },
+  "topologies": {
+    "pcie4_x16": "PCIe 4.0 x16：31.5 GB/s 单向 raw（16 GT/s×16 lane，128b/130b），取 ~79% 有效；α 取 PCIe doorbell+传输启动典型 2 µs/跳",
+    "xgmi_ring": "AMD xGMI 环网（MI300 类公开参数：8 链 × 64 GB/s 双向/链），α 取 1 µs/跳（片上网络级）",
+    "roce100g": "100 Gbps RoCEv2 跨节点：12.5 GB/s raw，取 ~88% 有效；α 含 RDMA 发送+确认+协议栈，取 2 µs/跳",
+    "nvlink300": "NVLink（Feishu 指定 300 GB/s，对应 A100 单向口径）；α 取 1 µs/跳"
+  },
+  "curves": {
+    "pcie4_x16_P2": {
+      "alpha_us": 2.0,
+      "bw_gbps": 25.0,
+      "crossover_kb": 97.66,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.00404096,
+          "t_allgather_ms": 0.00202048,
+          "latency_share": 0.9899
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.00408192,
+          "t_allgather_ms": 0.00204096,
+          "latency_share": 0.9799
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.00416384,
+          "t_allgather_ms": 0.00208192,
+          "latency_share": 0.9607
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.00432768,
+          "t_allgather_ms": 0.00216384,
+          "latency_share": 0.9243
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.00465536,
+          "t_allgather_ms": 0.00232768,
+          "latency_share": 0.8592
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.00531072,
+          "t_allgather_ms": 0.00265536,
+          "latency_share": 0.7532
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.00662144,
+          "t_allgather_ms": 0.00331072,
+          "latency_share": 0.6041
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.00924288,
+          "t_allgather_ms": 0.00462144,
+          "latency_share": 0.4328
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.01448576,
+          "t_allgather_ms": 0.00724288,
+          "latency_share": 0.2761
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.02497152,
+          "t_allgather_ms": 0.01248576,
+          "latency_share": 0.1602
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.04594304,
+          "t_allgather_ms": 0.02297152,
+          "latency_share": 0.0871
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.08788608,
+          "t_allgather_ms": 0.04394304,
+          "latency_share": 0.0455
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.17177216,
+          "t_allgather_ms": 0.08588608,
+          "latency_share": 0.0233
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 0.33954432,
+          "t_allgather_ms": 0.16977216,
+          "latency_share": 0.0118
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 0.67508864,
+          "t_allgather_ms": 0.33754432,
+          "latency_share": 0.0059
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 1.34617728,
+          "t_allgather_ms": 0.67308864,
+          "latency_share": 0.003
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 2.68835456,
+          "t_allgather_ms": 1.34417728,
+          "latency_share": 0.0015
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 5.37270912,
+          "t_allgather_ms": 2.68635456,
+          "latency_share": 0.0007
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 10.74141824,
+          "t_allgather_ms": 5.37070912,
+          "latency_share": 0.0004
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 21.47883648,
+          "t_allgather_ms": 10.73941824,
+          "latency_share": 0.0002
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 42.95367296,
+          "t_allgather_ms": 21.47683648,
+          "latency_share": 0.0001
+        }
+      ]
+    },
+    "pcie4_x16_P4": {
+      "alpha_us": 2.0,
+      "bw_gbps": 25.0,
+      "crossover_kb": 195.31,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.01206144,
+          "t_allgather_ms": 0.00603072,
+          "latency_share": 0.9949
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.01212288,
+          "t_allgather_ms": 0.00606144,
+          "latency_share": 0.9899
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.01224576,
+          "t_allgather_ms": 0.00612288,
+          "latency_share": 0.9799
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.01249152,
+          "t_allgather_ms": 0.00624576,
+          "latency_share": 0.9607
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.01298304,
+          "t_allgather_ms": 0.00649152,
+          "latency_share": 0.9243
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.01396608,
+          "t_allgather_ms": 0.00698304,
+          "latency_share": 0.8592
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.01593216,
+          "t_allgather_ms": 0.00796608,
+          "latency_share": 0.7532
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.01986432,
+          "t_allgather_ms": 0.00993216,
+          "latency_share": 0.6041
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.02772864,
+          "t_allgather_ms": 0.01386432,
+          "latency_share": 0.4328
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.04345728,
+          "t_allgather_ms": 0.02172864,
+          "latency_share": 0.2761
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.07491456,
+          "t_allgather_ms": 0.03745728,
+          "latency_share": 0.1602
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.13782912,
+          "t_allgather_ms": 0.06891456,
+          "latency_share": 0.0871
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.26365824,
+          "t_allgather_ms": 0.13182912,
+          "latency_share": 0.0455
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 0.51531648,
+          "t_allgather_ms": 0.25765824,
+          "latency_share": 0.0233
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 1.01863296,
+          "t_allgather_ms": 0.50931648,
+          "latency_share": 0.0118
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 2.02526592,
+          "t_allgather_ms": 1.01263296,
+          "latency_share": 0.0059
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 4.03853184,
+          "t_allgather_ms": 2.01926592,
+          "latency_share": 0.003
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 8.06506368,
+          "t_allgather_ms": 4.03253184,
+          "latency_share": 0.0015
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 16.11812736,
+          "t_allgather_ms": 8.05906368,
+          "latency_share": 0.0007
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 32.22425472,
+          "t_allgather_ms": 16.11212736,
+          "latency_share": 0.0004
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 64.43650944,
+          "t_allgather_ms": 32.21825472,
+          "latency_share": 0.0002
+        }
+      ]
+    },
+    "xgmi_ring_P2": {
+      "alpha_us": 1.0,
+      "bw_gbps": 64.0,
+      "crossover_kb": 125.0,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.002016,
+          "t_allgather_ms": 0.001008,
+          "latency_share": 0.9921
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.002032,
+          "t_allgather_ms": 0.001016,
+          "latency_share": 0.9843
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.002064,
+          "t_allgather_ms": 0.001032,
+          "latency_share": 0.969
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.002128,
+          "t_allgather_ms": 0.001064,
+          "latency_share": 0.9398
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.002256,
+          "t_allgather_ms": 0.001128,
+          "latency_share": 0.8865
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.002512,
+          "t_allgather_ms": 0.001256,
+          "latency_share": 0.7962
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.003024,
+          "t_allgather_ms": 0.001512,
+          "latency_share": 0.6614
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.004048,
+          "t_allgather_ms": 0.002024,
+          "latency_share": 0.4941
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.006096,
+          "t_allgather_ms": 0.003048,
+          "latency_share": 0.3281
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.010192,
+          "t_allgather_ms": 0.005096,
+          "latency_share": 0.1962
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.018384,
+          "t_allgather_ms": 0.009192,
+          "latency_share": 0.1088
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.034768,
+          "t_allgather_ms": 0.017384,
+          "latency_share": 0.0575
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.067536,
+          "t_allgather_ms": 0.033768,
+          "latency_share": 0.0296
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 0.133072,
+          "t_allgather_ms": 0.066536,
+          "latency_share": 0.015
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 0.264144,
+          "t_allgather_ms": 0.132072,
+          "latency_share": 0.0076
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 0.526288,
+          "t_allgather_ms": 0.263144,
+          "latency_share": 0.0038
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 1.050576,
+          "t_allgather_ms": 0.525288,
+          "latency_share": 0.0019
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 2.099152,
+          "t_allgather_ms": 1.049576,
+          "latency_share": 0.001
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 4.196304,
+          "t_allgather_ms": 2.098152,
+          "latency_share": 0.0005
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 8.390608,
+          "t_allgather_ms": 4.195304,
+          "latency_share": 0.0002
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 16.779216,
+          "t_allgather_ms": 8.389608,
+          "latency_share": 0.0001
+        }
+      ]
+    },
+    "xgmi_ring_P4": {
+      "alpha_us": 1.0,
+      "bw_gbps": 64.0,
+      "crossover_kb": 250.0,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.006024,
+          "t_allgather_ms": 0.003012,
+          "latency_share": 0.996
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.006048,
+          "t_allgather_ms": 0.003024,
+          "latency_share": 0.9921
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.006096,
+          "t_allgather_ms": 0.003048,
+          "latency_share": 0.9843
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.006192,
+          "t_allgather_ms": 0.003096,
+          "latency_share": 0.969
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.006384,
+          "t_allgather_ms": 0.003192,
+          "latency_share": 0.9398
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.006768,
+          "t_allgather_ms": 0.003384,
+          "latency_share": 0.8865
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.007536,
+          "t_allgather_ms": 0.003768,
+          "latency_share": 0.7962
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.009072,
+          "t_allgather_ms": 0.004536,
+          "latency_share": 0.6614
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.012144,
+          "t_allgather_ms": 0.006072,
+          "latency_share": 0.4941
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.018288,
+          "t_allgather_ms": 0.009144,
+          "latency_share": 0.3281
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.030576,
+          "t_allgather_ms": 0.015288,
+          "latency_share": 0.1962
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.055152,
+          "t_allgather_ms": 0.027576,
+          "latency_share": 0.1088
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.104304,
+          "t_allgather_ms": 0.052152,
+          "latency_share": 0.0575
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 0.202608,
+          "t_allgather_ms": 0.101304,
+          "latency_share": 0.0296
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 0.399216,
+          "t_allgather_ms": 0.199608,
+          "latency_share": 0.015
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 0.792432,
+          "t_allgather_ms": 0.396216,
+          "latency_share": 0.0076
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 1.578864,
+          "t_allgather_ms": 0.789432,
+          "latency_share": 0.0038
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 3.151728,
+          "t_allgather_ms": 1.575864,
+          "latency_share": 0.0019
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 6.297456,
+          "t_allgather_ms": 3.148728,
+          "latency_share": 0.001
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 12.588912,
+          "t_allgather_ms": 6.294456,
+          "latency_share": 0.0005
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 25.171824,
+          "t_allgather_ms": 12.585912,
+          "latency_share": 0.0002
+        }
+      ]
+    },
+    "roce100g_P2": {
+      "alpha_us": 2.0,
+      "bw_gbps": 11.0,
+      "crossover_kb": 42.97,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.004093091,
+          "t_allgather_ms": 0.002046545,
+          "latency_share": 0.9773
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.004186182,
+          "t_allgather_ms": 0.002093091,
+          "latency_share": 0.9555
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.004372364,
+          "t_allgather_ms": 0.002186182,
+          "latency_share": 0.9148
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.004744727,
+          "t_allgather_ms": 0.002372364,
+          "latency_share": 0.843
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.005489455,
+          "t_allgather_ms": 0.002744727,
+          "latency_share": 0.7287
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.006978909,
+          "t_allgather_ms": 0.003489455,
+          "latency_share": 0.5732
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.009957818,
+          "t_allgather_ms": 0.004978909,
+          "latency_share": 0.4017
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.015915636,
+          "t_allgather_ms": 0.007957818,
+          "latency_share": 0.2513
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.027831273,
+          "t_allgather_ms": 0.013915636,
+          "latency_share": 0.1437
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.051662545,
+          "t_allgather_ms": 0.025831273,
+          "latency_share": 0.0774
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.099325091,
+          "t_allgather_ms": 0.049662545,
+          "latency_share": 0.0403
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.194650182,
+          "t_allgather_ms": 0.097325091,
+          "latency_share": 0.0205
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.385300364,
+          "t_allgather_ms": 0.192650182,
+          "latency_share": 0.0104
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 0.766600727,
+          "t_allgather_ms": 0.383300364,
+          "latency_share": 0.0052
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 1.529201455,
+          "t_allgather_ms": 0.764600727,
+          "latency_share": 0.0026
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 3.054402909,
+          "t_allgather_ms": 1.527201455,
+          "latency_share": 0.0013
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 6.104805818,
+          "t_allgather_ms": 3.052402909,
+          "latency_share": 0.0007
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 12.205611636,
+          "t_allgather_ms": 6.102805818,
+          "latency_share": 0.0003
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 24.407223273,
+          "t_allgather_ms": 12.203611636,
+          "latency_share": 0.0002
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 48.810446545,
+          "t_allgather_ms": 24.405223273,
+          "latency_share": 0.0001
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 97.616893091,
+          "t_allgather_ms": 48.808446545,
+          "latency_share": 0.0
+        }
+      ]
+    },
+    "roce100g_P4": {
+      "alpha_us": 2.0,
+      "bw_gbps": 11.0,
+      "crossover_kb": 85.94,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.012139636,
+          "t_allgather_ms": 0.006069818,
+          "latency_share": 0.9885
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.012279273,
+          "t_allgather_ms": 0.006139636,
+          "latency_share": 0.9773
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.012558545,
+          "t_allgather_ms": 0.006279273,
+          "latency_share": 0.9555
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.013117091,
+          "t_allgather_ms": 0.006558545,
+          "latency_share": 0.9148
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.014234182,
+          "t_allgather_ms": 0.007117091,
+          "latency_share": 0.843
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.016468364,
+          "t_allgather_ms": 0.008234182,
+          "latency_share": 0.7287
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.020936727,
+          "t_allgather_ms": 0.010468364,
+          "latency_share": 0.5732
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.029873455,
+          "t_allgather_ms": 0.014936727,
+          "latency_share": 0.4017
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.047746909,
+          "t_allgather_ms": 0.023873455,
+          "latency_share": 0.2513
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.083493818,
+          "t_allgather_ms": 0.041746909,
+          "latency_share": 0.1437
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.154987636,
+          "t_allgather_ms": 0.077493818,
+          "latency_share": 0.0774
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.297975273,
+          "t_allgather_ms": 0.148987636,
+          "latency_share": 0.0403
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.583950545,
+          "t_allgather_ms": 0.291975273,
+          "latency_share": 0.0205
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 1.155901091,
+          "t_allgather_ms": 0.577950545,
+          "latency_share": 0.0104
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 2.299802182,
+          "t_allgather_ms": 1.149901091,
+          "latency_share": 0.0052
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 4.587604364,
+          "t_allgather_ms": 2.293802182,
+          "latency_share": 0.0026
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 9.163208727,
+          "t_allgather_ms": 4.581604364,
+          "latency_share": 0.0013
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 18.314417455,
+          "t_allgather_ms": 9.157208727,
+          "latency_share": 0.0007
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 36.616834909,
+          "t_allgather_ms": 18.308417455,
+          "latency_share": 0.0003
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 73.221669818,
+          "t_allgather_ms": 36.610834909,
+          "latency_share": 0.0002
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 146.431339636,
+          "t_allgather_ms": 73.215669818,
+          "latency_share": 0.0001
+        }
+      ]
+    },
+    "nvlink300_P2": {
+      "alpha_us": 1.0,
+      "bw_gbps": 300.0,
+      "crossover_kb": 585.94,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.002003413,
+          "t_allgather_ms": 0.001001707,
+          "latency_share": 0.9983
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.002006827,
+          "t_allgather_ms": 0.001003413,
+          "latency_share": 0.9966
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.002013653,
+          "t_allgather_ms": 0.001006827,
+          "latency_share": 0.9932
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.002027307,
+          "t_allgather_ms": 0.001013653,
+          "latency_share": 0.9865
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.002054613,
+          "t_allgather_ms": 0.001027307,
+          "latency_share": 0.9734
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.002109227,
+          "t_allgather_ms": 0.001054613,
+          "latency_share": 0.9482
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.002218453,
+          "t_allgather_ms": 0.001109227,
+          "latency_share": 0.9015
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.002436907,
+          "t_allgather_ms": 0.001218453,
+          "latency_share": 0.8207
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.002873813,
+          "t_allgather_ms": 0.001436907,
+          "latency_share": 0.6959
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.003747627,
+          "t_allgather_ms": 0.001873813,
+          "latency_share": 0.5337
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.005495253,
+          "t_allgather_ms": 0.002747627,
+          "latency_share": 0.364
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.008990507,
+          "t_allgather_ms": 0.004495253,
+          "latency_share": 0.2225
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.015981013,
+          "t_allgather_ms": 0.007990507,
+          "latency_share": 0.1251
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 0.029962027,
+          "t_allgather_ms": 0.014981013,
+          "latency_share": 0.0668
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 0.057924053,
+          "t_allgather_ms": 0.028962027,
+          "latency_share": 0.0345
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 0.113848107,
+          "t_allgather_ms": 0.056924053,
+          "latency_share": 0.0176
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 0.225696213,
+          "t_allgather_ms": 0.112848107,
+          "latency_share": 0.0089
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 0.449392427,
+          "t_allgather_ms": 0.224696213,
+          "latency_share": 0.0045
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 0.896784853,
+          "t_allgather_ms": 0.448392427,
+          "latency_share": 0.0022
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 1.791569707,
+          "t_allgather_ms": 0.895784853,
+          "latency_share": 0.0011
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 3.581139413,
+          "t_allgather_ms": 1.790569707,
+          "latency_share": 0.0006
+        }
+      ]
+    },
+    "nvlink300_P4": {
+      "alpha_us": 1.0,
+      "bw_gbps": 300.0,
+      "crossover_kb": 1171.88,
+      "points": [
+        {
+          "msg_kb": 1,
+          "t_ar_ms": 0.00600512,
+          "t_allgather_ms": 0.00300256,
+          "latency_share": 0.9991
+        },
+        {
+          "msg_kb": 2,
+          "t_ar_ms": 0.00601024,
+          "t_allgather_ms": 0.00300512,
+          "latency_share": 0.9983
+        },
+        {
+          "msg_kb": 4,
+          "t_ar_ms": 0.00602048,
+          "t_allgather_ms": 0.00301024,
+          "latency_share": 0.9966
+        },
+        {
+          "msg_kb": 8,
+          "t_ar_ms": 0.00604096,
+          "t_allgather_ms": 0.00302048,
+          "latency_share": 0.9932
+        },
+        {
+          "msg_kb": 16,
+          "t_ar_ms": 0.00608192,
+          "t_allgather_ms": 0.00304096,
+          "latency_share": 0.9865
+        },
+        {
+          "msg_kb": 32,
+          "t_ar_ms": 0.00616384,
+          "t_allgather_ms": 0.00308192,
+          "latency_share": 0.9734
+        },
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.00632768,
+          "t_allgather_ms": 0.00316384,
+          "latency_share": 0.9482
+        },
+        {
+          "msg_kb": 128,
+          "t_ar_ms": 0.00665536,
+          "t_allgather_ms": 0.00332768,
+          "latency_share": 0.9015
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.00731072,
+          "t_allgather_ms": 0.00365536,
+          "latency_share": 0.8207
+        },
+        {
+          "msg_kb": 512,
+          "t_ar_ms": 0.00862144,
+          "t_allgather_ms": 0.00431072,
+          "latency_share": 0.6959
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.01124288,
+          "t_allgather_ms": 0.00562144,
+          "latency_share": 0.5337
+        },
+        {
+          "msg_kb": 2048,
+          "t_ar_ms": 0.01648576,
+          "t_allgather_ms": 0.00824288,
+          "latency_share": 0.364
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.02697152,
+          "t_allgather_ms": 0.01348576,
+          "latency_share": 0.2225
+        },
+        {
+          "msg_kb": 8192,
+          "t_ar_ms": 0.04794304,
+          "t_allgather_ms": 0.02397152,
+          "latency_share": 0.1251
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 0.08988608,
+          "t_allgather_ms": 0.04494304,
+          "latency_share": 0.0668
+        },
+        {
+          "msg_kb": 32768,
+          "t_ar_ms": 0.17377216,
+          "t_allgather_ms": 0.08688608,
+          "latency_share": 0.0345
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 0.34154432,
+          "t_allgather_ms": 0.17077216,
+          "latency_share": 0.0176
+        },
+        {
+          "msg_kb": 131072,
+          "t_ar_ms": 0.67708864,
+          "t_allgather_ms": 0.33854432,
+          "latency_share": 0.0089
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 1.34817728,
+          "t_allgather_ms": 0.67408864,
+          "latency_share": 0.0045
+        },
+        {
+          "msg_kb": 524288,
+          "t_ar_ms": 2.69035456,
+          "t_allgather_ms": 1.34517728,
+          "latency_share": 0.0022
+        },
+        {
+          "msg_kb": 1048576,
+          "t_ar_ms": 5.37470912,
+          "t_allgather_ms": 2.68735456,
+          "latency_share": 0.0011
+        }
+      ]
+    }
+  },
+  "tp_layer_share": {
+    "model": "Qwen3-1.7B",
+    "hidden": 2048,
+    "n_layers": 28,
+    "bytes_elem": 2,
+    "rows": [
+      {
+        "tokens": 64,
+        "tp": 2,
+        "payload_mb": 0.25,
+        "t_comp_ms": 0.0353,
+        "pcie4_x16": {
+          "t_2ar_ms": 0.029,
+          "comm_share_pct": 82.12
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.0122,
+          "comm_share_pct": 34.56
+        },
+        "roce100g": {
+          "t_2ar_ms": 0.0557,
+          "comm_share_pct": 157.77
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.0057,
+          "comm_share_pct": 16.29
+        }
+      },
+      {
+        "tokens": 64,
+        "tp": 4,
+        "payload_mb": 0.25,
+        "t_comp_ms": 0.0176,
+        "pcie4_x16": {
+          "t_2ar_ms": 0.0555,
+          "comm_share_pct": 314.38
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.0243,
+          "comm_share_pct": 137.69
+        },
+        "roce100g": {
+          "t_2ar_ms": 0.0955,
+          "comm_share_pct": 541.34
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.0146,
+          "comm_share_pct": 82.89
+        }
+      },
+      {
+        "tokens": 256,
+        "tp": 2,
+        "payload_mb": 1.0,
+        "t_comp_ms": 0.1411,
+        "pcie4_x16": {
+          "t_2ar_ms": 0.0919,
+          "comm_share_pct": 65.11
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.0368,
+          "comm_share_pct": 26.05
+        },
+        "roce100g": {
+          "t_2ar_ms": 0.1987,
+          "comm_share_pct": 140.77
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.011,
+          "comm_share_pct": 7.79
+        }
+      },
+      {
+        "tokens": 256,
+        "tp": 4,
+        "payload_mb": 1.0,
+        "t_comp_ms": 0.0706,
+        "pcie4_x16": {
+          "t_2ar_ms": 0.1498,
+          "comm_share_pct": 212.34
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.0612,
+          "comm_share_pct": 86.67
+        },
+        "roce100g": {
+          "t_2ar_ms": 0.31,
+          "comm_share_pct": 439.3
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.0225,
+          "comm_share_pct": 31.87
+        }
+      },
+      {
+        "tokens": 1024,
+        "tp": 2,
+        "payload_mb": 4.0,
+        "t_comp_ms": 0.5645,
+        "pcie4_x16": {
+          "t_2ar_ms": 0.3435,
+          "comm_share_pct": 60.86
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.1351,
+          "comm_share_pct": 23.93
+        },
+        "roce100g": {
+          "t_2ar_ms": 0.7706,
+          "comm_share_pct": 136.51
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.032,
+          "comm_share_pct": 5.66
+        }
+      },
+      {
+        "tokens": 1024,
+        "tp": 4,
+        "payload_mb": 4.0,
+        "t_comp_ms": 0.2822,
+        "pcie4_x16": {
+          "t_2ar_ms": 0.5273,
+          "comm_share_pct": 186.83
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.2086,
+          "comm_share_pct": 73.91
+        },
+        "roce100g": {
+          "t_2ar_ms": 1.1679,
+          "comm_share_pct": 413.79
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.0539,
+          "comm_share_pct": 19.11
+        }
+      },
+      {
+        "tokens": 4096,
+        "tp": 2,
+        "payload_mb": 16.0,
+        "t_comp_ms": 2.2579,
+        "pcie4_x16": {
+          "t_2ar_ms": 1.3502,
+          "comm_share_pct": 59.8
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.5283,
+          "comm_share_pct": 23.4
+        },
+        "roce100g": {
+          "t_2ar_ms": 3.0584,
+          "comm_share_pct": 135.45
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.1158,
+          "comm_share_pct": 5.13
+        }
+      },
+      {
+        "tokens": 4096,
+        "tp": 4,
+        "payload_mb": 16.0,
+        "t_comp_ms": 1.129,
+        "pcie4_x16": {
+          "t_2ar_ms": 2.0373,
+          "comm_share_pct": 180.45
+        },
+        "xgmi_ring": {
+          "t_2ar_ms": 0.7984,
+          "comm_share_pct": 70.72
+        },
+        "roce100g": {
+          "t_2ar_ms": 4.5996,
+          "comm_share_pct": 407.42
+        },
+        "nvlink300": {
+          "t_2ar_ms": 0.1798,
+          "comm_share_pct": 15.92
+        }
+      }
+    ]
+  },
+  "nvlink_gain": {
+    "tp": 2,
+    "per_topology": {
+      "pcie4_x16": {
+        "max_speedup": 11.994,
+        "speedup_at_1kb": 2.017,
+        "speedup_at_1gb": 11.994,
+        "points": [
+          {
+            "msg_kb": 1,
+            "speedup": 2.017
+          },
+          {
+            "msg_kb": 2,
+            "speedup": 2.034
+          },
+          {
+            "msg_kb": 4,
+            "speedup": 2.068
+          },
+          {
+            "msg_kb": 8,
+            "speedup": 2.135
+          },
+          {
+            "msg_kb": 16,
+            "speedup": 2.266
+          },
+          {
+            "msg_kb": 32,
+            "speedup": 2.518
+          },
+          {
+            "msg_kb": 64,
+            "speedup": 2.985
+          },
+          {
+            "msg_kb": 128,
+            "speedup": 3.793
+          },
+          {
+            "msg_kb": 256,
+            "speedup": 5.041
+          },
+          {
+            "msg_kb": 512,
+            "speedup": 6.663
+          },
+          {
+            "msg_kb": 1024,
+            "speedup": 8.36
+          },
+          {
+            "msg_kb": 2048,
+            "speedup": 9.775
+          },
+          {
+            "msg_kb": 4096,
+            "speedup": 10.749
+          },
+          {
+            "msg_kb": 8192,
+            "speedup": 11.332
+          },
+          {
+            "msg_kb": 16384,
+            "speedup": 11.655
+          },
+          {
+            "msg_kb": 32768,
+            "speedup": 11.824
+          },
+          {
+            "msg_kb": 65536,
+            "speedup": 11.911
+          },
+          {
+            "msg_kb": 131072,
+            "speedup": 11.955
+          },
+          {
+            "msg_kb": 262144,
+            "speedup": 11.978
+          },
+          {
+            "msg_kb": 524288,
+            "speedup": 11.989
+          },
+          {
+            "msg_kb": 1048576,
+            "speedup": 11.994
+          }
+        ]
+      },
+      "xgmi_ring": {
+        "max_speedup": 4.685,
+        "speedup_at_1kb": 1.006,
+        "speedup_at_1gb": 4.685,
+        "points": [
+          {
+            "msg_kb": 1,
+            "speedup": 1.006
+          },
+          {
+            "msg_kb": 2,
+            "speedup": 1.013
+          },
+          {
+            "msg_kb": 4,
+            "speedup": 1.025
+          },
+          {
+            "msg_kb": 8,
+            "speedup": 1.05
+          },
+          {
+            "msg_kb": 16,
+            "speedup": 1.098
+          },
+          {
+            "msg_kb": 32,
+            "speedup": 1.191
+          },
+          {
+            "msg_kb": 64,
+            "speedup": 1.363
+          },
+          {
+            "msg_kb": 128,
+            "speedup": 1.661
+          },
+          {
+            "msg_kb": 256,
+            "speedup": 2.121
+          },
+          {
+            "msg_kb": 512,
+            "speedup": 2.72
+          },
+          {
+            "msg_kb": 1024,
+            "speedup": 3.345
+          },
+          {
+            "msg_kb": 2048,
+            "speedup": 3.867
+          },
+          {
+            "msg_kb": 4096,
+            "speedup": 4.226
+          },
+          {
+            "msg_kb": 8192,
+            "speedup": 4.441
+          },
+          {
+            "msg_kb": 16384,
+            "speedup": 4.56
+          },
+          {
+            "msg_kb": 32768,
+            "speedup": 4.623
+          },
+          {
+            "msg_kb": 65536,
+            "speedup": 4.655
+          },
+          {
+            "msg_kb": 131072,
+            "speedup": 4.671
+          },
+          {
+            "msg_kb": 262144,
+            "speedup": 4.679
+          },
+          {
+            "msg_kb": 524288,
+            "speedup": 4.683
+          },
+          {
+            "msg_kb": 1048576,
+            "speedup": 4.685
+          }
+        ]
+      },
+      "roce100g": {
+        "max_speedup": 27.259,
+        "speedup_at_1kb": 2.043,
+        "speedup_at_1gb": 27.259,
+        "points": [
+          {
+            "msg_kb": 1,
+            "speedup": 2.043
+          },
+          {
+            "msg_kb": 2,
+            "speedup": 2.086
+          },
+          {
+            "msg_kb": 4,
+            "speedup": 2.171
+          },
+          {
+            "msg_kb": 8,
+            "speedup": 2.34
+          },
+          {
+            "msg_kb": 16,
+            "speedup": 2.672
+          },
+          {
+            "msg_kb": 32,
+            "speedup": 3.309
+          },
+          {
+            "msg_kb": 64,
+            "speedup": 4.489
+          },
+          {
+            "msg_kb": 128,
+            "speedup": 6.531
+          },
+          {
+            "msg_kb": 256,
+            "speedup": 9.684
+          },
+          {
+            "msg_kb": 512,
+            "speedup": 13.785
+          },
+          {
+            "msg_kb": 1024,
+            "speedup": 18.075
+          },
+          {
+            "msg_kb": 2048,
+            "speedup": 21.651
+          },
+          {
+            "msg_kb": 4096,
+            "speedup": 24.11
+          },
+          {
+            "msg_kb": 8192,
+            "speedup": 25.586
+          },
+          {
+            "msg_kb": 16384,
+            "speedup": 26.4
+          },
+          {
+            "msg_kb": 32768,
+            "speedup": 26.829
+          },
+          {
+            "msg_kb": 65536,
+            "speedup": 27.049
+          },
+          {
+            "msg_kb": 131072,
+            "speedup": 27.16
+          },
+          {
+            "msg_kb": 262144,
+            "speedup": 27.216
+          },
+          {
+            "msg_kb": 524288,
+            "speedup": 27.245
+          },
+          {
+            "msg_kb": 1048576,
+            "speedup": 27.259
+          }
+        ]
+      }
+    }
+  },
+  "realhw_predictions": {
+    "pcie1hop_h2d_d2h": {
+      "bw_gbps_upper": 25.0,
+      "engineering_band_gbps": [
+        20.0,
+        25.0
+      ]
+    },
+    "dual_gpu_2hop_ring_ar": {
+      "p": 2,
+      "alpha_eff_us": 4.0,
+      "bw_eff_gbps": 25.0,
+      "predictions_ms": [
+        {
+          "msg_kb": 64,
+          "t_ar_ms": 0.010621
+        },
+        {
+          "msg_kb": 256,
+          "t_ar_ms": 0.018486
+        },
+        {
+          "msg_kb": 1024,
+          "t_ar_ms": 0.049943
+        },
+        {
+          "msg_kb": 4096,
+          "t_ar_ms": 0.175772
+        },
+        {
+          "msg_kb": 16384,
+          "t_ar_ms": 0.679089
+        },
+        {
+          "msg_kb": 65536,
+          "t_ar_ms": 2.692355
+        },
+        {
+          "msg_kb": 262144,
+          "t_ar_ms": 10.745418
+        }
+      ]
+    }
+  },
+  "msysim_crosscheck": {
+    "msysim_commit": "83f03da 2026-11-19 11:07:40 +0800",
+    "points_checked": 48,
+    "max_rel_err": 2.1477154875876962e-16,
+    "formula": "T_ms=2*(P-1)*alpha_us/1000+2*(P-1)/P*msg_bytes/(bw_gbps*1e6)"
+  }
+}
