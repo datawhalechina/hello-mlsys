@@ -1,0 +1,279 @@
+{
+  "generated_at": "2026-11-23T03:55:56Z",
+  "run_started_at": "2026-11-23T03:47:07Z",
+  "framework": "llamacpp",
+  "framework_version": "llama.cpp b1-3ed7284, ROCm 10.1",
+  "base_url": "http://127.0.0.1:18002",
+  "model": "qwen3-4b",
+  "server_command": "llama-server -m /app/gguf/qwen3-4b-f16.gguf --n-gpu-layers 999 --parallel 64 --ctx-size 32768 --flash-attn on --no-cache-prompt --metrics --perf",
+  "note": "AMD Radeon RX 7900 XTX GPU0; F16 GGUF; continuous batching; prompt cache disabled; 64 slots x 512 ctx",
+  "contract": {
+    "protocol": "OpenAI-compatible /v1/completions streaming SSE",
+    "prompt": "random token ids, same IDs for every framework",
+    "input_tokens": 256,
+    "output_tokens": 128,
+    "num_prompts_per_point": 200,
+    "warmup_per_point": 2,
+    "seed": 42,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "ignore_eos": true,
+    "request_timeout_s": 300.0,
+    "gpu_index_for_vram": 0,
+    "ttft": "first non-empty SSE token minus HTTP send",
+    "tpot": "(last token arrival - first token arrival)/(stream chunks-1)",
+    "e2e": "last SSE chunk/[DONE] minus HTTP send",
+    "slo": {
+      "ttft_p99_ms": 800.0,
+      "tpot_p99_ms": 100.0,
+      "e2el_p99_ms": 15000.0,
+      "failure_rate_max": 0.01
+    }
+  },
+  "host": {
+    "hostname": "z-lab-7900",
+    "python": "3.13.11"
+  },
+  "points": [
+    {
+      "requests": 200,
+      "successful_requests": 200,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 200,
+      "slo_pass_rate": 1.0,
+      "wall_s": 320.852854,
+      "request_throughput_per_s": 0.623339,
+      "output_tokens_total": 25600,
+      "output_tokens_per_s": 79.787353,
+      "slo_goodput_requests_per_s": 0.623339,
+      "slo_goodput_output_tokens_per_s": 79.787353,
+      "ttft_ms": {
+        "p50": 91.65656747063622,
+        "p95": 105.29363448149526,
+        "p99": 124.86177611746777,
+        "max": 189.5437550265342
+      },
+      "tpot_ms": {
+        "p50": 11.86607601203567,
+        "p95": 12.319775523689364,
+        "p99": 18.39185300232348
+      },
+      "e2el_ms": {
+        "p50": 1601.8639809917659,
+        "p95": 1652.4807150533888,
+        "p99": 1693.716379768448
+      },
+      "itl_ms_all": {
+        "count": 25224,
+        "p50": 11.784881469793618,
+        "p95": 12.263823370449243,
+        "p99": 14.013689443236222
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "PASS",
+      "concurrency": 1,
+      "num_prompts": 200,
+      "vram": {
+        "samples": 1046,
+        "min_bytes": 13497614336,
+        "max_bytes": 13553979392,
+        "median_bytes": 13528168448
+      },
+      "metrics_delta": {
+        "llamacpp:prompt_seconds_total": 10.162802,
+        "llamacpp:tokens_predicted_total": 25600.0
+      }
+    },
+    {
+      "requests": 200,
+      "successful_requests": 200,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 200,
+      "slo_pass_rate": 1.0,
+      "wall_s": 86.110196,
+      "request_throughput_per_s": 2.322605,
+      "output_tokens_total": 25600,
+      "output_tokens_per_s": 297.293483,
+      "slo_goodput_requests_per_s": 2.322605,
+      "slo_goodput_output_tokens_per_s": 297.293483,
+      "ttft_ms": {
+        "p50": 722.346565045882,
+        "p95": 776.870498736389,
+        "p99": 778.3250821300317,
+        "max": 784.3356420053169
+      },
+      "tpot_ms": {
+        "p50": 18.189493937080535,
+        "p95": 32.468756189611995,
+        "p99": 32.73173312878012
+      },
+      "e2el_ms": {
+        "p50": 3032.2444519842975,
+        "p95": 4899.687837873353,
+        "p99": 4900.639700690517
+      },
+      "itl_ms_all": {
+        "count": 25225,
+        "p50": 18.05438206065446,
+        "p95": 32.56187769584358,
+        "p99": 34.14283344987779
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "PASS",
+      "concurrency": 8,
+      "num_prompts": 200,
+      "vram": {
+        "samples": 281,
+        "min_bytes": 13520117760,
+        "max_bytes": 13560791040,
+        "median_bytes": 13529083904
+      },
+      "metrics_delta": {
+        "llamacpp:prompt_seconds_total": 8.2763,
+        "llamacpp:tokens_predicted_total": 25600.0
+      }
+    },
+    {
+      "requests": 200,
+      "successful_requests": 200,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 155,
+      "slo_pass_rate": 0.775,
+      "wall_s": 62.001405,
+      "request_throughput_per_s": 3.225733,
+      "output_tokens_total": 25600,
+      "output_tokens_per_s": 412.893872,
+      "slo_goodput_requests_per_s": 2.499943,
+      "slo_goodput_output_tokens_per_s": 319.992751,
+      "ttft_ms": {
+        "p50": 683.9789464720525,
+        "p95": 1622.7301902661566,
+        "p99": 1867.026823849883,
+        "max": 1998.821150045842
+      },
+      "tpot_ms": {
+        "p50": 64.44614863767487,
+        "p95": 83.951307738825,
+        "p99": 86.45708567617751
+      },
+      "e2el_ms": {
+        "p50": 9394.271888013463,
+        "p95": 11448.063469771296,
+        "p99": 12015.420741501728
+      },
+      "itl_ms_all": {
+        "count": 25238,
+        "p50": 63.654635509010404,
+        "p95": 68.78088133526035,
+        "p99": 675.1837465749123
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "FAIL",
+      "concurrency": 32,
+      "num_prompts": 200,
+      "vram": {
+        "samples": 202,
+        "min_bytes": 13530771456,
+        "max_bytes": 13544374272,
+        "median_bytes": 13540618240
+      },
+      "metrics_delta": {
+        "llamacpp:prompt_seconds_total": 9.8649,
+        "llamacpp:tokens_predicted_total": 25600.0
+      }
+    },
+    {
+      "requests": 200,
+      "successful_requests": 200,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 38,
+      "slo_pass_rate": 0.19,
+      "wall_s": 46.253046,
+      "request_throughput_per_s": 4.32404,
+      "output_tokens_total": 25600,
+      "output_tokens_per_s": 553.477064,
+      "slo_goodput_requests_per_s": 0.821568,
+      "slo_goodput_output_tokens_per_s": 105.160642,
+      "ttft_ms": {
+        "p50": 799.5424924883991,
+        "p95": 3491.9030784396496,
+        "p99": 3858.998256949708,
+        "max": 3969.338090973906
+      },
+      "tpot_ms": {
+        "p50": 101.0606123581822,
+        "p95": 108.97236759493279,
+        "p99": 135.1203110424659
+      },
+      "e2el_ms": {
+        "p50": 14471.221039013471,
+        "p95": 16305.089450138621,
+        "p99": 17146.44445525948
+      },
+      "itl_ms_all": {
+        "count": 25250,
+        "p50": 64.6908599883318,
+        "p95": 380.61356902471744,
+        "p99": 797.0305259001907
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "FAIL",
+      "concurrency": 64,
+      "num_prompts": 200,
+      "vram": {
+        "samples": 149,
+        "min_bytes": 13543608320,
+        "max_bytes": 13622112256,
+        "median_bytes": 13618466816
+      },
+      "metrics_delta": {
+        "llamacpp:prompt_seconds_total": 10.4528,
+        "llamacpp:tokens_predicted_total": 25600.0
+      }
+    }
+  ]
+}

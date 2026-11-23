@@ -1,0 +1,99 @@
+{
+  "generated_at": "2026-11-23T04:07:30Z",
+  "run_started_at": "2026-11-23T04:07:16Z",
+  "framework": "llamacpp",
+  "framework_version": "b1-3ed7284",
+  "base_url": "http://127.0.0.1:18002",
+  "model": "qwen3-4b",
+  "server_command": "llama-server --parallel 64 --ctx-size 32768 --flash-attn on --no-cache-prompt; ROCP_TOOL_ATTACH=1",
+  "note": "profile-attach run; not part of main sweep",
+  "contract": {
+    "protocol": "OpenAI-compatible /v1/completions streaming SSE",
+    "prompt": "random token ids, same IDs for every framework",
+    "input_tokens": 256,
+    "output_tokens": 128,
+    "num_prompts_per_point": 20,
+    "warmup_per_point": 2,
+    "seed": 42,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "ignore_eos": true,
+    "request_timeout_s": 300.0,
+    "gpu_index_for_vram": 0,
+    "ttft": "first non-empty SSE token minus HTTP send",
+    "tpot": "(E2E - TTFT)/(completion_tokens-1); SSE chunk intervals are auxiliary",
+    "e2e": "last SSE chunk/[DONE] minus HTTP send",
+    "slo": {
+      "ttft_p99_ms": 800.0,
+      "tpot_p99_ms": 100.0,
+      "e2el_p99_ms": 15000.0,
+      "failure_rate_max": 0.01
+    }
+  },
+  "host": {
+    "hostname": "z-lab-7900",
+    "python": "3.13.11"
+  },
+  "points": [
+    {
+      "requests": 20,
+      "successful_requests": 20,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 20,
+      "slo_pass_rate": 1.0,
+      "wall_s": 10.30869,
+      "request_throughput_per_s": 1.940111,
+      "output_tokens_total": 2560,
+      "output_tokens_per_s": 248.334163,
+      "slo_goodput_requests_per_s": 1.940111,
+      "slo_goodput_output_tokens_per_s": 248.334163,
+      "ttft_ms": {
+        "p50": 399.55814951099455,
+        "p95": 555.6171251635533,
+        "p99": 556.6149771062192,
+        "max": 556.8644400918856
+      },
+      "tpot_ms": {
+        "p50": 19.661429118159717,
+        "p95": 31.626313144531775,
+        "p99": 31.631683334708214
+      },
+      "e2el_ms": {
+        "p50": 3030.901610502042,
+        "p95": 4415.581497194944,
+        "p99": 4415.900989029324
+      },
+      "itl_ms_all": {
+        "count": 2539,
+        "p50": 19.46629909798503,
+        "p95": 31.755115266423672,
+        "p99": 32.90737236151472
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "PASS",
+      "concurrency": 8,
+      "num_prompts": 20,
+      "vram": {
+        "samples": 34,
+        "min_bytes": 13502971904,
+        "max_bytes": 13506301952,
+        "median_bytes": 13505417216
+      },
+      "metrics_delta": {
+        "llamacpp:prompt_seconds_total": 0.820436,
+        "llamacpp:tokens_predicted_total": 2560.0
+      }
+    }
+  ]
+}

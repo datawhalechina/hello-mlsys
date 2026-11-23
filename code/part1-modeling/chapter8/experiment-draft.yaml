@@ -1,0 +1,136 @@
+# Hello MLSys · 第 8 章实验底稿
+# 模板: docs/public/part0-intro/chapter0/experiment-draft.yaml（字段结构不变）
+# 纪律: prediction.stored_at 先于 holdout 测量；holdout 测前冻结、用后即烧；
+#       主扫描没有正式测前预测，不得在事后包装成盲预测。
+
+experiment_id: exp_ch8_001
+chapter: 8
+hypothesis: >
+  在同一张 RX 7900 XTX、同一 Qwen3-4B、同一 ISL=256/OSL=128 负载下，
+  vLLM 与 llama.cpp 的差异不只来自 GEMM，而来自执行路径（graph/compile、
+  融合 kernel）、调度与 KV 池容量的组合。给定固定 SLO（TTFT P99 800 ms、
+  TPOT P99 100 ms、E2EL P99 15000 ms、单点失败率 ≤1%），两框架的有效容量
+  会显著低于裸吞吐显示的上限；先按显存账本排除 131K 上下文候选，再用
+  C=1/8/32 校准的两参数幂律预测 C=16/48，并保留全部误差与负结果。
+  模拟筛选器只用于静态显存与失败模式，不用其延迟数做容量结论。
+
+scenario:
+  hardware: >
+    AMD Radeon RX 7900 XTX 23.98 GiB（gfx1100，宿主 GPU0），
+    ROCm 10.1 / driver 6.16.13；本章实验独占该卡。
+    宿主 GPU1（RX 9070 XT / gfx1201）上的共享 ch7-vllm 未参与本章。
+  model: >
+    /mnt/public/models/Qwen3-4B；vLLM 使用 BF16 Hugging Face checkpoint，
+    llama.cpp 使用 F16 GGUF（/app/gguf/qwen3-4b-f16.gguf）。
+    4,022,468,096 参数；36 层，hidden=2560，32 q heads / 8 kv heads /
+    head_dim=128；每 token KV = 147,456 B（144 KiB）。
+  server: >
+    vLLM 0.29.1.dev0+g98dff2a81（rocm/vllm:rocm10.1.0_ubuntu24.04_py3.14-
+    pytorch_2.13.0_vllm-0.29.0）：--gpu-memory-utilization 0.90
+    --max-model-len 4096 --max-num-seqs 64 --no-enable-prefix-caching；
+    默认启用 chunked prefill、torch.compile 与 HIP/CUDA graph。
+    llama.cpp server：--n-gpu-layers 999 --parallel 64 --ctx-size 32768
+    --flash-attn on --no-cache-prompt --metrics --perf；
+    实际每 slot 512 token，64 slots × 512 = 32,768 token。
+  workload: >
+    closed-loop concurrency sweep，random dataset，input=256 / output=128，
+    ignore_eos，temperature=0，top_p=1，seed=42，200 prompts/点，warmup=2。
+    主扫描 C=1/8/32/64；留出 C=16/48 在预测冻结后测量；
+    C=64 是预测冻结前已观测的 burned point，不进入拟合并单独报告。
+
+environment:
+  captured_at: "2026-11-23T04:32:21Z"
+  driver: "6.16.13"
+  rocm: "10.1"
+  vllm: "0.29.1.dev0+g98dff2a81.d20261002.rocm101"
+  llama_cpp: "server build with OpenAI-compatible /v1 and /metrics"
+  rocprofv3: "1.4.1"
+  gpu: "AMD Radeon RX 7900 XTX 23.98 GiB (gfx1100)"
+  vllm_kv_tokens: 77248
+  vllm_kv_pool_gib: 10.608
+  vllm_context_capacity_at_4096: 18.859
+  llamacpp_slots: 64
+  llamacpp_context_per_slot: 512
+  llamacpp_total_context_tokens: 32768
+  llamacpp_context_capacity_at_384: 85.333
+
+prediction:
+  tool: >
+    code/part1-modeling/chapter8/predict_holdout.py；
+    用 C=1/8/32 的 P99 拟合两条幂律：
+    log(TTFT_p99_ms)=a+b*log(C)，log(TPOT_p99_ms)=a+b*log(C)；
+    E2EL_p99 = TTFT_p99 + 127*TPOT_p99。
+  calibration_version: >
+    framework-holdout-v1，2026-11-23T04:22:20Z 冻结；
+    vLLM TTFT 校准 MAPE 6.32%、TPOT 3.97%；
+    llama.cpp TTFT 校准 MAPE 9.25%、TPOT 8.94%。
+  scope_disclosure: >
+    这是 C=16/48 两个留出点的测前预测，不是主扫描 C=1/8/32/64 的完整盲预测。
+    主扫描在前，C64 已被看见且明确排除出拟合与验收；C=16/48 在预测写盘后
+    才测量。三校准点拟合两参数，区间只是启发式带，不是统计置信区间。
+  metrics:
+    holdout_vllm_c16: {ttft_p99_ms: 408.744, tpot_p99_ms: 17.400, e2el_p99_ms: 2618.591, predicted_slo: PASS}
+    holdout_vllm_c48: {ttft_p99_ms: 1039.917, tpot_p99_ms: 21.717, e2el_p99_ms: 3798.018, predicted_slo: FAIL}
+    holdout_llamacpp_c16: {ttft_p99_ms: 1173.078, tpot_p99_ms: 54.420, e2el_p99_ms: 8084.383, predicted_slo: FAIL}
+    holdout_llamacpp_c48: {ttft_p99_ms: 2789.039, tpot_p99_ms: 99.429, e2el_p99_ms: 15416.861, predicted_slo: FAIL}
+    slo: {ttft_p99_ms: 800, tpot_p99_ms: 100, e2el_p99_ms: 15000, failure_rate_max: 0.01}
+  stored_at: "2026-11-23T04:22:20Z"       # 先于 C=16/48 真机测量
+
+measurement_plan:
+  warmup: 2
+  samples: 200 prompts/point
+  rounds: 1
+  timeout_s: 1800
+  round_budget_s: 3600
+  main_configs:                             # 主扫描，无正式测前预测
+    - {framework: vllm, mode: closed, concurrency: 1, num_prompts: 200}
+    - {framework: vllm, mode: closed, concurrency: 8, num_prompts: 200}
+    - {framework: vllm, mode: closed, concurrency: 32, num_prompts: 200}
+    - {framework: vllm, mode: closed, concurrency: 64, num_prompts: 200}
+    - {framework: llamacpp, mode: closed, concurrency: 1, num_prompts: 200}
+    - {framework: llamacpp, mode: closed, concurrency: 8, num_prompts: 200}
+    - {framework: llamacpp, mode: closed, concurrency: 32, num_prompts: 200}
+    - {framework: llamacpp, mode: closed, concurrency: 64, num_prompts: 200}
+  burned_configs:                           # 预测前已观测，不参与拟合/验收
+    - {framework: vllm, mode: closed, concurrency: 64, num_prompts: 200}
+    - {framework: llamacpp, mode: closed, concurrency: 64, num_prompts: 200}
+  holdout_configs:                          # 测前冻结，用后即烧
+    - {framework: vllm, mode: closed, concurrency: 16, num_prompts: 200}
+    - {framework: vllm, mode: closed, concurrency: 48, num_prompts: 200}
+    - {framework: llamacpp, mode: closed, concurrency: 16, num_prompts: 200}
+    - {framework: llamacpp, mode: closed, concurrency: 48, num_prompts: 200}
+  profile_configs:
+    - {framework: vllm, mode: closed, concurrency: 8, num_prompts: 20}
+    - {framework: llamacpp, mode: closed, concurrency: 8, num_prompts: 20}
+  memory_probe_configs:
+    - {framework: llamacpp, context_tokens: 131072, num_prompts: 0, expected: STATIC_MEMORY_INFEASIBLE}
+  extension_configs: []                     # SGLang/Ollama/MIGraphX 未执行
+  extension_status: not_covered
+
+artifacts:
+  main_vllm: code/part1-modeling/chapter8/results/framework/vllm/
+  main_llamacpp: code/part1-modeling/chapter8/results/framework/llamacpp/
+  holdout_vllm: code/part1-modeling/chapter8/results/framework/vllm-holdout/
+  holdout_llamacpp: code/part1-modeling/chapter8/results/framework/llamacpp-holdout/
+  prediction: code/part1-modeling/chapter8/results/framework/prediction-holdout.json
+  analysis: code/part1-modeling/chapter8/results/framework/analysis.json
+  holdout_analysis: code/part1-modeling/chapter8/results/framework/holdout-analysis.json
+  profile_summary: code/part1-modeling/chapter8/results/framework/profile-summary.json
+  profile_requests: code/part1-modeling/chapter8/results/framework/profiles/
+  memory_probe: code/part1-modeling/chapter8/results/framework/llamacpp-memory-fail/probe.log
+  screen_plan: code/part1-modeling/chapter8/results/screen-qwen4b-7900xtx.plan.json
+  screen_result: code/part1-modeling/chapter8/results/screen-qwen4b-7900xtx-v2/
+  figures: docs/part1-modeling/chapter8/images/
+
+acceptance:
+  - holdout prediction exists with stored_at earlier than the C=16/48 request files
+  - C=64 is disclosed as burned before the prediction and excluded from both fit and acceptance
+  - main scan is not described as a blind prediction; only C=16/48 are holdout points
+  - TPOT uses (E2EL - TTFT)/(completion_tokens - 1), not SSE chunk intervals
+  - raw throughput and SLO goodput are reported separately at every point
+  - P99 verdicts include the per-point failure-rate constraint, not only P99 thresholds
+  - llama.cpp C=16 is reported as a marginal FAIL (TTFT P99 only 38.66 ms above 800 ms), not a robust boundary
+  - 131K context is rejected by a real llama.cpp allocation failure bound to the KV ledger
+  - simulator screen latency numbers are flagged unreliable; only static-memory screening is used as evidence
+  - framework profile is used for relative attribution only, never as the low-overhead SLO source
+  - non-equivalence ledger lists checkpoint format, precision, server path, context/slot budget, graph/compile, fusion and KV pool size

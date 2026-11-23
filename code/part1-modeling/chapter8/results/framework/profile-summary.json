@@ -1,0 +1,1179 @@
+{
+  "generated_from_raw_traces": true,
+  "gpu": "AMD Radeon RX 7900 XTX 23.98 GiB (gfx1100, GPU0)",
+  "model": "Qwen3-4B",
+  "workload": {
+    "input_tokens": 256,
+    "output_tokens": 128,
+    "concurrency": 8,
+    "requests": 20,
+    "warmup_requests": 2,
+    "successful_output_tokens": 2560,
+    "successful_input_tokens": 5120
+  },
+  "trace_tools": {
+    "llama": "rocprofv3 1.4.1 attach, --kernel-trace --hip-graph-trace, 40 s window",
+    "vllm": "vLLM /start_profile + /stop_profile, torch profiler, rocprofiler-sdk 1.4.1 backend"
+  },
+  "trace_files": {
+    "llama": {
+      "path": "/tmp/ch8-llama-kernel_trace.csv",
+      "bytes": 209243656,
+      "sha256": "dd6280edfac1d6587431e86709d12b19cea5af18b64f661b7325e1e71a0b738f"
+    },
+    "vllm": {
+      "path": "/tmp/ch8-vllm-torch-trace.json",
+      "bytes": 248582748,
+      "sha256": "ab1b44965f041eb020aeb32321da6c303df148e2651fb4278f1bc5c46e0abecc"
+    }
+  },
+  "llama": {
+    "kernel_dispatches": 497906,
+    "span_ms": 13947.885,
+    "kernel_ms_total": 9871.496,
+    "gpu_busy_pct": 70.774,
+    "kernels": 497906,
+    "kernel_ms_p50": 0.0032,
+    "kernel_ms_p95": 0.077037,
+    "kernel_ms_p99": 0.114436,
+    "kernel_ms_max": 1.067005,
+    "categories": [
+      {
+        "category": "gemm",
+        "kernels": 186652,
+        "kernel_ms_total": 8817.199,
+        "share_pct": 89.32,
+        "kernel_ms_p50": 0.031479,
+        "kernel_ms_p95": 0.113836,
+        "kernel_ms_p99": 0.240241,
+        "kernel_ms_max": 1.067005
+      },
+      {
+        "category": "attention",
+        "kernels": 74016,
+        "kernel_ms_total": 476.38,
+        "share_pct": 4.826,
+        "kernel_ms_p50": 0.00232,
+        "kernel_ms_p95": 0.024479,
+        "kernel_ms_p99": 0.025159,
+        "kernel_ms_max": 0.223273
+      },
+      {
+        "category": "norm_rope",
+        "kernels": 112218,
+        "kernel_ms_total": 320.855,
+        "share_pct": 3.25,
+        "kernel_ms_p50": 0.00216,
+        "kernel_ms_p95": 0.00368,
+        "kernel_ms_p99": 0.010239,
+        "kernel_ms_max": 0.164594
+      },
+      {
+        "category": "copy_convert",
+        "kernels": 67092,
+        "kernel_ms_total": 133.396,
+        "share_pct": 1.351,
+        "kernel_ms_p50": 0.001319,
+        "kernel_ms_p95": 0.00528,
+        "kernel_ms_p99": 0.01468,
+        "kernel_ms_max": 0.165715
+      },
+      {
+        "category": "elementwise",
+        "kernels": 56392,
+        "kernel_ms_total": 120.65,
+        "share_pct": 1.222,
+        "kernel_ms_p50": 0.00164,
+        "kernel_ms_p95": 0.00236,
+        "kernel_ms_p99": 0.013199,
+        "kernel_ms_max": 0.082558
+      },
+      {
+        "category": "other",
+        "kernels": 1536,
+        "kernel_ms_total": 3.016,
+        "share_pct": 0.031,
+        "kernel_ms_p50": 0.001839,
+        "kernel_ms_p95": 0.003,
+        "kernel_ms_p99": 0.003266,
+        "kernel_ms_max": 0.00348
+      }
+    ],
+    "top_kernels": [
+      {
+        "kernel_name": "void mul_mat_vec_f<__half, __half, 2, 256, false, false>(__half const*, float const*, int const*, ggml_cuda_mm_fusion_args_device, float*, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, int)",
+        "category": "gemm",
+        "kernels": 64270,
+        "kernel_ms_total": 2636.445,
+        "share_pct": 26.708,
+        "kernel_ms_p50": 0.030079,
+        "kernel_ms_p95": 0.062678,
+        "kernel_ms_p99": 0.063958,
+        "kernel_ms_max": 0.923051
+      },
+      {
+        "kernel_name": "void mul_mat_f<__half2, 32, 8, 7, false>(__half2 const*, float const*, int const*, float*, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)",
+        "category": "gemm",
+        "kernels": 45980,
+        "kernel_ms_total": 2153.39,
+        "share_pct": 21.814,
+        "kernel_ms_p50": 0.031759,
+        "kernel_ms_p95": 0.077877,
+        "kernel_ms_p99": 0.078597,
+        "kernel_ms_max": 1.067005
+      },
+      {
+        "kernel_name": "void mul_mat_vec_f<__half, float, 1, 256, true, false>(__half const*, float const*, int const*, ggml_cuda_mm_fusion_args_device, float*, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, int)",
+        "category": "gemm",
+        "kernels": 9146,
+        "kernel_ms_total": 1045.59,
+        "share_pct": 10.592,
+        "kernel_ms_p50": 0.114076,
+        "kernel_ms_p95": 0.114916,
+        "kernel_ms_p99": 0.122996,
+        "kernel_ms_max": 0.142835
+      },
+      {
+        "kernel_name": "void mul_mat_f<__half2, 32, 8, 8, false>(__half2 const*, float const*, int const*, float*, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int)",
+        "category": "gemm",
+        "kernels": 18290,
+        "kernel_ms_total": 934.222,
+        "share_pct": 9.464,
+        "kernel_ms_p50": 0.066038,
+        "kernel_ms_p95": 0.068158,
+        "kernel_ms_p99": 0.068797,
+        "kernel_ms_max": 0.073038
+      },
+      {
+        "kernel_name": "void mul_mat_vec_f<__half, __half, 1, 256, true, false>(__half const*, float const*, int const*, ggml_cuda_mm_fusion_args_device, float*, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, int)",
+        "category": "gemm",
+        "kernels": 18036,
+        "kernel_ms_total": 788.381,
+        "share_pct": 7.986,
+        "kernel_ms_p50": 0.057718,
+        "kernel_ms_p95": 0.058318,
+        "kernel_ms_p99": 0.058558,
+        "kernel_ms_max": 0.066398
+      },
+      {
+        "kernel_name": "void mul_mat_vec_f<__half, __half, 1, 256, false, false>(__half const*, float const*, int const*, ggml_cuda_mm_fusion_args_device, float*, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, HIP_vector_type<unsigned int, 3u>, int, int, int, int)",
+        "category": "gemm",
+        "kernels": 27942,
+        "kernel_ms_total": 616.511,
+        "share_pct": 6.245,
+        "kernel_ms_p50": 0.008199,
+        "kernel_ms_p95": 0.026959,
+        "kernel_ms_p99": 0.028519,
+        "kernel_ms_max": 0.856732
+      },
+      {
+        "kernel_name": "void flash_attn_tile<128, 128, 1, 4, false>(char const*, char const*, char const*, char const*, char const*, int const*, int const*, float*, HIP_vector_type<float, 2u>*, float, float, float, float, unsigned int, float, int, HIP_vector_type<unsigned int, 3u>, int, int, int, int, int, int, int, int, int, int, int, long, int, int, long, int, int, int, int, int, long)",
+        "category": "attention",
+        "kernels": 27432,
+        "kernel_ms_total": 338.588,
+        "share_pct": 3.43,
+        "kernel_ms_p50": 0.007599,
+        "kernel_ms_p95": 0.024719,
+        "kernel_ms_p99": 0.025119,
+        "kernel_ms_max": 0.029559
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT128x128x16_MI16x16x16x1_SN_1LDSB0_AMAS3_BL1_BS1_EPS1_GLVWA8_GLVWB8_GRVW8_GSU1_GSUASB_ISA1100_IU1_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA3_SS1_SU0_SUM0_SUS0_SVW2_TT4_64_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW2_VWB2_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM4",
+        "category": "gemm",
+        "kernels": 700,
+        "kernel_ms_total": 323.401,
+        "share_pct": 3.276,
+        "kernel_ms_p50": 0.449325,
+        "kernel_ms_p95": 0.515065,
+        "kernel_ms_p99": 0.884605,
+        "kernel_ms_max": 0.997928
+      },
+      {
+        "kernel_name": "void rms_norm_mul_rope_f32<256, false, float>(float const*, float*, int, int, int, long, long, long, long, long, long, float, float const*, long, long, long, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, int, int const*, float, float, float, rope_corr_dims, float, float const*, long const*, int, bool)",
+        "category": "norm_rope",
+        "kernels": 55728,
+        "kernel_ms_total": 185.958,
+        "share_pct": 1.884,
+        "kernel_ms_p50": 0.00272,
+        "kernel_ms_p95": 0.00376,
+        "kernel_ms_p99": 0.019079,
+        "kernel_ms_max": 0.164594
+      },
+      {
+        "kernel_name": "void rms_norm_f32<1024, 1, true, true, false, false>(float const*, float*, int, int, int, long, long, long, float, float const*, long, long, long, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, float const*, long, long, long, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, float)",
+        "category": "norm_rope",
+        "kernels": 56490,
+        "kernel_ms_total": 134.897,
+        "share_pct": 1.367,
+        "kernel_ms_p50": 0.00188,
+        "kernel_ms_p95": 0.00332,
+        "kernel_ms_p99": 0.009,
+        "kernel_ms_max": 0.02736
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT128x128x16_MI16x16x16x1_SN_1LDSB0_AMAS0_BL1_BS1_EPS1_GLVWA2_GLVWB2_GRVW2_GSU1_GSUASB_ISA1100_IU1_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA1_SS1_SU32_SUM0_SUS256_SVW1_TT4_64_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW1_VWB2_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM4",
+        "category": "gemm",
+        "kernels": 350,
+        "kernel_ms_total": 119.74,
+        "share_pct": 1.213,
+        "kernel_ms_p50": 0.332689,
+        "kernel_ms_p95": 0.38498,
+        "kernel_ms_p99": 0.591413,
+        "kernel_ms_max": 0.757896
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT128x128x16_MI16x16x16x1_SN_1LDSB0_AMAS3_BL1_BS1_EPS1_GLVWA2_GLVWB2_GRVW2_GSU1_GSUASB_ISA1100_IU1_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA1_SS1_SU32_SUM0_SUS256_SVW2_TT4_64_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW2_VWB2_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM4",
+        "category": "gemm",
+        "kernels": 720,
+        "kernel_ms_total": 109.458,
+        "share_pct": 1.109,
+        "kernel_ms_p50": 0.147056,
+        "kernel_ms_p95": 0.175761,
+        "kernel_ms_p99": 0.314361,
+        "kernel_ms_max": 0.359829
+      },
+      {
+        "kernel_name": "void k_set_rows<float, long, __half>(float const*, long const*, __half*, long, long, long, long, long, long, long, long, long, long, long, long, long, long, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>)",
+        "category": "copy_convert",
+        "kernels": 55728,
+        "kernel_ms_total": 79.065,
+        "share_pct": 0.801,
+        "kernel_ms_p50": 0.0012,
+        "kernel_ms_p95": 0.00192,
+        "kernel_ms_p99": 0.0068,
+        "kernel_ms_max": 0.017
+      },
+      {
+        "kernel_name": "void k_bin_bcast<&(op_add(float, float)), float, float, float, float const*>(float const*, float const*, float*, unsigned int, unsigned int, unsigned int, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float const*)",
+        "category": "elementwise",
+        "kernels": 37680,
+        "kernel_ms_total": 75.111,
+        "share_pct": 0.761,
+        "kernel_ms_p50": 0.00184,
+        "kernel_ms_p95": 0.00236,
+        "kernel_ms_p99": 0.01252,
+        "kernel_ms_max": 0.023559
+      },
+      {
+        "kernel_name": "void flash_attn_combine_results<128>(float const*, HIP_vector_type<float, 2u> const*, float*, int)",
+        "category": "attention",
+        "kernels": 27432,
+        "kernel_ms_total": 53.612,
+        "share_pct": 0.543,
+        "kernel_ms_p50": 0.00188,
+        "kernel_ms_p95": 0.00252,
+        "kernel_ms_p99": 0.00264,
+        "kernel_ms_max": 0.01268
+      },
+      {
+        "kernel_name": "void flash_attn_ext_f16<128, 128, 16, 4, false, false, false>(char const*, char const*, char const*, char const*, char const*, int const*, int const*, float*, HIP_vector_type<float, 2u>*, float, float, float, float, unsigned int, float, int, HIP_vector_type<unsigned int, 3u>, int, int, int, int, int, int, int, int, int, int, int, long, int, int, long, int, int, int, int, int, long)",
+        "category": "attention",
+        "kernels": 432,
+        "kernel_ms_total": 50.924,
+        "share_pct": 0.516,
+        "kernel_ms_p50": 0.123736,
+        "kernel_ms_p95": 0.135224,
+        "kernel_ms_p99": 0.206359,
+        "kernel_ms_max": 0.223273
+      },
+      {
+        "kernel_name": "void unary_gated_op_kernel<&(op_silu(float)), float>(float const*, float const*, float*, long, long, long, long)",
+        "category": "elementwise",
+        "kernels": 18712,
+        "kernel_ms_total": 45.539,
+        "share_pct": 0.461,
+        "kernel_ms_p50": 0.0016,
+        "kernel_ms_p95": 0.00192,
+        "kernel_ms_p99": 0.041874,
+        "kernel_ms_max": 0.082558
+      },
+      {
+        "kernel_name": "void flash_attn_mask_to_KV_max<1>(__half2 const*, int*, int, long, long)",
+        "category": "attention",
+        "kernels": 18288,
+        "kernel_ms_total": 28.621,
+        "share_pct": 0.29,
+        "kernel_ms_p50": 0.00156,
+        "kernel_ms_p95": 0.00184,
+        "kernel_ms_p99": 0.00212,
+        "kernel_ms_max": 0.01264
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT128x128x16_MI16x16x16x1_SN_1LDSB0_AMAS3_BL1_BS1_EPS1_GLVWA2_GLVWB2_GRVW2_GSU1_GSUASB_ISA1100_IU1_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA1_SS1_SU32_SUM0_SUS128_SVW2_TT4_64_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW2_VWB2_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM8",
+        "category": "gemm",
+        "kernels": 140,
+        "kernel_ms_total": 28.176,
+        "share_pct": 0.285,
+        "kernel_ms_p50": 0.173575,
+        "kernel_ms_p95": 0.349507,
+        "kernel_ms_p99": 0.39721,
+        "kernel_ms_max": 0.660339
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT64x64x32_MI16x16x16x1_SN_1LDSB1_AMAS0_BL1_BS1_EPS1_GLVWA8_GLVWB8_GRVW8_GSU1_GSUASB_ISA1100_IU2_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA2_SS1_SU0_SUM0_SUS0_SVW1_TT2_32_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW1_VWB2_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM4",
+        "category": "gemm",
+        "kernels": 720,
+        "kernel_ms_total": 27.041,
+        "share_pct": 0.274,
+        "kernel_ms_p50": 0.036279,
+        "kernel_ms_p95": 0.041941,
+        "kernel_ms_p99": 0.081076,
+        "kernel_ms_max": 0.083997
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT64x64x32_MI16x16x16x1_SN_1LDSB0_AMAS3_BL1_BS1_EPS1_GLVWA8_GLVWB8_GRVW8_GSU1_GSUASB_ISA1100_IU1_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA1_SS1_SU0_SUM0_SUS0_SVW2_TT2_32_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW2_VWB2_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM4",
+        "category": "gemm",
+        "kernels": 142,
+        "kernel_ms_total": 20.191,
+        "share_pct": 0.205,
+        "kernel_ms_p50": 0.158715,
+        "kernel_ms_p95": 0.238712,
+        "kernel_ms_p99": 0.337939,
+        "kernel_ms_max": 0.366708
+      },
+      {
+        "kernel_name": "void convert_unary_cont_vec4<__half, float>(void const*, float*, long)",
+        "category": "copy_convert",
+        "kernels": 2988,
+        "kernel_ms_total": 19.616,
+        "share_pct": 0.199,
+        "kernel_ms_p50": 0.00408,
+        "kernel_ms_p95": 0.01588,
+        "kernel_ms_p99": 0.016525,
+        "kernel_ms_max": 0.165715
+      },
+      {
+        "kernel_name": "void convert_unary_cont_vec4<float, __half>(void const*, __half*, long)",
+        "category": "copy_convert",
+        "kernels": 2988,
+        "kernel_ms_total": 18.578,
+        "share_pct": 0.188,
+        "kernel_ms_p50": 0.0052,
+        "kernel_ms_p95": 0.0146,
+        "kernel_ms_p99": 0.01484,
+        "kernel_ms_max": 0.033759
+      },
+      {
+        "kernel_name": "__amd_rocclr_copyBuffer",
+        "category": "copy_convert",
+        "kernels": 5388,
+        "kernel_ms_total": 16.137,
+        "share_pct": 0.163,
+        "kernel_ms_p50": 0.00292,
+        "kernel_ms_p95": 0.00372,
+        "kernel_ms_p99": 0.00416,
+        "kernel_ms_max": 0.040519
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT64x64x32_MI16x16x16x1_SN_1LDSB0_AMAS3_BL1_BS1_EPS1_GLVWA8_GLVWB8_GRVW8_GSU1_GSUASB_ISA1100_IU1_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA1_SS1_SU0_SUM0_SUS0_SVW2_TT2_32_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW2_VWB2_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM8",
+        "category": "gemm",
+        "kernels": 72,
+        "kernel_ms_total": 8.321,
+        "share_pct": 0.084,
+        "kernel_ms_p50": 0.099737,
+        "kernel_ms_p95": 0.175645,
+        "kernel_ms_p99": 0.317123,
+        "kernel_ms_max": 0.544543
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_HB_MT32x32x32_MI16x16x16x1_SN_1LDSB1_AMAS0_BL1_BS1_EPS1_GLVWA8_GLVWB8_GRVW8_GSU1_GSUASB_ISA1100_IU2_K1_KLA_LBSPPA128_LBSPPB128_LPA8_LPB8_LRVW16_MIAV1_MMFGLC_NLCA1_NLCB1_PGR1_PLR1_SIA2_SS1_SU0_SUM0_SUS0_SVW1_TT1_16_TLDS1_UMLDSA1_UMLDSB1_USFGROn1_VAW2_VSn1_VW1_VWB1_WSGRA1_WSGRB1_WS32_WG32_4_1_WGM4",
+        "category": "gemm",
+        "kernels": 144,
+        "kernel_ms_total": 6.331,
+        "share_pct": 0.064,
+        "kernel_ms_p50": 0.037419,
+        "kernel_ms_p95": 0.069788,
+        "kernel_ms_p99": 0.154468,
+        "kernel_ms_max": 0.324909
+      },
+      {
+        "kernel_name": "void k_get_rows_float<float, float>(float const*, int const*, float*, long, long, HIP_vector_type<unsigned int, 3u>, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)",
+        "category": "other",
+        "kernels": 1536,
+        "kernel_ms_total": 3.016,
+        "share_pct": 0.031,
+        "kernel_ms_p50": 0.001839,
+        "kernel_ms_p95": 0.003,
+        "kernel_ms_p99": 0.003266,
+        "kernel_ms_max": 0.00348
+      },
+      {
+        "kernel_name": "void flash_attn_stream_k_fixup_general<128, 16, 4>(float*, HIP_vector_type<float, 2u> const*, int, int, int, int, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>, HIP_vector_type<unsigned int, 3u>)",
+        "category": "attention",
+        "kernels": 72,
+        "kernel_ms_total": 2.45,
+        "share_pct": 0.025,
+        "kernel_ms_p50": 0.029139,
+        "kernel_ms_p95": 0.05932,
+        "kernel_ms_p99": 0.069903,
+        "kernel_ms_max": 0.070357
+      },
+      {
+        "kernel_name": "void flash_attn_mask_to_KV_max<16>(__half2 const*, int*, int, long, long)",
+        "category": "attention",
+        "kernels": 360,
+        "kernel_ms_total": 2.186,
+        "share_pct": 0.022,
+        "kernel_ms_p50": 0.00612,
+        "kernel_ms_p95": 0.006882,
+        "kernel_ms_p99": 0.009176,
+        "kernel_ms_max": 0.01004
+      }
+    ],
+    "kernels_per_output_token": 194.495,
+    "kernel_ms_per_output_token": 3.856053,
+    "kernel_ms_per_processed_token": 1.285351,
+    "phase_split": null,
+    "phase_split_note": "llama.cpp server has no per-iteration annotation in this trace; do not invent a phase split.",
+    "profile_request_metrics": {
+      "requests": 20,
+      "corrected_tpot_ms_p50": 19.661429,
+      "corrected_tpot_ms_p99": 31.631683,
+      "stream_chunk_mismatch_requests": 1
+    }
+  },
+  "vllm": {
+    "kernel_dispatches": 269892,
+    "span_ms": 8498.724,
+    "kernel_ms_total": 7456.093,
+    "gpu_busy_pct": 87.732,
+    "kernels": 269892,
+    "kernel_ms_p50": 0.003799,
+    "kernel_ms_p95": 0.110398,
+    "kernel_ms_p99": 0.126718,
+    "kernel_ms_max": 2.228948,
+    "categories": [
+      {
+        "category": "gemm",
+        "kernels": 93234,
+        "kernel_ms_total": 6649.053,
+        "share_pct": 89.176,
+        "kernel_ms_p50": 0.054318,
+        "kernel_ms_p95": 0.126079,
+        "kernel_ms_p99": 0.404571,
+        "kernel_ms_max": 2.228948
+      },
+      {
+        "category": "attention",
+        "kernels": 46584,
+        "kernel_ms_total": 465.718,
+        "share_pct": 6.246,
+        "kernel_ms_p50": 0.003759,
+        "kernel_ms_p95": 0.024159,
+        "kernel_ms_p99": 0.025239,
+        "kernel_ms_max": 0.434157
+      },
+      {
+        "category": "norm_rope",
+        "kernels": 46938,
+        "kernel_ms_total": 107.932,
+        "share_pct": 1.448,
+        "kernel_ms_p50": 0.002119,
+        "kernel_ms_p95": 0.003199,
+        "kernel_ms_p99": 0.004599,
+        "kernel_ms_max": 0.043799
+      },
+      {
+        "category": "reduce",
+        "kernels": 23791,
+        "kernel_ms_total": 85.871,
+        "share_pct": 1.152,
+        "kernel_ms_p50": 0.002959,
+        "kernel_ms_p95": 0.005279,
+        "kernel_ms_p99": 0.009319,
+        "kernel_ms_max": 0.031159
+      },
+      {
+        "category": "copy_convert",
+        "kernels": 26448,
+        "kernel_ms_total": 73.532,
+        "share_pct": 0.986,
+        "kernel_ms_p50": 0.002199,
+        "kernel_ms_p95": 0.003959,
+        "kernel_ms_p99": 0.008639,
+        "kernel_ms_max": 0.042719
+      },
+      {
+        "category": "elementwise",
+        "kernels": 28946,
+        "kernel_ms_total": 57.66,
+        "share_pct": 0.773,
+        "kernel_ms_p50": 0.001519,
+        "kernel_ms_p95": 0.004119,
+        "kernel_ms_p99": 0.009839,
+        "kernel_ms_max": 0.117079
+      },
+      {
+        "category": "sampling_control",
+        "kernels": 3951,
+        "kernel_ms_total": 16.326,
+        "share_pct": 0.219,
+        "kernel_ms_p50": 0.003159,
+        "kernel_ms_p95": 0.008559,
+        "kernel_ms_p99": 0.009119,
+        "kernel_ms_max": 0.016719
+      }
+    ],
+    "top_kernels": [
+      {
+        "kernel_name": "void wvSplitK_hf_sml_<__hip_bfloat16, 32, 2, 16, 8, 2, 1>(int, int, int, int, int, int, __hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16*, int, int) [clone .kd]",
+        "category": "gemm",
+        "kernels": 36835,
+        "kernel_ms_total": 2242.833,
+        "share_pct": 30.081,
+        "kernel_ms_p50": 0.054159,
+        "kernel_ms_p95": 0.107558,
+        "kernel_ms_p99": 0.108265,
+        "kernel_ms_max": 0.838795
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x32x128_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_2_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 9144,
+        "kernel_ms_total": 1150.636,
+        "share_pct": 15.432,
+        "kernel_ms_p50": 0.125798,
+        "kernel_ms_p95": 0.127158,
+        "kernel_ms_p99": 0.127879,
+        "kernel_ms_max": 0.129999
+      },
+      {
+        "kernel_name": "void wvSplitK_hf_sml_<__hip_bfloat16, 32, 4, 16, 8, 1, 4>(int, int, int, int, int, int, __hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16*, int, int) [clone .kd]",
+        "category": "gemm",
+        "kernels": 13843,
+        "kernel_ms_total": 925.921,
+        "share_pct": 12.418,
+        "kernel_ms_p50": 0.036679,
+        "kernel_ms_p95": 0.111159,
+        "kernel_ms_p99": 0.112558,
+        "kernel_ms_max": 0.861755
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT32x16x128_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT1_1_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR1_PKA0_SGROB0_SIA1_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_2_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 18288,
+        "kernel_ms_total": 905.74,
+        "share_pct": 12.148,
+        "kernel_ms_p50": 0.052618,
+        "kernel_ms_p95": 0.062279,
+        "kernel_ms_p99": 0.062719,
+        "kernel_ms_max": 0.065279
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT96x128x64_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT3_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 472,
+        "kernel_ms_total": 481.971,
+        "share_pct": 6.464,
+        "kernel_ms_p50": 1.049174,
+        "kernel_ms_p95": 1.878984,
+        "kernel_ms_p99": 1.910456,
+        "kernel_ms_max": 2.228948
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x32x128_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA256_LBSPPB256_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_2_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 9144,
+        "kernel_ms_total": 429.998,
+        "share_pct": 5.767,
+        "kernel_ms_p50": 0.046999,
+        "kernel_ms_p95": 0.047639,
+        "kernel_ms_p99": 0.047999,
+        "kernel_ms_max": 0.050959
+      },
+      {
+        "kernel_name": "void paged_attention_ll4mi_QKV_mfma16_kernel<__hip_bfloat16, __hip_bfloat16, (vllm::Fp8KVCacheDataType)0, __hip_bfloat16, 16, 128, 256, false, 4, (MFMAType)0>(__hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16 const*, int, float, int const*, int const*, int const*, int, float const*, int, int, int, float*, float*, __hip_bfloat16*, __hip_bfloat16*, int, float const*, float const*) [clone .kd]",
+        "category": "attention",
+        "kernels": 23148,
+        "kernel_ms_total": 357.327,
+        "share_pct": 4.792,
+        "kernel_ms_p50": 0.014559,
+        "kernel_ms_p95": 0.024599,
+        "kernel_ms_p99": 0.02514,
+        "kernel_ms_max": 0.031359
+      },
+      {
+        "kernel_name": "void wvSplitK_hf_<__hip_bfloat16, 32, 2, 16, 8, 2, 4>(int, int, int, int, int, int, __hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16*, int, int) [clone .kd]",
+        "category": "gemm",
+        "kernels": 4571,
+        "kernel_ms_total": 271.471,
+        "share_pct": 3.641,
+        "kernel_ms_p50": 0.059359,
+        "kernel_ms_p95": 0.060078,
+        "kernel_ms_p99": 0.060439,
+        "kernel_ms_max": 0.063159
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x96x32_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT4_3_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA1_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 144,
+        "kernel_ms_total": 90.237,
+        "share_pct": 1.21,
+        "kernel_ms_p50": 0.610196,
+        "kernel_ms_p95": 0.89678,
+        "kernel_ms_p99": 0.908841,
+        "kernel_ms_max": 1.020474
+      },
+      {
+        "kernel_name": "triton_red_fused_3.kd",
+        "category": "reduce",
+        "kernels": 22505,
+        "kernel_ms_total": 77.978,
+        "share_pct": 1.046,
+        "kernel_ms_p50": 0.002919,
+        "kernel_ms_p95": 0.004959,
+        "kernel_ms_p99": 0.006319,
+        "kernel_ms_max": 0.031159
+      },
+      {
+        "kernel_name": "void vllm::reshape_and_cache_kernel<__hip_bfloat16, __hip_bfloat16, (vllm::Fp8KVCacheDataType)0>(__hip_bfloat16 const*, __hip_bfloat16 const*, __hip_bfloat16*, __hip_bfloat16*, long const*, int, int, int, int, int, int, float const*, float const*) [clone .kd]",
+        "category": "copy_convert",
+        "kernels": 23148,
+        "kernel_ms_total": 65.585,
+        "share_pct": 0.88,
+        "kernel_ms_p50": 0.002199,
+        "kernel_ms_p95": 0.003959,
+        "kernel_ms_p99": 0.008759,
+        "kernel_ms_max": 0.042719
+      },
+      {
+        "kernel_name": "_fwd_kernel.kd",
+        "category": "attention",
+        "kernels": 288,
+        "kernel_ms_total": 58.317,
+        "share_pct": 0.782,
+        "kernel_ms_p50": 0.124739,
+        "kernel_ms_p95": 0.416269,
+        "kernel_ms_p99": 0.426242,
+        "kernel_ms_max": 0.434157
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x80x64_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_5_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR1_PLR1_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 360,
+        "kernel_ms_total": 56.458,
+        "share_pct": 0.757,
+        "kernel_ms_p50": 0.166018,
+        "kernel_ms_p95": 0.241048,
+        "kernel_ms_p99": 0.384338,
+        "kernel_ms_max": 0.927714
+      },
+      {
+        "kernel_name": "triton_red_fused_fused_add_rms_norm_0.kd",
+        "category": "norm_rope",
+        "kernels": 23147,
+        "kernel_ms_total": 56.267,
+        "share_pct": 0.755,
+        "kernel_ms_p50": 0.002159,
+        "kernel_ms_p95": 0.003199,
+        "kernel_ms_p99": 0.004279,
+        "kernel_ms_max": 0.026279
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x128x32_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT4_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 180,
+        "kernel_ms_total": 53.316,
+        "share_pct": 0.715,
+        "kernel_ms_p50": 0.268618,
+        "kernel_ms_p95": 0.433235,
+        "kernel_ms_p99": 0.633386,
+        "kernel_ms_max": 1.295033
+      },
+      {
+        "kernel_name": "void paged_attention_ll4mi_reduce_kernel<__hip_bfloat16, __hip_bfloat16, 128, 128, 256, 1>(__hip_bfloat16*, float const*, float const*, __hip_bfloat16 const*, int const*, int const*, int, float const*) [clone .kd]",
+        "category": "attention",
+        "kernels": 23148,
+        "kernel_ms_total": 50.074,
+        "share_pct": 0.672,
+        "kernel_ms_p50": 0.001799,
+        "kernel_ms_p95": 0.003119,
+        "kernel_ms_p99": 0.003439,
+        "kernel_ms_max": 0.004519
+      },
+      {
+        "kernel_name": "triton_red_fused_fused_add_rms_norm_2.kd",
+        "category": "norm_rope",
+        "kernels": 23148,
+        "kernel_ms_total": 49.813,
+        "share_pct": 0.668,
+        "kernel_ms_p50": 0.001679,
+        "kernel_ms_p95": 0.002679,
+        "kernel_ms_p99": 0.00722,
+        "kernel_ms_max": 0.043799
+      },
+      {
+        "kernel_name": "triton_poi_fused_mul_silu_slice_1.kd",
+        "category": "elementwise",
+        "kernels": 23148,
+        "kernel_ms_total": 41.246,
+        "share_pct": 0.553,
+        "kernel_ms_p50": 0.001039,
+        "kernel_ms_p95": 0.001759,
+        "kernel_ms_p99": 0.010479,
+        "kernel_ms_max": 0.117079
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x96x32_MI16x16x1_SN_LDSB0_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT4_3_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR1_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSM1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG32_4_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 72,
+        "kernel_ms_total": 21.551,
+        "share_pct": 0.289,
+        "kernel_ms_p50": 0.303957,
+        "kernel_ms_p95": 0.421949,
+        "kernel_ms_p99": 0.446439,
+        "kernel_ms_max": 0.454277
+      },
+      {
+        "kernel_name": "Cijk_Alik_Bljk_BBS_BH_Bias_HA_S_SAV_UserArgs_MT128x64x64_MI16x16x1_SN_LDSB1_AFC1_AG0_AGGSUA0_AGNTAB0_AFEM1_AFEM1_ASEM1_BL1_BS1_CD1_1_CLR0_CLS0_CADS0_DTLA0_DTLB0_DTLM0_DTVA0_DTVB0_DTVMXSA0_DTVMXSB0_DTVSM0_DPLB0_EPS0_ELFLR0_EMLLn1_FDSI0_GRPM1_GRVWA8_GRVWB8_GSUAMB_GLS0_HPLR0_ISA1100_ICIW0_IU1_K1_LDSSI0_LDSTI0_LBSPPA128_LBSPPB128_LBSPPMXSA0_LBSPPMXSB0_LBSPPM0_LPA8_LPB8_LPMXSA0_LPMXSB0_LPM0_LRVW16_LWPMn1_MIAV1_MIWT2_4_MXLIBL_MXSFNS_MO40_MGRIPM1_NTn1_NTA0_NTB0_NTC0_NTD0_NTE0_NTMXSA0_NTMXSB0_NTM0_NTWS0_NVn1_NVA0_NVB0_NVC0_NVD0_NVE0_NVMXSA0_NVMXSB0_NVM0_NVWS0_NEPBS0_NLCA1_NLCB1_ONLL1_PAP0_PGL0_PGR2_PLR0_PKA0_SGROB0_SIA3_SS1_SPO0_SRVW0_SSO0_SVW1_SK0_SKFTR0_SKFDPO0_SKWS0_SKXCCM0_SNLL0_SIP1_SGRO0_TDMI0_TDMIM0_TDMLWS0_TDMPLB0_TDMS0_TIN0_THn1_THA0_THB0_THC0_THD0_THE0_THMXSA0_THMXSB0_THM0_THWS0_TLDS1_TLDSMn1_ULSGRO0_USL1_USLMX0_UDFMAC0_UIOFGRO0_UPLRP0_USFGROn1_USI0_VSn1_VWA1_VWB1_WSGRA0_WSGRB0_WS32_WG64_2_1_WGMXCC1.kd",
+        "category": "gemm",
+        "kernels": 180,
+        "kernel_ms_total": 18.089,
+        "share_pct": 0.243,
+        "kernel_ms_p50": 0.093538,
+        "kernel_ms_p95": 0.141156,
+        "kernel_ms_p99": 0.188262,
+        "kernel_ms_max": 0.597076
+      },
+      {
+        "kernel_name": "__amd_rocclr_copyBuffer.kd",
+        "category": "copy_convert",
+        "kernels": 3300,
+        "kernel_ms_total": 7.947,
+        "share_pct": 0.107,
+        "kernel_ms_p50": 0.002119,
+        "kernel_ms_p95": 0.003599,
+        "kernel_ms_p99": 0.00456,
+        "kernel_ms_max": 0.027759
+      },
+      {
+        "kernel_name": "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<float, at::native::ArgMaxOps<float>, unsigned int, long, 4, 4> >(at::native::ReduceOp<float, at::native::ArgMaxOps<float>, unsigned int, long, 4, 4>) [clone .kd]",
+        "category": "reduce",
+        "kernels": 643,
+        "kernel_ms_total": 5.188,
+        "share_pct": 0.07,
+        "kernel_ms_p50": 0.009079,
+        "kernel_ms_p95": 0.009599,
+        "kernel_ms_p99": 0.009879,
+        "kernel_ms_max": 0.010479
+      },
+      {
+        "kernel_name": "_gumbel_sample_kernel.kd",
+        "category": "sampling_control",
+        "kernels": 643,
+        "kernel_ms_total": 4.917,
+        "share_pct": 0.066,
+        "kernel_ms_p50": 0.007119,
+        "kernel_ms_p95": 0.009079,
+        "kernel_ms_p99": 0.009382,
+        "kernel_ms_max": 0.010679
+      },
+      {
+        "kernel_name": "_compute_slot_mappings_kernel.kd",
+        "category": "sampling_control",
+        "kernels": 643,
+        "kernel_ms_total": 3.712,
+        "share_pct": 0.05,
+        "kernel_ms_p50": 0.006319,
+        "kernel_ms_p95": 0.006959,
+        "kernel_ms_p99": 0.007239,
+        "kernel_ms_max": 0.012119
+      },
+      {
+        "kernel_name": "void at::native::index_elementwise_kernel<128, 4, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}>(long, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}) [clone .kd]",
+        "category": "elementwise",
+        "kernels": 643,
+        "kernel_ms_total": 2.761,
+        "share_pct": 0.037,
+        "kernel_ms_p50": 0.004359,
+        "kernel_ms_p95": 0.004919,
+        "kernel_ms_p99": 0.005182,
+        "kernel_ms_max": 0.005359
+      },
+      {
+        "kernel_name": "void at::native::index_elementwise_kernel<128, 4, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<4> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<4> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}>(long, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<4> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<4> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}) [clone .kd]",
+        "category": "elementwise",
+        "kernels": 643,
+        "kernel_ms_total": 2.735,
+        "share_pct": 0.037,
+        "kernel_ms_p50": 0.004279,
+        "kernel_ms_p95": 0.004715,
+        "kernel_ms_p99": 0.005102,
+        "kernel_ms_max": 0.005639
+      },
+      {
+        "kernel_name": "triton_red_fused_1.kd",
+        "category": "reduce",
+        "kernels": 643,
+        "kernel_ms_total": 2.705,
+        "share_pct": 0.036,
+        "kernel_ms_p50": 0.004639,
+        "kernel_ms_p95": 0.005039,
+        "kernel_ms_p99": 0.006604,
+        "kernel_ms_max": 0.029279
+      },
+      {
+        "kernel_name": "_gather_block_tables_kernel.kd",
+        "category": "elementwise",
+        "kernels": 643,
+        "kernel_ms_total": 2.316,
+        "share_pct": 0.031,
+        "kernel_ms_p50": 0.003679,
+        "kernel_ms_p95": 0.004159,
+        "kernel_ms_p99": 0.005461,
+        "kernel_ms_max": 0.010759
+      },
+      {
+        "kernel_name": "_post_update_kernel.kd",
+        "category": "sampling_control",
+        "kernels": 643,
+        "kernel_ms_total": 2.116,
+        "share_pct": 0.028,
+        "kernel_ms_p50": 0.003359,
+        "kernel_ms_p95": 0.003719,
+        "kernel_ms_p99": 0.004078,
+        "kernel_ms_max": 0.004359
+      },
+      {
+        "kernel_name": "void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<int>, std::array<char*, 1ul> >(int, at::native::FillFunctor<int>, std::array<char*, 1ul>) [clone .kd]",
+        "category": "elementwise",
+        "kernels": 1286,
+        "kernel_ms_total": 2.014,
+        "share_pct": 0.027,
+        "kernel_ms_p50": 0.001519,
+        "kernel_ms_p95": 0.001959,
+        "kernel_ms_p99": 0.002479,
+        "kernel_ms_max": 0.005839
+      }
+    ],
+    "kernels_per_output_token": 105.427,
+    "kernel_ms_per_output_token": 2.912536,
+    "kernel_ms_per_processed_token": 0.970845,
+    "phases": {
+      "prefill": {
+        "annotations": 5,
+        "annotation_ms_total": 233.604,
+        "kernels": 2255,
+        "kernel_ms_total": 158.398,
+        "kernel_ms_p50": 0.010079,
+        "kernel_ms_p99": 0.373349,
+        "kernels_per_annotation": 451.0,
+        "kernel_ms_per_annotation": 31.68,
+        "annotation_ms_per_annotation": 46.721,
+        "busy_pct": 67.806,
+        "categories": [
+          {
+            "category": "gemm",
+            "kernels": 720,
+            "kernel_ms_total": 127.864,
+            "share_pct": 80.723,
+            "kernel_ms_p50": 0.167379,
+            "kernel_ms_p95": 0.312955,
+            "kernel_ms_p99": 0.524596,
+            "kernel_ms_max": 1.295033
+          },
+          {
+            "category": "attention",
+            "kernels": 540,
+            "kernel_ms_total": 22.524,
+            "share_pct": 14.22,
+            "kernel_ms_p50": 0.002199,
+            "kernel_ms_p95": 0.129897,
+            "kernel_ms_p99": 0.198195,
+            "kernel_ms_max": 0.382597
+          },
+          {
+            "category": "norm_rope",
+            "kernels": 365,
+            "kernel_ms_total": 2.274,
+            "share_pct": 1.436,
+            "kernel_ms_p50": 0.006959,
+            "kernel_ms_p95": 0.008279,
+            "kernel_ms_p99": 0.011724,
+            "kernel_ms_max": 0.028558
+          },
+          {
+            "category": "elementwise",
+            "kernels": 205,
+            "kernel_ms_total": 2.219,
+            "share_pct": 1.401,
+            "kernel_ms_p50": 0.010719,
+            "kernel_ms_p95": 0.015295,
+            "kernel_ms_p99": 0.021463,
+            "kernel_ms_max": 0.026638
+          },
+          {
+            "category": "copy_convert",
+            "kernels": 210,
+            "kernel_ms_total": 1.975,
+            "share_pct": 1.247,
+            "kernel_ms_p50": 0.008998,
+            "kernel_ms_p95": 0.014211,
+            "kernel_ms_p99": 0.020239,
+            "kernel_ms_max": 0.027759
+          },
+          {
+            "category": "reduce",
+            "kernels": 180,
+            "kernel_ms_total": 1.261,
+            "share_pct": 0.796,
+            "kernel_ms_p50": 0.006479,
+            "kernel_ms_p95": 0.009745,
+            "kernel_ms_p99": 0.013901,
+            "kernel_ms_max": 0.016079
+          },
+          {
+            "category": "sampling_control",
+            "kernels": 35,
+            "kernel_ms_total": 0.281,
+            "share_pct": 0.178,
+            "kernel_ms_p50": 0.007799,
+            "kernel_ms_p95": 0.012091,
+            "kernel_ms_p99": 0.015155,
+            "kernel_ms_max": 0.016719
+          }
+        ]
+      },
+      "decode": {
+        "annotations": 635,
+        "annotation_ms_total": 7188.319,
+        "kernels": 258998,
+        "kernel_ms_total": 6295.36,
+        "kernel_ms_p50": 0.003799,
+        "kernel_ms_p99": 0.126238,
+        "kernels_per_annotation": 407.871,
+        "kernel_ms_per_annotation": 9.914,
+        "annotation_ms_per_annotation": 11.32,
+        "busy_pct": 87.578,
+        "categories": [
+          {
+            "category": "gemm",
+            "kernels": 91439,
+            "kernel_ms_total": 5605.743,
+            "share_pct": 89.046,
+            "kernel_ms_p50": 0.049959,
+            "kernel_ms_p95": 0.125798,
+            "kernel_ms_p99": 0.126799,
+            "kernel_ms_max": 0.129999
+          },
+          {
+            "category": "attention",
+            "kernels": 45720,
+            "kernel_ms_total": 404.653,
+            "share_pct": 6.428,
+            "kernel_ms_p50": 0.006098,
+            "kernel_ms_p95": 0.024079,
+            "kernel_ms_p99": 0.024959,
+            "kernel_ms_max": 0.031359
+          },
+          {
+            "category": "norm_rope",
+            "kernels": 46354,
+            "kernel_ms_total": 99.505,
+            "share_pct": 1.581,
+            "kernel_ms_p50": 0.002079,
+            "kernel_ms_p95": 0.003159,
+            "kernel_ms_p99": 0.003479,
+            "kernel_ms_max": 0.005359
+          },
+          {
+            "category": "reduce",
+            "kernels": 22860,
+            "kernel_ms_total": 76.647,
+            "share_pct": 1.218,
+            "kernel_ms_p50": 0.002919,
+            "kernel_ms_p95": 0.004959,
+            "kernel_ms_p99": 0.005319,
+            "kernel_ms_max": 0.005639
+          },
+          {
+            "category": "copy_convert",
+            "kernels": 25256,
+            "kernel_ms_total": 66.134,
+            "share_pct": 1.051,
+            "kernel_ms_p50": 0.002199,
+            "kernel_ms_p95": 0.003959,
+            "kernel_ms_p99": 0.004319,
+            "kernel_ms_max": 0.010519
+          },
+          {
+            "category": "elementwise",
+            "kernels": 25403,
+            "kernel_ms_total": 35.535,
+            "share_pct": 0.564,
+            "kernel_ms_p50": 0.001279,
+            "kernel_ms_p95": 0.002399,
+            "kernel_ms_p99": 0.003719,
+            "kernel_ms_max": 0.005119
+          },
+          {
+            "category": "sampling_control",
+            "kernels": 1966,
+            "kernel_ms_total": 7.143,
+            "share_pct": 0.113,
+            "kernel_ms_p50": 0.003079,
+            "kernel_ms_p95": 0.006759,
+            "kernel_ms_p99": 0.007039,
+            "kernel_ms_max": 0.007919
+          }
+        ]
+      },
+      "mixed_chunked_prefill": {
+        "annotations": 3,
+        "annotation_ms_total": 397.918,
+        "kernels": 1353,
+        "kernel_ms_total": 385.452,
+        "kernel_ms_p50": 0.041599,
+        "kernel_ms_p99": 1.885232,
+        "kernels_per_annotation": 451.0,
+        "kernel_ms_per_annotation": 128.484,
+        "annotation_ms_per_annotation": 132.639,
+        "busy_pct": 96.867,
+        "categories": [
+          {
+            "category": "gemm",
+            "kernels": 432,
+            "kernel_ms_total": 324.599,
+            "share_pct": 84.213,
+            "kernel_ms_p50": 0.588836,
+            "kernel_ms_p95": 1.879812,
+            "kernel_ms_p99": 1.926215,
+            "kernel_ms_max": 2.228948
+          },
+          {
+            "category": "attention",
+            "kernels": 324,
+            "kernel_ms_total": 38.542,
+            "share_pct": 9.999,
+            "kernel_ms_p50": 0.015059,
+            "kernel_ms_p95": 0.415385,
+            "kernel_ms_p99": 0.425914,
+            "kernel_ms_max": 0.434157
+          },
+          {
+            "category": "elementwise",
+            "kernels": 123,
+            "kernel_ms_total": 9.584,
+            "share_pct": 2.486,
+            "kernel_ms_p50": 0.116198,
+            "kernel_ms_p95": 0.116839,
+            "kernel_ms_p99": 0.117038,
+            "kernel_ms_max": 0.117079
+          },
+          {
+            "category": "norm_rope",
+            "kernels": 219,
+            "kernel_ms_total": 6.152,
+            "share_pct": 1.596,
+            "kernel_ms_p50": 0.025119,
+            "kernel_ms_p95": 0.042359,
+            "kernel_ms_p99": 0.043112,
+            "kernel_ms_max": 0.043799
+          },
+          {
+            "category": "copy_convert",
+            "kernels": 126,
+            "kernel_ms_total": 3.68,
+            "share_pct": 0.955,
+            "kernel_ms_p50": 0.037199,
+            "kernel_ms_p95": 0.041469,
+            "kernel_ms_p99": 0.042438,
+            "kernel_ms_max": 0.042719
+          },
+          {
+            "category": "reduce",
+            "kernels": 108,
+            "kernel_ms_total": 2.775,
+            "share_pct": 0.72,
+            "kernel_ms_p50": 0.029539,
+            "kernel_ms_p95": 0.030839,
+            "kernel_ms_p99": 0.030993,
+            "kernel_ms_max": 0.031159
+          },
+          {
+            "category": "sampling_control",
+            "kernels": 21,
+            "kernel_ms_total": 0.12,
+            "share_pct": 0.031,
+            "kernel_ms_p50": 0.006439,
+            "kernel_ms_p95": 0.007239,
+            "kernel_ms_p99": 0.007495,
+            "kernel_ms_max": 0.007559
+          }
+        ]
+      },
+      "unattributed": {
+        "annotations": 0,
+        "annotation_ms_total": 0,
+        "kernels": 7286,
+        "kernel_ms_total": 616.883,
+        "kernel_ms_p50": 0.003519,
+        "kernel_ms_p99": 1.05508,
+        "categories": [
+          {
+            "category": "gemm",
+            "kernels": 643,
+            "kernel_ms_total": 590.847,
+            "share_pct": 95.779,
+            "kernel_ms_p50": 0.843355,
+            "kernel_ms_p95": 1.058538,
+            "kernel_ms_p99": 1.065436,
+            "kernel_ms_max": 1.077234
+          },
+          {
+            "category": "elementwise",
+            "kernels": 3215,
+            "kernel_ms_total": 10.322,
+            "share_pct": 1.673,
+            "kernel_ms_p50": 0.002599,
+            "kernel_ms_p95": 0.005479,
+            "kernel_ms_p99": 0.005959,
+            "kernel_ms_max": 0.009919
+          },
+          {
+            "category": "sampling_control",
+            "kernels": 1929,
+            "kernel_ms_total": 8.782,
+            "share_pct": 1.424,
+            "kernel_ms_p50": 0.003399,
+            "kernel_ms_p95": 0.008759,
+            "kernel_ms_p99": 0.009227,
+            "kernel_ms_max": 0.010679
+          },
+          {
+            "category": "reduce",
+            "kernels": 643,
+            "kernel_ms_total": 5.188,
+            "share_pct": 0.841,
+            "kernel_ms_p50": 0.009079,
+            "kernel_ms_p95": 0.009599,
+            "kernel_ms_p99": 0.009879,
+            "kernel_ms_max": 0.010479
+          },
+          {
+            "category": "copy_convert",
+            "kernels": 856,
+            "kernel_ms_total": 1.744,
+            "share_pct": 0.283,
+            "kernel_ms_p50": 0.002039,
+            "kernel_ms_p95": 0.002279,
+            "kernel_ms_p99": 0.002977,
+            "kernel_ms_max": 0.003799
+          }
+        ]
+      }
+    },
+    "profile_request_metrics": {
+      "requests": 20,
+      "corrected_tpot_ms_p50": 13.889895,
+      "corrected_tpot_ms_p99": 14.741116,
+      "stream_chunk_mismatch_requests": 3
+    }
+  },
+  "caveats": [
+    "Trace collection perturbs wall-clock latency; use the low-overhead sweep for SLO numbers.",
+    "llama.cpp trace is attach-mode rocprofv3; vLLM trace is torch profiler. The kernel attribution is comparable at the dispatch-family level, not as an identical instrumentation path.",
+    "vLLM phase labels come from execute_context_*_generation_* GPU annotations. llama.cpp phase labels are absent.",
+    "The raw traces are local /tmp artifacts and are not committed; hashes bind this summary to them."
+  ]
+}

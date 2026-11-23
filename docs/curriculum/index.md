@@ -30,7 +30,7 @@ next: false
 - [第 5 章 通信代价模型与 Scale-in / Scale-up](/part1-modeling/chapter5/) — 节点内与节点间互联、集合通信原语、α–β 代价模型（进阶协同）
 - [第 6 章 模型并行策略与显存 / 算力拆解](/part1-modeling/chapter6/) — DP / FSDP、TP、PP、切分收益被通信吃掉的判定条件（进阶协同）
 - [第 7 章 服务性能与服务质量](/part1-modeling/chapter7/) — 衡量推理服务的延迟与有效吞吐，按 SLO 判断达标容量和服务余量。比较开环与闭环压测，用排队论分析等待，讲解连续批处理中的请求调度与缓存约束，并通过离散事件模拟预测服务表现。（服务评测）
-- [第 8 章 推理框架的系统取舍、Profile 与性能分析](/part1-modeling/chapter8/) — 框架级取舍、框架级 Profile、配置空间预测与失败模式（单机优化）
+- [第 8 章 推理框架的系统取舍、Profile 与性能分析](/part1-modeling/chapter8/) — 同卡 vLLM vs llama.cpp、显存失败模式、留出预测、框架级 Profile 与选型决策（单机优化）
 
 ## 第 2 篇：与 AI 一起设计
 

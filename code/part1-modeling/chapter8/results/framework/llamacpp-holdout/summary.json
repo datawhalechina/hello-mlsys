@@ -1,0 +1,159 @@
+{
+  "generated_at": "2026-11-23T04:28:11Z",
+  "run_started_at": "2026-11-23T04:25:56Z",
+  "framework": "llamacpp",
+  "framework_version": "b1-3ed7284",
+  "base_url": "http://127.0.0.1:18002",
+  "model": "qwen3-4b",
+  "server_command": "llama-server --parallel 64 --ctx-size 32768 --flash-attn on --no-cache-prompt",
+  "note": "holdout C=16/48; prediction frozen in prediction-holdout.json",
+  "contract": {
+    "protocol": "OpenAI-compatible /v1/completions streaming SSE",
+    "prompt": "random token ids, same IDs for every framework",
+    "input_tokens": 256,
+    "output_tokens": 128,
+    "num_prompts_per_point": 200,
+    "warmup_per_point": 2,
+    "seed": 42,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "ignore_eos": true,
+    "request_timeout_s": 300.0,
+    "gpu_index_for_vram": 0,
+    "ttft": "first non-empty SSE token minus HTTP send",
+    "tpot": "(E2E - TTFT)/(completion_tokens-1); SSE chunk intervals are auxiliary",
+    "e2e": "last SSE chunk/[DONE] minus HTTP send",
+    "slo": {
+      "ttft_p99_ms": 800.0,
+      "tpot_p99_ms": 100.0,
+      "e2el_p99_ms": 15000.0,
+      "failure_rate_max": 0.01
+    }
+  },
+  "host": {
+    "hostname": "z-lab-7900",
+    "python": "3.13.11"
+  },
+  "points": [
+    {
+      "requests": 200,
+      "successful_requests": 200,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 196,
+      "slo_pass_rate": 0.98,
+      "wall_s": 70.488772,
+      "request_throughput_per_s": 2.837331,
+      "output_tokens_total": 25600,
+      "output_tokens_per_s": 363.178411,
+      "slo_goodput_requests_per_s": 2.780585,
+      "slo_goodput_output_tokens_per_s": 355.914842,
+      "ttft_ms": {
+        "p50": 566.1069200141355,
+        "p95": 744.295275962213,
+        "p99": 838.6562529939658,
+        "max": 1416.4403619943187
+      },
+      "tpot_ms": {
+        "p50": 36.42045354331279,
+        "p95": 50.737048000579435,
+        "p99": 53.177658355112854
+      },
+      "e2el_ms": {
+        "p50": 5213.335711508989,
+        "p95": 7005.762366001727,
+        "p99": 7124.302513089497
+      },
+      "itl_ms_all": {
+        "count": 25230,
+        "p50": 30.351620516739786,
+        "p95": 45.8710283448454,
+        "p99": 208.98656646604644
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "FAIL",
+      "concurrency": 16,
+      "num_prompts": 200,
+      "vram": {
+        "samples": 230,
+        "min_bytes": 13502996480,
+        "max_bytes": 13537112064,
+        "median_bytes": 13524758528
+      },
+      "metrics_delta": {
+        "llamacpp:prompt_seconds_total": 9.215908,
+        "llamacpp:tokens_predicted_total": 25600.0
+      }
+    },
+    {
+      "requests": 200,
+      "successful_requests": 200,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 54,
+      "slo_pass_rate": 0.27,
+      "wall_s": 57.811711,
+      "request_throughput_per_s": 3.459507,
+      "output_tokens_total": 25600,
+      "output_tokens_per_s": 442.816857,
+      "slo_goodput_requests_per_s": 0.934067,
+      "slo_goodput_output_tokens_per_s": 119.560551,
+      "ttft_ms": {
+        "p50": 778.5828959895298,
+        "p95": 2047.7325984393246,
+        "p99": 2421.727779789362,
+        "max": 2502.8131189756095
+      },
+      "tpot_ms": {
+        "p50": 98.01807103579586,
+        "p95": 107.2778871928261,
+        "p99": 109.23120538709597
+      },
+      "e2el_ms": {
+        "p50": 13227.743633033242,
+        "p95": 14394.372117047897,
+        "p99": 14858.427317988824
+      },
+      "itl_ms_all": {
+        "count": 25236,
+        "p50": 75.22507151588798,
+        "p95": 83.07604014407843,
+        "p99": 789.1156883561052
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "FAIL",
+      "concurrency": 48,
+      "num_prompts": 200,
+      "vram": {
+        "samples": 187,
+        "min_bytes": 13533351936,
+        "max_bytes": 13570625536,
+        "median_bytes": 13565812736
+      },
+      "metrics_delta": {
+        "llamacpp:prompt_seconds_total": 9.85474,
+        "llamacpp:tokens_predicted_total": 25600.0
+      }
+    }
+  ]
+}

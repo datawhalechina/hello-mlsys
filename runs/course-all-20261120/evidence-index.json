@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "generated_at": "2026-11-20T19:40:00+08:00",
+  "generated_at": "2026-11-23T04:47:44Z",
     "record": "SUMMARY.md",
     "gaps": "GAPS.md",
     "environment": {
@@ -266,14 +266,26 @@
         },
         {
             "id": "Ch8",
-            "status": "PARTIAL",
+    "status": "PASS_HW_WITH_BOUNDS",
             "evidence": [
                 "simulated",
-                "hardware_vllm_shared",
-                "hardware_torch_eager"
+      "hardware_vllm",
+      "hardware_llamacpp",
+      "hardware_rocprofv3"
             ],
-            "hardware_validated": false,
+    "hardware_validated": true,
             "artifacts": [
+      "code/part1-modeling/chapter8/results/framework/",
+      "code/part1-modeling/chapter8/results/framework/analysis.json",
+      "code/part1-modeling/chapter8/results/framework/prediction-holdout.json",
+      "code/part1-modeling/chapter8/results/framework/holdout-analysis.json",
+      "code/part1-modeling/chapter8/results/framework/profile-summary.json",
+      "code/part1-modeling/chapter8/results/framework/llamacpp-memory-fail/probe.log",
+      "code/part1-modeling/chapter8/results/screen-qwen4b-7900xtx-v2/",
+      "code/part1-modeling/chapter8/experiment-draft.yaml",
+      "docs/part1-modeling/chapter8/images/"
+    ],
+    "legacy_artifacts": [
                 "ch8-screen-simulation/",
                 "ch8-screen-sweep/",
                 "hw-ch8-torch-eager-4b/",
@@ -281,7 +293,86 @@
                 "hw-profile-rocprofv3/pmc-stable-peak-qwen3-0.6b/",
                 "hw-profile-rocprofv3/pmc-stable-peak-qwen3-4b/"
             ],
-            "summary": "screen 1 pass/3 fail; sweep 1 pass/1 fail; rocprofv3 Qwen3-0.6B/4B kernel attribution and PMC complete; no multi-framework comparison",
+    "summary": "same-card Qwen3-4B vLLM vs llama.cpp: effective capacity C32 vs C8; holdout C16/48 4/4 SLO verdicts, MAPE 14.38/9.816/9.623%; 131K KV 18.00 GiB OOM; C=8 profile 87.73% vs 70.77% GPU busy; simulator latency unreliable, static-memory screen valid",
+    "framework_comparison": {
+      "contract": {
+        "gpu": "AMD Radeon RX 7900 XTX 23.98 GiB (gfx1100, exclusive GPU0)",
+        "model": "Qwen3-4B",
+        "input_tokens": 256,
+        "output_tokens": 128,
+        "num_prompts_per_point": 200,
+        "slo": {"ttft_p99_ms": 800, "tpot_p99_ms": 100, "e2el_p99_ms": 15000, "failure_rate_max": 0.01},
+        "tpot_formula": "(E2EL - TTFT)/(completion_tokens - 1)"
+      },
+      "main_scan": {
+        "vllm": {
+          "C1": {"ttft_p99_ms": 40.24, "tpot_p99_ms": 10.19, "e2el_p99_ms": 1330.00, "output_tokens_per_s": 96.43, "slo_goodput_rps": 0.753, "slo_passed": "200/200", "verdict": "PASS"},
+          "C8": {"ttft_p99_ms": 206.05, "tpot_p99_ms": 14.25, "e2el_p99_ms": 1877.16, "output_tokens_per_s": 546.79, "slo_goodput_rps": 4.272, "slo_passed": "200/200", "verdict": "PASS"},
+          "C32": {"ttft_p99_ms": 780.35, "tpot_p99_ms": 20.74, "e2el_p99_ms": 2920.09, "output_tokens_per_s": 1406.22, "slo_goodput_rps": 10.986, "slo_passed": "200/200", "verdict": "PASS"},
+          "C64": {"ttft_p99_ms": 1564.51, "tpot_p99_ms": 30.30, "e2el_p99_ms": 4948.88, "output_tokens_per_s": 1834.59, "slo_goodput_rps": 11.323, "slo_passed": "158/200", "verdict": "FAIL"}
+        },
+        "llamacpp": {
+          "C1": {"ttft_p99_ms": 124.86, "tpot_p99_ms": 12.55, "e2el_p99_ms": 1693.72, "output_tokens_per_s": 79.79, "slo_goodput_rps": 0.623, "slo_passed": "200/200", "verdict": "PASS"},
+          "C8": {"ttft_p99_ms": 778.33, "tpot_p99_ms": 32.47, "e2el_p99_ms": 4900.64, "output_tokens_per_s": 297.29, "slo_goodput_rps": 2.323, "slo_passed": "200/200", "verdict": "PASS"},
+          "C32": {"ttft_p99_ms": 1867.03, "tpot_p99_ms": 86.37, "e2el_p99_ms": 12015.42, "output_tokens_per_s": 412.89, "slo_goodput_rps": 2.500, "slo_passed": "155/200", "verdict": "FAIL"},
+          "C64": {"ttft_p99_ms": 3859.00, "tpot_p99_ms": 112.41, "e2el_p99_ms": 17146.44, "output_tokens_per_s": 553.48, "slo_goodput_rps": 0.822, "slo_passed": "38/200", "verdict": "FAIL"}
+        },
+        "max_passing_point": {"vllm": 32, "llamacpp": 8},
+        "first_violation": {"vllm": 48, "llamacpp": 16},
+        "preemptions_vllm": 0,
+        "vram_median_bytes": {"vllm": 21689548800, "llamacpp": 13529083904}
+      },
+      "holdout": {
+        "prediction_stored_at": "2026-11-23T04:22:20Z",
+        "measurement_analysis_generated_at": "2026-11-23T04:30:53Z",
+        "calibration_points": [1, 8, 32],
+        "burned_points": [64],
+        "holdout_points": [16, 48],
+        "slo_verdict_matches": "4/4",
+        "mape_pct": {"ttft": 14.38, "tpot": 9.816, "e2el": 9.623},
+        "rows": [
+          {"framework": "vllm", "concurrency": 16, "predicted_ttft_p99_ms": 408.74, "actual_ttft_p99_ms": 386.20, "error_pct": -5.515, "verdict": "PASS"},
+          {"framework": "vllm", "concurrency": 48, "predicted_ttft_p99_ms": 1039.92, "actual_ttft_p99_ms": 1147.30, "error_pct": 10.326, "verdict": "FAIL"},
+          {"framework": "llamacpp", "concurrency": 16, "predicted_ttft_p99_ms": 1173.08, "actual_ttft_p99_ms": 838.66, "error_pct": -28.508, "verdict": "FAIL"},
+          {"framework": "llamacpp", "concurrency": 48, "predicted_ttft_p99_ms": 2789.04, "actual_ttft_p99_ms": 2421.73, "error_pct": -13.17, "verdict": "FAIL"}
+        ],
+        "note": "C64 observed before prediction but excluded from fit and acceptance; llama.cpp C16 is a marginal FAIL only 38.66 ms above TTFT threshold; interval is heuristic, not a confidence interval"
+      },
+      "memory": {
+        "kv_bytes_per_token": 147456,
+        "vllm_kv_tokens": 77248,
+        "llamacpp_context_tokens": 32768,
+        "failed_context_tokens": 131072,
+        "failed_kv_gib": 18.0,
+        "probe_alloc_bytes": 19327352832,
+        "probe_alloc_mib": 18432,
+        "probe_error": "cudaMalloc failed: out of memory"
+      },
+      "profile_c8": {
+        "requests": 20,
+        "input_tokens": 256,
+        "output_tokens": 128,
+        "vllm": {"dispatches": 269892, "span_ms": 8498.724, "kernel_ms": 7456.093, "gpu_busy_pct": 87.732, "dispatches_per_output_token": 105.427, "gemm_share_pct": 89.176, "attention_share_pct": 6.246},
+        "llamacpp": {"dispatches": 497906, "span_ms": 13947.885, "kernel_ms": 9871.496, "gpu_busy_pct": 70.774, "dispatches_per_output_token": 194.495, "gemm_share_pct": 89.32, "attention_share_pct": 4.826},
+        "caveat": "trace collection perturbs wall-clock; relative attribution only"
+      },
+      "negative_results": [
+        "simulator screen: 4/4 FAIL; 131K static-memory infeasible is consistent with real OOM; 48-concurrency analytical TTFT about 66,029 ms is severely wrong versus 1,147/2,422 ms holdout",
+        "llama.cpp C16 holdout is only 38.66 ms above TTFT threshold; not a robust boundary"
+      ],
+      "not_covered": [
+        "SGLang",
+        "Ollama",
+        "MIGraphX",
+        "shared-prefix workloads",
+        "long-context success path",
+        "multi-turn",
+        "multi-GPU",
+        "P/D disaggregation",
+        "INT4/FP8 framework comparison",
+        "power and thermal"
+      ]
+    },
             "profile": {
                 "tool": "rocprofv3 1.3.5",
                 "qwen3_0_6b": {
@@ -444,6 +535,8 @@
         "Ch5 384 B holdout rejected as OUT_OF_DOMAIN due to downward jump",
         "Ch7 built-in goodput SLA not declared; plan SLO not propagated",
         "Ch7 C8 first run TTFT P99 3187.30 ms anomalous; rerun 64.95 ms",
+    "Ch8 simulator screen 48-concurrency TTFT about 66,029 ms is severely wrong versus 1,147/2,422 ms holdout; static-memory verdict remains valid",
+    "Ch8 llama.cpp C16 holdout is only 38.66 ms above the 800 ms TTFT threshold; treat as marginal FAIL",
         "Ch9.1 INT4 request HTTP 422 UNSUPPORTED_PRECISION",
         "Ch9.2 8192 input fails TTFT<2s and TPOT<50ms; 16384 input HTTP 422",
         "Ch9.3 trace is authored synthetic teaching workload, not a captured Claude trace"
@@ -460,6 +553,14 @@
             "kernel_trace": "ok",
             "marker_trace": "ok",
             "pmc": "available with STABLE_PEAK: raw counters and L2/VALU/occupancy metrics are non-zero; AUTO returns zero for target events; GPU0 restored to AUTO"
+  },
+  "rocprofv3_ch8_framework": {
+    "version": "1.4.1",
+    "rocm": "10.1",
+    "llama_attach": "ok with ROCP_TOOL_ATTACH=1",
+    "vllm_attach": "not available; used /start_profile and /stop_profile torch profiler",
+    "raw_traces_committed": false,
+    "summary": "code/part1-modeling/chapter8/results/framework/profile-summary.json"
         }
     }
 }

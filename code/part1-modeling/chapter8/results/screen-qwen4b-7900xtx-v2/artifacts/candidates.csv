@@ -1,0 +1,5 @@
+candidate_id,verdict,constraint_verdict,objective,actual,unit,rank
+vllm-bf16-4096-c48,FAIL,FAIL,elapsed_ms,68081.5,ms,—
+llamacpp-f16-512-c48,FAIL,FAIL,elapsed_ms,68081.5,ms,—
+llamacpp-f16-131072-c1-memory-fail,FAIL,FAIL,elapsed_ms,—,ms,—
+vllm-bf16-131072-c1-memory-fail,FAIL,FAIL,elapsed_ms,—,ms,—

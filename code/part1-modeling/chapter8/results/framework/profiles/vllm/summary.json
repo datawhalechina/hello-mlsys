@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-11-23T04:17:51Z",
+  "run_started_at": "2026-11-23T04:17:42Z",
+  "framework": "vllm",
+  "framework_version": "vLLM 0.29.1.dev0+g98dff2a81, ROCm 10.1, torch 2.13.0",
+  "base_url": "http://127.0.0.1:18001",
+  "model": "qwen3-4b",
+  "server_command": "vllm serve /models/Qwen3-4B --gpu-memory-utilization 0.90 --max-model-len 4096 --max-num-seqs 64 --no-enable-prefix-caching --profiler-config.profiler=torch",
+  "note": "torch profiler start/stop; not part of main sweep",
+  "contract": {
+    "protocol": "OpenAI-compatible /v1/completions streaming SSE",
+    "prompt": "random token ids, same IDs for every framework",
+    "input_tokens": 256,
+    "output_tokens": 128,
+    "num_prompts_per_point": 20,
+    "warmup_per_point": 2,
+    "seed": 42,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "ignore_eos": true,
+    "request_timeout_s": 300.0,
+    "gpu_index_for_vram": 0,
+    "ttft": "first non-empty SSE token minus HTTP send",
+    "tpot": "(E2E - TTFT)/(completion_tokens-1); SSE chunk intervals are auxiliary",
+    "e2e": "last SSE chunk/[DONE] minus HTTP send",
+    "slo": {
+      "ttft_p99_ms": 800.0,
+      "tpot_p99_ms": 100.0,
+      "e2el_p99_ms": 15000.0,
+      "failure_rate_max": 0.01
+    }
+  },
+  "host": {
+    "hostname": "z-lab-7900",
+    "python": "3.13.11"
+  },
+  "points": [
+    {
+      "requests": 20,
+      "successful_requests": 20,
+      "failed_requests": 0,
+      "failure_rate": 0.0,
+      "slo_passed_requests": 20,
+      "slo_pass_rate": 1.0,
+      "wall_s": 5.60989,
+      "request_throughput_per_s": 3.565132,
+      "output_tokens_total": 2560,
+      "output_tokens_per_s": 456.336932,
+      "slo_goodput_requests_per_s": 3.565132,
+      "slo_goodput_output_tokens_per_s": 456.336932,
+      "ttft_ms": {
+        "p50": 214.3928534933366,
+        "p95": 216.34722941671498,
+        "p99": 216.55410821200348,
+        "max": 216.6058279108256
+      },
+      "tpot_ms": {
+        "p50": 13.889895299244232,
+        "p95": 14.70051619598246,
+        "p99": 14.741115749292955
+      },
+      "e2el_ms": {
+        "p50": 1978.2885024906136,
+        "p95": 1982.2016585501842,
+        "p99": 1982.2082324675284
+      },
+      "itl_ms_all": {
+        "count": 2537,
+        "p50": 13.834003009833395,
+        "p95": 14.27972528617829,
+        "p99": 14.649749957025051
+      },
+      "completion_tokens_per_request": {
+        "min": 128,
+        "p50": 128.0,
+        "max": 128
+      },
+      "slo": {
+        "ttft_p99_ms": 800.0,
+        "tpot_p99_ms": 100.0,
+        "e2el_p99_ms": 15000.0,
+        "failure_rate_max": 0.01
+      },
+      "slo_verdict": "PASS",
+      "concurrency": 8,
+      "num_prompts": 20,
+      "vram": {
+        "samples": 19,
+        "min_bytes": 21694713856,
+        "max_bytes": 21694779392,
+        "median_bytes": 21694779392
+      },
+      "metrics_delta": {
+        "vllm:generation_tokens_total": 2560.0,
+        "vllm:num_preemptions_total": 0.0,
+        "vllm:prompt_tokens_total": 5120.0,
+        "vllm:request_success_total": 20.0
+      }
+    }
+  ]
+}

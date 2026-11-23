@@ -1,0 +1,62 @@
+{
+  "requests": 200,
+  "successful_requests": 200,
+  "failed_requests": 0,
+  "failure_rate": 0.0,
+  "slo_passed_requests": 200,
+  "slo_pass_rate": 1.0,
+  "wall_s": 265.468325,
+  "request_throughput_per_s": 0.753386,
+  "output_tokens_total": 25600,
+  "output_tokens_per_s": 96.43335,
+  "slo_goodput_requests_per_s": 0.753386,
+  "slo_goodput_output_tokens_per_s": 96.43335,
+  "ttft_ms": {
+    "p50": 35.65014398191124,
+    "p95": 37.06345492973924,
+    "p99": 40.235502581344775,
+    "max": 55.809395969845355
+  },
+  "tpot_ms": {
+    "p50": 10.173127078542882,
+    "p95": 10.257138319392984,
+    "p99": 14.219704447004291
+  },
+  "e2el_ms": {
+    "p50": 1327.5919309817255,
+    "p95": 1329.4437935692258,
+    "p99": 1330.0048516551033
+  },
+  "itl_ms_all": {
+    "count": 25229,
+    "p50": 10.156881995499134,
+    "p95": 10.50896137021482,
+    "p99": 10.916329990141096
+  },
+  "completion_tokens_per_request": {
+    "min": 128,
+    "p50": 128.0,
+    "max": 128
+  },
+  "slo": {
+    "ttft_p99_ms": 800.0,
+    "tpot_p99_ms": 100.0,
+    "e2el_p99_ms": 15000.0,
+    "failure_rate_max": 0.01
+  },
+  "slo_verdict": "PASS",
+  "concurrency": 1,
+  "num_prompts": 200,
+  "vram": {
+    "samples": 869,
+    "min_bytes": 21689548800,
+    "max_bytes": 21689548800,
+    "median_bytes": 21689548800
+  },
+  "metrics_delta": {
+    "vllm:generation_tokens_total": 25600.0,
+    "vllm:num_preemptions_total": 0.0,
+    "vllm:prompt_tokens_total": 51200.0,
+    "vllm:request_success_total": 200.0
+  }
+}
