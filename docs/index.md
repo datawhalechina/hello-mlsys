@@ -17,9 +17,9 @@ features:
   - title: 单机部署
     details: 模型加载、API 服务与应用调用，得到一个可运行的 LLM 服务。🚧 规划中
   - title: 服务评测
-    details: 输入输出长度、并发、延迟、吞吐与内存，形成标准化性能报告。
+    details: 用压测与排队模拟评估推理服务的延迟、有效吞吐和达标容量。
     link: /part1-modeling/chapter7/
-    linkText: 第 7 章 服务、排队与 SLA
+    linkText: 第 7 章 服务性能与服务质量
   - title: 单机优化
     details: 精度与量化、批处理、KV Cache、框架配置，给出有实测依据的优化方案。
     link: /part1-modeling/chapter3/
@@ -54,7 +54,7 @@ Hello MLSys 以 vLLM 在 Linux 上走通主线、llama.cpp 做对照实验并覆
 2. **第 1–2 章 · 性能分析基础**：[Roofline 与瓶颈](/part1-modeling/chapter1/)、[Profile 与性能校准](/part1-modeling/chapter2/)。
 3. **第 3–4 章 · 单机优化**：[显存与 KV Cache](/part1-modeling/chapter3/)、[精度与量化](/part1-modeling/chapter4/)。
 4. **第 5–6 章 · 进阶协同**：[通信代价模型](/part1-modeling/chapter5/)、[模型并行策略](/part1-modeling/chapter6/)。
-5. **第 7–8 章 · 服务评测与框架取舍**：[服务、排队与 SLA](/part1-modeling/chapter7/)，以及推理框架的系统取舍。
+5. **第 7–8 章 · 服务评测与框架取舍**：[服务性能与服务质量](/part1-modeling/chapter7/)，以及推理框架的系统取舍。
 6. **第 2 篇 · 与 AI 一起设计**：把前面的方法用于端侧、单机与集群设计。
 
 单机部署与多机服务两个模块正在编写中，完成后插入全书相应位置；完整章节见[全书目录](/curriculum/)。
