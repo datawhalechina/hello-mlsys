@@ -5,58 +5,40 @@ description: "Hello MLSys · 第 1 章 模拟器估算、Roofline 与瓶颈 · R
 
 # 第 1 章 模拟器估算、Roofline 与瓶颈
 
-::: danger ⚠️ Alpha内测版本警告
-此为早期内部构建版本，尚不完整且可能存在错误，欢迎大家提Issue反馈问题或建议。
-:::
-
 ## 本章导读
 
-> 本章建立性能预测的第一层直觉：一个算子在给定硬件上的理论上限是多少，瓶颈落在计算还是访存。全书运转在两个飞轮上：**快飞轮**是解析模拟器——便宜、毫秒级、能穷举配置空间，但输出是"解析估计，不是测量"，不一定准（快飞轮由两个模拟器构成——广泛使用的参考模拟器 mlsysim 与自研的 mlsys-simulator，分工见本章"两个模拟器"一节）；**慢飞轮**是真机——昂贵、慢、资源有限，但它是裁决快飞轮预测、提供校准的地方。书的价值不在任何一个飞轮里，而在两者之间的**对账**：预测先留痕，只测信息量最大的少数点，残差归因到机制。本章是这两个飞轮的第一圈——nominal Roofline 模拟器（快）+ 9070 XT 上卡锚定（慢，不拟合）；"快飞轮不准"不是缺陷，量化并归因这些差距本身就是教学内容（§1.4 的 14 个锚定点）。读完后，你应该能先用模拟器给出预测，再带着预测去看真机数据。
+> 一块标称算力达到 195 TFLOPS 的 GPU 运行 6 亿参数的语言模型时，单条请求每秒最多只能生成几百个 token，矩阵计算单元大部分时间都在空转。同一块卡、同一个模型，换成长文本输入后，算力利用率却会大幅上升。真机测量时，单步耗时还可能比显存带宽和峰值算力算出的理论下界慢上十倍以上。给定模型结构和硬件参数，如何判断一次前向计算究竟受限于算力、显存带宽，还是卡在进入 GPU 之前的调度环节？
+>
+> 1.1 从单个算子的并行执行过程建立 Roofline 模型，定义计算上限、访存上限和硬件拐点。1.2 定义算术强度和统一的运算与流量计数口径，计算线性层、注意力机制与逐元素算子的瓶颈归属。1.3 将单算子合成为整步耗时，分析模型规模、批大小和输入长度怎样改变主导成本。1.4 说明解析模拟器能可靠支持哪些判断、以及预测先于测量的对账方法。1.5 用 RX 9070 XT 的单算子与全模型实测对照理论下界，解释框架实现和 CPU 发射开销如何影响观测到的单步时间。章末实验提供复现命令与离线存档，供核对每一项指标。
 
-## 互动演示：公式动画与瓶颈实验室
+::: info 互动演示：公式动画与瓶颈实验室
 
-网站阅读时，13 处核心公式下方可直接调参数、播放、暂停或单步观察。GitHub 阅读时，可展开公式下方的预览与独立演示入口。
+在网页端阅读时，本章 13 处核心公式下方可直接拖动参数、播放或单步观察计算与访存的变化；在 GitHub 阅读时，可展开公式下方的预览入口。
 
 - [整章公式动画阅读版](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-max)
 - [Roofline、Batching 与 CPU / GPU 综合实验](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/index.html)
 
-演示在浏览器中运行，无需 GPU 或本地服务器。解析下界、机制示意与真机实测分别标记。
+:::
 
 ## 教学目标
 
-- 能写出 Roofline 模型 Attainable FLOPS = min(Peak FLOPS, AI × Peak Bandwidth) 的含义与适用边界；
-- 能计算算子的算术强度，判断它是 Compute-bound 还是 Memory-bound；
-- 能用模拟器预测矩阵乘、LayerNorm、FlashAttention 在目标卡上的瓶颈类型与时间量级；
-- 能识别"看起来像 Compute-bound、实际受带宽限制"的算子，并解释直觉错在哪里。
-
-## 两个模拟器：参考模拟器与自研模拟器
-
-全书的"快飞轮"由两个模拟器支撑，角色不同——先分清再展开（§1.4 调用的"模拟器"即其中自研的那个）：
-
-- **MLSys·im（mlsysim）—— 广泛使用的参考模拟器**。来自 Harvard CS249r 教材 [mlsysbook.ai](https://mlsysbook.ai)（Vijay Janapa Reddi 等，MIT Press，CC BY-NC-SA 4.0）配套的现成系统建模模拟器：roofline、372 个物理公式、103 份有来源的硬件规格（官网 v0.3.1 数据，数量随版本变化）；其 "The Math" 给出单步解析式 `T = max(compute, memory) + Dispatch_Tax` 的完整推导与效率 η 的典型范围。它是**广泛使用**的参考实现——本课程直接借它的方法与公式做 Roofline 解析层（§1.1 的 max 形式、§1.2 的计数口径、§1.3 的组件合成都从它的公式出发），并把它作为**参考模拟器**：学生手算与自研模拟器的输出都拿它对照，作为"解析层对不对"的第三方标尺。
-- **mlsys-simulator —— 本课程自研的确定性 CPU 服务模拟器**。[公开仓库](https://github.com/eyuansu62/mlsys-simulator)、许可证待定、未发布 PyPI；核心无必需第三方运行依赖，**不执行真实 GPU 张量**，用确定性模型在 CPU 上推进服务过程。建模：请求到达、continuous batching、KV 内存压力、抢占与重算、TP/PP 切分（microbatch / stage 独立推进）、多副本路由与负载均衡、Prefix Cache、Chunked Prefill、混合 prefill/decode batching、可选 CPU KV swap；输出逐请求时间线、逐 rank 显存账本与服务指标（TTFT/TPOT/SLA）。其解析层与 mlsysim 同构——per-macro 的 FLOPs / HBM Bytes / launch 计数走同一套 Roofline 口径，§1.4 的 `simulate` / `predict` 与六元组契约调的就是它。
-
-mlsys-simulator 的实验按**六元组契约**组织：`workload / infra / strategy / calibration / evaluation / execution`，其中 `calibration` 必须是显式参数（不得隐式）——这是全书"预测先留痕"纪律在接口层的落实。CLI 入口：`mlsys-sim simulate`（完整服务仿真）与 `mlsys-sim predict`（shape 分析：各 stage 成本、TP/P2P 通信、显存可行性、batch 上限；不含到达与排队，会显式报 `SHAPE_ANALYSIS_HAS_NO_ARRIVALS_OR_QUEUEING`），另有 `calibrate` / `compare` / `validate`。一次运行落盘 `manifest.json / result.json / requests.jsonl / events.jsonl / logs.txt` 五个产物（§1.4"模拟器接口与产物"的清单）；单位约定 ms、bytes、十进制 GB/s、TFLOP/s。
-
-**v1.15 更新（2026-11-06）：量化权重/KV 存储。** 引入"声明式有效字节宽度"契约：`weight_bytes` / `kv_bytes` / `activation_bytes` 由用户显式声明（正数、≤ 8），例如 FP8/INT8 = 1.0、INT4/FP4 = 0.5，以及带 block/scale 元数据的 GPTQ-128 ≈ 0.515625、NVFP4 ≈ 0.5625、MXFP4 ≈ 0.53125（元数据由用户声明，绝不从标签推断）；字节账用精确 ceiling 算术，小数宽度不会低估物理字节。反量化开销显式建模，三档 `weight_dequant`：`none`（不建模）、`fused`（反量化 FLOPs 计入 GEMM）、`materialized`（单独一遍 `params × (weight_bytes + 2×activation_bytes)`，每层一次 launch，仅对 packed 存储有效）；`CalibrationSpec.dequant_flops_per_weight`（默认 1.0）控制强度，KV 反量化在 attention macro 内 on-the-fly 融合。dequant 模式进入 Profile 身份——量化实验不能复用非量化的 Profile。详见其 `docs/quantization.md`。这一更新让**第 4 章的精度实验**在模拟器侧有了对应能力（字节账 + 反量化开销），但注意下面的边界。
-
-**边界（务必声明）**：mlsys-simulator **不做精度/质量建模**——量化只建字节账与反量化开销，不预测 PPL 或任何质量指标（精度只能真机/真模型裁决，第 4 章）；无 NVMe swap（仅可选 CPU KV swap）；真机 Profile 采集当前仅覆盖 BF16 域（live 捕获仍拒绝量化模型）；现有覆盖率不代表通用硬件准确率。因此它的输出永远是"确定性模型下的解析/模拟估计"，不是测量；与真机的对账飞轮自第 2 章起。
+- 能写出 Roofline 模型的耗时形式与吞吐形式，区分矩阵管线与向量管线的拐点，并说明标称下界的适用条件。
+- 能按统一口径计算 GEMM、Attention（含 FlashAttention 与 GQA 解码）和逐元素算子的算术强度，判断其受限于计算还是显存带宽。
+- 能用“组件内取最大值、组件间求和”的规则估算整步耗时，并解释批大小 $B$ 和输入长度 $S$ 如何改变瓶颈位置。
+- 能从字节复用的角度识别“运算量不小却受带宽限制”的算子，避免只看浮点运算数做出误判。
+- 能对照真机实测与标称下界，区分硬件计算效率、软件实现开销、口径差异与 CPU 发射瓶颈。
 
 ## 1.1 Roofline 模型
 
-### 硬件的两条速度上限
+### 计算上限、访存上限与固定开销
 
-一块 GPU 同时受两条互不相干的速度上限约束：
+GPU 执行单个算子时，需要把数据从高带宽显存（HBM）搬入片上缓存和寄存器，再由计算单元完成浮点运算，最后将结果写回显存。这个过程同时受两条硬件物理上限约束：计算单元每秒最多完成的浮点运算数称为**峰值算力** $P_{\mathrm{peak}}$（单位 FLOP/s），实际可发挥的比例记作**计算效率** $\eta \in (0, 1]$；HBM 与计算单元之间每秒最多搬运的字节数称为**峰值带宽** $\mathrm{BW}_{\mathrm{peak}}$（单位 B/s）。
 
-1. **计算上限**：每秒能执行多少 FLOP（Peak FLOPS，再乘以实际效率 η）；
-2. **访存上限**：每秒能在 HBM 与计算单元之间搬运多少字节（Peak Bandwidth）。
+在算子执行期间，数据搬运与算术运算按分块流水线并行推进，而不是把全部数据搬完才开始计算。只要其中一侧先触及上限，另一侧就会停下来等待。因此，单个算子的执行时间至少等于计算耗时与访存耗时中的较大者；再加上与数据规模无关的调度和 kernel 发射开销 $T_{\mathrm{fixed}}$，便得到单步耗时模型：
 
-一个算子 step 的耗时由两条上限中**先被触及的那条**决定——这两类资源是**并行**工作的，不是串联的：
-
-```
-t_step = max( FLOPs / (Peak FLOPS × η) ,  Bytes / Peak Bandwidth ) + T_fixed
-         └────────── 计算项 ──────────┘  └──────── 访存项 ────────┘  └─ 固定开销（launch 等，本章未校准）
-```
+$$
+t_{\mathrm{step}} = \max\!\left(\frac{\mathrm{FLOPs}}{P_{\mathrm{peak}} \cdot \eta},\; \frac{\mathrm{Bytes}}{\mathrm{BW}_{\mathrm{peak}}}\right) + T_{\mathrm{fixed}}.
+$$
 
 <!-- formula-demo:start:max -->
 <FormulaDemo scene="max" title="max：计算与访存为什么取较大者" />
@@ -71,16 +53,15 @@ t_step = max( FLOPs / (Peak FLOPS × η) ,  Bytes / Peak Bandwidth ) + T_fixed
 </details>
 <!-- formula-demo:end:max -->
 
+将两项取 $\max$ 而非相加，反映的是单算子内部计算与访存的重叠关系。如果把两项直接相加，就相当于假设数据全部搬运完毕后计算单元才启动；而在实际流水线中，耗时由较慢的那条路径决定，较快路径的剩余能力被闲置。[mlsysbook.ai：System Paradigms](https://mlsysbook.ai)
 
-**取 max 而不是 sum** 是最容易搞错的一点。把两项相加等于假设"先把数据搬完、再算"；但实际执行中数据是一边读一边被消费的：如果计算先读完，计算单元就空转等数据，step 时间由较慢的那条决定，较快的那条被"浪费"了。参考课程（mlsysbook）把同一件事表述为："a step takes at least as long as its compute time or its memory-transfer time, whichever is larger"。
+### 屋顶线与拐点
 
-### 吞吐量视角：屋顶与拐点
+忽略固定开销 $T_{\mathrm{fixed}}$ 并取理想效率 $\eta = 1$，把算子的总运算量 $\mathrm{FLOPs}$ 除以单步耗时，就可以得到该算子在目标硬件上理论上能达到的最高算力（Attainable FLOPS）。引入**算术强度** $\mathrm{AI} = \mathrm{FLOPs} / \mathrm{Bytes}$（每搬运 1 字节执行的浮点运算次数），上式改写为 **Roofline 模型**：[Williams, Waterman & Patterson (2009)](https://doi.org/10.1145/1498765.1498785)
 
-把上式改写为"给定算子最多能跑多少 FLOPS"（两边对时间取吞吐），就得到 Roofline 的经典形式：
-
-```
-Attainable FLOPS = min( Peak FLOPS ,  AI × Peak Bandwidth )
-```
+$$
+\mathrm{Attainable\;FLOPS} = \min\!\left(P_{\mathrm{peak}},\; \mathrm{AI} \times \mathrm{BW}_{\mathrm{peak}}\right).
+$$
 
 <!-- formula-demo:start:roof -->
 <FormulaDemo scene="roof" title="min：访存斜坡与计算屋顶" />
@@ -95,17 +76,13 @@ Attainable FLOPS = min( Peak FLOPS ,  AI × Peak Bandwidth )
 </details>
 <!-- formula-demo:end:roof -->
 
+在双对数坐标系中，这条曲线由一条斜坡和一条水平线拼接而成。当 $\mathrm{AI}$ 较小时，可达算力等于 $\mathrm{AI} \times \mathrm{BW}_{\mathrm{peak}}$，落在左侧斜坡上，此时即使增加计算单元也无法缩短耗时，称为**访存受限**（memory-bound，指带宽成为瓶颈）。当 $\mathrm{AI}$ 足够大时，可达算力封顶在 $P_{\mathrm{peak}}$，落在右侧平顶上，此时提升性能需要更高的计算吞吐或更少的总运算量，称为**计算受限**（compute-bound）。
 
-其中 AI（arithmetic intensity，算术强度，§1.2 定义）是算子每搬运 1 字节所执行的 FLOP 数。min 的两个参数就是两条"屋顶"：
+斜坡与平顶的交点称为硬件的**拐点**（ridge point，也称机器平衡点）：
 
-- AI 小时，访存先成为限制：可达成 FLOPS 随 AI 线性增长（屋顶的斜坡）；
-- AI 大时，计算天花板先被触及：可达成 FLOPS 封顶在 Peak FLOPS（屋顶的平顶）。
-
-两线交点即**拐点（ridge point / machine balance point）**：
-
-```
-AI* = Peak FLOPS / Peak Bandwidth
-```
+$$
+\mathrm{AI}^* = \frac{P_{\mathrm{peak}}}{\mathrm{BW}_{\mathrm{peak}}}.
+$$
 
 <!-- formula-demo:start:ridge -->
 <FormulaDemo scene="ridge" title="拐点：让两条资源上限相等" />
@@ -120,62 +97,30 @@ AI* = Peak FLOPS / Peak Bandwidth
 </details>
 <!-- formula-demo:end:ridge -->
 
+将算子的 $\mathrm{AI}$ 与硬件的 $\mathrm{AI}^*$ 比较，即可判定其瓶颈归属：$\mathrm{AI} < \mathrm{AI}^*$ 属于访存受限，$\mathrm{AI} > \mathrm{AI}^*$ 属于计算受限。这里需要区分两个容易混淆的概念：Roofline 中的 **memory-bound 指显存带宽受限，而不是显存容量不足（OOM）**。显存容量决定模型权重和缓存能否装下，属于[第 3 章](/part1-modeling/chapter3/)讨论的范围；本章关注的是数据搬运与算术计算谁先达到速度上限。
 
-拐点左侧 memory-bound，右侧 compute-bound。同一硬件、同一个算子，仅仅因为 batch size 或序列长度不同，就可以在两条完全不同的区域之间移动：
+### 同一块硬件的不同计算管线
 
-```
-        可达成 FLOPS
-              │
-    Peak ─────┤━━━━━━━━━━━━━━━━━━━  计算屋顶（AI ≥ AI*）
-              │        ╱
-              │       ╱
-              │      ╱      访存斜坡（AI < AI*）
-              │     ╱
-              │    ╱
-              │   ╱
-              │  ╱
-              │ ╱
-              └─────────────────────────  AI (FLOP/byte)
-              0            AI* = Peak/BW
-```
+现代 GPU 通常为不同类型的运算配备独立的硬件管线。矩阵乘运行在专用的矩阵管线上，而归一化、位置编码和激活函数运行在通用向量管线上。两条管线的峰值算力不同，但共享同一块 HBM 带宽，因此各自对应不同的拐点。以本书实验所用的 **AMD Radeon RX 9070 XT** 为例（硬件参数见[第 0 章](/part0-intro/chapter0/)）：
 
-参考课程的 ResNet-50/A100 例子（b=1，FP16）展示了"贴着拐点"的情形：AI≈146，A100 拐点≈153，访存项 0.028 ms 以微弱优势压过计算项 0.026 ms，两者都远小于 0.515 ms 的固定 dispatch 开销——"总时间大部分是开销，所以 batching 在这里收益巨大"。我们的主算例（decode B=1，AI≈1 vs AI*≈305）则远在拐点左侧，判定是稳健的，不依赖真实 kernel 的效率。两种位置（贴拐点 / 远离拐点）都要会读。
+| 计算管线 | 典型算子 | 峰值算力 $P_{\mathrm{peak}}$ | 标称显存带宽 $\mathrm{BW}_{\mathrm{peak}}$ | 拐点 $\mathrm{AI}^*$ |
+| --- | --- | ---: | ---: | ---: |
+| BF16 矩阵管线 | GEMM、线性投影、注意力矩阵乘 | 195 TFLOPS | 640 GB/s | $\approx 305\;\text{FLOP/byte}$ |
+| FP32 向量管线 | RMSNorm、LayerNorm、RoPE、SiLU | 48.7 TFLOPS | 640 GB/s | $\approx 76\;\text{FLOP/byte}$ |
 
-### 9070 XT 的两个拐点
+判定瓶颈前必须先确认算子运行在哪条管线上。在这块卡上，BF16 矩阵乘需要每字节完成 305 次以上的浮点运算才能进入计算受限区；如果拿矩阵峰值去套用只跑在向量管线上的归一化算子，算出的拐点和耗时下界都会失真。
 
-注意：**Peak FLOPS 不是一个数**。算子走哪条计算管线（矩阵管线 / 向量管线）、用什么精度，决定了屋顶该用哪个峰值。9070 XT（T1，标称参数与来源见第 0 章 §0.2）至少有两个与本章相关的拐点：
+### 标称下界与多组件合成
 
-| 计算路径 | Peak | 带宽 | 拐点 AI* |
-| ---- | ---- | ---- | ---- |
-| BF16 矩阵管线（GEMM / 线性层） | 195 TFLOPS | 640 GB/s | ≈305 FLOP/byte |
-| FP32 向量管线（Element-wise / Norm 等） | 48.7 TFLOPS | 640 GB/s | ≈76 FLOP/byte |
+本章的解析估算统一采用**标称参数**（$\eta = 1$、标称峰值带宽、$T_{\mathrm{fixed}} = 0$）。这个口径给出的不是真实执行时间的精确预言，而是物理上的**理论下界**：真实算子受限于指令调度、缓存未命中和内核效率，执行时间只会大于或等于该下界。
 
-即：GEMM 要到 AI≈305 以上才 compute-bound；Element-wise 算子通常 AI≈1–2，对着 ≈76 的向量拐点永远是带宽受限。**选对峰值是判定的一部分**，用错峰值（比如拿矩阵峰值去判 Norm）会得到错误结论。
+单个算子内部的计算与访存并行，因此取 $\max$；而一次完整的模型前向传播由多个算子按层序依次执行，前后组件之间存在数据依赖，不能视为完全重叠。因此，整步耗时由各组件的下界相加，再加上固定开销构成：
 
-把两条屋顶与本章用到的算子画在同一张图上（空心点 = nominal 下界预测，实心点 = 9070 XT 实测，§1.4 上卡锚定）：
-
-![Roofline：9070 XT 双屋顶与算子锚点](./images/fig1-roofline.png)
-
-读图：三个实心实测点全部落在对应屋顶之下（下界语义的实证）——matmul 4096³ 到达矩阵屋顶的 ≈67%（GEMM kernel 效率），LayerNorm 只跑到标称带宽的 ≈48%（小 kernel 未饱和），两个 attention 口径都远低于屋顶（fused 与 naive 的差距见 §1.4）。注意 attention 实心点的 AI（fused 256 / naive 85）与 §1.2 的 GQA 口径（AI≈343/93）不同：实测算子按 MHA 16/16 等头口径计数，两者同量级、同侧（拐点附近）。
-
-### 标称（η=1）预测的含义：下界，不是预言
-
-本章的模拟器全部运行在**标称参数**下（η=1、带宽取标称值）。这决定了如何阅读它的输出：
-
-- `t = max(FLOPs/Peak, Bytes/BW)` 是**理论下界**：真实 kernel 不可能比它更快，只会更慢（η<1、launch 开销、调度气泡）；参考课程对同一结构有完全相同的表述——"both times use peak rates (efficiency η = 1 and full bandwidth), so they are lower bounds"；
-- η 是**校准对象**：第 2 章在校准集上拟合它（或等价修正系数），在留出集上检验泛化；本章不拟合，只声明；
-- 因此模拟器输出是**解析估计，不是测量**（证据级别 `simulated`，见第 0 章 §0.4）。它的价值不在于给出精确毫秒数，而在于把约束显式化：参考课程对解析模拟器的承诺是——"outputs are analytical estimates, not measurements"，"the most reliable conclusions are binding constraints, crossover points, and sensitivity rankings"（最可靠的结论是约束绑定关系、交叉点与敏感度排序）。本章的输出按这个标准验收：瓶颈判定、交叉点（B\*、S\*）、配置间的相对排序，而不是绝对时间。
-
-本章所有预测均标记 `calibration=nominal`。真实推理相对理想下界通常慢 1.5–2 倍（参考课程的实测范围），误差方向可预期（系统性偏大）——这正是第 2 章校准的入口。
-
-### 与第 0 章 Iron Law 的关系
-
-第 0 章 §0.1 的 Iron Law 是 **sum 形式**：`T ≈ D/BW + O/(R·η) + L`。它适用于**串联**的阶段（先搬数据、后计算，例如一次完整调用的端到端流程）。Roofline 是 **max 形式**：适用于**并行**的资源（单个 kernel 执行期间计算与访存同时进行）。两者不矛盾，模拟器按层次组合：
-
-```
-组件内部：  t_c = max(t_compute, t_memory)    （资源并行）
-组件之间：  t_step = Σ t_c + T_fixed          （kernel 按层序串联执行）
-```
+$$
+t_c = \max\!\left(t_{\mathrm{compute}, c},\; t_{\mathrm{memory}, c}\right),
+\qquad
+t_{\mathrm{step}} = \sum_{c} t_c + T_{\mathrm{fixed}}.
+$$
 
 <!-- formula-demo:start:compose -->
 <FormulaDemo scene="compose" title="组件内 max，组件间 sum" />
@@ -190,31 +135,17 @@ AI* = Peak FLOPS / Peak Bandwidth
 </details>
 <!-- formula-demo:end:compose -->
 
+为什么不能把整步所有组件的计算量和访存量直接汇总后只取一次 $\max$，1.3 节会给出数学证明与数值反例。
 
-为什么"组件间必须相加"而不是再取一次 max，§1.3 用算例说明。
+## 1.2 算术强度与三类典型算子
 
-### 适用边界
+### 定义与统一计数口径
 
-Roofline 是**单算子模型**，用它时假设要显式声明：
+要判断一个算子落在拐点的哪一侧，需要先算出它的算术强度：
 
-1. **单算子、无重叠**：假设该算子独占 GPU。真实系统中 kernel 可重叠、多 stream 并发，单算子 Roofline 只是 step 的一阶近似；
-2. **Bytes = HBM 流量**：cache（L1/LLC）命中会减少真实 HBM 流量。标称模拟器按"未融合、无缓存复用"口径计数（§1.2 冻结口径）；口径与真机的差距属于校准误差的一部分，不是模型错误；
-3. **峰值是上限，不是当前 kernel 的实际上限**：即便 compute-bound 的算子，实际也远低于峰值（η 常远低于 1）。Roofline 回答"瓶颈在哪里"，不回答"还有多少优化空间"；
-4. **模型级判定必须由组件级判定合成**：不能把整个模型当成一个算子套 Roofline——不同组件绑定的资源不同，模型级 t_step 是组件级结果的合成（§1.3）。
-
-### 口径提示：memory-bound ≠ 显存不足
-
-Roofline 文献把拐点左侧的区域叫 "memory-bound"。本书沿用该词：**memory-bound 指"带宽成为瓶颈"（bandwidth-bound），不是"显存容量装不下"（capacity / OOM）**。参考课程特意改用 "bandwidth-bound" 一词，就是为了把它与容量耗尽区分开。容量账（什么放得下）是另一本账，放在第 3 章；本章只回答"多快"。
-
-## 1.2 算术强度与瓶颈判定
-
-### 定义与计数口径
-
-算术强度（arithmetic intensity）：
-
-```
-AI = FLOPs / Bytes
-```
+$$
+\mathrm{AI} = \frac{\mathrm{FLOPs}}{\mathrm{Bytes}}.
+$$
 
 <!-- formula-demo:start:ai -->
 <FormulaDemo scene="ai" title="AI：每个字节做了多少计算" />
@@ -222,40 +153,38 @@ AI = FLOPs / Bytes
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：AI：每个字节做了多少计算](../../public/demos/chapter1/formula-covers/ai.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-ai)
-
-[打开交互动画：AI：每个字节做了多少计算](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-ai)：改变运算量和读写流量，看比例如何变化。
+[![公式动画：AI：每个字节做了多少计算](../../public/demos/chapter1/formula-covers/ai.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-ai)：改变运算量和读写流量，看比例如何变化。
 
 </details>
 <!-- formula-demo:end:ai -->
 
+计算 $\mathrm{AI}$ 时必须统一口径，否则同一算子会算出不同的交叉点。最容易混淆的是分母 $\mathrm{Bytes}$ 的含义：**它表示本步在 HBM 与计算单元之间实际搬运的字节总数（读入与写回之和），而不是数据在显存中的静态占用大小**。例如，某模型权重在显存里占 1.19 GB，单步解码 $B = 1$ 时需要把权重从头到尾读一遍，权重流量是 1.19 GB；批大小增至 $B = 16$ 时，同一份权重仍然只需读一遍，权重流量仍是 1.19 GB，增加的只是激活值和 KV 缓存的读写流量。
 
-- **FLOPs**：算子执行的浮点运算数。口径：**1 次 FMA（乘加）= 2 FLOPs**；
-- **Bytes**：该算子本 step 在 HBM 与计算单元之间**搬运**的字节数（读 + 写），**不是数据在显存里的占用量**。参考课程强调这一区分：它"是建模的传输量，不是存储的参数占用"（modeled transfer volume, not the stored parameter footprint）。权重表占 1.19 GB，decode B=1 时 GEMM 把它读一遍 = 1.19 GB；B=16 时仍然只读一遍 = 1.19 GB（多出的字节来自激活与 KV，不来自权重）。
+::: info 本章冻结的计数口径
 
-计数口径全书冻结，模拟器与手算共用同一套：
+| 计数项 | 统一约定 |
+| --- | --- |
+| 乘加运算（FMA） | $1\;\text{FMA} = 2\;\text{FLOPs}$ |
+| BF16 元素大小 | $2\;\text{bytes}$ |
+| HBM 流量（$\mathrm{Bytes}$） | 本步从 HBM 读取与写回的字节总和（权重 + KV 缓存 + 激活） |
+| 片上缓存与寄存器 | 中间结果若留在 SRAM 或寄存器中，不计入 HBM 流量 |
+| 矩阵乘 $(M \times K) \times (K \times N)$（BF16） | $\mathrm{FLOPs} = 2MNK$；$\mathrm{Bytes} = 2(MK + KN + MN)$ |
 
-| 口径 | 约定 |
-| ---- | ---- |
-| 1 次 FMA | 2 FLOPs |
-| BF16 元素 | 2 bytes |
-| Bytes 计 | 本 step HBM 读 + 写：权重 + KV + 激活流量 |
-| 寄存器 / 片上共享内存中的中间结果 | **不计入**（这正是 FlashAttention 的意义） |
-| GEMM M×N×K | FLOPs = 2·M·N·K；权重 = 2·N·K B；激活入 = 2·M·K B，出 = 2·M·N B |
+:::
 
-### 三类算子的公式
+下文的数值算例统一采用 **Qwen3-0.6B** 的结构参数：共 $L = 28$ 层，隐藏维 $d_{\mathrm{model}} = 1024$，采用分组查询注意力（GQA），每层有 $n_q = 16$ 个查询头和 $n_{kv} = 8$ 个键值头，单头维度 $d_{\mathrm{head}} = 128$（即 $d_q = 2048$、$d_{kv} = 1024$）；总参数量 $P \approx 5.96 \times 10^8$，其中不含词表输出头的线性层参数量 $P_{\mathrm{linear}} \approx 4.40 \times 10^8$。
 
-以 Qwen3-0.6B 配置（28 层，hidden 1024，16 q 头 / 8 kv 头，head_dim 128 → d_q = 2048，d_kv = 1024；参数与来源见第 0 章 §0.2）给出三类宏观组件的 per-step 公式。
+### 线性层（GEMM）：权重复用决定瓶颈
 
-**① GEMM 类（QKV/O 投影 + FFN 线性层）**
+语言模型的大部分参数集中在注意力投影（Q/K/V/O）和前馈网络（FFN）的矩阵乘中。在**解码阶段（Decode）**，引擎每一步同时为 $B$ 条请求各生成 1 个新 token，对应矩阵乘的行数 $M = B$。每条请求都要经过全部参与线性计算的参数 $P$（含输出词表投影 LM head），每个参数做 1 次乘加（2 FLOPs），因此总运算量约为 $2PB$。而这 $P$ 个 BF16 参数总共只需从 HBM 读取一次（$2P$ 字节），当 $B$ 远小于隐藏维度时，激活值的读写量 $O(B)$ 远小于权重读取量，由此得到：
 
-Decode（M = B 个 token）：
-
-```
-FLOPs ≈ 2·P·B        （P = 参与本 step GEMM 的参数数，0.6B ≈ 596M，含 LM head）
-Bytes ≈ 2·P          （全量权重扫描，与 B 无关）+ O(B) 激活流量
-AI(B) ≈ B            ← 核心恒等式：权重复用次数 = batch size
-```
+$$
+\mathrm{FLOPs} \approx 2PB,
+\qquad
+\mathrm{Bytes} \approx 2P + O(B),
+\qquad
+\mathrm{AI}_{\mathrm{decode}}(B) \approx B.
+$$
 
 <!-- formula-demo:start:reuse -->
 <FormulaDemo scene="reuse" title="GEMM：权重复用次数约等于 B" />
@@ -263,23 +192,20 @@ AI(B) ≈ B            ← 核心恒等式：权重复用次数 = batch size
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：GEMM：权重复用次数约等于 B](../../public/demos/chapter1/formula-covers/reuse.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-reuse)
-
-[打开交互动画：GEMM：权重复用次数约等于 B](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-reuse)：拖动 B，看同一份权重如何被多个 token 复用。
+[![公式动画：GEMM：权重复用次数约等于 B](../../public/demos/chapter1/formula-covers/reuse.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-reuse)：拖动 B，看同一份权重如何被多个 token 复用。
 
 </details>
 <!-- formula-demo:end:reuse -->
 
+这一关系说明，BF16 解码时线性层的算术强度近似等于批大小 $B$，即同一份权重被多少个 token 复用。当 $B = 1$ 时，$\mathrm{AI} \approx 1$，远低于 RX 9070 XT 的矩阵拐点 305，单步耗时被权重扫描时间 $2P / \mathrm{BW}_{\mathrm{peak}}$ 牢牢钉住。即使批大小增至 $B = 16$，$\mathrm{AI} \approx 16$ 依然处于访存斜坡上；要让单卡解码线性层跨过拐点进入计算受限区，批大小需达到拐点量级（$B^* \approx 305$）。
 
-这是本章最重要的结论：**decode GEMM 的算术强度约等于 batch size**。B=1 → AI≈1；B=16 → AI≈16；对照 9070 XT 矩阵拐点 ≈305，全部 memory-bound。step 时间被钉在权重扫描时间 ≈ 2P/BW 上。交叉点 B\* ≈ AI\* ≈ 305：单卡 decode 要到 B≈300 量级，GEMM 才翻转为 compute-bound。
+在**预填充阶段（Prefill）**，单条请求一次性并行处理长度为 $S$ 的输入提示词，矩阵乘的行数变为 $M = S$（LM head 仅作用于最后一个 token，此处忽略）。权重同样只需读取一遍，于是：
 
-Prefill（M = S 个 token，单请求）：
-
-```
-FLOPs ≈ 2·P_linear·S    （P_linear = 每 token 线性参数，0.6B ≈ 440M；LM head 仅末 token，忽略）
-Bytes ≈ 2·P_linear + O(S) 激活流量    （权重仍只读一遍）
-AI(S) 随 S 线性增长
-```
+$$
+\mathrm{FLOPs} \approx 2P_{\mathrm{linear}}S,
+\qquad
+\mathrm{Bytes} \approx 2P_{\mathrm{linear}} + O(S).
+$$
 
 <!-- formula-demo:start:prefill -->
 <FormulaDemo scene="prefill" title="Prefill：序列增长与瓶颈切换" />
@@ -287,25 +213,26 @@ AI(S) 随 S 线性增长
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：Prefill：序列增长与瓶颈切换](../../public/demos/chapter1/formula-covers/prefill.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-prefill)
-
-[打开交互动画：Prefill：序列增长与瓶颈切换](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-prefill)：拖动 S，对比计算与访存时间。
+[![公式动画：Prefill：序列增长与瓶颈切换](../../public/demos/chapter1/formula-covers/prefill.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-prefill)：拖动 S，对比计算与访存时间。
 
 </details>
 <!-- formula-demo:end:prefill -->
 
+随着输入长度 $S$ 增加，权重复用次数线性增长，算术强度随之抬升，并在交叉序列长度 $S^*$ 处跨过硬件拐点。在 RX 9070 XT 上运行 Qwen3-0.6B 时，$S^*$ 约在 300 到 450 之间（随激活算子的融合程度而移动）：输入短于 $S^*$ 时，预填充同样受权重扫描限制；输入长于 $S^*$ 后，矩阵计算成为主导瓶颈。
 
-存在交叉序列长 S\*（0.6B / 9070 XT：S\* ≈ 300–400，§1.3 算例；随激活流量口径移动 ±30%——口径必须冻结，否则交叉点漂移）：S < S\* memory-bound（权重扫描主导），S > S\* compute-bound（矩阵管线主导）。**同一个模型，短 prefill 带宽受限、长 prefill 计算受限**——prefill/decode 两种 phase 的硬件行为差异从这里开始。
+### 注意力机制（Attention）：分块与键值缓存
 
-**② Attention 类**
+注意力层在预填充和解码两个阶段的访存行为差异很大。
 
-Prefill（稠密 attention，b=1，S token，L 层）：
+在**预填充阶段**，长度为 $S$ 的序列经过 $L$ 层注意力时，$QK^\top$ 与 $\mathrm{Softmax} \cdot V$ 两次矩阵乘合计产生约 $4S^2 d_q L$ 次浮点运算。如果算子把 $S \times S$ 的注意力分数矩阵保留在片上 SRAM 中完成归一化，只从 HBM 读入 $Q, K, V$ 并写回输出 $O$（即 FlashAttention 的理想输入输出口径），则流量随 $S$ 线性增长，算术强度与 $S$ 成正比：
 
-```
-FLOPs ≈ 4·S²·d_q·L        （QK^T 与 Softmax·V 各贡献 2·S²·d_q）
-Bytes ≈ 2·S·(2d_q + 2d_kv)·L    （读 Q/K/V + 写 O；不计 S² 中间结果）
-AI ≈ 0.67·S               （0.6B 配置代入 d_q=2048, d_kv=1024）
-```
+$$
+\mathrm{FLOPs} \approx 4S^2 d_q L,
+\qquad
+\mathrm{Bytes}_{\mathrm{FA}} \approx 2S(2d_q + 2d_{kv})L,
+\qquad
+\mathrm{AI}_{\mathrm{FA}} \approx \frac{d_q}{d_q + d_{kv}} S.
+$$
 
 <!-- formula-demo:start:attention -->
 <FormulaDemo scene="attention" title="Attention：S² / S 为什么变成 S" />
@@ -313,23 +240,20 @@ AI ≈ 0.67·S               （0.6B 配置代入 d_q=2048, d_kv=1024）
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：Attention：S² / S 为什么变成 S](../../public/demos/chapter1/formula-covers/attention.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-attention)
-
-[打开交互动画：Attention：S² / S 为什么变成 S](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-attention)：观察理想化输入输出口径下 AI 随 S 增长。
+[![公式动画：Attention：S² / S 为什么变成 S](../../public/demos/chapter1/formula-covers/attention.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-attention)：观察理想化输入输出口径下 AI 随 S 增长。
 
 </details>
 <!-- formula-demo:end:attention -->
 
+代入 Qwen3-0.6B 的 $d_q = 2048$ 和 $d_{kv} = 1024$，可得 $\mathrm{AI}_{\mathrm{FA}} \approx 0.67 S$。当 $S = 512$ 时，$\mathrm{AI}_{\mathrm{FA}} \approx 341$，刚刚跨过 305 的矩阵拐点；而当 $S = 128$ 时，$\mathrm{AI}_{\mathrm{FA}} \approx 85$，仍落在访存斜坡上。
 
-- S=512 → AI≈341，贴着拐点 305 上方 → compute-bound（贴边）；
-- S=128 → AI≈85 < 305 → memory-bound。此时 S² 项太小：attention 仅 ≈3.8 GFLOP，而同 step 的 GEMM ≈113 GFLOP——瓶颈仍在权重扫描。这是**短序列 prefill 陷阱**：直觉上"prefill 是 S² 计算，一定 compute-bound"，但 S=128 时不成立。
+如果不做片上分块，而是采用朴素实现（Naive Attention），将 $n_q$ 个头的 $S \times S$ 中间矩阵以 BF16 写入 HBM 再读出一次，流量就会增加 $4 n_q S^2 L$ 字节：
 
-大 S 方向上还有第二个陷阱，FlashAttention 直接针对它：若把 S×S attention 矩阵物化进 HBM（naive 实现，写一遍读一遍），则
-
-```
-Bytes_naive ≈ 2·n_heads·S²·2·L（attention 矩阵读写）+ 上式线性项
-AI_naive → d_q / n_heads = 128 FLOP/byte   （S → ∞；本式 BF16 矩阵写一次、读一次）
-```
+$$
+\mathrm{Bytes}_{\mathrm{naive}} \approx 4 n_q S^2 L + \mathrm{Bytes}_{\mathrm{FA}},
+\qquad
+\lim_{S \to \infty} \mathrm{AI}_{\mathrm{naive}} = \frac{d_q}{n_q} = d_{\mathrm{head}} = 128\;\text{FLOP/byte}.
+$$
 
 <!-- formula-demo:start:flash -->
 <FormulaDemo scene="flash" title="Naive 与分块：中间矩阵写在哪里" />
@@ -337,25 +261,22 @@ AI_naive → d_q / n_heads = 128 FLOP/byte   （S → ∞；本式 BF16 矩阵�
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：Naive 与分块：中间矩阵写在哪里](../../public/demos/chapter1/formula-covers/flash.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-flash)
-
-[打开交互动画：Naive 与分块：中间矩阵写在哪里](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-flash)：播放矩阵物化与片上 tile 的机制对照。
+[![公式动画：Naive 与分块：中间矩阵写在哪里](../../public/demos/chapter1/formula-covers/flash.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-flash)：播放矩阵物化与片上 tile 的机制对照。
 
 </details>
 <!-- formula-demo:end:flash -->
 
+由于分子和分母同为 $O(S^2)$，朴素实现的算术强度无论序列多长都被限制在 $d_{\mathrm{head}} = 128$ 以下（若计入 Softmax 的多趟读写，实际数值更低），始终无法到达 RX 9070 XT 的 305 拐点。**FlashAttention** 通过片上分块（tiling）和重计算避免了 $S \times S$ 矩阵的 HBM 读写。[Dao et al. (2022)](https://arxiv.org/abs/2205.14135) 公开的 A100 实测数据展示了这种权衡：标准注意力耗时 41.7 ms，执行 66.6 GFLOPs，搬运 40.3 GB；FlashAttention 因重算多做了约 13% 的浮点运算（75.2 GFLOPs），却将 HBM 流量降至 4.4 GB（缩减约 9 倍），耗时缩短至 7.3 ms（提速 5.7 倍）。[CMU 15-442 Week 5](https://msyscourse.org) 在访存斜坡上，用少量额外计算换取显存流量大幅下降，可以直接把算子推向计算屋顶。
 
-**计数说明**：由上面两式相除，大 S 时 `AI_naive → (4S²d_qL)/(4n_headsS²L) = d_q/n_heads = 128`。本式仅计中间矩阵写一次、读一次；softmax 多趟读写等实际流量会进一步降低 AI。FA 线性 IO 是本章理想输入输出口径，tile 重读和缓存行为需要另计。
+在**解码阶段**，每一步有 $B$ 条请求，各自需要用当前新生成的 1 个查询向量遍历长度为 $S_{\mathrm{ctx}}$ 的历史键值缓存。由于不同请求的上下文各自独立、无法复用彼此的缓存，总计算量与总 KV 读取流量同时随 $B$ 和 $S_{\mathrm{ctx}}$ 线性增长：
 
-naive attention 无论 S 多大都**钉死在访存斜坡上**。FlashAttention 用 tiling + recomputation 把 S² 中间结果留在片上：FLOPs 多约 13%（重算代价），HBM 流量降约 9 倍。参考课程（CMU 15-442 Week 5）的 A100 实测对照：标准 attention 66.6 GFLOPs / 40.3 GB / 41.7 ms，FlashAttention 75.2 GFLOPs / 4.4 GB / 7.3 ms——**多花 13% 的 FLOPs，省 9 倍访存，快 5.7 倍**。这是 Roofline 最经典的应用：花计算换访存，把算子从拐点左侧推到右侧。
-
-Decode（B 个请求，上下文 S_ctx，GQA：d_q/d_kv = 2）：
-
-```
-FLOPs ≈ 4·B·S_ctx·d_q·L
-Bytes ≈ 2·B·S_ctx·d_kv·2·L     （KV Cache 遍历，每请求读一遍）
-AI = d_q/d_kv = 2   （0.6B；与 B、S_ctx 均无关）
-```
+$$
+\mathrm{FLOPs} \approx 4 B S_{\mathrm{ctx}} d_q L,
+\qquad
+\mathrm{Bytes}_{\mathrm{KV}} \approx 4 B S_{\mathrm{ctx}} d_{kv} L,
+\qquad
+\mathrm{AI}_{\mathrm{decode,attn}} = \frac{d_q}{d_{kv}}.
+$$
 
 <!-- formula-demo:start:kv -->
 <FormulaDemo scene="kv" title="KV：为什么 B 和 ctx 被约掉" />
@@ -363,22 +284,24 @@ AI = d_q/d_kv = 2   （0.6B；与 B、S_ctx 均无关）
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：KV：为什么 B 和 ctx 被约掉](../../public/demos/chapter1/formula-covers/kv.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-kv)
-
-[打开交互动画：KV：为什么 B 和 ctx 被约掉](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-kv)：增加请求和上下文，看计算与流量同倍增长。
+[![公式动画：KV：为什么 B 和 ctx 被约掉](../../public/demos/chapter1/formula-covers/kv.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-kv)：增加请求和上下文，看计算与流量同倍增长。
 
 </details>
 <!-- formula-demo:end:kv -->
 
+$B$ 与 $S_{\mathrm{ctx}}$ 在比值中相互抵消。对 Qwen3-0.6B（$d_q / d_{kv} = 2$），解码注意力的算术强度恒等于 2。这意味着增大批大小虽然能提高线性层的权重复用率，却无法摊薄 KV 缓存的读取成本。减少键值头数量（GQA）、压缩 KV 位宽或复用公共前缀（Prefix Cache），本质上都是为了压低这一项的带宽消耗。
 
-与 GEMM 的关键对照：**decode attention 的 AI 与 B 无关**——FLOPs 与 KV 流量随 B 同倍增长。batching 救得了 GEMM（AI：1→16），救不了 KV 遍历（恒 AI≈2）。这是 GQA 设计的基本动机之一（压 d_kv 缩短 KV 扫描），也是"KV 扫描成本"在后续章节反复出现（KV 量化、prefix cache）的屋顶线根源。
+### 向量与逐元素算子
 
-**③ Element-wise / 向量类（RMSNorm、RoPE、激活函数）**
+RMSNorm、LayerNorm、RoPE 与 SiLU 等逐元素算子对每个元素只做少量浮点运算，但每次执行都要从 HBM 读入张量并将结果写回（BF16 单次读写合计约 4 字节/元素）：
 
-```
-FLOPs ≈ O(1) FLOP/元素；Bytes ≈ 4 bytes/元素（BF16：读 2B + 写 2B，单次读写示意）
-AI ≈ 1–2
-```
+$$
+\mathrm{FLOPs} \approx O(1)\;\text{FLOP/元素},
+\qquad
+\mathrm{Bytes} \approx 4\;\text{bytes/元素},
+\qquad
+\mathrm{AI} \approx 1\text{–}2.
+$$
 
 <!-- formula-demo:start:vector -->
 <FormulaDemo scene="vector" title="向量算子：读写字节如何计数" />
@@ -386,37 +309,31 @@ AI ≈ 1–2
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：向量算子：读写字节如何计数](../../public/demos/chapter1/formula-covers/vector.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-vector)
-
-[打开交互动画：向量算子：读写字节如何计数](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-vector)：调整元素数量与每元素 FLOPs，看带宽下界。
+[![公式动画：向量算子：读写字节如何计数](../../public/demos/chapter1/formula-covers/vector.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-vector)：调整元素数量与每元素 FLOPs，看带宽下界。
 
 </details>
 <!-- formula-demo:end:vector -->
 
+对照 76 的向量管线拐点，这类算子恒为带宽受限。虽然单个算子的理论耗时通常低于 10 微秒，但在未融合的逐层执行中，它们会引入大量独立的 kernel 发射，成为小批大小下固定开销的重要来源。
 
-对照向量管线拐点 ≈76，此类算子**恒为带宽受限**，时间按带宽下界估算（t ≈ Bytes/BW）。单步时间很小（<10 μs 量级），但它是 batching 消不掉的固定项，在极小 batch 时构成 step 下界的一部分。
+### 容易误判的两类算子
 
-### 判定规则与交叉点
+对照上述计算，可以识别两类最容易凭直觉误判为计算受限的算子：
 
-给定算子，瓶颈判定的完整流程：
+1. **单请求解码线性层（$B = 1$）**：单步要乘遍模型全部参数（Qwen3-0.6B 约 1.19 GFLOP），但每个字节的权重只复用了一次，实际 $\mathrm{AI} \approx 1$，几乎全部耗时花在读取 1.19 GB 权重上。
+2. **朴素预填充注意力（$S = 512$）**：计算量随 $S^2$ 增长（28 层合计约 60 GFLOP），但由于把 $S \times S$ 中间矩阵写入 HBM 又读出，总流量推高至约 646 MB，$\mathrm{AI}$ 降到约 93，仍远低于 305 的拐点。
 
-1. 选对计算管线（矩阵 / 向量）→ 取对应峰值与拐点 AI\*；
-2. 按冻结口径算该算子的 AI；
-3. AI < AI\* → memory-bound，t ≈ Bytes/BW；AI > AI\* → compute-bound，t ≈ FLOPs/Peak（均为标称下界）；
-4. **逐组件判定，再合成 step**——模型级"判定"是组件级判定的合成，不是模型级的一个 AI（§1.3）。
+这两类误判源于同一个盲区：只统计了浮点运算总数，没有统计这些运算复用了多少字节的显存流量。
 
-模型最有价值的输出不是单个数字，而是**交叉点与敏感度排序**：9070 XT 上 decode GEMM B\*≈305、prefill GEMM S\*≈300–400、ctx=1024 时 batching 的成本被 KV 扫描接管（§1.3 算例 B）。每个交叉点都是后续设计决策（batch 开到多大、是否分离 prefill/decode、KV 是否量化）的直接输入，第 7、9 章会用到这些数字。
+## 1.3 从单算子到整步：合成、缩放与瓶颈切换
 
-## 1.3 计算时间量级估算
+### 逐组件合成的不等式
 
-### 从 AI 到时间：组件内 max，组件间 sum
+估算一个完整前向步骤的标称耗时时，需要先对每个组件分别取计算与访存耗时的较大者，再将各组件相加：
 
-对每个组件 c：
-
-```
-t_c = max( FLOPs_c / (Peak_c × η) ,  Bytes_c / BW )    （η=1 标称）
-t_step = Σ_c t_c + T_fixed                             （T_fixed：launch 开销，本章未校准）
-```
+$$
+t_{\mathrm{step}} = \sum_{c} \max\!\left(t_{\mathrm{compute}, c},\; t_{\mathrm{memory}, c}\right) + T_{\mathrm{fixed}}.
+$$
 
 <!-- formula-demo:start:compose-step -->
 <FormulaDemo scene="compose-step" title="逐组件合成 step 时间" />
@@ -424,19 +341,16 @@ t_step = Σ_c t_c + T_fixed                             （T_fixed：launch 开�
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：逐组件合成 step 时间](../../public/demos/chapter1/formula-covers/compose-step.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-compose-step)
-
-[打开交互动画：逐组件合成 step 时间](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-compose-step)：让两个组件绑定不同资源，逐步查看总时间。
+[![公式动画：逐组件合成 step 时间](../../public/demos/chapter1/formula-covers/compose-step.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-compose-step)：让两个组件绑定不同资源，逐步查看总时间。
 
 </details>
 <!-- formula-demo:end:compose-step -->
 
+如果不拆组件，而是先将整步的总计算时间和总访存时间分别求和，再取一次 $\max$，所得结果在数学上一定小于或等于逐组件之和：
 
-为什么"组件内 max、组件间 sum"是正确结构，而不能对整段取一次 max：组件（各层 GEMM、attention、norm）作为 kernel **按层序串联执行**，step 时间至少是各组件时间之和；组件内部计算与访存**并行**，取 max。对全 stage 的总 FLOPs 与总 Bytes 取一个 max，等于假设所有组件的计算与访存彼此完全重叠。数学上恒有
-
-```
-Σ_c max(t_comp_c, t_mem_c)  ≥  max( Σ_c t_comp_c ,  Σ_c t_mem_c )
-```
+$$
+\sum_{c} \max\!\left(t_{\mathrm{compute}, c},\; t_{\mathrm{memory}, c}\right) \;\ge\; \max\!\left(\sum_{c} t_{\mathrm{compute}, c},\; \sum_{c} t_{\mathrm{memory}, c}\right).
+$$
 
 <!-- formula-demo:start:inequality -->
 <FormulaDemo scene="inequality" title="Σmax ≥ maxΣ：低估发生在哪里" />
@@ -444,265 +358,215 @@ t_step = Σ_c t_c + T_fixed                             （T_fixed：launch 开�
 <details>
 <summary>预览与独立演示入口</summary>
 
-[![公式动画：Σmax ≥ maxΣ：低估发生在哪里](../../public/demos/chapter1/formula-covers/inequality.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-inequality)
-
-[打开交互动画：Σmax ≥ maxΣ：低估发生在哪里](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-inequality)：对比逐组件结果与整段错误重叠。
+[![公式动画：Σmax ≥ maxΣ：低估发生在哪里](../../public/demos/chapter1/formula-covers/inequality.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-inequality)：对比逐组件结果与整段错误重叠。
 
 </details>
 <!-- formula-demo:end:inequality -->
 
+等号仅在所有组件都绑定于同一资源时成立（全访存受限，或全计算受限）。只要不同组件分处拐点两侧，整段合并就相当于假设组件 A 空闲的带宽可以被后续组件 B 提前使用，从而系统性地低估总耗时。
 
-两边相等**当且仅当所有组件绑定同一资源**（全 memory-bound 或全 compute-bound）。一旦有组件跨过拐点、绑定资源不同，stage 级 max 就系统性偏小——偏小的量正是各组件中"被并行浪费掉的较快那一项"之和。本卡的 decode 恰好全 memory-bound（两边相等，见算例 A/B），但 prefill step（GEMM 与 attention 分处拐点两侧，见算例 C）和 B>B\* 的大 batch decode 都会打开这个差距。模拟器的 per-component 结构（Gist 开发计划 ①②：每组件输出 FLOPs/Bytes/AI/判定/t）就是为这个合成而存在的。
+::: details 双组件数值反例
 
-量级纪律：本章输出一律保留 1–2 位有效数字 + 数量级，并始终标注"离硬件极限还有多远"（t / 下界 ≥ 1，差距即 η 与工程优化的空间）。
+设组件 A 的计算时间为 8 ms、访存时间为 2 ms（计算受限），组件 B 的计算时间为 2 ms、访存时间为 8 ms（访存受限）。两者依次执行，正确的标称下界是 $\max(8, 2) + \max(2, 8) = 16\;\text{ms}$。若先将总计算时间（10 ms）和总访存时间（10 ms）求和再取 $\max$，会得到 10 ms，低估了 6 ms。
 
-### 算例 A：Qwen3-0.6B decode B=1（ctx=1024）——组件表
+:::
 
-在第 0 章 §0.5.3 纸面演练（权重扫描 1.19 GB、KV 112 KiB/token、t_step≈2.0–2.3 ms）基础上，补全 AI 与判定：
+### 单步解码拆解与模型缩放
 
-| 组件 | FLOPs | Bytes (HBM) | AI | t_comp (μs) | t_mem (ms) | t_c (ms) | 判定 |
-| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| GEMM（线性层 + LM head） | 1.19e9 | 1.19e9 | 1.0 | 6.1 | 1.86 | 1.86 | memory |
-| Attention（QK^T + Softmax·V） | 2.3e8 | 1.17e8（KV 遍历） | 2.0 | 1.2 | 0.18 | 0.18 | memory |
-| Element-wise（RMSNorm/RoPE/SiLU） | <1e7 | <1e6 | 1–2 | <0.1 | <0.002 | ≈0 | memory（带宽下界） |
-| **t_step（标称下界）** | | | | | | **≈2.05 + T_fixed** | 全组件 memory-bound |
+按逐组件口径拆解 Qwen3-0.6B 在 RX 9070 XT 上的单步解码（$B = 1$，上下文长度 $\mathrm{ctx} = 1024$，标称下界 $\eta = 1$）：
 
-- t_step ≈ 2.0–2.3 ms（含未校准 T_launch），上限 ≈430–500 tok/s——与第 0 章纸面演练一致（1.85/1.86 为同一数值的不同舍入口径），但每个数字背后现在都有 AI 与判定；
-- 结论：decode B=1 **完全 memory-bound**，step 时间 91% 被权重扫描钉住（1.86 / 2.05 ms）。能改变这一项的只有两条路：减少每权重字节数（量化，后续章节）或提高权重复用次数（batching，算例 B）。
+| 组件 | 运算量 FLOPs | HBM 流量 Bytes | 算术强度 AI | $t_{\mathrm{comp}}$ | $t_{\mathrm{mem}}$ | $t_c$ | 瓶颈判定 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| GEMM（线性层 + LM head） | $1.19 \times 10^9$ | $1.19\;\text{GB}$ | $1.0$ | $6.1\;\mu\text{s}$ | $1.86\;\text{ms}$ | $1.86\;\text{ms}$ | 访存受限 |
+| Attention（KV 遍历） | $2.3 \times 10^8$ | $117\;\text{MB}$ | $2.0$ | $1.2\;\mu\text{s}$ | $0.18\;\text{ms}$ | $0.18\;\text{ms}$ | 访存受限 |
+| Element-wise（Norm/RoPE/SiLU） | $<10^7$ | $<1\;\text{MB}$ | $1\text{–}2$ | $<0.1\;\mu\text{s}$ | $<0.002\;\text{ms}$ | $\approx 0$ | 访存受限 |
+| **整步合计（标称下界）** | — | — | — | — | — | **$\approx 2.05\;\text{ms} + T_{\mathrm{fixed}}$** | 全组件访存受限 |
 
-模型缩放（同卡，B=1，ctx=1024，权重扫描下界 t ≈ 2P/BW）：
+在这 2.05 ms 中，线性层的权重扫描占了 91%（1.86 ms），对应的单请求理论上限约 430–500 tok/s。由于 $B = 1$ 时单步时间几乎由 $2P / \mathrm{BW}_{\mathrm{peak}}$ 决定，同一块 GPU 上的单请求解码上限吞吐近似与参数量 $P$ 成反比：
 
-| 模型 | 权重字节 | t_step 下界 | 上限吞吐 |
-| ---- | ---- | ---- | ---- |
-| Qwen3-0.6B | 1.19 GB | ≈2.0 ms | ≈430–500 tok/s |
-| Qwen3-1.7B | ≈3.4 GB | ≈5.3 ms | ≈180–190 tok/s |
-| Qwen3-4B | ≈8.0 GB | ≈12.5 ms | ≈80 tok/s |
+| 模型 | BF16 权重大小 | 单步下界（$B=1, \mathrm{ctx}=1024$） | 理论吞吐上限 |
+| --- | ---: | ---: | ---: |
+| Qwen3-0.6B | $1.19\;\text{GB}$ | $\approx 2.0\;\text{ms}$ | $\approx 430\text{–}500\;\text{tok/s}$ |
+| Qwen3-1.7B | $\approx 3.4\;\text{GB}$ | $\approx 5.3\;\text{ms}$ | $\approx 180\text{–}190\;\text{tok/s}$ |
+| Qwen3-4B | $\approx 8.0\;\text{GB}$ | $\approx 12.5\;\text{ms}$ | $\approx 80\;\text{tok/s}$ |
 
-decode 上限吞吐 ∝ 1/P：**同一张卡上，decode 吞吐与参数量成反比**——这是屋顶线层面的"为什么小模型在消费级卡上 decode 快"。
+要缩短权重扫描时间，从公式上看只有两条途径：降低每个权重占用的字节数（模型量化，见[第 4 章](/part1-modeling/chapter4/)），或者增加同一批处理的请求数以提高权重复用率。
 
-![模型缩放：decode B=1 单步时间与参数量（9070 XT）](./images/fig4-scaling.png)
+### 批大小曲线：权重复用与 KV 接管
 
-三个模型的实测点（红钻）全部落在 2P/BW 下界线之上，但彼此间距远扁于下界线：实测 4B/0.6B = 39.3/29.3 = 1.34×，而权重字节比是 8.0/1.19 = 6.7×。eager 协议下 decode 单步 wall 由 kernel 数（层数：36/28 = 1.29×）与每 kernel CPU dispatch（T_launch）决定，GPU 饥饿（§1.4 上卡锚定诊断）——"模型放大 k 倍 → step 变慢 k 倍"是**去掉 launch 开销后的 GPU 侧关系**，本图实测点恰好把它暴露出来。
+固定 Qwen3-0.6B 和 $\mathrm{ctx} = 1024$，把解码批大小 $B$ 从 1 依次提高到 4 和 16。由于权重每次只读一遍，线性层的访存下界几乎维持在 1.86–1.91 ms；而每条请求都需要读取各自的 KV 缓存，注意力组件的耗时随 $B$ 线性增长（0.18 → 0.73 → 2.94 ms）：
 
-### 算例 B：batching 曲线——成本被 KV 扫描接管
+| 批大小 $B$ | GEMM AI | KV 流量 | $t_{\mathrm{step}}$ 下界 | 聚合吞吐上限 | 单请求吞吐上限 |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 1.0 | 117 MB | $\approx 2.1\;\text{ms}$ | $\approx 480\;\text{tok/s}$ | $\approx 480\;\text{tok/s}$ |
+| 4 | 4.0 | 469 MB | $\approx 2.6\;\text{ms}$ | $\approx 1,540\;\text{tok/s}$ | $\approx 385\;\text{tok/s}$ |
+| 16 | 16.0 | 1.88 GB | $\approx 4.9\;\text{ms}$ | $\approx 3,300\;\text{tok/s}$ | $\approx 206\;\text{tok/s}$ |
 
-0.6B，ctx=1024，9070 XT，标称。组件时间：GEMM t_mem ≈ 1.86–1.91 ms（t_comp = 6–98 μs，始终远小于 t_mem）；KV 遍历 t = 0.18 / 0.73 / 2.94 ms；Element-wise 忽略。step = 组件 sum：
+批大小从 1 增至 16 时，权重被 16 个 token 复用，聚合吞吐上限提高了 6.8 倍（480 → 3,300 tok/s），这是[第 7 章](/part1-modeling/chapter7/)连续批处理提升服务容量的硬件依据。与此同时，单请求吞吐上限从 480 降至 206 tok/s：到了 $B = 16$ 时，KV 缓存流量（1.88 GB）已经超过模型权重本身（1.19 GB），成为整步最主要的访存成本。如果只用一个“整步 $\mathrm{AI} \approx B$”来概括解码阶段，就无法看出 KV 扫描在中等批大小下接管成本的转折。
 
-| B | GEMM AI | KV 字节 | t_step (ms) | 聚合吞吐 | 每请求吞吐 |
-| ---- | ---- | ---- | ---- | ---- | ---- |
-| 1 | 1.0 | 117 MB | ≈2.1 | ≈480 tok/s | ≈480 tok/s |
-| 4 | 4.0 | 469 MB | ≈2.6 | ≈1,540 tok/s | ≈385 tok/s |
-| 16 | 16 | 1.88 GB | ≈4.9 | ≈3,300 tok/s | ≈206 tok/s |
+### 预填充序列曲线与阶段不对称
 
-读表（敏感度排序——模型最可靠的输出）：
+在同一块卡上考察 Qwen3-0.6B 单请求（$b = 1$）预填充随输入长度 $S$ 的变化（激活按未融合口径计数，约 0.8 MB/token）：
 
-1. **B=1→16，聚合吞吐 ×6.8**：GEMM 被 batching 救起（AI 1→16，权重字节复用 16 倍）——decode batching 的第一杠杆，也是第 7 章 continuous batching 直觉的屋顶线来源；
-2. **每请求吞吐单调下降（480→206）**：ctx=1024 不算短，KV 扫描（AI 与 B 无关）随 B 线性增长；B=16 时 KV 字节（1.88 GB）已超过权重字节（1.19 GB），成为 step 的主要成本；
-3. **stage 级"AI≈B"在这里会误导**：把整个 decode step 的 AI 写成 ≈B、得出"B=16 仍远低于 305，所以整体还是 memory-bound"，无法解释每请求吞吐为何塌掉——必须把 GEMM 与 Attention 拆开，成本结构才可见。这正是 per-component 输出（而非 stage 级一个 max）的教学理由。
+| 序列长度 $S$ | GEMM $t_{\mathrm{comp}}$ | GEMM $t_{\mathrm{mem}}$ | GEMM 判定 | Attention $t_c$（FA 口径） | $t_{\mathrm{step}}$ 下界 | 整步主导瓶颈 |
+| ---: | ---: | ---: | --- | ---: | ---: | --- |
+| 128 | $0.58\;\text{ms}$ | $\approx 1.4\text{–}1.5\;\text{ms}$ | 访存受限 | $0.07\;\text{ms}$（访存） | $\approx 1.5\;\text{ms}$ | 访存（权重扫描） |
+| 512 | $2.3\;\text{ms}$ | $\approx 2.0\;\text{ms}$ | 计算（贴边） | $0.31\;\text{ms}$（计算，$\mathrm{AI}\approx 341$） | $\approx 2.7\;\text{ms}$ | 计算（GEMM） |
+| 2048 | $9.3\;\text{ms}$ | $\approx 4.0\;\text{ms}$ | 计算受限 | $4.9\;\text{ms}$（计算，$\mathrm{AI}\approx 1365$） | $\approx 14\;\text{ms}$ | 计算（GEMM + Attn） |
 
-![Batching 曲线：预测（nominal 下界）vs 实测（9070 XT，Qwen3-0.6B，ctx=1024）](./images/fig2-batching.png)
+把解码表和预填充表放在一起对照，可以看到推理负载的**阶段不对称**（phase asymmetry）：同一模型在常规解码（$B \le 16$）和短预填充（$S = 128$）下都受显存带宽限制；而输入长度跨过交叉点 $S^* \approx 300\text{–}450$ 后，预填充转入计算受限区，且在 $S = 2048$ 时注意力的 $S^2$ 项已占到整步耗时的三分之一以上。两种阶段分别受限于带宽与算力，这种资源需求差异会在后续章节的混合批调度和预填充/解码分离（PD 分离）设计中反复出现。
 
-实测（红钻/实心点）验证了表的**形状**读数：聚合吞吐随 B 上升（34→136→541 tok/s）、每请求吞吐单调下降（34.1→33.8 tok/s）。但实测 t_step 近乎平坦（29.3→29.6 ms）：eager 协议下 T_launch 主导单步 wall，表内预测的 "B=16 时 KV 扫描接管"（2.1→4.9 ms）被压缩进 GPU 侧 12–13 ms 的时间尺度里，压不过 T_launch 地板（归因与诊断见 §1.4 上卡锚定）。GPU 侧趋势未被推翻，只是在本协议下不可见。
+## 1.4 用解析模拟器做预测
 
-### 算例 C：prefill S 曲线与 phase 不对称
+当需要比较几十种模型规模、批大小、序列长度和硬件参数的组合时，逐一在真机上跑实验既耗时又受设备数量限制。把 1.1–1.3 节的逐组件计数和 Roofline 方程实现为**解析模拟器**，可以在 CPU 上用毫秒级时间穷举配置空间，先筛出关键交叉点，再挑出信息量最大的少数配置上真机检验。
 
-0.6B，b=1，9070 XT，标称。GEMM 用 P_linear≈440M；激活流量按**未融合 kernel** 口径计数（约 0.8 MB/token），S\* 会随融合口径在 300–450 之间移动——口径冻结后该移动才成为可解释的校准项：
+本课程使用的解析口径参考了 Harvard CS249r 教材配套的开源建模工具 [mlsysbook.ai（MLSys·im）](https://mlsysbook.ai)，并在同一套逐组件 FLOPs/Bytes 计数之上，配套了确定性服务模拟器 [mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator)（后者在后续章节扩展到连续批处理、KV 显存压力与多卡并行）。使用解析模拟器前，需要分清它能可靠支持什么、以及它的边界在哪里：
 
-| S | GEMM t_comp | GEMM t_mem | GEMM 判定 | Attention t | t_step ≈ | step 判定 |
-| ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| 128 | 0.58 ms | ≈1.4–1.5 ms | memory | 0.07 ms（memory） | ≈1.5 ms | **memory**（权重扫描） |
-| 512 | 2.3 ms | ≈2.0 ms | compute（贴边） | 0.31 ms（compute，AI≈341） | ≈2.7 ms | **compute**（GEMM） |
-| 2048 | 9.3 ms | ≈4.0 ms | compute | 4.9 ms（compute，AI≈1365） | ≈14 ms | **compute** |
+- **可依赖的输出**：每个组件的瓶颈归属（计算受限或访存受限）、交叉点位置（$B^*$ 与 $S^*$）以及不同配置间的相对快慢排序。
+- **需要真机校准或裁决的部分**：未校准（$\eta = 1, T_{\mathrm{fixed}} = 0$）下的绝对毫秒数只是理论下界，真实执行通常慢 $1.5\text{–}2\times$ 以上；此外，解析模型只计算算术与字节账，不预测模型输出质量，量化等改动的精度影响必须由真机评测确认。
 
-- 交叉点 **S\*≈300–450**：其下 prefill 同样被权重扫描钉住（TTFT 下界 ≈1.4 ms，与 S 几乎无关）；其上进入矩阵管线（TTFT 下界 ∝ S）；
-- **phase 不对称**：同一个 0.6B，decode（B∈{1,4,16}）全 memory-bound，prefill S≥512 全 compute-bound。prefill 与 decode 是硬件利用率的两种不同 regime——"PD 分离"（分离 prefill/decode，第 9 章）的屋顶线动机在此；
-- 量级换算：prefill S=512 ≈ 2.7 ms（η=1 下界）；取 η≈0.4（参考课程推理典型范围 0.35–0.5）则 ≈6–7 ms，prefill 速率 ≈ 70–100 tok/s（标称估计，测前记录）。
+为了避免事后用参数强行凑合实测数据，开展真机测试前应先按标称口径记录预测值，再将实测结果与预测值逐项对账。这样才能把预测与实测的差值归因到具体的硬件效率、框架实现或调度机制上。
 
-![Prefill 单步时间：S 曲线与 regime 分界（Qwen3-0.6B，b=1）](./images/fig3-prefill.png)
+## 1.5 真机锚定：当理论下界遇上真实 GPU
 
-实测点（红钻）坐落在 ≈30 ms 的 launch 地板上（与 decode 同源：eager 全模型 forward ≈1591 kernels/step、CPU dispatch ≈29 ms，§1.4 诊断），S=128 与"1.5 ms 下界"并不重合——短 prefill 贴着权重扫描下界这一 regime 结构在 **GPU 侧增量**上依然成立：S=128→2048 实测 30.1→52.6 ms（增量 22.4 ms）≈ η=1 下界增量（≈12.5 ms）的 1.8×，即 GPU 侧 ~1.8× 下界，量级与 kernel 效率 η + 口径差一致（regime 分界 S\*≈300–450 在增量上不变；归因见 §1.4 上卡锚定）。
+本节将 1.2 与 1.3 节的标称预测放到 **AMD Radeon RX 9070 XT**（PyTorch + ROCm，BF16，SDPA 后端）上做实测对照。这里暂不拟合硬件效率 $\eta$（校准与留出验证放在[第 2 章](/part1-modeling/chapter2/)），而是检验两个基本问题：标称预测是否严格构成真实耗时的下界，以及实测与下界之间的差距分别来自哪些机制。
 
-### 预测留痕
+### 单算子的下界检验
 
-本章产生的每个预测（以上全部算例 + §1.4 模拟器实验的全部点）按第 0 章 §0.5 底稿模板记录：
+首先单独测量三个代表性算子，排除整网逐层调度的干扰（原始数据见 `code/part1-modeling/chapter1/results/ops_9070xt.json`）：
 
-```
-prediction_id: pred_ch1_<experiment_id>_<config_id>
-calibration_version: nominal
-stored_at: <ISO 时间戳，必须先于第 2 章测量开始>
-metrics: { 每组件 FLOPs/Bytes/AI/判定/t_c, t_step, 吞吐上限, ... }
-```
+| 算子配置 | 算术强度 AI | 标称下界（ms） | 真机实测（ms） | 实测 / 下界 | 机制归因 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Matmul $4096^3$（BF16） | $1365.3$ | $0.70$（计算） | $1.06$ | $1.5\times$ | 实测 $130.2 / 195\;\text{TFLOPS}$，矩阵效率 $\eta_{\mathrm{gemm}} \approx 67\%$ |
+| LayerNorm $S=2048, d=1024$ | $1.0$ | $0.013$（访存） | $0.027$ | $2.1\times$ | 实测 $307.1 / 640\;\text{GB/s}$，小算子带宽利用率 $48\%$ |
+| Attention Fused（28 层，$S=512$） | $256.0$ | $0.31$（计算） | $1.63$ | $5.3\times$ | MHA 16/16 口径 + kernel 效率 + 发射开销 |
+| Attention Naive MATH（28 层，$S=512$） | $85.3$ | $1.0$（访存） | $15.31$ | $15.3\times$ | 物化 $S \times S$ 矩阵 + Softmax 多趟读写 |
 
-本章预测以 nominal 为基准。**留痕必须先于测量**：§1.4 的上卡锚定按 config_id 对照实测（先记录后测量，同一纪律）；第 2 章同配置上真机做 η 校准时，按 config_id 查回这些记录得到预测值。先看了测量值再拟合只算回拟合，不算验证（§0.3 纪律）。
+把这些单算子的预测下界（空心点）和实测结果（实心点）画在同一张 RX 9070 XT 双屋顶图上：
 
-## 1.4 模拟器实验：预测典型算子的瓶颈与时间
+![RX 9070 XT 双屋顶图，横轴为算术强度，纵轴为可达算力。空心点表示标称下界，实心点表示 Matmul、LayerNorm 与两种 Attention 实现的真机实测位置，所有实测点均落在对应屋顶之下。](./images/fig1-roofline.png)
 
-本章主体实验在模拟器上完成（nominal 参数；真机 η 拟合与 Profile 自第 2 章开始）。实验分两个任务：**任务 1** 用 step 级宏分解覆盖 Qwen3 三个规模的 prefill/decode 配置（§1.2/§1.3 公式的执行版）；**任务 2** 用三个 primitive 算子建立"直觉 vs 判定"的校准练习。此外，**上卡锚定**一节在 9070 XT 上完成一组实测：不拟合 η，只验证 nominal 预测是"下界"（实测 ≥ 预测）、给出 η 与口径差距的量级，并为本章配图提供实测点。
+所有实测点都落在对应屋顶之下，验证了标称模型的下界语义。大尺寸矩阵乘发挥出 67% 的标称矩阵算力，单个 LayerNorm 发挥出 48% 的标称显存带宽。在 28 层、$S = 512$ 的注意力对照中，强制禁用融合走 MATH 后端耗时 15.31 ms，默认 ROCm fused kernel 耗时 1.63 ms（提速 9.4 倍），直接印证了消除 $S \times S$ 中间矩阵 HBM 读写的收益。
 
-### 实验设置
+::: details 为什么图中 Attention 单算子的 AI 是 256 / 85，而非 1.2 节的 343 / 93？
 
-| 项 | 内容 |
-| ---- | ---- |
-| 模型 | Qwen3-0.6B / Qwen3-1.7B / Qwen3-4B（BF16，config 以 HF 仓库为准，§0.2 硬件表） |
-| 硬件 | RX 9070 XT 16GB（T1，标称参数完整）；W7900D（T2/T3，48 GB，≥4 卡；官方标称参数见第 0 章 §0.2，本章未做实测——W7900D 行只走 CPU 预测路径，结论标注"未实测"，不混入 T1 结论） |
-| 负载 | **离线 batch**（负载定义见 Ch0 §0.3）：prefill b=1，S∈{128, 512, 2048}；decode B∈{1, 4, 16}，平均 ctx=1024（closed-loop，与模拟器一致） |
-| 校准 | calibration=nominal（标称参数，η=1，T_fixed 未校准） |
+本环境的 ROCm fused SDPA kernel 要求查询头与键值头数量相等（MHA 16/16），单算子基准因此按 16/16 等头口径测量，每层读写 4 个等尺寸张量（$Q, K, V, O$），理想 $\mathrm{AI} = S / 2 = 256$、朴素版 $\mathrm{AI} = 85.3$。在全模型推理中，Qwen3-0.6B 采用 16q/8kv 的 GQA，框架会先执行 `repeat_kv` 将 K/V 展开为 16 头再调用 fused kernel。按 $B = 1, \mathrm{ctx} = 1024$ 估算，展开操作每步增加约 352 MB 的 HBM 读写（对应约 0.55 ms 标称带宽时间），属于框架实现引入的口径差。
 
-**轴从哪来**（负载定义见 Ch0 §0.3，本表是其"离线 batch"形式的具体取值）：离线 batch 没有到达时间，用**轴**而非逐条 trace 描述——可问的是"把某根轴扫过去，性能怎么变"。`S`（prefill 输入长度）取 128 / 512 / 2048：从短（S 增量尚小、发射地板占主导）到长（进入 compute-bound、S² attention 项显现），跨两个数量级、接近 2 的幂，正好覆盖"短 / 中 / 长"三档 prefill regime。`B`（decode batch）取 1 / 4 / 16：B=1 是 AI≈1 的纯 memory-bound 单点（§1.2 decode GEMM 的直觉陷阱），B 向 16 抬升演示"batching 把 GEMM 从 memory 斜坡推向 compute 屋顶"（AI≈B），但 ctx=1024 固定后 B 增大又让 KV 扫描开始接管——三点恰好跨"batching 救 GEMM"与"KV 接管"两个机制区，为第 7 章 continuous batching 埋下这根轴。`ctx=1024` 固定，保证各 decode 点同 ctx 可比。**这些是扫描轴，不是在线到达**——在线到达（到达间隔分布 + 输入/输出长度分布）与容量拐点在第 7 章用 DES 处理（Ch0 §0.3 负载定义的前向链接）。
+:::
 
-### 任务 1：step 级宏分解（per-component 输出）
+### 全模型实测与层数相关的耗时地板
 
-对每个 (模型, 配置) 点，把单 step 拆成三类组件并分别预测：
+接着在 PyTorch eager 模式下测量完整的 Qwen3-0.6B、1.7B 和 4B 单步解码与预填充耗时（数据见 `code/part1-modeling/chapter1/results/qwen_9070xt.json`）：
 
-| 组件类 | 覆盖算子 | 预测口径 |
-| ---- | ---- | ---- |
-| GEMM | QKV/O 投影 + FFN 线性层（含 LM head） | §1.2 ①：FLOPs≈2·P·B（decode）/ 2·P_linear·S（prefill），Bytes≈权重字节（decode B≤B\*） |
-| Attention | QK^T + Softmax·V（FlashAttention 口径） | §1.2 ②：prefill FLOPs≈4S²d_qL；decode FLOPs≈4B·S_ctx·d_qL，Bytes 含 KV Cache 遍历访存 |
-| Element-wise | RMSNorm / RoPE / SiLU / 残差加法 | 带宽下界估算：t ≈ Bytes/BW，AI≈1–2 恒 memory-bound |
+| 配置 | 标称下界（ms） | 真机实测（ms） | 实测 / 下界 | 观测特征 |
+| --- | ---: | ---: | ---: | --- |
+| 0.6B · Decode $B=1, \mathrm{ctx}=1024$ | $2.0$ | $29.30$ | $14.7\times$ | 显著高于 2.0 ms 权重扫描下界 |
+| 0.6B · Decode $B=4, \mathrm{ctx}=1024$ | $2.6$ | $29.43$ | $11.3\times$ | $B$ 增至 4 倍，单步耗时仅增 $0.13\;\text{ms}$ |
+| 0.6B · Decode $B=16, \mathrm{ctx}=1024$ | $4.9$ | $29.58$ | $6.0\times$ | $B$ 增至 16 倍，单步耗时仅增 $0.28\;\text{ms}$ |
+| 1.7B · Decode $B=1, \mathrm{ctx}=1024$ | $5.3$ | $29.74$ | $5.6\times$ | 权重增至 $2.9\times$，耗时与 0.6B 几乎一致 |
+| 4B · Decode $B=1, \mathrm{ctx}=1024$ | $12.5$ | $39.35$ | $3.1\times$ | 耗时比 $39.35 / 29.30 = 1.34$，接近层数比 $36 / 28 = 1.29$ |
+| 0.6B · Prefill $S=128$ | $1.5$ | $30.13$ | $20.1\times$ | 落在约 30 ms 地板上 |
+| 0.6B · Prefill $S=512$ | $2.7$ | $32.01$ | $11.9\times$ | 相对 $S=128$ 增加 $1.88\;\text{ms}$ |
+| 0.6B · Prefill $S=2048$ | $14.0$ | $52.57$ | $3.8\times$ | 相对 $S=128$ 增加 $22.44\;\text{ms}$，为下界增量（$12.5\;\text{ms}$）的 $1.8\times$ |
+| 1.7B · Prefill $S=512$ | $\approx 7.8$ | $37.46$ | $4.8\times$ | 地板之上叠加模型计算增量 |
+| 4B · Prefill $S=512$ | $\approx 18.5$ | $62.44$ | $3.4\times$ | 地板之上叠加模型计算增量 |
 
-每组件在 result.json 中输出固定字段集（Gist 开发计划 ②）：
+将全模型实测与标称下界沿模型规模、批大小和序列长度三条轴分别作图：
 
-```json
-{
-  "component": "gemm | attention | elementwise",
-  "flops": 0.0, "bytes": 0.0, "ai": 0.0, "ridge": 0.0,
-  "bound": "compute | memory",
-  "t_compute_ms": 0.0, "t_memory_ms": 0.0, "t_ms": 0.0
-}
-```
+![模型缩放对比：横轴为 Qwen3-0.6B、1.7B 和 4B 的参数量，纵轴为解码 B=1 单步耗时。实测点位于下界线之上，但 0.6B 与 1.7B 几乎持平，4B 仅按层数比例抬升。](./images/fig4-scaling.png)
 
-step 级再输出 t_step（= Σ t_ms + T_fixed 口径）与整体 FLOPs/Bytes/AI——**整体 AI 仅作参考展示，不得用于瓶颈判定**（算例 B 的第 3 条：stage 级 AI≈B 会掩盖 KV 接管）。
+![批大小曲线对比：Qwen3-0.6B 在 ctx=1024、B=1/4/16 下的单步耗时与吞吐。实测单步耗时近乎水平，聚合吞吐随 B 近似线性上升。](./images/fig2-batching.png)
 
-判定核对：每个组件的 `bound` 必须与 §1.2 手算判定一致；不一致即为模拟器计数 bug（不是"测量误差"），归因并修正后重跑。
+![预填充序列曲线对比：Qwen3-0.6B 在 S=128/512/2048 下的标称下界与实测耗时。实测在短序列处停留在约 30 ms 地板，长序列处的耗时增量与下界增量成比例。](./images/fig3-prefill.png)
 
-### 任务 2：三个 primitive 算子——直觉校准
+对比表格与图形，可以看到三个一致的规律：其一，0.6B 与 1.7B 都是 28 层，权重相差近 3 倍，解码耗时却都停在 29.3–29.7 ms；4B 增加到 36 层后，耗时升至 39.35 ms，增幅（$1.34\times$）接近层数比（$36/28 = 1.29$），而远小于权重比（$8.0 / 1.19 = 6.7$）。其二，0.6B 的解码批大小从 1 提高到 16，单步耗时仅增加 0.28 ms，因此聚合吞吐从 34.1 tok/s 升至 540.9 tok/s（$15.8\times$），而 1.3 节预测的“KV 扫描拉高单步耗时”并未在墙钟时间里显现。其三，预填充从 $S = 128$ 增至 $S = 2048$ 时，扣除 30 ms 的固定底数后，实测增量（22.44 ms）恰好是理论下界增量（12.5 ms）的 1.8 倍，说明 GPU 侧的 Roofline 增长规律依然成立，只是在短序列和小批解码时被一个约 29 ms 的固定项盖住了。
 
-9070 XT 标称参数下，对三个代表性算子做"先猜判定，再算 AI"的练习：
+### 隔离诊断：识别 CPU 发射瓶颈
 
-| 算子 | FLOPs | Bytes | AI | t_comp (ms) | t_mem (ms) | 判定 | 先直觉猜什么 |
-| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| matmul M=N=K=4096，BF16 | 137.4 GFLOP | 100.7 MB | ≈1365 | 0.70 | 0.16 | **compute** | compute（对） |
-| LayerNorm S=2048, d=1024，BF16 | ≈8.4 MFLOP | ≈8.4 MB | ≈1 | <0.001 | 0.013 | **memory** | memory（对） |
-| FlashAttention S=512（Qwen3-0.6B，28 层全模型） | ≈60 GFLOP | ≈174 MB | ≈343 | 0.31 | 0.27 | **compute**（FA，贴边）；naive 版 ≈1.0 ms **memory** | 容易猜错 |
+为了定位这 29 ms 固定项的来源，对 Qwen3-0.6B（$B = 1, \mathrm{ctx} = 1024$）执行四组隔离测量（数据见 `code/part1-modeling/chapter1/results/launch_diag_9070xt.json`）：
 
-第三个算子是本章直觉校准的关键（§1.2 ② 的 CMU A100 表是同一现象的公开数据）：attention S=512 的 FLOPs（~S² 项）不低（60 GFLOP），但 naive 实现还要读写 S×S 注意力中间矩阵（S=512 上额外 ≈472 MB），把 Bytes 推到 ≈646 MB、AI 掉到 ≈93——远低于 305 拐点，memory-bound（§1.2 本计数口径的 AI→128 是它的 S→∞ 渐近值，S=512 还没到那里）。FA 用 tiling + 重计算消掉这块 S² 读写（CMU A100 表实测访存 ÷9），把算子**从 memory 斜坡推上 compute 屋顶**：本模型 S=512 上 646→174 MB、AI 93→343。先猜"attention 很重 FLOPs，应该 compute-bound"、再算出 naive 版 AI≈93 仍 memory-bound 的人，恰好完成了教学目标 4 的练习。
+| 诊断项 | 测量方式 | 直接观测值 | 排除或确认的因素 |
+| --- | --- | ---: | --- |
+| A. 逐步同步 | 每步结束后强制同步等待 GPU | $28.92\;\text{ms/步}$ | 基线墙钟时间 |
+| B. 32 步突发 | 连续提交 32 步后仅同步一次 | $28.67\;\text{ms/步}$ | 去掉每步同步后耗时几乎不变，排除同步等待主导 |
+| C. 纯 CPU 入队 | 仅计 CPU 端下发 kernel 的耗时，不等待 GPU | $29.54\;\text{ms/步}$ | CPU 发射速率本身已达约 29 ms/步 |
+| D. Profiler 剖析 | 统计单步 kernel 总数与 GPU 自身执行时间之和 | $1591\;\text{个 kernel}$，$12.29\;\text{ms}$ | GPU 实际忙碌比例约 43%（$12.29 / 28.92$），处于饥饿状态 |
 
-**decode GEMM B=1 是第二个直觉校准算子**：它每 step 的 FLOPs 就是模型的总 FLOP 计数（0.6B 上 1.19 GFLOP/step），直觉上"每 step 都在做全部乘法"像 compute-bound；实际 AI≈1 ≪ 305，纯 memory-bound，被 1.86 ms 权重扫描钉死。两个校准算子互为镜像——decode GEMM：FLOPs 不小、AI 很小；naive attention：FLOPs 不小、访存被 S² 项撑爆。直觉错处的共同点：**数了 FLOPs，没数"这些 FLOPs 复用了多少字节"**。
+由 C 和 D 两项直接观测值可以推算出单核开销：在 PyTorch eager 模式下，28 层模型每解码 1 个 token 需要由 CPU 逐个发射 1591 个小 kernel，平均每个 kernel 的 CPU 发射耗时约 18.6 微秒（$29.54\;\text{ms} / 1591$），而 GPU 执行每个 kernel 的平均耗时仅 7.7 微秒（$12.29\;\text{ms} / 1591$）。CPU 派发任务的速度慢于 GPU 完成任务的速度，导致 GPU 超过一半时间在等待指令。此时 1.1 节公式中的固定项 $T_{\mathrm{fixed}} \approx 18.6\,\mu\text{s} \times 1591 \approx 29\;\text{ms}$ 不再是可忽略的零头，而是主导了整步耗时。
 
-### 上卡锚定（9070 XT 实测锚点）
+这也说明了为何单步耗时与层数成正比：层数决定 kernel 总数，kernel 总数决定 CPU 发射地板。当预填充序列增长到 $S = 2048$ 时，单个矩阵乘和注意力 kernel 的 GPU 执行时间大幅拉长并超过 CPU 发射时间，GPU 重新饱和，耗时增量便回到 Roofline 预测的轨迹上。
 
-**目的**（与第 2 章校准的区别）：不拟合 η（校准集/留出集协议属于第 2 章）。本节做三件事：① 验证 nominal 预测是**下界**（逐点检查实测 ≥ 预测）；② 量化差距的量级与归因（kernel 效率 / 软件开销 / 口径差 / launch 开销）；③ 为本章 4 张配图提供实测点。
+### 实测对后续校准的约束
 
-**环境**：宿主机 ROCm（本机唯一 docker 镜像 python:3.12-slim 无 ROCm 运行时，故用宿主 torch）——python 3.13.11 / torch 2.16.0.dev+rocm10.1 / transformers 5.16.1；AMD Radeon RX 9070 XT 15.9 GiB（本机 device 1，`HIP_VISIBLE_DEVICES=1` 重映射为 0）；模型 `/mnt/public/models`（Qwen3-0.6B/1.7B/4B），BF16，`attn_implementation="sdpa"`。
+这组诊断划清了性能建模的边界：上述 29 ms 的发射地板属于 PyTorch eager 执行协议下的现象，不能直接推广到所有推理框架。如果在未剥离发射开销的前提下，直接拿 29.30 ms 的端到端耗时去除 2.0 ms 的理论下界，会把 CPU 发射瓶颈误算成“GPU 显存带宽利用率只有 7%”。生产级推理引擎通过 CUDA Graphs / HIP Graphs 和算子融合将上千个小 kernel 合并为极少数发射调用，从而压低 $T_{\mathrm{fixed}}$。到了[第 2 章](/part1-modeling/chapter2/)，我们将先通过性能剖析分离出真实的 GPU 执行时间，再在此基础上拟合效率参数 $\eta$ 并做留出验证。
 
-**SDPA 口径**：ROCm fused kernel 要求等头数 dense 输入；Qwen3 是 GQA 16q/8kv → transformers 先 `repeat_kv` 把 K/V 展开到 16 头再走 MHA fused 路径（backend 探测：展开后 flash/efficient/math 均可用、cudnn 不可用；未展开的 GQA dense 输入直接被 fused 拒绝）。repeat_kv 展开的每步额外 HBM 流量（decode B=1，ctx=1024）：读原 KV ≈117 MB + 写展开 KV ≈235 MB ≈ 352 MB/step ≈ 0.55 ms（名义 640 GB/s）——名义 FA 口径预测**未计入**的口径差，下表归因项之一。
+## 实验：算子基准、全模型锚定与发射瓶颈诊断
 
-**协议**（Ch0 §0.3）：ops/decode warmup 10 + 50 采样 × 3 轮；prefill warmup 3 + 10 × 3；seed 42；`torch.cuda.Event` 逐步计时 + 每步 sync；decode 闭环（每 32 步用同 seed 输入重新 prefill 重置 cache，采样窗口 [ctx+1, ctx+32]）；报中位数，3 轮 = 方差（消费级卡 boost 时钟：run 内 <7%，run 间 ~5–30%）。脚本 `bench_ops.py` / `bench_qwen.py` / `diag_launch.py`，产物 `results/ops_9070xt.json` / `qwen_9070xt.json` / `launch_diag_9070xt.json`。
+本实验复现 1.5 节的三组测量：核对单算子下界与 FlashAttention 加速、观察全模型解码与预填充耗时，以及定位 eager 模式的 CPU 发射瓶颈。如果手边没有 RX 9070 XT 或 ROCm 环境，可直接读取仓库内置的离线存档完成同样的计算与判断。
 
-**预测 vs 实测**（预测 = §1.3/任务 2 冻结的 nominal 值，T_fixed=0；**14 点全部实测 ≥ 预测，下界语义成立**）：
+### 环境与代码位置
 
-| config_id | 预测 (ms) | 实测 (ms) | 比值 | 归因 |
-| ---- | ---- | ---- | ---- | ---- |
-| matmul 4096³ BF16（op） | 0.70（compute） | 1.06 | 1.5× | GEMM kernel 效率：130/195 TFLOPS，η_gemm≈0.67 |
-| LayerNorm S=2048（op） | 0.013（memory） | 0.027 | 2.1× | 小 kernel 未饱和带宽：307/640 GB/s = 48% |
-| attention fused 28L S=512（op） | 0.31（FA 口径） | 1.63 | 5.3× | MHA 16/16 口径 + kernel 效率 + launch 开销 |
-| attention MATH 28L S=512（op） | 1.0（naive 口径） | 15.31 | 15.3× | 软件墙：S×S 物化 + softmax 多趟 + bmm 低效（全模型 3.9 TFLOPS） |
-| fused / MATH | — | 9.4× | — | FA vs naive 的本地锚点（CMU A100 公开值 5.7×） |
-| decode-B1-ctx1024 · 0.6B | 2.0 | 29.30 | 14.7× | T_launch 主导（下方诊断）；GPU 侧 12.3 vs 2.0 ms |
-| decode-B4 · 0.6B | 2.6 | 29.43 | 11.3× | 同上：t_step 对 B 近平坦 |
-| decode-B16 · 0.6B | 4.9 | 29.58 | 6.0× | 同上 |
-| decode-B1 · 1.7B | 5.3 | 29.74 | 5.6× | t ∝ 层数（28L），不 ∝ 权重字节 |
-| decode-B1 · 4B | 12.5 | 39.35 | 3.1× | t ∝ 层数（36L）：39.3/29.3 = 1.34 ≈ 36/28 |
-| prefill-S128 · 0.6B | 1.5 | 30.13 | 20.1× | ≈30 ms launch 地板 + S 相关增量 |
-| prefill-S512 · 0.6B | 2.7 | 32.01 | 11.9× | 同上 |
-| prefill-S2048 · 0.6B | 14 | 52.57 | 3.8× | 增量 22.4 ms ≈ 1.8× η=1 增量（12.5 ms） |
-| prefill-S512 · 1.7B | ≈7.8（补记） | 37.46 | 4.8× | 同上 |
-| prefill-S512 · 4B | ≈18.5（补记） | 62.44 | 3.4× | 同上 |
+进入仓库的 `code/part1-modeling/chapter1` 目录。原实验在 Linux 宿主机上通过 `HIP_VISIBLE_DEVICES=1` 选中 RX 9070 XT，模型位于 `/mnt/public/models/`（含 Qwen3-0.6B、1.7B、4B）。复现时按本机情况调整设备编号与模型路径。
 
-（"补记"行不在 18 个冻结配置点内，按 §1.3 同一公式（GEMM max + attention FA 口径 + T_fixed=0.1 ms）即得，属补记预测——留痕纪律的例外项，显式标注。）
+### 步骤 1：单算子下界与 FlashAttention 对照
 
-算例 A 的 "2.0–2.3 ms（含未校准 T_launch）" 现在可以具体化：T_launch（eager）≈ 28.9 ms，比当时假设的舍入项大一个数量级。
+运行单算子基准脚本（预热 10 次，每轮采样 50 次，共 3 轮取中位数）：
 
-**为什么 decode 是 29 ms：T_launch 诊断**（`diag_launch.py`，0.6B B=1）：实测 decode t_step 对 B 与参数量都近乎平坦（29.30/29.43/29.58；1.7B 29.74；4B 39.35）——若 GPU 侧（权重扫描）主导，4B 应是 0.6B 的 6.7×、B=16 应是 B=1 的 2.4×，均不成立。三个测量互相印证：每步 sync 28.9 ms ≈ burst（仅一次 sync）28.7 ms ≈ 纯 CPU enqueue 29.5 ms；`torch.profiler` 数出**单步 1591 个 CUDA kernel**，GPU self 时间合计仅 12.3 ms（≈wall 的 42%）。归因：每 kernel CPU dispatch ≈18.6 μs vs GPU 执行 ≈7.7 μs——eager 全模型步是 **CPU kernel 发射受限（GPU 饥饿）**，实测 wall ≈ CPU 发射速率，而不是 GPU 屋顶线。这就是 §1.1 T_fixed 项在全模型 eager 步上的实现：~19 μs × 1591 kernels ≈ 29 ms，不是零头。GPU 侧 12.3 ms 本身也 ≈6× nominal 2.0 ms 下界（repeat_kv 口径差 ≈0.55 ms + kernel 效率 + 小 kernel 效率）。推理框架用 CUDA Graphs / compile 消除这部分开销（第 2 章及以后）；本锚点只记录 "eager 协议下 T_launch 主导"，不改 GPU 侧屋顶线结论——也提示第 2 章的 η 校准应针对**去除 T_launch 后的 GPU 侧时间**（或显式建模 T_launch）。
-
-**未覆盖**：W7900D（只有官方标称参数，未实测）；18 个模拟器配置点仍 paper-only（"手算对模拟器"待执行）；CUDA Graphs / torch.compile 口径（第 2 章起）。
-
-### 模拟器接口与产物
-
-本节接口属于自研模拟器 mlsys-simulator（两个模拟器的角色与分工见本章"两个模拟器"一节）。按第 0 章 §0.4 六元组契约调用（calibration 显式传参，不得隐式）：
-
-```
-simulate(workload, infra, strategy, calibration="nominal", evaluation, execution)
-  → manifest.json / result.json / requests.jsonl / events.jsonl / logs.txt
+```bash
+cd code/part1-modeling/chapter1
+HIP_VISIBLE_DEVICES=1 python3 bench_ops.py
 ```
 
-本章用到的预测接口（Gist 开发计划 ③：calibration 必须是显式参数）：
+打开输出文件 `results/ops_9070xt.json`（无 GPU 时读取仓库内置的同名存档），按以下步骤核对：
 
+1. 读取 `ops.matmul_4096.median_ms` 和 `ops.matmul_4096.gflops`，用 `gflops / 195000` 计算矩阵管线的实际效率 $\eta_{\mathrm{gemm}}$，确认 `median_ms` 大于 0.70 ms 的标称下界。
+2. 读取 `ops.layernorm_2048x1024.median_ms` 和 `ops.layernorm_2048x1024.gbps`，计算小算子占 640 GB/s 标称带宽的比例。
+3. 比较 `ops.attention_fused_mha16_s512.model_median_ms`（1.63 ms）与 `ops.attention_math_mha16_s512.model_median_ms`（15.31 ms），计算加速比并检查两者是否都高于各自的标称下界。
+
+### 步骤 2：全模型解码与预填充锚定
+
+运行全模型基准脚本，测量 Qwen3-0.6B、1.7B 和 4B 在解码与预填充配置下的单步耗时：
+
+```bash
+HIP_VISIBLE_DEVICES=1 python3 bench_qwen.py
 ```
-predict_prefill(batch_tokens=S, model_spec, device, calibration="nominal")
-predict_decode_step(batch_size=B, context_lengths=[1024]*B, model_spec, device, calibration="nominal")
+
+打开 `results/qwen_9070xt.json`（或内置存档），完成两项核对：
+
+1. 读取三个模型在 `decode-B1-ctx1024` 下的 `median_ms`，分别计算 1.7B/0.6B 和 4B/0.6B 的耗时比值，并与权重比（2.9× 和 6.7×）以及层数比（28/28 和 36/28）对照。
+2. 计算 `Qwen3-0.6B` 从 `prefill-S128-b1` 到 `prefill-S2048-b1` 的实测耗时增量，并与 1.3 节标称下界增量（12.5 ms）求比值。
+
+### 步骤 3：诊断 CPU 发射瓶颈
+
+运行发射诊断脚本，获取四组隔离测量：
+
+```bash
+HIP_VISIBLE_DEVICES=1 python3 diag_launch.py
 ```
 
-每个配置点的输出含 prediction_id 与 stored_at（§1.3 预测留痕），写入实验底稿（`docs/public/part0-intro/chapter0/experiment-draft.yaml` 模板），先于第 2 章任何测量。
+打开 `results/launch_diag_9070xt.json`（或内置存档），读取 `measurements` 中的字段：
 
-### 手算对模拟器：第一条"预测对预测"校准记录
+- 对照 `A_per_step_sync_median_ms`（28.92 ms）、`B_burst_one_sync_ms`（28.67 ms）和 `C_cpu_enqueue_ms`（29.54 ms），说明为何三者相近即可排除同步等待并锁定 CPU 发射受限。
+- 读取 `d_kernels_per_step`（1591）和 `d_gpu_self_ms`（12.29 ms），验证单核平均 CPU 发射耗时（18.6 微秒）、GPU 执行耗时（7.7 微秒）以及 GPU 忙碌比例（约 43%）。
 
-重跑第 0 章 §0.5.3 的纸面演练场景（0.6B decode B=1 ctx=1024），两列对照：
+## 练习
 
-| 指标 | 手算（§0.5.3 / §1.3） | 模拟器 nominal（待执行，填入） | 9070 XT 实测（eager，§1.4） |
-| ---- | ---- | ---- | ---- |
-| t_weight (ms) | 1.85 | <待执行> | 不拆分（GPU 侧 12.3 ms 含全部 kernel） |
-| t_attn_kv (ms) | 0.18 | <待执行> | 不拆分 |
-| t_step (ms) | 2.0–2.3（含未校准 T_fixed） | <待执行> | 29.30（T_launch 主导） |
-| 吞吐上限 (tok/s) | 430–500 | <待执行> | 34 per-request / 541 聚合（B=16） |
+1. 某 GPU 的 BF16 矩阵峰值为 312 TFLOPS，FP32 向量峰值为 19.5 TFLOPS，标称显存带宽为 2,000 GB/s。分别计算该卡在两条管线上的 Roofline 拐点 $\mathrm{AI}^*$。若一个 BF16 矩阵乘的算术强度为 120 FLOP/byte，它属于计算受限还是访存受限？
+2. 沿用第 1 题的硬件参数。按 1.2 节的统一口径，计算一个 BF16 矩阵乘（$M = 16, K = 4096, N = 4096$）的 $\mathrm{FLOPs}$、HBM $\mathrm{Bytes}$、算术强度 $\mathrm{AI}$ 和标称耗时下界（$\eta = 1, T_{\mathrm{fixed}} = 0$）。保持 $K$ 和 $N$ 不变，当 $M$ 增大到多少时，该算子恰好跨过矩阵管线的拐点？
+3. 在 Qwen3-0.6B（$d_q = 2048, d_{kv} = 1024$，权重 1.19 GB）的解码阶段，上下文长度固定为 $\mathrm{ctx} = 1024$（单条请求 KV 流量约 117 MB），批大小从 $B = 1$ 增大到 $B = 32$。分别说明线性层 GEMM 与解码 Attention 的算术强度如何变化，并计算 $B = 32$ 时两者的 HBM 流量，判断哪一项占主导。
+4. 某模型采用多头注意力（MHA，查询头与键值头均为 32，单头维度 $d_{\mathrm{head}} = 128$）。在 BF16 朴素实现（中间矩阵写一次、读一次）下，当输入长度 $S \to \infty$ 时，其算术强度的极限是多少？若改为分组查询注意力（GQA，32 个查询头共享 4 个键值头），解码阶段 Attention 的算术强度是多少？
+5. 一个前向步骤包含两个串行执行的组件：组件 1 的计算时间为 12 ms、访存时间为 3 ms；组件 2 的计算时间为 2 ms、访存时间为 10 ms。求正确的逐组件标称下界；若错误地先将两者的计算时间与访存时间分别求和再取 $\max$，会低估多少毫秒？
+6. 在 1.5 节的真机数据中，Qwen3-0.6B 在 $B = 16$ 时的实测单步耗时为 29.58 ms，几乎与 $B = 1$（29.30 ms）相同，但聚合吞吐从 34.1 tok/s 升至 540.9 tok/s。解释为何单步耗时几乎不变时聚合吞吐仍能提高近 16 倍；这组数据能否说明 GPU 侧在 $B = 16$ 时没有增加 KV 缓存读取耗时？
+7. 某次测试在 PyTorch eager 模式下测得单步解码耗时为 30 ms，而按权重大小与标称带宽算出的访存下界为 2 ms。有人据此推断“该模型在 GPU 上的有效显存带宽利用率只有 $2 / 30 \approx 6.7\%$”。指出这一推断的错误之处，并说明应补充哪两项测量来验证真正的瓶颈。
 
-两侧同为 nominal，**应一致到计数口径级**：若差值非零，是模拟器的计数/公式 bug（哪个组件的 FLOPs 或 Bytes 公式写错），按"归因 → 修正 → 重跑"处理，不得标注为测量误差。这是全书第一条预测对预测校准记录（模拟器校准到手算锚点）；第 2 章起，两者一起被校准到真机。
+::: details 参考答案
 
-**实测列不参与"应一致"检查**：eager 协议的 T_launch（≈29 ms）不在手算或模拟器的任何口径内，它的作用是下界检查（29.30 ≥ 2.3，成立）与差距量级（逐项归因见上卡锚定表）。模拟器"待执行"填入后，手算/模拟器两列仍须一致到计数口径级；第 2 章的真机校准对象是**去除 T_launch 后的 GPU 侧时间**（12.3 ms，不是 29.30 ms）——用 29.30 去拟合 η 会把 launch 开销误标为 kernel 效率。
+1. 矩阵管线拐点 $\mathrm{AI}^*_{\mathrm{mat}} = 312 \times 10^{12} / (2000 \times 10^9) = 156\;\text{FLOP/byte}$；向量管线拐点 $\mathrm{AI}^*_{\mathrm{vec}} = 19.5 \times 10^{12} / (2000 \times 10^9) = 9.75\;\text{FLOP/byte}$。由于 $120 < 156$，该矩阵乘属于访存受限。
+2. $\mathrm{FLOPs} = 2 \times 16 \times 4096 \times 4096 \approx 5.37 \times 10^8$；$\mathrm{Bytes} = 2 \times (16 \times 4096 + 4096 \times 4096 + 16 \times 4096) \approx 3.38 \times 10^7\;\text{B}$（约 33.8 MB）。由此得 $\mathrm{AI} \approx 15.9\;\text{FLOP/byte} < 156$，属于访存受限；标称下界 $t_{\mathrm{mem}} \approx 3.38 \times 10^7 / (2 \times 10^{12}) \approx 16.9\;\mu\text{s}$。令 $2MNK / [2(NK + M(K+N))] = 156$，代入 $K = N = 4096$ 解得 $M \approx 169$（粗略近似为拐点值 156）。
+3. 线性层 GEMM 的 $\mathrm{AI} \approx B$，随 $B$ 从 1 线性增至 32；解码 Attention 的 $\mathrm{AI} = d_q / d_{kv} = 2$，不随 $B$ 变化。在 $B = 32$ 时，权重流量仍为 1.19 GB，而 KV 缓存流量达到 $32 \times 117\;\text{MB} \approx 3.74\;\text{GB}$，KV 遍历成为主导访存成本。
+4. 朴素实现的大 $S$ 极限 $\mathrm{AI}_{\mathrm{naive}} \to d_q / n_q = d_{\mathrm{head}} = 128\;\text{FLOP/byte}$。改为 32q/4kv 的 GQA 后，解码阶段 Attention 的 $\mathrm{AI} = d_q / d_{kv} = 32 / 4 = 8\;\text{FLOP/byte}$。
+5. 正确的逐组件下界为 $\max(12, 3) + \max(2, 10) = 22\;\text{ms}$。若先分别求和再取 $\max$，得到 $\max(12 + 2,\; 3 + 10) = 14\;\text{ms}$，低估了 8 ms。
+6. 聚合吞吐等于 $B / t_{\mathrm{step}}$。当 $t_{\mathrm{step}}$ 被约 29 ms 的 CPU 发射地板钉住、随 $B$ 几乎不变时，每步产出的 token 数变为 16 倍，聚合吞吐相应提高近 16 倍。这不能说明 GPU 侧没有增加 KV 流量：KV 缓存读取耗时只是在 GPU 侧（约 12 ms 尺度内）增长，尚未超过 29 ms 的发射地板，因此在端到端墙钟时间里被掩盖。
+7. 错误在于将 30 ms 的端到端墙钟时间全部归因于 GPU 显存访存，忽略了 $T_{\mathrm{fixed}}$（尤其是 eager 模式下的 CPU kernel 发射开销）。应补充两项测量：① 测量纯 CPU 入队耗时或连续多步不中断同步的突发平均步长，判断耗时是否受限于 CPU 发射；② 使用 profiler 统计单步 kernel 数和 GPU 自身执行时间（`gpu_self_ms`），用真实的 GPU 执行时间来评估显存带宽利用率。
 
-### 验收清单
-
-本章完成的判据（全部满足才算完成）：
-
-1. 3 模型 × (3 prefill + 3 decode) = 18 个配置点，每个点输出完整 per-component 字段集（flops/bytes/ai/ridge/bound/t_compute_ms/t_memory_ms/t_ms）+ step 级 t_step；
-2. 两张 Roofline 拐点图（9070 XT 矩阵/向量两条线；W7900D 一条线标注"待确认参数"），图上标注全部 18 个预测点位置；
-3. 全部组件判定与 §1.2 手算一致；不一致项已归因并修正；
-4. 算例 B/C 的表格可由模拟器复现（同配置点输出与表内数值一致到舍入口径）；
-5. 全部预测点有 prediction_id + stored_at，且 stored_at 先于第 2 章任何测量；
-6. W7900D 行全部标注"待确认参数"，未混入 T1 结论；
-7. 上卡锚定：14 个实测点（4 op + 10 模型配置）全部满足实测 ≥ 预测（下界成立），每个比值有归因（kernel 效率 / 软件墙 / 口径差 / launch 开销）；T_launch 诊断（`diag_launch.py`）量化每 kernel dispatch 量级（~19 μs × 1591 kernels）；
-8. 4 张中文配图（fig1–fig4）的实测点与 `results/*.json` 完全一致，`figs/make_figs.py` 可重跑再生成。
-
-实验产物与代码目录：`code/part1-modeling/chapter1/`。
-
-## 实验设计
-
-- **模拟器实验**：Qwen3-0.6B / 1.7B / 4B × (prefill S∈{128, 512, 2048}, decode B∈{1, 4, 16}, ctx=1024)，nominal 参数。输出：per-component FLOPs/Bytes/AI/瓶颈判定、Roofline 拐点图（9070 XT 两线 + W7900D 待确认线）、step 时间与吞吐上限的量级（含 decode GEMM 与 naive attention 两个直觉校准算子）。
-- **真机实验：上卡锚定**（9070 XT，`bench_ops.py` + `bench_qwen.py`，§1.4"上卡锚定"）：primitive 算子（matmul / LayerNorm / attention 双口径）+ Qwen3 三模型 decode（B∈{1,4,16}/1/1，ctx=1024）与 prefill（S∈{128,512,2048}/512/512）锚点。目的：验证 nominal 预测是下界（实测 ≥ 预测）、量化 η 与口径差距（含 GQA repeat_kv 展开项）、为配图提供实测点。**不拟合 η**——η 校准确认属于第 2 章（校准集/留出集协议）。
-- **闭环与交付**：
-  - 预测：每个配置点的瓶颈判定（per-component）、预测 step 时间 / 吞吐上限、选点理由，全部带 prediction_id + stored_at；
-  - 实测：9070 XT 上卡锚定（`results/ops_9070xt.json`、`results/qwen_9070xt.json`，协议与 config_id 见 §1.4；W7900D 未覆盖——参数待确认）；
-  - 校准：η 拟合无（第 2 章执行）。本章校准记录 = ① 手算 vs 模拟器一致性检查（§1.4"手算对模拟器"）；② 实测/预测比值的逐项归因记录（§1.4 上卡锚定表：kernel 效率 / 软件开销 / 口径差 / launch 开销）；
-  - 决策：场景定义（Qwen3 × AMD T1/T4）+ 预测曲线（batching 曲线、prefill S 曲线）+ Roofline 图（含实测锚点）+ 瓶颈判定说明（per-component，含两个直觉陷阱：decode GEMM B=1 与 naive attention）。
-
-## 本章小结
-
-- **Roofline 单算子模型**：`t = max(FLOPs/(Peak·η), Bytes/BW) + T_fixed`，取 max 而非 sum——计算与访存并行执行，step 时间至少是二者中较慢者；吞吐视角下 Attainable FLOPS = min(Peak, AI×BW)，拐点 AI\* = Peak/BW（9070 XT 矩阵管线 ≈305、向量管线 ≈76，**选对峰值是判定的一部分**）。
-- **计数口径必须冻结**：AI = FLOPs/Bytes，1 FMA=2 FLOPs，BF16=2B，Bytes 是 HBM 流量（权重 + KV + 激活读写），**不是显存占用**，寄存器/片上中间结果不计入；GEMM M×N×K 对应 2·M·N·K FLOPs、(MN+MK+NK)×2B 权重流量。
-- **核心恒等式**：decode GEMM AI≈B、B\*≈305（batching 救 GEMM 的杠杆）；decode Attention AI=d_q/d_kv=2，与 B 和 S_ctx 无关（GQA 下 KV 遍历成本不被 batching 摊薄）；prefill naive attention AI→128（本章矩阵写一次、读一次的口径），FA 口径 AI≈0.67S、S\*≈300–450（+13% FLOPs 换 ÷9 访存）。
-- **nominal（η=1）是下界不是预言**：解析估计的可靠性排序——瓶颈判定（binding constraint）> 交叉点位置（crossover）> 敏感度排序 > 单点数值；单点时间典型偏离真实 1.5–2×，§2 用真机拟合 η。
-- **phase 不对称**：同一模型 decode 全 memory-bound、prefill S≥512 全 compute-bound——PD 分离（第 9 章）的屋顶线动机；batching 在 ctx 较长时成本被 KV 扫描接管（算例 B 每请求吞吐 480→206 tok/s）。
-- **两个直觉陷阱**：decode GEMM B=1 数着全部 FLOPs 却 AI≈1（纯 memory-bound）；naive attention S² FLOPs 不小却被 S² 中间矩阵访存推回 memory 斜坡。共同错误：数了 FLOPs，没数字节复用。
-- **双飞轮（全书的固定学习循环）**：快飞轮 = 解析模拟器（本章 nominal Roofline；两个模拟器的角色见"两个模拟器"一节），慢飞轮 = 真机（本章 9070 XT 上卡锚定，第 2 章起 η 校准）。快飞轮的输出永远是"假设 / 下界"，必须带口径与误差预算，不能裸当预测；慢飞轮贵且慢，只测信息量最大的少数点——钱花在哪由快飞轮决定；慢飞轮的测量回流成校准（第 2 章的 η）与残差归因（§1.4 锚定表：kernel 效率 / 软件墙 / 口径差 / launch 开销）。第 2 章起每章的对账表就是飞轮的一圈：快飞轮的误差预算逐章收紧，归因逐章变细。
-- **上卡锚定（9070 XT，eager 协议）**：14 个实测点全部实测 ≥ 预测（下界语义成立）；matmul 4096³ 达矩阵峰值 67%（η_gemm 的量级）、LayerNorm 为名义带宽 48%、fused/naive attention = 9.4×（CMU A100 公开 5.7×）；全模型 decode 单步 wall ≈ T_launch（1591 kernels × ~19 μs CPU dispatch，GPU 饥饿至 ~42% busy）——T_fixed 不是零头，是 CUDA Graphs / compile 的直接动机（第 2 章起），且第 2 章 η 校准应对去除 T_launch 后的 GPU 侧时间。
-- **交付**：`code/part1-modeling/chapter1/` 下 18 个配置点的 per-component 预测（含 prediction_id + stored_at，先于第 2 章测量）+ 两张 Roofline 拐点图 + 手算 vs 模拟器一致性记录 + 上卡锚定实测（14 点，`results/*.json`，协议 Ch0 §0.3）+ 4 张中文配图（`figs/make_figs.py`）+ launch 诊断（`diag_launch.py`）。
-
-## 延伸阅读
-
-- **mlsysbook.ai（Harvard CS249r 教材）**：Vol I "System Paradigms" 章（Roofline 形式化、ridge/machine balance point、ResNet-50/A100 b=1 贴着拐点算例、"bandwidth-bound vs 显存不足"命名区分）；[mlsysim 文档 "The Math"](https://mlsysbook.ai)（T = max(...) + Dispatch_Tax 的完整推导与 η 典型范围）。
-- **mlsys-simulator（本课程自研模拟器）**：[公开仓库（许可证待定）](https://github.com/eyuansu62/mlsys-simulator)——确定性 CPU LLM 服务模拟器（continuous batching / KV 内存压力 / TP·PP / Prefix Cache / Chunked Prefill / 多副本路由），支持声明式量化权重/KV 存储与反量化开销建模（`docs/quantization.md`）；边界：不做精度建模、无 NVMe swap、真机采集仅 BF16 域。
-- **CMU 15-442/15-642（msyscourse.org）**：Week 5 Transformers/Attention slides（FlashAttention 在 A100 上的 FLOPs/访存/时间对照表——本章任务 2 的公开数据来源）；Week 9 LLM Serving slides（prefill/decode timeline、static batching 问题、continuous batching、PagedAttention）。
-- Williams, Waterman & Patterson, *"Roofline: An Insightful Visual Performance Model for Multicore Architectures,"* Communications of the ACM, 2009（Roofline 原始论文）。
-- Dao et al., *"FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness,"* 2022（tiling + recomputation 的 IO 复杂度分析）。
-- 本书第 0 章（协议、纸面演练、硬件表）；第 2 章（η 拟合与误差归因）；第 3 章（显存账：容量维度的三条账）。
-- [hello-gpu / hello-rocm](https://github.com/datawhalechina/hello-gpu)（datawhalechina，GPU/ROCm 基础参考写法）。
+:::
