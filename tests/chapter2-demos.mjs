@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+await import('../docs/public/demos/chapter2/data.js');
+await import('../docs/public/demos/chapter2/models.js');
+const D=globalThis.Ch2Data,M=globalThis.Ch2Models;
+const near=(a,b,t=1e-7)=>assert.ok(Math.abs(a-b)<t,`${a} != ${b}`);
+const selected=D.points.filter(r=>r.selected).map(r=>r.id);
+near(M.fit(D.points.filter(r=>r.side==='eta'),selected),.6243,.0001);
+near(M.fit(D.points.filter(r=>r.side==='beta'),selected),.9054,.0001);
+assert.equal(M.fit(D.points,[]),null);
+assert.equal(D.points.length,8);assert.equal(D.holdout.length,5);
+assert.ok(D.holdout.every(h=>!D.points.some(p=>p.id===h.id)));
+near(M.calibrated(1e9,1e9,1,1).time,1.5625);
+near(M.calibrated(1e9,1e9,.6243,.9054).ridge,195000*.6243/(640*.9054));
+assert.ok(M.cache(64e6,.9,.3).apparent>1);
+near(M.cache(64e6,.9,0).apparent,.9);
+const warm=M.overhead(64,12,18,10,1000,true),cold=M.overhead(64,12,18,10,1000,false);
+near(cold.first-warm.first,1000);near(cold.profile,warm.profile);
+near(M.overhead(1,1000,20,10,0,true).clean,1020);
+near(M.timing(D.e2e.decode,'profile').difference,42.673);
+assert.equal(M.timing(D.e2e.decode,'clean').sameCondition,false);
+assert.equal(M.timing(D.e2e.decode,'profile').sameCondition,true);
+near(M.error(3.81027,3.89212),2.148141207840877,1e-6);
+const clk=M.nearest(D.clocks,59.42);assert.equal(clk.sclk_mhz,2428);assert.equal(clk.temp_c,67);
+const root=new URL('../',import.meta.url);
+const source=readFileSync(new URL('docs/part1-modeling/chapter2/index.md',root),'utf8');
+const page=readFileSync(new URL('docs/public/demos/chapter2/index.html',root),'utf8');
+assert.equal((source.match(/<FormulaDemo chapter="2"/g)||[]).length,8);
+assert.equal((page.match(/data-scene=/g)||[]).length,8);
+assert.ok(!page.includes('127.0.0.1'));
+console.log('Chapter 2 model, data provenance, holdout separation, protocol and 8-placement checks passed.');
+
+for(const eta of [.1,.6243,1])for(const beta of [.2,.9054,1]){const x=M.calibrated(300e9,2e9,eta,beta);assert.ok(Number.isFinite(x.time)&&x.time>0);}
+for(const hit of [0,.3,.8])assert.ok(Number.isFinite(M.cache(256e6,1,hit).apparent));
+for(const r of D.holdout)assert.ok(Number.isFinite(M.error(r.predicted,r.measured)));
+assert.ok(M.fit(D.points.filter(r=>r.side==='eta'),D.points.map(r=>r.id))<.6243);
+console.log('Additional parameter-boundary checks passed.');

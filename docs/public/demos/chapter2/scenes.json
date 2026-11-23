@@ -1,0 +1,50 @@
+[
+  {
+    "id": "model",
+    "title": "双系数：重新比较计算与访存",
+    "formula": "t = max(F / (Pη), D / (BWβ))",
+    "prompt": "拖动 η、β 与工作量，观察校准后的时间和拐点。"
+  },
+  {
+    "id": "profiler",
+    "title": "Profiler：区分冷启动与逐核开销",
+    "formula": "一次初始化 ≠ 每次发射的固定开销",
+    "prompt": "改变 kernel 数与 warmup 设置，比较首样本和稳态。"
+  },
+  {
+    "id": "fit",
+    "title": "校准点选择与加权系数",
+    "formula": "η, β = Σ t_nominal / Σ t_measured",
+    "prompt": "勾选校准点，比较代表区间、全部点与空选择。"
+  },
+  {
+    "id": "cache",
+    "title": "缓存命中与表观 β",
+    "formula": "β_apparent = β_HBM / (1 − h)",
+    "prompt": "减少实际 HBM 流量，理解 β 大于 1 的一种来源。"
+  },
+  {
+    "id": "drift",
+    "title": "联动回放功耗、时钟与温度",
+    "formula": "沿同一轮负载，交叉核对多个信号",
+    "prompt": "拖动时间，逐点查看本章已有的真实观测。"
+  },
+  {
+    "id": "holdout",
+    "title": "冻结预测与留出误差",
+    "formula": "error = (measured − predicted) / predicted",
+    "prompt": "切换域内与域外配置，保持预测参数冻结。"
+  },
+  {
+    "id": "timing",
+    "title": "干净计时与 Profile 计时",
+    "formula": "wall 与 Σself，先对齐测量条件",
+    "prompt": "切换时间来源，区分同条件比较与跨条件估算。"
+  },
+  {
+    "id": "speed",
+    "title": "硬件与引擎的两种对照",
+    "formula": "speedup = target throughput / baseline throughput",
+    "prompt": "选择阶段和对照维度，检查两项是否都有可比观测。"
+  }
+]

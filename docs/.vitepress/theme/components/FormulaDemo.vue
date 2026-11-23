@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
-const props = defineProps<{ scene: string; title?: string }>()
+const props = withDefaults(defineProps<{ scene: string; title?: string; chapter?: '1' | '2' }>(), { chapter: '1' })
 const frame = ref<HTMLIFrameElement | null>(null)
 const height = ref(820)
-const src = computed(() => withBase(`/demos/chapter1/embed.html?scene=${encodeURIComponent(props.scene)}`))
+const src = computed(() => withBase(`/demos/chapter${props.chapter}/embed.html?scene=${encodeURIComponent(props.scene)}`))
 function resize(event: MessageEvent) {
   if (event.origin !== window.location.origin || event.source !== frame.value?.contentWindow) return
   const data = event.data

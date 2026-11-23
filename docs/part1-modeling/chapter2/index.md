@@ -13,6 +13,14 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 
 > 本章第一次把模拟器预测带上真机：先跑通最小 Profile，再用校准集拟合修正系数，最后在留出配置上检验修正能否泛化。读完后，你应该能完成一次完整的"预测 → 实测 → 校准 → 留出验证"，并在没有 GPU 时知道该从哪条 CPU 参照线入手（§2.7）。
 
+<!-- ch2-intro:start -->
+## 互动演示：校准实验室
+
+[打开整章互动阅读版](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-model)：八组演示分别解释双系数模型、测量扰动、选点拟合、缓存、负载漂移、留出误差、计时口径与硬件/引擎对照。支持参数调节、播放、暂停、单步、拖动进度和重置。
+
+网站版在相关公式或图表处直接显示交互；Markdown 中可展开该位置的预览与独立演示入口。实测观测来自本章已有结果文件，受控示意单独标注。
+<!-- ch2-intro:end -->
+
 ## 教学目标
 
 - 能完成真机准入检查，并记录可复现的实验环境（硬件、驱动、ROCm 版本）；
@@ -26,6 +34,20 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 名义模型（Ch1 冻结）：  t_c = max( FLOPs / PEAK ,  Bytes / BW )
 校准模型（本章拟合）：  t_c = max( FLOPs / (PEAK·η) ,  Bytes / (BW·β) )
 ```
+
+<!-- ch2-demo:start:model -->
+<FormulaDemo chapter="2" scene="model" title="双系数：重新比较计算与访存" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![双系数：重新比较计算与访存](../../public/demos/chapter2/covers/model.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-model)
+
+[打开交互演示：双系数：重新比较计算与访存](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-model)：拖动 η、β 与工作量，观察校准后的时间和拐点。
+
+</details>
+<!-- ch2-demo:end:model -->
+
 
 - **η**（计算侧系数）：compute-bound 算子的实测耗时相对 `FLOPs/PEAK` 的倒数——kernel 实际跑到峰值的几分之几；
 - **β**（访存侧系数）：memory-bound 算子的实测耗时相对 `Bytes/BW` 的倒数——实际跑到标称带宽的几分之几。
@@ -73,6 +95,21 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 | **B** CPU enqueue 32 连发不 sync | CPU 发射一个 GEMM 的开销 | **0.0253 ms/iter** |
 | **C** `rocprofv3 --kernel-trace`（event-in-trace） | 开 v3 后 event wall | **1.0665 ms → ×1.012** |
 | **D** `torch.profiler`（event-in-profile） | 开 torch 后 event wall | **1.0710 ms → ×1.016** |
+
+
+
+<!-- ch2-demo:start:profiler -->
+<FormulaDemo chapter="2" scene="profiler" title="Profiler：区分冷启动与逐核开销" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![Profiler：区分冷启动与逐核开销](../../public/demos/chapter2/covers/profiler.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-profiler)
+
+[打开交互演示：Profiler：区分冷启动与逐核开销](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-profiler)：改变 kernel 数与 warmup 设置，比较首样本和稳态。
+
+</details>
+<!-- ch2-demo:end:profiler -->
 
 两个 profiler 都只报 **1 个 GEMM kernel/iter**、Σ GPU self ≈ **1.036 ms（v3）/ 1.032 ms（torch）**——kernel 计数与 GPU 侧耗时跨工具一致，差异只在测量扰动。这也直接验证了 `rocprofv3` 的 kernel dispatch 追踪在 gfx1201 上**可用**（§2.1 里不可用的是 `rocprof-compute` 的 profile 模式，不是 v3 的 kernel-trace）。
 
@@ -125,10 +162,39 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
   = (0.2097 + 0.2097) / (0.2331 + 0.2301)  = 0.9054
 ```
 
+<!-- ch2-demo:start:fit -->
+<FormulaDemo chapter="2" scene="fit" title="校准点选择与加权系数" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![校准点选择与加权系数](../../public/demos/chapter2/covers/fit.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-fit)
+
+[打开交互演示：校准点选择与加权系数](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-fit)：勾选校准点，比较代表区间、全部点与空选择。
+
+</details>
+<!-- ch2-demo:end:fit -->
+
+
 **为什么不把 8 个点都拟合进去**——因为非拟合点各自偏离，而偏离是**可解释的**，不是噪声：
 
 - GEMM 的 η 在 size 轴上先升后降：0.4848（2048，小）→ **0.6607 / 0.6072（4096/5120，甜区）** → 0.4730（8192，降频）。甜区在中间，两端各有一个独立原因（§2.4）。
 - 访存侧的 β 跨算子跨度极大：0.4891（LN 小，发射受限）→ ≈0.9（真流式）→ **1.3061（Softmax 4096，β>1）**。β>1 意味着实测**比名义带宽下界还快**——唯一的解释是 L2 命中减少了 HBM 流量，而这正是名义模型"Bytes = 未复用 HBM 流量"口径没有计入的部分。这样一个 β>1 的点若进拟合，会把带宽系数拉歪。
+
+
+
+<!-- ch2-demo:start:cache -->
+<FormulaDemo chapter="2" scene="cache" title="缓存命中与表观 β" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![缓存命中与表观 β](../../public/demos/chapter2/covers/cache.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-cache)
+
+[打开交互演示：缓存命中与表观 β](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-cache)：减少实际 HBM 流量，理解 β 大于 1 的一种来源。
+
+</details>
+<!-- ch2-demo:end:cache -->
 
 拟合结果：**η = 0.6243，β = 0.9054**（`stored_at` 先于留出实测，见 §2.5 留痕）。
 
@@ -144,6 +210,21 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 - **温度**：只从 53°C 温和爬升到 **67°C**（远未触及消费级卡的温度墙）；
 - **fclk**：全程恒定 1889 MHz（fabric 时钟不受影响）；
 - **GEMM block-median**：随 60 s 负载缓慢爬升 **1.11363 → 1.17004 ms（+5.1%）**——是**缓慢漂移**，不是阶跃。
+
+
+
+<!-- ch2-demo:start:drift -->
+<FormulaDemo chapter="2" scene="drift" title="联动回放功耗、时钟与温度" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![联动回放功耗、时钟与温度](../../public/demos/chapter2/covers/drift.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-drift)
+
+[打开交互演示：联动回放功耗、时钟与温度](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-drift)：拖动时间，逐点查看本章已有的真实观测。
+
+</details>
+<!-- ch2-demo:end:drift -->
 
 ![降频归因：sclk 冲高后回落、功耗贴顶、时间缓慢爬升](./images/fig3-clocks.png)
 
@@ -170,6 +251,21 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 | Softmax 16384×4096 | memory（AI 1） | 0.4633 | 0.4475 | **−3.4%** | β 0.9372 | 域内 |
 | Attn MHA16 S=512 | memory（AI 256<305） | 0.0145 | 0.0527 | **+264.1%** | 40.7 TFLOPS | 域外 |
 | Attn MHA16 S=1024 | compute（AI 512>305） | 0.0706 | 0.1218 | **+72.6%** | 70.5 TFLOPS | 域外 |
+
+
+
+<!-- ch2-demo:start:holdout -->
+<FormulaDemo chapter="2" scene="holdout" title="冻结预测与留出误差" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![冻结预测与留出误差](../../public/demos/chapter2/covers/holdout.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-holdout)
+
+[打开交互演示：冻结预测与留出误差](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-holdout)：切换域内与域外配置，保持预测参数冻结。
+
+</details>
+<!-- ch2-demo:end:holdout -->
 
 ![留出验证：域内 ±3.5%，域外单 batch 注意力偏乐观](./images/fig2-holdout.png)
 
@@ -201,6 +297,21 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 | Σself − 校准预测（未覆盖的 GPU 工作） | 8.19 ms | 21.44 ms |
 | `torch.profiler` 膨胀（同协议、同 fresh cache） | ×1.913 | ×1.528 |
 | `rocprofv3` 膨胀 | N/A（LLVM 冲突，见上） | N/A |
+
+
+
+<!-- ch2-demo:start:timing -->
+<FormulaDemo chapter="2" scene="timing" title="干净计时与 Profile 计时" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![干净计时与 Profile 计时](../../public/demos/chapter2/covers/timing.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-timing)
+
+[打开交互演示：干净计时与 Profile 计时](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-timing)：切换时间来源，区分同条件比较与跨条件估算。
+
+</details>
+<!-- ch2-demo:end:timing -->
 
 ![端到端（干净口径）：校准预测 GPU 工作 / 未覆盖 GPU 工作 / 干净发射空档](./images/fig4-e2e.png)
 
@@ -235,6 +346,21 @@ description: "Hello MLSys · 第 2 章 第一次真机 Profile 与性能校准 �
 | ---- | ---- | ---- | ---- |
 | decode B=1（tg128） | 17.16 | 162.28 | **9.45×** |
 | prefill S=512（pp512） | 3344.53 | 29984.5 | **8.97×** |
+
+
+
+<!-- ch2-demo:start:speed -->
+<FormulaDemo chapter="2" scene="speed" title="硬件与引擎的两种对照" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![硬件与引擎的两种对照](../../public/demos/chapter2/covers/speed.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-speed)
+
+[打开交互演示：硬件与引擎的两种对照](https://datawhalechina.github.io/hello-mlsys/demos/chapter2/index.html#scene-speed)：选择阶段和对照维度，检查两项是否都有可比观测。
+
+</details>
+<!-- ch2-demo:end:speed -->
 
 &emsp;&emsp;读这张表要分两个**正交维度**，不能混：
 
