@@ -1,0 +1,80 @@
+[
+  {
+    "id": "max",
+    "kind": "max",
+    "title": "max：计算与访存为什么取较大者",
+    "prompt": "拖动 η 与显存流量，播放并行资源动画。"
+  },
+  {
+    "id": "roof",
+    "kind": "roof",
+    "title": "min：访存斜坡与计算屋顶",
+    "prompt": "拖动 AI，观察可达性能何时封顶。"
+  },
+  {
+    "id": "ridge",
+    "kind": "ridge",
+    "title": "拐点：让两条资源上限相等",
+    "prompt": "分别改变峰值和带宽，观察拐点移动。"
+  },
+  {
+    "id": "compose",
+    "kind": "compose",
+    "title": "组件内 max，组件间 sum",
+    "prompt": "播放两个依次执行的组件，比较两种合成方式。"
+  },
+  {
+    "id": "ai",
+    "kind": "ai",
+    "title": "AI：每个字节做了多少计算",
+    "prompt": "改变运算量和读写流量，看比例如何变化。"
+  },
+  {
+    "id": "reuse",
+    "kind": "reuse",
+    "title": "GEMM：权重复用次数约等于 B",
+    "prompt": "拖动 B，看同一份权重如何被多个 token 复用。"
+  },
+  {
+    "id": "prefill",
+    "kind": "prefill",
+    "title": "Prefill：序列增长与瓶颈切换",
+    "prompt": "拖动 S，对比计算与访存时间。"
+  },
+  {
+    "id": "attention",
+    "kind": "attention",
+    "title": "Attention：S² / S 为什么变成 S",
+    "prompt": "观察理想化输入输出口径下 AI 随 S 增长。"
+  },
+  {
+    "id": "flash",
+    "kind": "flash",
+    "title": "Naive 与分块：中间矩阵写在哪里",
+    "prompt": "播放矩阵物化与片上 tile 的机制对照。"
+  },
+  {
+    "id": "kv",
+    "kind": "kv",
+    "title": "KV：为什么 B 和 ctx 被约掉",
+    "prompt": "增加请求和上下文，看计算与流量同倍增长。"
+  },
+  {
+    "id": "vector",
+    "kind": "vector",
+    "title": "向量算子：读写字节如何计数",
+    "prompt": "调整元素数量与每元素 FLOPs，看带宽下界。"
+  },
+  {
+    "id": "compose-step",
+    "kind": "compose",
+    "title": "逐组件合成 step 时间",
+    "prompt": "让两个组件绑定不同资源，逐步查看总时间。"
+  },
+  {
+    "id": "inequality",
+    "kind": "compose",
+    "title": "Σmax ≥ maxΣ：低估发生在哪里",
+    "prompt": "对比逐组件结果与整段错误重叠。"
+  }
+]

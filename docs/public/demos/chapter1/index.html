@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>瓶颈实验室 · Hello MLSys</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="models.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<header class="masthead"><a href="../../part1-modeling/chapter1/" class="brand">HELLO <b>MLSYS</b><span> / 返回章节</span></a><span class="edition">CHAPTER 01 <i></i> 浏览器可用 · 无需 GPU</span></header>
+<main>
+  <section class="intro"><div><p class="eyebrow">THE BOTTLENECK LAB</p><h1>把性能直觉，<br>放到实验台上。</h1><p class="lead">拖动一个参数，看见约束如何变化。<br>从硬件屋顶，到批处理，再到真实执行的时间线。</p></div><div class="intro-note"><span class="note-number">01—03</span><p>先猜结果，再动手验证。</p><small>本章参数来自课件中的 9070 XT / Qwen3-0.6B。<br>解析下界、机制示意与实测数据分别标记。</small></div></section>
+  <nav class="tabs" aria-label="选择实验"><button data-tab="roofline" aria-selected="true">01 <span>Roofline 屋顶线</span></button><button data-tab="batching" aria-selected="false">02 <span>Batching 与 KV</span></button><button data-tab="timeline" aria-selected="false">03 <span>CPU / GPU 时间线</span></button></nav>
+
+  <section id="roofline" class="experiment">
+    <div class="section-heading"><div><span class="tag">NOMINAL · 解析下界</span><h2>算力翻倍，就一定更快吗？</h2><p>同时看计算和访存两条约束，较慢的一条决定单算子的理想耗时。</p></div><button class="quiet" id="roof-reset">恢复默认</button></div>
+    <div class="lab-grid"><aside class="controls"><h3>选择一个起点</h3><div class="presets"><button data-preset="decode" class="selected">Decode GEMM</button><button data-preset="matmul">4096³ Matmul</button><button data-preset="norm">LayerNorm</button></div>
+      <label class="select-label" for="pipeline">计算管线</label><select id="pipeline"><option value="matrix">BF16 矩阵 · 195 TFLOP/s</option><option value="vector">FP32 向量 · 48.7 TFLOP/s</option></select>
+      <label for="work">运算量 <output id="work-out"></output></label><input id="work" type="range" min="-3" max="3" step="any" value="0.0755"><small>对数调节 · 0.001—1000 GFLOP</small>
+      <label for="traffic">显存流量 <output id="traffic-out"></output></label><input id="traffic" type="range" min="-1" max="4" step="any" value="3.0755"><small>对数调节 · 0.1—10000 MB，读＋写</small>
+      <label for="peak">计算峰值倍率 <output id="peak-out"></output></label><input id="peak" type="range" min="0.5" max="2" step="0.05" value="1">
+      <label for="bandwidth">显存带宽 <output id="bandwidth-out"></output></label><input id="bandwidth" type="range" min="160" max="1280" step="10" value="640">
+      <p class="control-note">硬件倍率用于敏感度实验；不代表可购买的显卡配置。名义效率 η=1，固定开销为 0。</p>
+    </aside><div class="visual"><div class="chart-heading"><h3>算子在屋顶线的什么位置？</h3><span><i class="dot blue"></i> 可达上限 <i class="dot orange"></i> 当前算子</span></div><svg id="roof-chart" viewBox="0 0 760 350" role="img" aria-label="Roofline 对数坐标图"></svg><div class="metrics" id="roof-metrics" aria-live="polite"></div><div class="takeaway" id="roof-takeaway"></div><details><summary>公式与口径</summary><p>AI = FLOPs / Bytes；P = min(Peak, AI × BW)。t = max(FLOPs / Peak, Bytes / BW)。横纵坐标均为对数坐标。橙点是解析上限上的位置，未表示实测性能。切换管线时应选择匹配的算子；任意组合仅用于教学探索。</p></details></div></div>
+  </section>
+
+  <section id="batching" class="experiment" hidden>
+    <div class="section-heading"><div><span class="tag">NOMINAL · 组件模型</span><h2>一批处理更多，谁真的变快了？</h2><p>权重可以复用，每个请求的 KV Cache 仍要分别扫描。</p></div><button class="quiet" id="batch-reset">恢复默认</button></div>
+    <div class="lab-grid"><aside class="controls"><h3>Qwen3-0.6B · Decode</h3><label for="batch">Batch size <output id="batch-out"></output></label><input id="batch" type="range" min="1" max="64" step="1" value="1"><div class="presets"><button data-batch="1">B=1</button><button data-batch="4">B=4</button><button data-batch="16">B=16</button></div>
+      <label for="context">上下文长度 <output id="context-out"></output></label><input id="context" type="range" min="128" max="8192" step="128" value="1024">
+      <div class="question"><b>先猜一猜</b><p>从 B=1 调到 B=16，每个请求的 token 生成速度会变快吗？</p></div><p class="control-note">只做 GPU 侧逐组件 Roofline 合成。未计 launch、排队、显存容量与其他算子。大 B / 长上下文不保证能在真机装下。</p>
+    </aside><div class="visual"><div class="chart-heading"><h3>每一步时间花在哪里</h3><span><i class="dot blue"></i> GEMM <i class="dot mint"></i> KV 扫描</span></div><svg id="batch-chart" viewBox="0 0 760 300" role="img" aria-label="各 batch 的组件时间堆叠图"></svg><div class="metrics" id="batch-metrics" aria-live="polite"></div><div class="takeaway" id="batch-takeaway"></div><details><summary>模型公式与实测对照</summary><p>GEMM：F=2×596M×B，Bytes=2×596M（本原型忽略激活流量）；KV：F=4×B×ctx×2048×28，Bytes=4×B×ctx×1024×28。各组件分别取 max(F/Peak, Bytes/BW)，再相加；Peak=195 TFLOP/s，BW=640 GB/s。聚合吞吐=1000B/t_ms，每请求吞吐=1000/t_ms。</p><p>课件已有实测（ctx=1024，eager）：B=1 / 4 / 16 的 wall time 分别为 29.30 / 29.43 / 29.58 ms。这些是独立测量锚点，不作为本图解析曲线；差异见实验 03。</p></details></div></div>
+  </section>
+
+  <section id="timeline" class="experiment" hidden>
+    <div class="section-heading"><div><span class="tag amber">ILLUSTRATION · 机制示意</span><h2>GPU 为什么会等 CPU？</h2><p>当发射速度跟不上执行速度，GPU 会在相邻 kernel 之间等待。</p></div><button class="quiet" id="time-reset">重置动画</button></div>
+    <div class="lab-grid"><aside class="controls"><h3>把一个 step 放慢来看</h3><label for="dispatch">CPU 发射 / kernel <output id="dispatch-out"></output></label><input id="dispatch" type="range" min="2" max="30" step="0.1" value="18.6"><label for="kernel">GPU 执行 / kernel <output id="kernel-out"></output></label><input id="kernel" type="range" min="2" max="20" step="0.1" value="7.7"><div class="playback"><button id="play" class="primary">播放动画</button><button id="step">单步</button></div><label for="speed">播放速度</label><select id="speed"><option value="0.5">0.5× 慢速</option><option value="1" selected>1×</option><option value="2">2×</option></select><p class="control-note">将 40 个等时 kernel 放大演示；单 stream、按序发射与执行，未模拟真实 kernel 时长分布。播放耗时与 GPU 的微秒单位分开。</p>
+    </aside><div class="visual"><div class="chart-heading"><h3>发射 → 就绪 → 执行</h3><span><i class="dot blue"></i> CPU 发射 <i class="dot mint"></i> GPU 执行</span></div><svg id="time-chart" viewBox="0 0 760 280" role="img" aria-label="CPU 和 GPU 时间线示意动画"></svg><div class="metrics" id="time-metrics" aria-live="polite"></div><div class="takeaway" id="time-takeaway"></div><div class="evidence"><span class="tag">MEASURED · 课件锚点</span><p><b>29.30 ms</b> wall time <span>／</span> <b>1591</b> kernels <span>／</span> <b>12.3 ms</b> GPU self 合计</p><small>9070 XT · Qwen3-0.6B · B=1 · ctx=1024 · eager。GPU self / wall ≈42% 是粗略占比，不能视为利用率的精确测量；CPU 发射与 GPU 执行可以重叠，二者不能直接相加。</small></div><details><summary>这个动画能说明什么？</summary><p>第 i 个 GPU kernel 的开始时刻 = max(CPU 发射完成时刻, 上一个 GPU kernel 的结束时刻)。缩短发射间隔可以减少等待，但该示意不提供 CUDA Graphs / compile 的实测加速比。40 个等时 kernel 不能精确复现课件 profiler 的 1591 个异构 kernel。</p></details></div></div>
+  </section>
+  <footer><span>HELLO MLSYS / 第 1 章 · 互动原型 v0.1</span><span>改变参数 → 观察约束 → 回到课件解释原因</span></footer>
+</main>
+</body>
+</html>

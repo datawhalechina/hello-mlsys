@@ -13,6 +13,15 @@ description: "Hello MLSys · 第 1 章 模拟器估算、Roofline 与瓶颈 · R
 
 > 本章建立性能预测的第一层直觉：一个算子在给定硬件上的理论上限是多少，瓶颈落在计算还是访存。全书运转在两个飞轮上：**快飞轮**是解析模拟器——便宜、毫秒级、能穷举配置空间，但输出是"解析估计，不是测量"，不一定准（快飞轮由两个模拟器构成——广泛使用的参考模拟器 mlsysim 与自研的 mlsys-simulator，分工见本章"两个模拟器"一节）；**慢飞轮**是真机——昂贵、慢、资源有限，但它是裁决快飞轮预测、提供校准的地方。书的价值不在任何一个飞轮里，而在两者之间的**对账**：预测先留痕，只测信息量最大的少数点，残差归因到机制。本章是这两个飞轮的第一圈——nominal Roofline 模拟器（快）+ 9070 XT 上卡锚定（慢，不拟合）；"快飞轮不准"不是缺陷，量化并归因这些差距本身就是教学内容（§1.4 的 14 个锚定点）。读完后，你应该能先用模拟器给出预测，再带着预测去看真机数据。
 
+## 互动演示：公式动画与瓶颈实验室
+
+网站阅读时，13 处核心公式下方可直接调参数、播放、暂停或单步观察。GitHub 阅读时，可展开公式下方的预览与独立演示入口。
+
+- [整章公式动画阅读版](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-max)
+- [Roofline、Batching 与 CPU / GPU 综合实验](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/index.html)
+
+演示在浏览器中运行，无需 GPU 或本地服务器。解析下界、机制示意与真机实测分别标记。
+
 ## 教学目标
 
 - 能写出 Roofline 模型 Attainable FLOPS = min(Peak FLOPS, AI × Peak Bandwidth) 的含义与适用边界；
@@ -49,6 +58,20 @@ t_step = max( FLOPs / (Peak FLOPS × η) ,  Bytes / Peak Bandwidth ) + T_fixed
          └────────── 计算项 ──────────┘  └──────── 访存项 ────────┘  └─ 固定开销（launch 等，本章未校准）
 ```
 
+<!-- formula-demo:start:max -->
+<FormulaDemo scene="max" title="max：计算与访存为什么取较大者" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：max：计算与访存为什么取较大者](../../public/demos/chapter1/formula-covers/max.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-max)
+
+[打开交互动画：max：计算与访存为什么取较大者](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-max)：拖动 η 与显存流量，播放并行资源动画。
+
+</details>
+<!-- formula-demo:end:max -->
+
+
 **取 max 而不是 sum** 是最容易搞错的一点。把两项相加等于假设"先把数据搬完、再算"；但实际执行中数据是一边读一边被消费的：如果计算先读完，计算单元就空转等数据，step 时间由较慢的那条决定，较快的那条被"浪费"了。参考课程（mlsysbook）把同一件事表述为："a step takes at least as long as its compute time or its memory-transfer time, whichever is larger"。
 
 ### 吞吐量视角：屋顶与拐点
@@ -58,6 +81,20 @@ t_step = max( FLOPs / (Peak FLOPS × η) ,  Bytes / Peak Bandwidth ) + T_fixed
 ```
 Attainable FLOPS = min( Peak FLOPS ,  AI × Peak Bandwidth )
 ```
+
+<!-- formula-demo:start:roof -->
+<FormulaDemo scene="roof" title="min：访存斜坡与计算屋顶" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：min：访存斜坡与计算屋顶](../../public/demos/chapter1/formula-covers/roof.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-roof)
+
+[打开交互动画：min：访存斜坡与计算屋顶](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-roof)：拖动 AI，观察可达性能何时封顶。
+
+</details>
+<!-- formula-demo:end:roof -->
+
 
 其中 AI（arithmetic intensity，算术强度，§1.2 定义）是算子每搬运 1 字节所执行的 FLOP 数。min 的两个参数就是两条"屋顶"：
 
@@ -69,6 +106,20 @@ Attainable FLOPS = min( Peak FLOPS ,  AI × Peak Bandwidth )
 ```
 AI* = Peak FLOPS / Peak Bandwidth
 ```
+
+<!-- formula-demo:start:ridge -->
+<FormulaDemo scene="ridge" title="拐点：让两条资源上限相等" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：拐点：让两条资源上限相等](../../public/demos/chapter1/formula-covers/ridge.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-ridge)
+
+[打开交互动画：拐点：让两条资源上限相等](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-ridge)：分别改变峰值和带宽，观察拐点移动。
+
+</details>
+<!-- formula-demo:end:ridge -->
+
 
 拐点左侧 memory-bound，右侧 compute-bound。同一硬件、同一个算子，仅仅因为 batch size 或序列长度不同，就可以在两条完全不同的区域之间移动：
 
@@ -126,6 +177,20 @@ AI* = Peak FLOPS / Peak Bandwidth
 组件之间：  t_step = Σ t_c + T_fixed          （kernel 按层序串联执行）
 ```
 
+<!-- formula-demo:start:compose -->
+<FormulaDemo scene="compose" title="组件内 max，组件间 sum" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：组件内 max，组件间 sum](../../public/demos/chapter1/formula-covers/compose.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-compose)
+
+[打开交互动画：组件内 max，组件间 sum](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-compose)：播放两个依次执行的组件，比较两种合成方式。
+
+</details>
+<!-- formula-demo:end:compose -->
+
+
 为什么"组件间必须相加"而不是再取一次 max，§1.3 用算例说明。
 
 ### 适用边界
@@ -150,6 +215,20 @@ Roofline 文献把拐点左侧的区域叫 "memory-bound"。本书沿用该词�
 ```
 AI = FLOPs / Bytes
 ```
+
+<!-- formula-demo:start:ai -->
+<FormulaDemo scene="ai" title="AI：每个字节做了多少计算" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：AI：每个字节做了多少计算](../../public/demos/chapter1/formula-covers/ai.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-ai)
+
+[打开交互动画：AI：每个字节做了多少计算](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-ai)：改变运算量和读写流量，看比例如何变化。
+
+</details>
+<!-- formula-demo:end:ai -->
+
 
 - **FLOPs**：算子执行的浮点运算数。口径：**1 次 FMA（乘加）= 2 FLOPs**；
 - **Bytes**：该算子本 step 在 HBM 与计算单元之间**搬运**的字节数（读 + 写），**不是数据在显存里的占用量**。参考课程强调这一区分：它"是建模的传输量，不是存储的参数占用"（modeled transfer volume, not the stored parameter footprint）。权重表占 1.19 GB，decode B=1 时 GEMM 把它读一遍 = 1.19 GB；B=16 时仍然只读一遍 = 1.19 GB（多出的字节来自激活与 KV，不来自权重）。
@@ -178,6 +257,20 @@ Bytes ≈ 2·P          （全量权重扫描，与 B 无关）+ O(B) 激活流�
 AI(B) ≈ B            ← 核心恒等式：权重复用次数 = batch size
 ```
 
+<!-- formula-demo:start:reuse -->
+<FormulaDemo scene="reuse" title="GEMM：权重复用次数约等于 B" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：GEMM：权重复用次数约等于 B](../../public/demos/chapter1/formula-covers/reuse.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-reuse)
+
+[打开交互动画：GEMM：权重复用次数约等于 B](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-reuse)：拖动 B，看同一份权重如何被多个 token 复用。
+
+</details>
+<!-- formula-demo:end:reuse -->
+
+
 这是本章最重要的结论：**decode GEMM 的算术强度约等于 batch size**。B=1 → AI≈1；B=16 → AI≈16；对照 9070 XT 矩阵拐点 ≈305，全部 memory-bound。step 时间被钉在权重扫描时间 ≈ 2P/BW 上。交叉点 B\* ≈ AI\* ≈ 305：单卡 decode 要到 B≈300 量级，GEMM 才翻转为 compute-bound。
 
 Prefill（M = S 个 token，单请求）：
@@ -187,6 +280,20 @@ FLOPs ≈ 2·P_linear·S    （P_linear = 每 token 线性参数，0.6B ≈ 440M
 Bytes ≈ 2·P_linear + O(S) 激活流量    （权重仍只读一遍）
 AI(S) 随 S 线性增长
 ```
+
+<!-- formula-demo:start:prefill -->
+<FormulaDemo scene="prefill" title="Prefill：序列增长与瓶颈切换" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：Prefill：序列增长与瓶颈切换](../../public/demos/chapter1/formula-covers/prefill.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-prefill)
+
+[打开交互动画：Prefill：序列增长与瓶颈切换](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-prefill)：拖动 S，对比计算与访存时间。
+
+</details>
+<!-- formula-demo:end:prefill -->
+
 
 存在交叉序列长 S\*（0.6B / 9070 XT：S\* ≈ 300–400，§1.3 算例；随激活流量口径移动 ±30%——口径必须冻结，否则交叉点漂移）：S < S\* memory-bound（权重扫描主导），S > S\* compute-bound（矩阵管线主导）。**同一个模型，短 prefill 带宽受限、长 prefill 计算受限**——prefill/decode 两种 phase 的硬件行为差异从这里开始。
 
@@ -200,6 +307,20 @@ Bytes ≈ 2·S·(2d_q + 2d_kv)·L    （读 Q/K/V + 写 O；不计 S² 中间结
 AI ≈ 0.67·S               （0.6B 配置代入 d_q=2048, d_kv=1024）
 ```
 
+<!-- formula-demo:start:attention -->
+<FormulaDemo scene="attention" title="Attention：S² / S 为什么变成 S" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：Attention：S² / S 为什么变成 S](../../public/demos/chapter1/formula-covers/attention.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-attention)
+
+[打开交互动画：Attention：S² / S 为什么变成 S](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-attention)：观察理想化输入输出口径下 AI 随 S 增长。
+
+</details>
+<!-- formula-demo:end:attention -->
+
+
 - S=512 → AI≈341，贴着拐点 305 上方 → compute-bound（贴边）；
 - S=128 → AI≈85 < 305 → memory-bound。此时 S² 项太小：attention 仅 ≈3.8 GFLOP，而同 step 的 GEMM ≈113 GFLOP——瓶颈仍在权重扫描。这是**短序列 prefill 陷阱**：直觉上"prefill 是 S² 计算，一定 compute-bound"，但 S=128 时不成立。
 
@@ -207,8 +328,24 @@ AI ≈ 0.67·S               （0.6B 配置代入 d_q=2048, d_kv=1024）
 
 ```
 Bytes_naive ≈ 2·n_heads·S²·2·L（attention 矩阵读写）+ 上式线性项
-AI_naive → 0.5 FLOP/byte   （S → ∞ 的有界上限）
+AI_naive → d_q / n_heads = 128 FLOP/byte   （S → ∞；本式 BF16 矩阵写一次、读一次）
 ```
+
+<!-- formula-demo:start:flash -->
+<FormulaDemo scene="flash" title="Naive 与分块：中间矩阵写在哪里" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：Naive 与分块：中间矩阵写在哪里](../../public/demos/chapter1/formula-covers/flash.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-flash)
+
+[打开交互动画：Naive 与分块：中间矩阵写在哪里](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-flash)：播放矩阵物化与片上 tile 的机制对照。
+
+</details>
+<!-- formula-demo:end:flash -->
+
+
+**计数说明**：由上面两式相除，大 S 时 `AI_naive → (4S²d_qL)/(4n_headsS²L) = d_q/n_heads = 128`。本式仅计中间矩阵写一次、读一次；softmax 多趟读写等实际流量会进一步降低 AI。FA 线性 IO 是本章理想输入输出口径，tile 重读和缓存行为需要另计。
 
 naive attention 无论 S 多大都**钉死在访存斜坡上**。FlashAttention 用 tiling + recomputation 把 S² 中间结果留在片上：FLOPs 多约 13%（重算代价），HBM 流量降约 9 倍。参考课程（CMU 15-442 Week 5）的 A100 实测对照：标准 attention 66.6 GFLOPs / 40.3 GB / 41.7 ms，FlashAttention 75.2 GFLOPs / 4.4 GB / 7.3 ms——**多花 13% 的 FLOPs，省 9 倍访存，快 5.7 倍**。这是 Roofline 最经典的应用：花计算换访存，把算子从拐点左侧推到右侧。
 
@@ -220,14 +357,42 @@ Bytes ≈ 2·B·S_ctx·d_kv·2·L     （KV Cache 遍历，每请求读一遍）
 AI = d_q/d_kv = 2   （0.6B；与 B、S_ctx 均无关）
 ```
 
+<!-- formula-demo:start:kv -->
+<FormulaDemo scene="kv" title="KV：为什么 B 和 ctx 被约掉" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：KV：为什么 B 和 ctx 被约掉](../../public/demos/chapter1/formula-covers/kv.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-kv)
+
+[打开交互动画：KV：为什么 B 和 ctx 被约掉](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-kv)：增加请求和上下文，看计算与流量同倍增长。
+
+</details>
+<!-- formula-demo:end:kv -->
+
+
 与 GEMM 的关键对照：**decode attention 的 AI 与 B 无关**——FLOPs 与 KV 流量随 B 同倍增长。batching 救得了 GEMM（AI：1→16），救不了 KV 遍历（恒 AI≈2）。这是 GQA 设计的基本动机之一（压 d_kv 缩短 KV 扫描），也是"KV 扫描成本"在后续章节反复出现（KV 量化、prefix cache）的屋顶线根源。
 
 **③ Element-wise / 向量类（RMSNorm、RoPE、激活函数）**
 
 ```
-FLOPs ≈ O(1) FLOP/元素；Bytes ≈ 2 bytes/元素（读 + 写）
+FLOPs ≈ O(1) FLOP/元素；Bytes ≈ 4 bytes/元素（BF16：读 2B + 写 2B，单次读写示意）
 AI ≈ 1–2
 ```
+
+<!-- formula-demo:start:vector -->
+<FormulaDemo scene="vector" title="向量算子：读写字节如何计数" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：向量算子：读写字节如何计数](../../public/demos/chapter1/formula-covers/vector.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-vector)
+
+[打开交互动画：向量算子：读写字节如何计数](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-vector)：调整元素数量与每元素 FLOPs，看带宽下界。
+
+</details>
+<!-- formula-demo:end:vector -->
+
 
 对照向量管线拐点 ≈76，此类算子**恒为带宽受限**，时间按带宽下界估算（t ≈ Bytes/BW）。单步时间很小（<10 μs 量级），但它是 batching 消不掉的固定项，在极小 batch 时构成 step 下界的一部分。
 
@@ -253,11 +418,39 @@ t_c = max( FLOPs_c / (Peak_c × η) ,  Bytes_c / BW )    （η=1 标称）
 t_step = Σ_c t_c + T_fixed                             （T_fixed：launch 开销，本章未校准）
 ```
 
+<!-- formula-demo:start:compose-step -->
+<FormulaDemo scene="compose-step" title="逐组件合成 step 时间" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：逐组件合成 step 时间](../../public/demos/chapter1/formula-covers/compose-step.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-compose-step)
+
+[打开交互动画：逐组件合成 step 时间](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-compose-step)：让两个组件绑定不同资源，逐步查看总时间。
+
+</details>
+<!-- formula-demo:end:compose-step -->
+
+
 为什么"组件内 max、组件间 sum"是正确结构，而不能对整段取一次 max：组件（各层 GEMM、attention、norm）作为 kernel **按层序串联执行**，step 时间至少是各组件时间之和；组件内部计算与访存**并行**，取 max。对全 stage 的总 FLOPs 与总 Bytes 取一个 max，等于假设所有组件的计算与访存彼此完全重叠。数学上恒有
 
 ```
 Σ_c max(t_comp_c, t_mem_c)  ≥  max( Σ_c t_comp_c ,  Σ_c t_mem_c )
 ```
+
+<!-- formula-demo:start:inequality -->
+<FormulaDemo scene="inequality" title="Σmax ≥ maxΣ：低估发生在哪里" />
+
+<details>
+<summary>预览与独立演示入口</summary>
+
+[![公式动画：Σmax ≥ maxΣ：低估发生在哪里](../../public/demos/chapter1/formula-covers/inequality.svg)](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-inequality)
+
+[打开交互动画：Σmax ≥ maxΣ：低估发生在哪里](https://datawhalechina.github.io/hello-mlsys/demos/chapter1/reader.html#formula-inequality)：对比逐组件结果与整段错误重叠。
+
+</details>
+<!-- formula-demo:end:inequality -->
+
 
 两边相等**当且仅当所有组件绑定同一资源**（全 memory-bound 或全 compute-bound）。一旦有组件跨过拐点、绑定资源不同，stage 级 max 就系统性偏小——偏小的量正是各组件中"被并行浪费掉的较快那一项"之和。本卡的 decode 恰好全 memory-bound（两边相等，见算例 A/B），但 prefill step（GEMM 与 attention 分处拐点两侧，见算例 C）和 B>B\* 的大 batch decode 都会打开这个差距。模拟器的 per-component 结构（Gist 开发计划 ①②：每组件输出 FLOPs/Bytes/AI/判定/t）就是为这个合成而存在的。
 
@@ -392,7 +585,7 @@ step 级再输出 t_step（= Σ t_ms + T_fixed 口径）与整体 FLOPs/Bytes/AI
 | LayerNorm S=2048, d=1024，BF16 | ≈8.4 MFLOP | ≈8.4 MB | ≈1 | <0.001 | 0.013 | **memory** | memory（对） |
 | FlashAttention S=512（Qwen3-0.6B，28 层全模型） | ≈60 GFLOP | ≈174 MB | ≈343 | 0.31 | 0.27 | **compute**（FA，贴边）；naive 版 ≈1.0 ms **memory** | 容易猜错 |
 
-第三个算子是本章直觉校准的关键（§1.2 ② 的 CMU A100 表是同一现象的公开数据）：attention S=512 的 FLOPs（~S² 项）不低（60 GFLOP），但 naive 实现还要读写 S×S 注意力中间矩阵（S=512 上额外 ≈472 MB），把 Bytes 推到 ≈646 MB、AI 掉到 ≈93——远低于 305 拐点，memory-bound（§1.2 的 AI→0.5 是它的 S→∞ 渐近值，S=512 还没到那里）。FA 用 tiling + 重计算消掉这块 S² 读写（CMU A100 表实测访存 ÷9），把算子**从 memory 斜坡推上 compute 屋顶**：本模型 S=512 上 646→174 MB、AI 93→343。先猜"attention 很重 FLOPs，应该 compute-bound"、再算出 naive 版 AI≈93 仍 memory-bound 的人，恰好完成了教学目标 4 的练习。
+第三个算子是本章直觉校准的关键（§1.2 ② 的 CMU A100 表是同一现象的公开数据）：attention S=512 的 FLOPs（~S² 项）不低（60 GFLOP），但 naive 实现还要读写 S×S 注意力中间矩阵（S=512 上额外 ≈472 MB），把 Bytes 推到 ≈646 MB、AI 掉到 ≈93——远低于 305 拐点，memory-bound（§1.2 本计数口径的 AI→128 是它的 S→∞ 渐近值，S=512 还没到那里）。FA 用 tiling + 重计算消掉这块 S² 读写（CMU A100 表实测访存 ÷9），把算子**从 memory 斜坡推上 compute 屋顶**：本模型 S=512 上 646→174 MB、AI 93→343。先猜"attention 很重 FLOPs，应该 compute-bound"、再算出 naive 版 AI≈93 仍 memory-bound 的人，恰好完成了教学目标 4 的练习。
 
 **decode GEMM B=1 是第二个直觉校准算子**：它每 step 的 FLOPs 就是模型的总 FLOP 计数（0.6B 上 1.19 GFLOP/step），直觉上"每 step 都在做全部乘法"像 compute-bound；实际 AI≈1 ≪ 305，纯 memory-bound，被 1.86 ms 权重扫描钉死。两个校准算子互为镜像——decode GEMM：FLOPs 不小、AI 很小；naive attention：FLOPs 不小、访存被 S² 项撑爆。直觉错处的共同点：**数了 FLOPs，没数"这些 FLOPs 复用了多少字节"**。
 
@@ -496,7 +689,7 @@ predict_decode_step(batch_size=B, context_lengths=[1024]*B, model_spec, device, 
 
 - **Roofline 单算子模型**：`t = max(FLOPs/(Peak·η), Bytes/BW) + T_fixed`，取 max 而非 sum——计算与访存并行执行，step 时间至少是二者中较慢者；吞吐视角下 Attainable FLOPS = min(Peak, AI×BW)，拐点 AI\* = Peak/BW（9070 XT 矩阵管线 ≈305、向量管线 ≈76，**选对峰值是判定的一部分**）。
 - **计数口径必须冻结**：AI = FLOPs/Bytes，1 FMA=2 FLOPs，BF16=2B，Bytes 是 HBM 流量（权重 + KV + 激活读写），**不是显存占用**，寄存器/片上中间结果不计入；GEMM M×N×K 对应 2·M·N·K FLOPs、(MN+MK+NK)×2B 权重流量。
-- **核心恒等式**：decode GEMM AI≈B、B\*≈305（batching 救 GEMM 的杠杆）；decode Attention AI=d_q/d_kv=2，与 B 和 S_ctx 无关（GQA 下 KV 遍历成本不被 batching 摊薄）；prefill naive attention AI→0.5，FA 口径 AI≈0.67S、S\*≈300–450（+13% FLOPs 换 ÷9 访存）。
+- **核心恒等式**：decode GEMM AI≈B、B\*≈305（batching 救 GEMM 的杠杆）；decode Attention AI=d_q/d_kv=2，与 B 和 S_ctx 无关（GQA 下 KV 遍历成本不被 batching 摊薄）；prefill naive attention AI→128（本章矩阵写一次、读一次的口径），FA 口径 AI≈0.67S、S\*≈300–450（+13% FLOPs 换 ÷9 访存）。
 - **nominal（η=1）是下界不是预言**：解析估计的可靠性排序——瓶颈判定（binding constraint）> 交叉点位置（crossover）> 敏感度排序 > 单点数值；单点时间典型偏离真实 1.5–2×，§2 用真机拟合 η。
 - **phase 不对称**：同一模型 decode 全 memory-bound、prefill S≥512 全 compute-bound——PD 分离（第 9 章）的屋顶线动机；batching 在 ctx 较长时成本被 KV 扫描接管（算例 B 每请求吞吐 480→206 tok/s）。
 - **两个直觉陷阱**：decode GEMM B=1 数着全部 FLOPs 却 AI≈1（纯 memory-bound）；naive attention S² FLOPs 不小却被 S² 中间矩阵访存推回 memory 斜坡。共同错误：数了 FLOPs，没数字节复用。
