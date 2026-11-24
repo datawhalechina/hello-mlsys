@@ -1,0 +1,17 @@
+{
+  "backend": "tool",
+  "hardware_validated": false,
+  "historical_prediction_before_measurement_established": false,
+  "input_files": [
+    {
+      "path": "/mnt/luyuzhou/hello-mlsys/hello-mlsys/code/part1-modeling/chapter8/results/screen-qwen4b-7900xtx.plan.json",
+      "sha256": "406bc2da848f4688e786d14b3c4229406fd296f765094c52439e1d9d295b3ecd"
+    }
+  ],
+  "mode": "screen",
+  "prediction_id": "screen-1fd685223a4a29b15ec16f2a",
+  "schema_version": 1,
+  "simulator_version": "1.24.0",
+  "source_sha256": "8418944cf9914f6cab0f5f9602b5fcec44882e3ab0aceac35dd911a8e67a8059",
+  "stored_at": "2026-11-23T04:32:21.070288+00:00"
+}

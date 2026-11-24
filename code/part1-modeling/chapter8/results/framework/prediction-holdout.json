@@ -1,0 +1,155 @@
+{
+  "generated_at": "2026-11-23T04:22:20Z",
+  "status": "FROZEN_BEFORE_HOLDOUT_MEASUREMENT",
+  "experiment": "chapter8 framework holdout",
+  "contract": {
+    "model": "Qwen3-4B",
+    "gpu": "AMD Radeon RX 7900 XTX 23.98 GiB (gfx1100, GPU0)",
+    "input_tokens": 256,
+    "output_tokens": 128,
+    "num_prompts_per_point": 200,
+    "warmup_per_point": 2,
+    "seed": 42,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "ignore_eos": true,
+    "concurrency": [
+      16,
+      48
+    ],
+    "slo": {
+      "ttft_p99_ms": 800.0,
+      "tpot_p99_ms": 100.0,
+      "e2el_p99_ms": 15000.0,
+      "failure_rate_max": 0.01
+    }
+  },
+  "method": {
+    "ttft": "log(TTFT_p99_ms) = a + b*log(concurrency), fit on C=1/8/32",
+    "tpot": "log(TPOT_p99_ms) = a + b*log(concurrency), fit on C=1/8/32",
+    "e2e": "TTFT_p99 + 127*TPOT_p99 (fixed OSL=128)",
+    "slo_verdict": "predicted P99 thresholds; failure rate assumed 0 because no transport errors were observed",
+    "interval": "exp(+/-1.96*residual_log_std) heuristic band; with 3 calibration points this is not a statistical confidence interval"
+  },
+  "selection_disclosure": {
+    "c64_observed_before_this_file": true,
+    "c64_used_in_fit": false,
+    "c16_c48_measured_before_this_file": false,
+    "note": "C=16/48 are the holdout points. C=64 is a burned point and is excluded from the fit and from acceptance."
+  },
+  "predictions": {
+    "vllm": {
+      "calibration_points": [
+        1,
+        8,
+        32
+      ],
+      "excluded_points": [
+        64
+      ],
+      "ttft_model": {
+        "intercept_ln": 3.6564218081431052,
+        "slope": 0.8499879936459093,
+        "residual_log_std": 0.118134697202924,
+        "calibration_mape_pct": 6.320700816164876
+      },
+      "tpot_model": {
+        "intercept_ln": 2.2971874034374693,
+        "slope": 0.2017263339312945,
+        "residual_log_std": 0.07390728193804068,
+        "calibration_mape_pct": 3.969216218578978
+      },
+      "predictions": [
+        {
+          "concurrency": 16,
+          "ttft_p99_ms": 408.744,
+          "ttft_p99_heuristic_band_ms": [
+            324.26,
+            515.24
+          ],
+          "tpot_p99_ms": 17.4,
+          "tpot_p99_heuristic_band_ms": [
+            15.054,
+            20.113
+          ],
+          "e2el_p99_ms": 2618.591,
+          "predicted_slo_verdict": "PASS"
+        },
+        {
+          "concurrency": 48,
+          "ttft_p99_ms": 1039.917,
+          "ttft_p99_heuristic_band_ms": [
+            824.974,
+            1310.862
+          ],
+          "tpot_p99_ms": 21.717,
+          "tpot_p99_heuristic_band_ms": [
+            18.789,
+            25.103
+          ],
+          "e2el_p99_ms": 3798.018,
+          "predicted_slo_verdict": "FAIL"
+        }
+      ]
+    },
+    "llamacpp": {
+      "calibration_points": [
+        1,
+        8,
+        32
+      ],
+      "excluded_points": [
+        64
+      ],
+      "ttft_model": {
+        "intercept_ln": 4.881680975617152,
+        "slope": 0.7883266570541378,
+        "residual_log_std": 0.16789904124314495,
+        "calibration_mape_pct": 9.245687694083887
+      },
+      "tpot_model": {
+        "intercept_ln": 2.475569797823307,
+        "slope": 0.54864137731686,
+        "residual_log_std": 0.1677479298462615,
+        "calibration_mape_pct": 8.940190926834873
+      },
+      "predictions": [
+        {
+          "concurrency": 16,
+          "ttft_p99_ms": 1173.078,
+          "ttft_p99_heuristic_band_ms": [
+            844.128,
+            1630.217
+          ],
+          "tpot_p99_ms": 54.42,
+          "tpot_p99_heuristic_band_ms": [
+            39.171,
+            75.604
+          ],
+          "e2el_p99_ms": 8084.383,
+          "predicted_slo_verdict": "FAIL"
+        },
+        {
+          "concurrency": 48,
+          "ttft_p99_ms": 2789.038,
+          "ttft_p99_heuristic_band_ms": [
+            2006.947,
+            3875.903
+          ],
+          "tpot_p99_ms": 99.432,
+          "tpot_p99_heuristic_band_ms": [
+            71.571,
+            138.138
+          ],
+          "e2el_p99_ms": 15416.862,
+          "predicted_slo_verdict": "FAIL"
+        }
+      ]
+    }
+  },
+  "acceptance": {
+    "primary": "compare measured TTFT/TPOT/E2E P99 against the frozen point predictions",
+    "secondary": "compare measured SLO verdict against predicted SLO verdict",
+    "do_not": "do not refit or change the holdout points after this file is written"
+  }
+}

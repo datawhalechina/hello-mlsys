@@ -1,0 +1,677 @@
+{
+  "generated_at": "2026-11-23T04:03:45Z",
+  "status": "DERIVED_FROM_RAW_REQUESTS",
+  "hardware_validated": true,
+  "correction": {
+    "field": "tpot_ms",
+    "old_formula": "(last streamed token time - first streamed token time)/(stream chunks-1)",
+    "new_formula": "(E2EL - TTFT)/(completion_tokens-1)",
+    "reason": "vLLM and llama.cpp can coalesce multiple completion tokens into one SSE chunk",
+    "raw_requests_unchanged": true,
+    "original_summaries_unchanged": true
+  },
+  "contract": {
+    "model": "Qwen3-4B",
+    "gpu": "AMD Radeon RX 7900 XTX 23.98 GiB (gfx1100, GPU0)",
+    "input_tokens": 256,
+    "output_tokens": 128,
+    "num_prompts_per_point": 200,
+    "seed": 42,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "ignore_eos": true,
+    "concurrency": [
+      1,
+      8,
+      32,
+      64
+    ],
+    "slo": {
+      "ttft_p99_ms": 800.0,
+      "tpot_p99_ms": 100.0,
+      "e2el_p99_ms": 15000.0,
+      "failure_rate_max": 0.01
+    }
+  },
+  "models": {
+    "kv_bytes_per_token": 147456,
+    "kv_kib_per_token": 144.0,
+    "vllm_kv_tokens": 77248,
+    "vllm_kv_pool_gib": 10.608,
+    "vllm_context_capacity_4096": 18.859,
+    "llamacpp_slots": 64,
+    "llamacpp_context_per_slot": 512,
+    "llamacpp_total_context_tokens": 32768,
+    "llamacpp_context_capacity_384": 85.333,
+    "failed_kv_probe_context_tokens": 131072,
+    "failed_kv_probe_gib": 18.0
+  },
+  "points": {
+    "vllm": [
+      {
+        "framework": "vllm",
+        "concurrency": 1,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 200,
+        "slo_pass_rate": 1.0,
+        "slo_verdict": "PASS",
+        "slo_failure_reason_counts": {},
+        "tightest_constraint": "tpot",
+        "headroom": {
+          "ttft": 0.949706,
+          "tpot": 0.898125,
+          "e2el": 0.911333,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 35.650144,
+          "p95": 37.063455,
+          "p99": 40.235503,
+          "max": 55.809396
+        },
+        "tpot_corrected_ms": {
+          "p50": 10.172309,
+          "p95": 10.184637,
+          "p99": 10.187547
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 10.173127078542882,
+          "p95": 10.257138319392984,
+          "p99": 14.219704447004291
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25229,
+          "p50": 10.156882,
+          "p99": 10.91633
+        },
+        "e2el_ms": {
+          "p50": 1327.591931,
+          "p95": 1329.443794,
+          "p99": 1330.004852
+        },
+        "wall_s": 265.468325,
+        "request_throughput_per_s": 0.753386,
+        "output_tokens_per_s": 96.43335,
+        "slo_goodput_requests_per_s": 0.753386,
+        "slo_goodput_output_tokens_per_s": 96.43335,
+        "stream_chunk_token_mismatch_requests": 23,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "vllm:generation_tokens_total": 25600.0,
+          "vllm:num_preemptions_total": 0.0,
+          "vllm:prompt_tokens_total": 51200.0,
+          "vllm:request_success_total": 200.0
+        },
+        "vram": {
+          "samples": 869,
+          "min_bytes": 21689548800,
+          "max_bytes": 21689548800,
+          "median_bytes": 21689548800
+        },
+        "sources": {
+          "requests": "results/framework/vllm/c1/requests.jsonl",
+          "requests_sha256": "0ecda533ce4bf58e0501e705f34a35971e62fa80cc01ac643e6267b03af492b0",
+          "original_summary": "results/framework/vllm/c1/summary.json",
+          "original_summary_sha256": "dc2b886ea8145354337e33177c2a872b5c0b3a47d77d2d467f6d34da0193c273"
+        }
+      },
+      {
+        "framework": "vllm",
+        "concurrency": 8,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 200,
+        "slo_pass_rate": 1.0,
+        "slo_verdict": "PASS",
+        "slo_failure_reason_counts": {},
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": 0.742442,
+          "tpot": 0.857505,
+          "e2el": 0.874856,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 201.047134,
+          "p95": 203.752438,
+          "p99": 206.04658,
+          "max": 226.639275
+        },
+        "tpot_corrected_ms": {
+          "p50": 13.160474,
+          "p95": 14.219388,
+          "p99": 14.249457
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 13.159928445091955,
+          "p95": 14.238036671235395,
+          "p99": 18.80876787993018
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25227,
+          "p50": 13.153374,
+          "p99": 14.216335
+        },
+        "e2el_ms": {
+          "p50": 1872.354707,
+          "p95": 1874.558118,
+          "p99": 1877.161077
+        },
+        "wall_s": 46.818766,
+        "request_throughput_per_s": 4.271791,
+        "output_tokens_per_s": 546.789294,
+        "slo_goodput_requests_per_s": 4.271791,
+        "slo_goodput_output_tokens_per_s": 546.789294,
+        "stream_chunk_token_mismatch_requests": 18,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "vllm:generation_tokens_total": 25600.0,
+          "vllm:num_preemptions_total": 0.0,
+          "vllm:prompt_tokens_total": 51200.0,
+          "vllm:request_success_total": 200.0
+        },
+        "vram": {
+          "samples": 154,
+          "min_bytes": 21689548800,
+          "max_bytes": 21689548800,
+          "median_bytes": 21689548800
+        },
+        "sources": {
+          "requests": "results/framework/vllm/c8/requests.jsonl",
+          "requests_sha256": "5c7fbba7c69c6127b299bfc80706d58873f11036764154df548160218ee53af9",
+          "original_summary": "results/framework/vllm/c8/summary.json",
+          "original_summary_sha256": "23d38af89ef7fea1c334127a223e360f3e792389871e1c8046293d1697309cc6"
+        }
+      },
+      {
+        "framework": "vllm",
+        "concurrency": 32,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 200,
+        "slo_pass_rate": 1.0,
+        "slo_verdict": "PASS",
+        "slo_failure_reason_counts": {},
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": 0.024558,
+          "tpot": 0.792554,
+          "e2el": 0.805328,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 417.500179,
+          "p95": 704.313964,
+          "p99": 780.35399,
+          "max": 781.020653
+        },
+        "tpot_corrected_ms": {
+          "p50": 17.423959,
+          "p95": 19.581705,
+          "p99": 20.744593
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 18.0357294917972,
+          "p95": 19.715280551232382,
+          "p99": 26.49498099140088
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25228,
+          "p50": 15.438427,
+          "p99": 166.3407
+        },
+        "e2el_ms": {
+          "p50": 2709.483092,
+          "p95": 2872.221795,
+          "p99": 2920.08617
+        },
+        "wall_s": 18.204776,
+        "request_throughput_per_s": 10.986128,
+        "output_tokens_per_s": 1406.224389,
+        "slo_goodput_requests_per_s": 10.986128,
+        "slo_goodput_output_tokens_per_s": 1406.224389,
+        "stream_chunk_token_mismatch_requests": 19,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "vllm:generation_tokens_total": 25600.0,
+          "vllm:num_preemptions_total": 0.0,
+          "vllm:prompt_tokens_total": 51200.0,
+          "vllm:request_success_total": 200.0
+        },
+        "vram": {
+          "samples": 61,
+          "min_bytes": 21689548800,
+          "max_bytes": 21689548800,
+          "median_bytes": 21689548800
+        },
+        "sources": {
+          "requests": "results/framework/vllm/c32/requests.jsonl",
+          "requests_sha256": "56940cb473ae044b99536bb96db211670518fa583a28f82c704306a4643cd40c",
+          "original_summary": "results/framework/vllm/c32/summary.json",
+          "original_summary_sha256": "d86de435fd972b06fd0f56370203fe4c16f352ba9d47474546f5c20ada380275"
+        }
+      },
+      {
+        "framework": "vllm",
+        "concurrency": 64,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 158,
+        "slo_pass_rate": 0.79,
+        "slo_verdict": "FAIL",
+        "slo_failure_reason_counts": {
+          "ttft": 42
+        },
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": -0.955638,
+          "tpot": 0.697028,
+          "e2el": 0.670075,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 563.599197,
+          "p95": 1377.693981,
+          "p99": 1564.510233,
+          "max": 1569.379037
+        },
+        "tpot_corrected_ms": {
+          "p50": 26.789749,
+          "p95": 29.457625,
+          "p99": 30.297214
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 26.7949035000716,
+          "p95": 29.465560801143898,
+          "p99": 37.448083809262535
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25227,
+          "p50": 20.05346,
+          "p99": 187.805366
+        },
+        "e2el_ms": {
+          "p50": 3980.579346,
+          "p95": 4763.540808,
+          "p99": 4948.877585
+        },
+        "wall_s": 13.954108,
+        "request_throughput_per_s": 14.332697,
+        "output_tokens_per_s": 1834.585199,
+        "slo_goodput_requests_per_s": 11.322831,
+        "slo_goodput_output_tokens_per_s": 1449.322307,
+        "stream_chunk_token_mismatch_requests": 19,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "vllm:generation_tokens_total": 25600.0,
+          "vllm:num_preemptions_total": 0.0,
+          "vllm:prompt_tokens_total": 51200.0,
+          "vllm:request_success_total": 200.0
+        },
+        "vram": {
+          "samples": 46,
+          "min_bytes": 21689548800,
+          "max_bytes": 21689548800,
+          "median_bytes": 21689548800
+        },
+        "sources": {
+          "requests": "results/framework/vllm/c64/requests.jsonl",
+          "requests_sha256": "abec77feb005a72988279240890a922d14c6d70866f5c5e602f56712b6aef4cd",
+          "original_summary": "results/framework/vllm/c64/summary.json",
+          "original_summary_sha256": "405285ea14a3be1ed8468ce2825d758022901251c0d2fa0d633c14d803f06ec9"
+        }
+      }
+    ],
+    "llamacpp": [
+      {
+        "framework": "llamacpp",
+        "concurrency": 1,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 200,
+        "slo_pass_rate": 1.0,
+        "slo_verdict": "PASS",
+        "slo_failure_reason_counts": {},
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": 0.843923,
+          "tpot": 0.874466,
+          "e2el": 0.887086,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 91.656567,
+          "p95": 105.293634,
+          "p99": 124.861776,
+          "max": 189.543755
+        },
+        "tpot_corrected_ms": {
+          "p50": 11.860234,
+          "p95": 12.166569,
+          "p99": 12.553436
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 11.86607601203567,
+          "p95": 12.319775523689364,
+          "p99": 18.39185300232348
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25224,
+          "p50": 11.784881,
+          "p99": 14.013689
+        },
+        "e2el_ms": {
+          "p50": 1601.863981,
+          "p95": 1652.480715,
+          "p99": 1693.71638
+        },
+        "wall_s": 320.852854,
+        "request_throughput_per_s": 0.623339,
+        "output_tokens_per_s": 79.787353,
+        "slo_goodput_requests_per_s": 0.623339,
+        "slo_goodput_output_tokens_per_s": 79.787353,
+        "stream_chunk_token_mismatch_requests": 15,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "llamacpp:prompt_seconds_total": 10.162802,
+          "llamacpp:tokens_predicted_total": 25600.0
+        },
+        "vram": {
+          "samples": 1046,
+          "min_bytes": 13497614336,
+          "max_bytes": 13553979392,
+          "median_bytes": 13528168448
+        },
+        "sources": {
+          "requests": "results/framework/llamacpp/c1/requests.jsonl",
+          "requests_sha256": "808c6c47305dec85cec348d953b5481ffe06f40ef98f9bc0ad55cfea7b8e75e5",
+          "original_summary": "results/framework/llamacpp/c1/summary.json",
+          "original_summary_sha256": "efcce688d6792bca6248358733630bfc5bf96fb216f9c7290d08b877bd37a7b7"
+        }
+      },
+      {
+        "framework": "llamacpp",
+        "concurrency": 8,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 200,
+        "slo_pass_rate": 1.0,
+        "slo_verdict": "PASS",
+        "slo_failure_reason_counts": {},
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": 0.027094,
+          "tpot": 0.675281,
+          "e2el": 0.673291,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 722.346565,
+          "p95": 776.870499,
+          "p99": 778.325082,
+          "max": 784.335642
+        },
+        "tpot_corrected_ms": {
+          "p50": 18.184445,
+          "p95": 32.461778,
+          "p99": 32.471927
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 18.189493937080535,
+          "p95": 32.468756189611995,
+          "p99": 32.73173312878012
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25225,
+          "p50": 18.054382,
+          "p99": 34.142833
+        },
+        "e2el_ms": {
+          "p50": 3032.244452,
+          "p95": 4899.687838,
+          "p99": 4900.639701
+        },
+        "wall_s": 86.110196,
+        "request_throughput_per_s": 2.322605,
+        "output_tokens_per_s": 297.293482,
+        "slo_goodput_requests_per_s": 2.322605,
+        "slo_goodput_output_tokens_per_s": 297.293482,
+        "stream_chunk_token_mismatch_requests": 15,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "llamacpp:prompt_seconds_total": 8.2763,
+          "llamacpp:tokens_predicted_total": 25600.0
+        },
+        "vram": {
+          "samples": 281,
+          "min_bytes": 13520117760,
+          "max_bytes": 13560791040,
+          "median_bytes": 13529083904
+        },
+        "sources": {
+          "requests": "results/framework/llamacpp/c8/requests.jsonl",
+          "requests_sha256": "b4ee975897d72268369914ae727b648e3bdb4747f88d093de46a5e0baaa609d6",
+          "original_summary": "results/framework/llamacpp/c8/summary.json",
+          "original_summary_sha256": "6e98d65f49d776898c6d055b7c35f7b839e50e9bbc9bee800e166624c5b58d5e"
+        }
+      },
+      {
+        "framework": "llamacpp",
+        "concurrency": 32,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 155,
+        "slo_pass_rate": 0.775,
+        "slo_verdict": "FAIL",
+        "slo_failure_reason_counts": {
+          "ttft": 45
+        },
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": -1.333784,
+          "tpot": 0.136289,
+          "e2el": 0.198972,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 683.978946,
+          "p95": 1622.73019,
+          "p99": 1867.026824,
+          "max": 1998.82115
+        },
+        "tpot_corrected_ms": {
+          "p50": 61.545924,
+          "p95": 83.951454,
+          "p99": 86.371075
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 64.44614863767487,
+          "p95": 83.951307738825,
+          "p99": 86.45708567617751
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25238,
+          "p50": 63.654636,
+          "p99": 675.183747
+        },
+        "e2el_ms": {
+          "p50": 9394.271888,
+          "p95": 11448.06347,
+          "p99": 12015.420742
+        },
+        "wall_s": 62.001405,
+        "request_throughput_per_s": 3.225733,
+        "output_tokens_per_s": 412.893869,
+        "slo_goodput_requests_per_s": 2.499943,
+        "slo_goodput_output_tokens_per_s": 319.992749,
+        "stream_chunk_token_mismatch_requests": 16,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "llamacpp:prompt_seconds_total": 9.8649,
+          "llamacpp:tokens_predicted_total": 25600.0
+        },
+        "vram": {
+          "samples": 202,
+          "min_bytes": 13530771456,
+          "max_bytes": 13544374272,
+          "median_bytes": 13540618240
+        },
+        "sources": {
+          "requests": "results/framework/llamacpp/c32/requests.jsonl",
+          "requests_sha256": "fc3b8d7c470d83bbcd36d70654fb35dfd5a88a8f2412d5c3736ac5748ab6af46",
+          "original_summary": "results/framework/llamacpp/c32/summary.json",
+          "original_summary_sha256": "0f9197a56d5d7fd9f6095a1ab82a017a06ff32097e60957dee918076dfca29ec"
+        }
+      },
+      {
+        "framework": "llamacpp",
+        "concurrency": 64,
+        "requests": 200,
+        "successful_requests": 200,
+        "failed_requests": 0,
+        "failure_rate": 0.0,
+        "slo_passed_requests": 38,
+        "slo_pass_rate": 0.19,
+        "slo_verdict": "FAIL",
+        "slo_failure_reason_counts": {
+          "ttft": 99,
+          "tpot": 110,
+          "e2el": 34
+        },
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": -3.823748,
+          "tpot": -0.124126,
+          "e2el": -0.143096,
+          "failure_rate": 1.0
+        },
+        "ttft_ms": {
+          "p50": 799.542492,
+          "p95": 3491.903078,
+          "p99": 3858.998257,
+          "max": 3969.338091
+        },
+        "tpot_corrected_ms": {
+          "p50": 101.053389,
+          "p95": 108.943193,
+          "p99": 112.412558
+        },
+        "tpot_stream_chunk_ms_old": {
+          "p50": 101.0606123581822,
+          "p95": 108.97236759493279,
+          "p99": 135.1203110424659
+        },
+        "stream_chunk_interval_ms_aux": {
+          "count": 25250,
+          "p50": 64.69086,
+          "p99": 797.030526
+        },
+        "e2el_ms": {
+          "p50": 14471.221039,
+          "p95": 16305.08945,
+          "p99": 17146.444455
+        },
+        "wall_s": 46.253046,
+        "request_throughput_per_s": 4.32404,
+        "output_tokens_per_s": 553.477062,
+        "slo_goodput_requests_per_s": 0.821568,
+        "slo_goodput_output_tokens_per_s": 105.160642,
+        "stream_chunk_token_mismatch_requests": 13,
+        "stream_chunk_token_mismatch_max_tokens": 128,
+        "metrics_delta": {
+          "llamacpp:prompt_seconds_total": 10.4528,
+          "llamacpp:tokens_predicted_total": 25600.0
+        },
+        "vram": {
+          "samples": 149,
+          "min_bytes": 13543608320,
+          "max_bytes": 13622112256,
+          "median_bytes": 13618466816
+        },
+        "sources": {
+          "requests": "results/framework/llamacpp/c64/requests.jsonl",
+          "requests_sha256": "ca78cee845c549b51d5660c1ac002ba5ca660f764eb948a54a3a5c09355a3bdc",
+          "original_summary": "results/framework/llamacpp/c64/summary.json",
+          "original_summary_sha256": "91d4d6eb13b2e3810a9233e65ee71073c30fed7eb736a69642e30a009ed3289f"
+        }
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "concurrency": 1,
+      "vllm_slo": "PASS",
+      "llamacpp_slo": "PASS",
+      "ttft_p99_ratio_llamacpp_over_vllm": 3.103274,
+      "tpot_p99_ratio_llamacpp_over_vllm": 1.232233,
+      "raw_token_throughput_ratio_vllm_over_llamacpp": 1.20863,
+      "slo_goodput_ratio_vllm_over_llamacpp": 1.20863
+    },
+    {
+      "concurrency": 8,
+      "vllm_slo": "PASS",
+      "llamacpp_slo": "PASS",
+      "ttft_p99_ratio_llamacpp_over_vllm": 3.777423,
+      "tpot_p99_ratio_llamacpp_over_vllm": 2.278819,
+      "raw_token_throughput_ratio_vllm_over_llamacpp": 1.839224,
+      "slo_goodput_ratio_vllm_over_llamacpp": 1.839224
+    },
+    {
+      "concurrency": 32,
+      "vllm_slo": "PASS",
+      "llamacpp_slo": "FAIL",
+      "ttft_p99_ratio_llamacpp_over_vllm": 2.392538,
+      "tpot_p99_ratio_llamacpp_over_vllm": 4.163546,
+      "raw_token_throughput_ratio_vllm_over_llamacpp": 3.405777,
+      "slo_goodput_ratio_vllm_over_llamacpp": 4.394551
+    },
+    {
+      "concurrency": 64,
+      "vllm_slo": "FAIL",
+      "llamacpp_slo": "FAIL",
+      "ttft_p99_ratio_llamacpp_over_vllm": 2.466586,
+      "tpot_p99_ratio_llamacpp_over_vllm": 3.710327,
+      "raw_token_throughput_ratio_vllm_over_llamacpp": 3.314654,
+      "slo_goodput_ratio_vllm_over_llamacpp": 13.781977
+    }
+  ],
+  "capacity": {
+    "max_slo_safe_tested_concurrency": {
+      "vllm": 32,
+      "llamacpp": 8
+    },
+    "first_slo_breach_concurrency": {
+      "vllm": 64,
+      "llamacpp": 32
+    },
+    "raw_throughput_peak": {
+      "vllm": 1834.585199,
+      "llamacpp": 553.477062
+    },
+    "slo_goodput_peak": {
+      "vllm": 11.322831,
+      "llamacpp": 2.499943
+    }
+  },
+  "notes": [
+    "Raw requests.jsonl and original summary.json files are preserved; this file is a derived view.",
+    "Stream-chunk intervals are retained as auxiliary evidence, not as TPOT.",
+    "The two engines are not equivalent implementations; see experiment-draft.yaml for the ledger.",
+    "This analysis does not create a pre-measurement prediction or a held-out framework ranking."
+  ]
+}

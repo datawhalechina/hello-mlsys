@@ -1,0 +1,235 @@
+{
+  "generated_at": "2026-11-23T04:30:53Z",
+  "status": "HOLDOUT_MEASURED",
+  "software_validated": true,
+  "prediction_file": "results/framework/prediction-holdout.json",
+  "prediction_generated_at": "2026-11-23T04:22:20Z",
+  "holdout_measured_after_prediction": true,
+  "rows": [
+    {
+      "framework": "vllm",
+      "concurrency": 16,
+      "predicted": {
+        "concurrency": 16,
+        "ttft_p99_ms": 408.744,
+        "ttft_p99_heuristic_band_ms": [
+          324.26,
+          515.24
+        ],
+        "tpot_p99_ms": 17.4,
+        "tpot_p99_heuristic_band_ms": [
+          15.054,
+          20.113
+        ],
+        "e2el_p99_ms": 2618.591,
+        "predicted_slo_verdict": "PASS"
+      },
+      "actual": {
+        "ttft_p99_ms": 386.202506,
+        "tpot_p99_ms": 16.568547,
+        "e2el_p99_ms": 2178.939153,
+        "slo_verdict": "PASS",
+        "slo_passed_requests": 200,
+        "slo_failure_reason_counts": {},
+        "output_tokens_per_s": 917.294867,
+        "slo_goodput_requests_per_s": 7.166366,
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": 0.517247,
+          "tpot": 0.834315,
+          "e2el": 0.854737,
+          "failure_rate": 1.0
+        },
+        "wall_s": 27.908147
+      },
+      "error_pct": {
+        "ttft": -5.515,
+        "tpot": -4.778,
+        "e2el": -16.79
+      },
+      "slo_verdict_match": true,
+      "sources": {
+        "requests": "results/framework/vllm-holdout/c16/requests.jsonl",
+        "requests_sha256": "f7a115372e95afbb0a800bb8cc1a65e11837d780293f6ba468aae869bee1e5c9",
+        "original_summary": "results/framework/vllm-holdout/c16/summary.json",
+        "original_summary_sha256": "780b2906fc1f73d9e7c111a2dd4042334f900e1681594e5dc253223f54e7d2c8"
+      }
+    },
+    {
+      "framework": "vllm",
+      "concurrency": 48,
+      "predicted": {
+        "concurrency": 48,
+        "ttft_p99_ms": 1039.917,
+        "ttft_p99_heuristic_band_ms": [
+          824.974,
+          1310.862
+        ],
+        "tpot_p99_ms": 21.717,
+        "tpot_p99_heuristic_band_ms": [
+          18.789,
+          25.103
+        ],
+        "e2el_p99_ms": 3798.018,
+        "predicted_slo_verdict": "FAIL"
+      },
+      "actual": {
+        "ttft_p99_ms": 1147.298446,
+        "tpot_p99_ms": 26.570206,
+        "e2el_p99_ms": 4033.738487,
+        "slo_verdict": "FAIL",
+        "slo_passed_requests": 184,
+        "slo_failure_reason_counts": {
+          "ttft": 16
+        },
+        "output_tokens_per_s": 1620.56815,
+        "slo_goodput_requests_per_s": 11.647834,
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": -0.434123,
+          "tpot": 0.734298,
+          "e2el": 0.731084,
+          "failure_rate": 1.0
+        },
+        "wall_s": 15.796929
+      },
+      "error_pct": {
+        "ttft": 10.326,
+        "tpot": 22.347,
+        "e2el": 6.206
+      },
+      "slo_verdict_match": true,
+      "sources": {
+        "requests": "results/framework/vllm-holdout/c48/requests.jsonl",
+        "requests_sha256": "43a1008398f73fe0ffca32910384c192da0f51734b5c225bbf0150ad94b728f0",
+        "original_summary": "results/framework/vllm-holdout/c48/summary.json",
+        "original_summary_sha256": "3763dacc67de669a0b5835e919bbd55823033c0108a00ff75c3fc31429877e10"
+      }
+    },
+    {
+      "framework": "llamacpp",
+      "concurrency": 16,
+      "predicted": {
+        "concurrency": 16,
+        "ttft_p99_ms": 1173.078,
+        "ttft_p99_heuristic_band_ms": [
+          844.128,
+          1630.217
+        ],
+        "tpot_p99_ms": 54.42,
+        "tpot_p99_heuristic_band_ms": [
+          39.171,
+          75.604
+        ],
+        "e2el_p99_ms": 8084.383,
+        "predicted_slo_verdict": "FAIL"
+      },
+      "actual": {
+        "ttft_p99_ms": 838.656253,
+        "tpot_p99_ms": 53.177658,
+        "e2el_p99_ms": 7124.302513,
+        "slo_verdict": "FAIL",
+        "slo_passed_requests": 196,
+        "slo_failure_reason_counts": {
+          "ttft": 4
+        },
+        "output_tokens_per_s": 363.178408,
+        "slo_goodput_requests_per_s": 2.780585,
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": -0.04832,
+          "tpot": 0.468223,
+          "e2el": 0.525046,
+          "failure_rate": 1.0
+        },
+        "wall_s": 70.488772
+      },
+      "error_pct": {
+        "ttft": -28.508,
+        "tpot": -2.283,
+        "e2el": -11.876
+      },
+      "slo_verdict_match": true,
+      "sources": {
+        "requests": "results/framework/llamacpp-holdout/c16/requests.jsonl",
+        "requests_sha256": "594539d37d0106f0e4a36550a346e42c4c91ec3ecc5e6ec77088749d294cb8d5",
+        "original_summary": "results/framework/llamacpp-holdout/c16/summary.json",
+        "original_summary_sha256": "113a689704acf0f2834ea01aad34840aa31eba1099a4e6f77297b12e06cd55f8"
+      }
+    },
+    {
+      "framework": "llamacpp",
+      "concurrency": 48,
+      "predicted": {
+        "concurrency": 48,
+        "ttft_p99_ms": 2789.038,
+        "ttft_p99_heuristic_band_ms": [
+          2006.947,
+          3875.903
+        ],
+        "tpot_p99_ms": 99.432,
+        "tpot_p99_heuristic_band_ms": [
+          71.571,
+          138.138
+        ],
+        "e2el_p99_ms": 15416.862,
+        "predicted_slo_verdict": "FAIL"
+      },
+      "actual": {
+        "ttft_p99_ms": 2421.72778,
+        "tpot_p99_ms": 109.231205,
+        "e2el_p99_ms": 14858.427318,
+        "slo_verdict": "FAIL",
+        "slo_passed_requests": 54,
+        "slo_failure_reason_counts": {
+          "ttft": 83,
+          "tpot": 78,
+          "e2el": 1
+        },
+        "output_tokens_per_s": 442.816854,
+        "slo_goodput_requests_per_s": 0.934067,
+        "tightest_constraint": "ttft",
+        "headroom": {
+          "ttft": -2.02716,
+          "tpot": -0.092312,
+          "e2el": 0.009438,
+          "failure_rate": 1.0
+        },
+        "wall_s": 57.811711
+      },
+      "error_pct": {
+        "ttft": -13.17,
+        "tpot": 9.855,
+        "e2el": -3.622
+      },
+      "slo_verdict_match": true,
+      "sources": {
+        "requests": "results/framework/llamacpp-holdout/c48/requests.jsonl",
+        "requests_sha256": "7c7eec6bf5aab43b9c7a10fd2fa73f01a0e7ba1755ee599c468a2de0b8a65dbe",
+        "original_summary": "results/framework/llamacpp-holdout/c48/summary.json",
+        "original_summary_sha256": "b078b3fcad3217f692c6b0d77661bbefba43e053ff9383fbbcecc5e3412ddef4"
+      }
+    }
+  ],
+  "summary": {
+    "points": 4,
+    "slo_verdict_matches": 4,
+    "slo_verdict_accuracy": 1.0,
+    "mape_pct": {
+      "ttft": 14.38,
+      "tpot": 9.816,
+      "e2el": 9.623
+    },
+    "max_abs_error_pct": {
+      "ttft": 28.508,
+      "tpot": 22.347,
+      "e2el": 16.79
+    }
+  },
+  "notes": [
+    "The prediction file was frozen before C=16/48 were measured; its timestamp is the audit boundary.",
+    "C=64 was observed before the prediction but excluded from the fit and from this holdout.",
+    "The power law has three calibration points and two parameters; the heuristic band is not a confidence interval.",
+    "All four SLO verdicts matched, but llama.cpp C=16 is only 38.66 ms above the TTFT threshold; do not call it a robust pass boundary."
+  ]
+}

@@ -1,0 +1,15 @@
+0.00.047.841 I srv  llama_server: initializing ...
+0.00.047.848 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.048.223 W srv  server_setup: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.050.551 I srv    load_model: loading model '/app/gguf/qwen3-4b-f16.gguf'
+0.00.291.655 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+0.00.366.354 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.02.646.946 W llama_context: n_ctx_seq (131072) > n_ctx_train (40960) -- possible training context overflow
+0.02.681.766 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 18432.00 MiB on device 0: cudaMalloc failed: out of memory
+0.02.681.772 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate ROCm0 buffer of size 19327352832
+0.02.685.656 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache
+0.02.685.665 E cmn  common_init_: failed to create context with model '/app/gguf/qwen3-4b-f16.gguf'
+0.02.685.667 E cmn  common_init_: failed to create context with model '/app/gguf/qwen3-4b-f16.gguf'
+0.02.685.669 E srv    load_model: failed to create_context with model '/app/gguf/qwen3-4b-f16.gguf'
+0.02.685.673 I srv    operator(): operator(): cleaning up before exit...
+0.02.686.611 E srv  server_run_i: exiting due to model loading error

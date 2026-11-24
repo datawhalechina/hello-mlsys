@@ -1,0 +1,19 @@
+candidate_id,id,category,scope,actual,operator,limit,unit,sample_count,verdict,normalized_headroom,reason
+vllm-bf16-4096-c48,execution.status,execution,"{""kind"": ""simulation""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+vllm-bf16-4096-c48,execution.unsuccessful_requests,execution,"{""kind"": ""simulation""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+vllm-bf16-4096-c48,execution.request_ledger,execution,"{""kind"": ""simulation""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+vllm-bf16-4096-c48,samples.completed,samples,"{""kind"": ""simulation""}",48,>=,1,requests,48,PASS,47,sufficient_completed_samples
+vllm-bf16-4096-c48,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0}",24858013490,<=,25753026560,bytes,—,PASS,0.0347537,within_limit
+vllm-bf16-4096-c48,latency.p99_ttft_ms,latency,"{""kind"": ""simulation""}",66029.3,<=,800,ms,48,FAIL,'-81.5366,limit_violated
+vllm-bf16-4096-c48,latency.p99_tpot_ms,latency,"{""kind"": ""simulation""}",10.9104,<=,100,ms,48,PASS,0.890896,within_limit
+vllm-bf16-4096-c48,latency.p99_e2e_ms,latency,"{""kind"": ""simulation""}",67414.9,<=,15000,ms,48,FAIL,'-3.49433,limit_violated
+llamacpp-f16-512-c48,execution.status,execution,"{""kind"": ""simulation""}",COMPLETED,'==,COMPLETED,status,—,PASS,—,completed
+llamacpp-f16-512-c48,execution.unsuccessful_requests,execution,"{""kind"": ""simulation""}",0,<=,0,requests,—,PASS,—,all_requests_completed
+llamacpp-f16-512-c48,execution.request_ledger,execution,"{""kind"": ""simulation""}",True,'==,True,boolean,—,PASS,—,consistent_request_ledger
+llamacpp-f16-512-c48,samples.completed,samples,"{""kind"": ""simulation""}",48,>=,1,requests,48,PASS,47,sufficient_completed_samples
+llamacpp-f16-512-c48,memory.rank.0,memory,"{""kind"": ""simulation"", ""device_id"": ""gpu0"", ""stage_index"": 0, ""tp_rank"": 0}",13252584038,<=,25753026560,bytes,—,PASS,0.485397,within_limit
+llamacpp-f16-512-c48,latency.p99_ttft_ms,latency,"{""kind"": ""simulation""}",66029.3,<=,800,ms,48,FAIL,'-81.5366,limit_violated
+llamacpp-f16-512-c48,latency.p99_tpot_ms,latency,"{""kind"": ""simulation""}",10.9104,<=,100,ms,48,PASS,0.890896,within_limit
+llamacpp-f16-512-c48,latency.p99_e2e_ms,latency,"{""kind"": ""simulation""}",67414.9,<=,15000,ms,48,FAIL,'-3.49433,limit_violated
+llamacpp-f16-131072-c1-memory-fail,execution.startup,execution,{},STATIC_MEMORY_INFEASIBLE,'==,COMPLETED,status,0,FAIL,—,"gpu0: fixed budget and base workspace require 27748098662 bytes, capacity is 25753026560"
+vllm-bf16-131072-c1-memory-fail,execution.startup,execution,{},STATIC_MEMORY_INFEASIBLE,'==,COMPLETED,status,0,FAIL,—,"gpu0: fixed budget and base workspace require 32794685234 bytes, capacity is 25753026560"

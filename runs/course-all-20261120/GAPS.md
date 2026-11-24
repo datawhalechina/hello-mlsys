@@ -1,7 +1,7 @@
 # Ch1–Ch9.3 实验缺口与待确认清单
 
 - 对应记录：`runs/course-all-20261120/SUMMARY.md`
-- 日期：2026-11-20
+- 日期：2026-11-20，Ch8 补记 2026-11-23
 - 用法：请直接按编号反馈“先做哪些 / 哪些不做 / 哪些参数由你提供”。带 **[可自行修]** 的项不需要外部资源，我可以直接补实现或文档；带 **[需资源]** 的项需要硬件、模型、权限或课程口径确认。
 
 ## A. P0：阻断“完整闭环”的资源与参数
@@ -33,11 +33,11 @@
   - 现状：gloo 只验证语义；Ch5/Ch6 通信是 `analytical_uncalibrated`；Ch9.3 是 4× 声明 9070 XT。
   - 需要反馈：能否提供 2 卡同机 PCIe、4 卡同机、或跨节点 RoCE 环境？
 
-- [ ] **A05 [需资源] 专用 vLLM 实例**
+- [x] **A05 [Ch8 已解决 / Ch7 仍待资源] 专用 vLLM 实例**
   - 章节：Ch7、Ch8
-  - 缺：可独立启停、固定版本/参数的 vLLM 服务。
-  - 现状：GPU1 的 `ch7-vllm` 是他人共享实例，未重启、未改配置；C8 首次出现 3.19 s TTFT 异常尖峰。
-  - 需要反馈：能否分配一张空卡或允许我启动独立容器？vLLM 目标版本是否固定 0.29.0？
+  - Ch8 已解决：在独占 GPU0（RX 7900 XTX）上启动独立 vLLM 0.29.1.dev0+g98dff2a81，固定 `max-model-len=4096`、`max-num-seqs=64`、关闭 prefix cache，完成 C=1/8/32/64 与 C=16/48 留出。
+  - Ch7 仍待资源：GPU1 的 `ch7-vllm` 是他人共享实例，未重启、未改配置；C8 首次出现 3.19 s TTFT 异常尖峰。
+  - 需要反馈：Ch7 是否能获得独立卡或独立容器？若可，是否固定 vLLM 0.29.x？
 
 - [ ] **A06 [需资源] Qwen3-4B INT4/FP4/INT8 权重与精度评测集**
   - 章节：Ch4
@@ -143,9 +143,13 @@
   - 缺：同一模型、同一输入输出分布、同一 SLO 下的模拟与真机对照。
   - 建议：先固定一套 workload，再分别跑 `sweep` 与 `vllm bench serve`。
 
-- [ ] **C07 [部分完成] Ch8 已补独立 vLLM vs PyTorch eager 同负载横评，仍缺 `llama.cpp`（2026-11-23）**
-  - 已完成：在 GPU0（RX 7900 XTX）起独立 `vLLM 0.29.0`（`Qwen3-4B`, `prompt≈256`, `max_tokens=64`）跑通 C=1/2/4/8/16 压测（`hw-ch8-vllm-4b/result.json`）：C=1 时 TTFT P50 `19.98 ms`、TPOT P50 `10.08 ms`（优于 `torch eager` 的 `41.41 ms` / `29.30 ms`）；C=16 吞吐达 `1121.81 tok/s`。
-  - 仍缺：`/opt/llamacpp` 为空目录且 `ollama list` 为空，本地无 `Qwen3-4B` GGUF 权重（按“不下载”原则未拉取），待提供 `llama.cpp` 二进制与 GGUF 后补全对比。
+- [x] **C07 [核心完成] Ch8 已完成同卡同负载 vLLM vs llama.cpp 真机横评（2026-11-23）**
+  - 已完成：在独占 GPU0（RX 7900 XTX 23.98 GiB）上，用同一 Qwen3-4B、ISL=256/OSL=128、200 prompts/点、SLO 800/100/15000 ms，跑完主扫描 C=1/8/32/64 与测前冻结留出 C=16/48。
+  - 结果：vLLM 最大已测通过点 C32、首次违约 C48；llama.cpp 最大已测通过点 C8、首次违约 C16（仅超 TTFT 阈值 38.66 ms）。vLLM C32→C64 裸吞吐 +30.5%，SLO goodput 仅 +3.1%；llama.cpp C64 goodput 从 2.323 跌到 0.822 req/s。
+  - 留出：只用 C=1/8/32 拟合两参数幂律，预测文件 `2026-11-23T04:22:20Z` 冻结；C=16/48 四点 SLO 判定 4/4 命中，TTFT/TPOT/E2EL MAPE = 14.38%/9.816%/9.623%。llama.cpp C16 是边缘 FAIL，不能称为稳健边界。
+  - 显存与 profile：131K 上下文 KV 账本 18.00 GiB，真机分配 18,432 MiB 时 `cudaMalloc failed: out of memory`；C=8 同负载 profile 为 vLLM 269,892 dispatches / 87.73% GPU busy vs llama.cpp 497,906 / 70.77%。
+  - 负结果：模拟筛选器 4 候选全 FAIL；两个 131K 的 `STATIC_MEMORY_INFEASIBLE` 有效，但 48 并发的约 66 s TTFT 延迟预测严重失真，不采纳。
+  - 仍缺：SGLang / Ollama / MIGraphX、共享前缀、长上下文成功路径、多轮对话、多卡、P/D 分离、INT4/FP8 框架横评、功耗与温升。
 
 - [ ] **C08 [需资源] Ch9.1 缺真正端侧部署**
   - 现状：桌面 GPU 上的协议验证 + BF16 HF 推理；无模型转换、量化、移动端/边缘设备接口。

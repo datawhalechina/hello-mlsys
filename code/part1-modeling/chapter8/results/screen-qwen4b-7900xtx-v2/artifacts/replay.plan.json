@@ -1,0 +1,2464 @@
+{
+  "schema_version": 1,
+  "kind": "simulation",
+  "source": "chapter8_qwen3_4b_rx7900xtx_analytical_screen",
+  "description": "Qwen3-4B on one RX 7900 XTX. 48 concurrent 256/128 requests are a teaching stand-in for the C=48 holdout, not the 200-request measurement. Memory uses the measured capacity and chapter KV geometry; timings use the analytical roofline with declared efficiencies, not a measured profile.",
+  "constraints": {
+    "schema_version": 1,
+    "min_completed_samples": 1,
+    "memory": {
+      "max_budget_fraction": 1.0
+    },
+    "latency": {
+      "p99_ttft_ms": 800.0,
+      "p99_tpot_ms": 100.0,
+      "p99_e2e_ms": 15000.0
+    }
+  },
+  "objective": {
+    "metric": "elapsed_ms",
+    "direction": "min"
+  },
+  "candidates": [
+    {
+      "candidate_id": "vllm-bf16-4096-c48",
+      "experiment": {
+        "workload": [
+          {
+            "request_id": "0",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "1",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "2",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "3",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "4",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "5",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "6",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "7",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "8",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "9",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "10",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "11",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "12",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "13",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "14",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "15",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "16",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "17",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "18",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "19",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "20",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "21",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "22",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "23",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "24",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "25",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "26",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "27",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "28",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "29",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "30",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "31",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "32",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "33",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "34",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "35",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "36",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "37",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "38",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "39",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "40",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "41",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "42",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "43",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "44",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "45",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "46",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "47",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          }
+        ],
+        "infra": {
+          "devices": [
+            {
+              "id": "gpu0",
+              "memory_bytes": 25753026560,
+              "compute_tflops": 122.8,
+              "memory_bandwidth_gbps": 960.0,
+              "name": "AMD Radeon RX 7900 XTX"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "strategy": {
+          "model": {
+            "name": "Qwen3-4B",
+            "num_layers": 36,
+            "hidden_size": 2560,
+            "intermediate_size": 9728,
+            "num_attention_heads": 32,
+            "num_kv_heads": 8,
+            "head_dim": 128,
+            "vocab_size": 151936,
+            "weight_bytes": 2.0,
+            "kv_bytes": 2.0,
+            "activation_bytes": 2.0,
+            "revision": "local",
+            "weight_dtype": "bfloat16",
+            "kv_dtype": "bfloat16",
+            "activation_dtype": "bfloat16",
+            "tie_word_embeddings": true,
+            "qk_norm": true,
+            "final_norm": true,
+            "weight_dequant": "none",
+            "architecture_config_sha256": ""
+          },
+          "tensor_parallel_size": 1,
+          "pipeline_parallel_size": 1,
+          "stage_layers": [],
+          "replicas": 1,
+          "scheduler": "fifo",
+          "max_batch_size": 48,
+          "max_batch_tokens": 8192,
+          "preemption": "recompute",
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 11390681088,
+            "workspace_base_bytes": 2544768122,
+            "workspace_bytes_per_token": 0,
+            "graph_bytes": 1803886264,
+            "runtime_bytes": 1073741824,
+            "communication_buffer_bytes": 0,
+            "other_bytes": 0,
+            "safety_margin_bytes": 0,
+            "guard_blocks": 0,
+            "cpu_swap_bytes": 0,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0
+          },
+          "pipeline_microbatch_size": 1,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_p2p": true,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "swap_fallback": "none",
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "chunked_prefill": true,
+          "prefill_chunk_tokens": 512,
+          "mixed_batching": true,
+          "replica_routing": "least_loaded"
+        },
+        "calibration": {
+          "backend": "analytical",
+          "profile_version": "ch8-roofline-declared-v1",
+          "compute_efficiency": 0.5,
+          "bandwidth_efficiency": 0.8,
+          "launch_overhead_us": 2.0,
+          "framework_overhead_us": 5.0,
+          "prefill_ms": 0.5,
+          "decode_ms": 0.1,
+          "recompute_ms": 10.0,
+          "mixed_ms": 10.0,
+          "dequant_flops_per_weight": 1.0,
+          "profile_path": null,
+          "replica_profile_paths": [],
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "runtime_name": "analytical-roofline",
+          "runtime_version": "ch8-v1",
+          "driver_version": "amdgpu",
+          "rocm_version": "10.1",
+          "rccl_version": "not-applicable",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "runtime_config_sha256": "",
+          "native_pp_communication_profile_path": null,
+          "replica_native_pp_communication_profile_paths": [],
+          "native_pp_communication_profile_version": "",
+          "native_pp_communication_allow_extrapolation": false,
+          "workspace_profile_path": null,
+          "replica_workspace_profile_paths": [],
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "ttft_sla_ms": 800.0,
+          "tpot_sla_ms": 100.0,
+          "measurement_window_ms": null,
+          "drain": true,
+          "max_drain_ms": null
+        },
+        "execution": {
+          "seed": 42,
+          "max_simulated_ms": 180000.0,
+          "max_events": 200000,
+          "detailed_events": false,
+          "initial_state": "empty_cache",
+          "warmup": []
+        },
+        "schema_version": 1
+      }
+    },
+    {
+      "candidate_id": "llamacpp-f16-512-c48",
+      "experiment": {
+        "workload": [
+          {
+            "request_id": "0",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "1",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "2",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "3",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "4",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "5",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "6",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "7",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "8",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "9",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "10",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "11",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "12",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "13",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "14",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "15",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "16",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "17",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "18",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "19",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "20",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "21",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "22",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "23",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "24",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "25",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "26",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "27",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "28",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "29",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "30",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "31",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "32",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "33",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "34",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "35",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "36",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "37",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "38",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "39",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "40",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "41",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "42",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "43",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "44",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "45",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "46",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "47",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          }
+        ],
+        "infra": {
+          "devices": [
+            {
+              "id": "gpu0",
+              "memory_bytes": 25753026560,
+              "compute_tflops": 122.8,
+              "memory_bandwidth_gbps": 960.0,
+              "name": "AMD Radeon RX 7900 XTX"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "strategy": {
+          "model": {
+            "name": "Qwen3-4B",
+            "num_layers": 36,
+            "hidden_size": 2560,
+            "intermediate_size": 9728,
+            "num_attention_heads": 32,
+            "num_kv_heads": 8,
+            "head_dim": 128,
+            "vocab_size": 151936,
+            "weight_bytes": 2.0,
+            "kv_bytes": 2.0,
+            "activation_bytes": 2.0,
+            "revision": "local",
+            "weight_dtype": "float16",
+            "kv_dtype": "float16",
+            "activation_dtype": "float16",
+            "tie_word_embeddings": true,
+            "qk_norm": true,
+            "final_norm": true,
+            "weight_dequant": "none",
+            "architecture_config_sha256": ""
+          },
+          "tensor_parallel_size": 1,
+          "pipeline_parallel_size": 1,
+          "stage_layers": [],
+          "replicas": 1,
+          "scheduler": "fifo",
+          "max_batch_size": 48,
+          "max_batch_tokens": 8192,
+          "preemption": "recompute",
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 4831838208,
+            "workspace_base_bytes": 268435456,
+            "workspace_bytes_per_token": 0,
+            "graph_bytes": 0,
+            "runtime_bytes": 107374182,
+            "communication_buffer_bytes": 0,
+            "other_bytes": 0,
+            "safety_margin_bytes": 0,
+            "guard_blocks": 0,
+            "cpu_swap_bytes": 0,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0
+          },
+          "pipeline_microbatch_size": 1,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_p2p": true,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "swap_fallback": "none",
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "chunked_prefill": false,
+          "prefill_chunk_tokens": 512,
+          "mixed_batching": false,
+          "replica_routing": "least_loaded"
+        },
+        "calibration": {
+          "backend": "analytical",
+          "profile_version": "ch8-roofline-declared-v1",
+          "compute_efficiency": 0.5,
+          "bandwidth_efficiency": 0.8,
+          "launch_overhead_us": 2.0,
+          "framework_overhead_us": 5.0,
+          "prefill_ms": 0.5,
+          "decode_ms": 0.1,
+          "recompute_ms": 10.0,
+          "mixed_ms": 10.0,
+          "dequant_flops_per_weight": 1.0,
+          "profile_path": null,
+          "replica_profile_paths": [],
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "runtime_name": "analytical-roofline",
+          "runtime_version": "ch8-v1",
+          "driver_version": "amdgpu",
+          "rocm_version": "10.1",
+          "rccl_version": "not-applicable",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "runtime_config_sha256": "",
+          "native_pp_communication_profile_path": null,
+          "replica_native_pp_communication_profile_paths": [],
+          "native_pp_communication_profile_version": "",
+          "native_pp_communication_allow_extrapolation": false,
+          "workspace_profile_path": null,
+          "replica_workspace_profile_paths": [],
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "ttft_sla_ms": 800.0,
+          "tpot_sla_ms": 100.0,
+          "measurement_window_ms": null,
+          "drain": true,
+          "max_drain_ms": null
+        },
+        "execution": {
+          "seed": 42,
+          "max_simulated_ms": 180000.0,
+          "max_events": 200000,
+          "detailed_events": false,
+          "initial_state": "empty_cache",
+          "warmup": []
+        },
+        "schema_version": 1
+      }
+    },
+    {
+      "candidate_id": "llamacpp-f16-131072-c1-memory-fail",
+      "experiment": {
+        "workload": [
+          {
+            "request_id": "0",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "1",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "2",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "3",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "4",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "5",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "6",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "7",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "8",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "9",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "10",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "11",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "12",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "13",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "14",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "15",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "16",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "17",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "18",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "19",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "20",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "21",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "22",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "23",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "24",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "25",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "26",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "27",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "28",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "29",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "30",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "31",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "32",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "33",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "34",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "35",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "36",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "37",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "38",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "39",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "40",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "41",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "42",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "43",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "44",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "45",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "46",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "47",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          }
+        ],
+        "infra": {
+          "devices": [
+            {
+              "id": "gpu0",
+              "memory_bytes": 25753026560,
+              "compute_tflops": 122.8,
+              "memory_bandwidth_gbps": 960.0,
+              "name": "AMD Radeon RX 7900 XTX"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "strategy": {
+          "model": {
+            "name": "Qwen3-4B",
+            "num_layers": 36,
+            "hidden_size": 2560,
+            "intermediate_size": 9728,
+            "num_attention_heads": 32,
+            "num_kv_heads": 8,
+            "head_dim": 128,
+            "vocab_size": 151936,
+            "weight_bytes": 2.0,
+            "kv_bytes": 2.0,
+            "activation_bytes": 2.0,
+            "revision": "local",
+            "weight_dtype": "float16",
+            "kv_dtype": "float16",
+            "activation_dtype": "float16",
+            "tie_word_embeddings": true,
+            "qk_norm": true,
+            "final_norm": true,
+            "weight_dequant": "none",
+            "architecture_config_sha256": ""
+          },
+          "tensor_parallel_size": 1,
+          "pipeline_parallel_size": 1,
+          "stage_layers": [],
+          "replicas": 1,
+          "scheduler": "fifo",
+          "max_batch_size": 1,
+          "max_batch_tokens": 8192,
+          "preemption": "recompute",
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 19327352832,
+            "workspace_base_bytes": 268435456,
+            "workspace_bytes_per_token": 0,
+            "graph_bytes": 0,
+            "runtime_bytes": 107374182,
+            "communication_buffer_bytes": 0,
+            "other_bytes": 0,
+            "safety_margin_bytes": 0,
+            "guard_blocks": 0,
+            "cpu_swap_bytes": 0,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0
+          },
+          "pipeline_microbatch_size": 1,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_p2p": true,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "swap_fallback": "none",
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "chunked_prefill": false,
+          "prefill_chunk_tokens": 512,
+          "mixed_batching": false,
+          "replica_routing": "least_loaded"
+        },
+        "calibration": {
+          "backend": "analytical",
+          "profile_version": "ch8-roofline-declared-v1",
+          "compute_efficiency": 0.5,
+          "bandwidth_efficiency": 0.8,
+          "launch_overhead_us": 2.0,
+          "framework_overhead_us": 5.0,
+          "prefill_ms": 0.5,
+          "decode_ms": 0.1,
+          "recompute_ms": 10.0,
+          "mixed_ms": 10.0,
+          "dequant_flops_per_weight": 1.0,
+          "profile_path": null,
+          "replica_profile_paths": [],
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "runtime_name": "analytical-roofline",
+          "runtime_version": "ch8-v1",
+          "driver_version": "amdgpu",
+          "rocm_version": "10.1",
+          "rccl_version": "not-applicable",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "runtime_config_sha256": "",
+          "native_pp_communication_profile_path": null,
+          "replica_native_pp_communication_profile_paths": [],
+          "native_pp_communication_profile_version": "",
+          "native_pp_communication_allow_extrapolation": false,
+          "workspace_profile_path": null,
+          "replica_workspace_profile_paths": [],
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "ttft_sla_ms": 800.0,
+          "tpot_sla_ms": 100.0,
+          "measurement_window_ms": null,
+          "drain": true,
+          "max_drain_ms": null
+        },
+        "execution": {
+          "seed": 42,
+          "max_simulated_ms": 180000.0,
+          "max_events": 200000,
+          "detailed_events": false,
+          "initial_state": "empty_cache",
+          "warmup": []
+        },
+        "schema_version": 1
+      }
+    },
+    {
+      "candidate_id": "vllm-bf16-131072-c1-memory-fail",
+      "experiment": {
+        "workload": [
+          {
+            "request_id": "0",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "1",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "2",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "3",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "4",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "5",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "6",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "7",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "8",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "9",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "10",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "11",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "12",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "13",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "14",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "15",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "16",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "17",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "18",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "19",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "20",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "21",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "22",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "23",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "24",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "25",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "26",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "27",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "28",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "29",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "30",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "31",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "32",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "33",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "34",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "35",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "36",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "37",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "38",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "39",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "40",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "41",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "42",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "43",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "44",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "45",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "46",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          },
+          {
+            "request_id": "47",
+            "arrival_ms": 0.0,
+            "input_tokens": 256,
+            "output_tokens": 128,
+            "priority": 0,
+            "timeout_ms": null,
+            "prompt_token_ids": [],
+            "cache_namespace": ""
+          }
+        ],
+        "infra": {
+          "devices": [
+            {
+              "id": "gpu0",
+              "memory_bytes": 25753026560,
+              "compute_tflops": 122.8,
+              "memory_bandwidth_gbps": 960.0,
+              "name": "AMD Radeon RX 7900 XTX"
+            }
+          ],
+          "link_bandwidth_gbps": 20.0,
+          "link_latency_us": 5.0,
+          "topology": "single-node-uncontended"
+        },
+        "strategy": {
+          "model": {
+            "name": "Qwen3-4B",
+            "num_layers": 36,
+            "hidden_size": 2560,
+            "intermediate_size": 9728,
+            "num_attention_heads": 32,
+            "num_kv_heads": 8,
+            "head_dim": 128,
+            "vocab_size": 151936,
+            "weight_bytes": 2.0,
+            "kv_bytes": 2.0,
+            "activation_bytes": 2.0,
+            "revision": "local",
+            "weight_dtype": "bfloat16",
+            "kv_dtype": "bfloat16",
+            "activation_dtype": "bfloat16",
+            "tie_word_embeddings": true,
+            "qk_norm": true,
+            "final_norm": true,
+            "weight_dequant": "none",
+            "architecture_config_sha256": ""
+          },
+          "tensor_parallel_size": 1,
+          "pipeline_parallel_size": 1,
+          "stage_layers": [],
+          "replicas": 1,
+          "scheduler": "fifo",
+          "max_batch_size": 1,
+          "max_batch_tokens": 8192,
+          "preemption": "recompute",
+          "max_preemptions_per_request": 100,
+          "memory": {
+            "kv_block_tokens": 16,
+            "kv_pool_bytes": 19327352832,
+            "workspace_base_bytes": 2544768122,
+            "workspace_bytes_per_token": 0,
+            "graph_bytes": 1803886264,
+            "runtime_bytes": 1073741824,
+            "communication_buffer_bytes": 0,
+            "other_bytes": 0,
+            "safety_margin_bytes": 0,
+            "guard_blocks": 0,
+            "cpu_swap_bytes": 0,
+            "swap_d2h_bandwidth_gbps": 12.0,
+            "swap_h2d_bandwidth_gbps": 12.0,
+            "swap_latency_us": 10.0
+          },
+          "pipeline_microbatch_size": 1,
+          "pipeline_max_inflight_microbatches": 8,
+          "pipeline_feedback_latency_us": 0.0,
+          "pipeline_p2p": true,
+          "pipeline_transport": "full_hidden",
+          "pipeline_transport_max_tokens": 0,
+          "swap_fallback": "none",
+          "prefix_cache": false,
+          "prefix_cache_max_blocks": 128,
+          "chunked_prefill": true,
+          "prefill_chunk_tokens": 512,
+          "mixed_batching": true,
+          "replica_routing": "least_loaded"
+        },
+        "calibration": {
+          "backend": "analytical",
+          "profile_version": "ch8-roofline-declared-v1",
+          "compute_efficiency": 0.5,
+          "bandwidth_efficiency": 0.8,
+          "launch_overhead_us": 2.0,
+          "framework_overhead_us": 5.0,
+          "prefill_ms": 0.5,
+          "decode_ms": 0.1,
+          "recompute_ms": 10.0,
+          "mixed_ms": 10.0,
+          "dequant_flops_per_weight": 1.0,
+          "profile_path": null,
+          "replica_profile_paths": [],
+          "allow_extrapolation": false,
+          "allow_test_fixture": false,
+          "runtime_name": "analytical-roofline",
+          "runtime_version": "ch8-v1",
+          "driver_version": "amdgpu",
+          "rocm_version": "10.1",
+          "rccl_version": "not-applicable",
+          "timing_boundary": "step_includes_output_and_sampling_v1",
+          "runtime_config_sha256": "",
+          "native_pp_communication_profile_path": null,
+          "replica_native_pp_communication_profile_paths": [],
+          "native_pp_communication_profile_version": "",
+          "native_pp_communication_allow_extrapolation": false,
+          "workspace_profile_path": null,
+          "replica_workspace_profile_paths": [],
+          "workspace_profile_version": ""
+        },
+        "evaluation": {
+          "ttft_sla_ms": 800.0,
+          "tpot_sla_ms": 100.0,
+          "measurement_window_ms": null,
+          "drain": true,
+          "max_drain_ms": null
+        },
+        "execution": {
+          "seed": 42,
+          "max_simulated_ms": 180000.0,
+          "max_events": 200000,
+          "detailed_events": false,
+          "initial_state": "empty_cache",
+          "warmup": []
+        },
+        "schema_version": 1
+      }
+    }
+  ]
+}

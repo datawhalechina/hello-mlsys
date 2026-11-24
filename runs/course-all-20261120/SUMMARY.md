@@ -1,6 +1,7 @@
 # hello-mlsys Ch1–Ch9.3 实验执行记录
 
 - 执行日期：2026-11-20（Asia/Shanghai）
+- Ch8 补充实验：2026-11-23（Asia/Shanghai，GPU0 独占）
 - 记录根目录：`runs/course-all-20261120/`
 - 课程来源：飞书项目安排 `[20260702] hello-mlsys 项目安排`
 - 模拟器：`/tmp/mlsys-sim-tutorial`，`mlsys-simulator 1.24.0`，commit `83f03da`
@@ -23,7 +24,7 @@
 | Ch5 | 通信代价、PCIe、gloo、native PP | PASS（analytical + 部分真机） | analytical + PCIe probe + gloo semantics | 四拓扑拐点与 48 点对账完成；native PP lookup 留出含负结果 |
 | Ch6 | DP/TP/PP 显存与通信拆解 | PASS（analytical） | simulated / declared hardware | 32B 单卡与 DP 失败，TP2/PP2 通过；无真实多卡性能 |
 | Ch7 | DES、排队、SLA、vLLM 压测 | PASS（sim + 9070 XT 真机） | simulated + real vLLM（共享实例） | 模拟拐点 16→32 rps；真机 C1–C64 全完成；内置 goodput 有缺陷 |
-| Ch8 | 框架取舍、容量上界、Profile | PARTIAL | simulated + vLLM + torch eager + rocprofv3 | 筛选器正常；0.6B/4B kernel profile 与 PMC 已完成；缺多框架横评 |
+| Ch8 | 框架取舍、容量上界、Profile | PASS（vLLM vs llama.cpp 核心闭环） | simulated + real vLLM + real llama.cpp + rocprofv3 | 同卡同负载横评完成；有效容量 C32 vs C8；C16/48 留出判定 4/4；131K 真机 OOM；缺 SGLang/Ollama/MIGraphX |
 | Ch9.1 | 端侧助手、资源约束 | PASS（sim + BF16 真机） | simulated + RX 7900 XTX | 6/6 完成，真机预热后 TTFT 28–226 ms；INT4 被 422 拒绝 |
 | Ch9.2 | 单卡 SLA 容量规划 | PARTIAL | simulated | 12/12 完成，并发平台 16；长 8192 输入无 ≤2 s 点；无真机留出 |
 | Ch9.3 | 负载启发的集群设计 | PARTIAL | simulated / synthetic trace | 3 候选 2 通过；52 节点是编写式教学轨迹，不是真实 Claude 轨迹 |
@@ -445,35 +446,88 @@ SLO：TTFT P99 < 1000 ms、TPOT P99 < 50 ms、E2E P99 < 5000 ms。
 
 ## Ch8 推理框架的系统取舍、Profile 与性能分析
 
-- 产物：`ch8-screen-simulation/`、`ch8-screen-sweep/`、`hw-ch8-torch-eager-4b/`、`hw-profile-rocprofv3/`
-- 状态：筛选器、扫描、vLLM 复用、PyTorch eager 参考、rocprofv3 kernel profile 与 PMC 完成；缺多框架横评
+- 产物：`code/part1-modeling/chapter8/results/framework/`、`results/screen-qwen4b-7900xtx-v2/`、`code/part1-modeling/chapter8/experiment-draft.yaml`、`docs/part1-modeling/chapter8/images/`；旧产物 `ch8-screen-simulation/`、`ch8-screen-sweep/`、`hw-ch8-torch-eager-4b/`、`hw-profile-rocprofv3/` 保留。
+- 状态：同卡、同模型、同负载的 vLLM vs llama.cpp 真机横评完成；C16/48 测前冻结留出完成；框架级 profile、131K 显存失败探针与模拟负结果完成。缺 SGLang/Ollama/MIGraphX、共享前缀、长上下文成功路径与多卡。
 
-### Screen simulation
+### 冻结契约
 
-4 个候选：1 PASS / 3 FAIL / 0 UNKNOWN。
+- 硬件：RX 7900 XTX 23.98 GiB（`gfx1100`，GPU0，实验期独占）；GPU1 的 `ch7-vllm` 未参与。
+- 模型：Qwen3-4B，4,022,468,096 参数；每 token KV = 147,456 B。
+- 负载：closed loop，ISL=256，OSL=128，`ignore_eos`，temperature=0，top_p=1，seed=42，200 prompts/点，warmup=2。
+- SLO：TTFT P99 ≤ 800 ms，TPOT P99 ≤ 100 ms，E2EL P99 ≤ 15,000 ms，单点失败率 ≤ 1%。
+- TPOT 修正：旧口径用 SSE chunk 间隔，vLLM/llama.cpp 会合并 token；正文全部采用 `(E2EL−TTFT)/(completion_tokens−1)` 重算值。
+- vLLM：BF16 HF，`--max-model-len 4096 --max-num-seqs 64 --no-enable-prefix-caching`，chunked prefill + torch.compile + HIP graph 默认开启；KV 77,248 token / 10.61 GiB。
+- llama.cpp：F16 GGUF，`--parallel 64 --ctx-size 32768 --flash-attn on --no-cache-prompt`；64 slots × 512 ctx = 32,768 token / 4.50 GiB。
 
-| 候选 | 结论 | 首次破坏的约束 |
-|-|-|-|
-| `joint-pass` | PASS，排名 1，59.9 ms | 全约束满足 |
-| `static-memory-fail` | FAIL | 固定预算 + base workspace 需 9,373,696 B，容量仅 1,048,576 B |
-| `p99-only-fail` | FAIL | P99 E2E 79.307 ms > 70 ms |
-| `throughput-only-fail` | FAIL | min req/s 671.14 < 1000 |
+### 显存先爆：131K 上下文
 
-### Screen sweep
+| 配置（模拟账本） | 权重 GiB | KV GiB | 其他 GiB | 合计 GiB | 判定 |
+|-|-:|-:|-:|-:|-|
+| vLLM 4K / C48 | 7.49 | 10.61 | 5.05 | 23.15 | 物理容量内 |
+| vLLM 131K / C1 | 7.49 | 18.00 | 5.05 | 30.54 | 超 23.98 GiB |
+| llama.cpp 512 / C48 | 7.49 | 4.50 | 0.35 | 12.34 | 物理容量内 |
+| llama.cpp 131K / C1 | 7.49 | 18.00 | 0.35 | 25.84 | 超 23.98 GiB |
 
-2 个候选：1 PASS / 1 FAIL。
+真机探针：llama.cpp `--ctx-size 131072` 在创建 KV 时 `cudaMalloc failed: out of memory`，尝试分配 18,432 MiB = 19,327,352,832 B，与 18.00 GiB KV 账本一致；日志 `code/part1-modeling/chapter8/results/framework/llamacpp-memory-fail/probe.log`。
 
-- `fast-all-points` PASS，最小窗口输出 50.0 tok/s
-- `slow-high-load-fails` FAIL：P99 E2E 995.05 ms > 20 ms，`observed_overloaded`，`load.slo=false`
+### 主扫描（修正 TPOT 口径）
 
-### 真机参考
+| 框架 | C | TTFT P99 ms | TPOT P99 ms | E2EL P99 ms | 裸 tok/s | goodput req/s | 合格/总数 | 判定 |
+|-|-:|-:|-:|-:|-:|-:|-:|-|
+| vLLM | 1 | 40.24 | 10.19 | 1,330.00 | 96.43 | 0.753 | 200/200 | PASS |
+| vLLM | 8 | 206.05 | 14.25 | 1,877.16 | 546.79 | 4.272 | 200/200 | PASS |
+| vLLM | 32 | 780.35 | 20.74 | 2,920.09 | 1,406.22 | 10.986 | 200/200 | PASS |
+| vLLM | 64 | 1,564.51 | 30.30 | 4,948.88 | 1,834.59 | 11.323 | 158/200 | FAIL |
+| llama.cpp | 1 | 124.86 | 12.55 | 1,693.72 | 79.79 | 0.623 | 200/200 | PASS |
+| llama.cpp | 8 | 778.33 | 32.47 | 4,900.64 | 297.29 | 2.323 | 200/200 | PASS |
+| llama.cpp | 32 | 1,867.03 | 86.37 | 12,015.42 | 412.89 | 2.500 | 155/200 | FAIL |
+| llama.cpp | 64 | 3,859.00 | 112.41 | 17,146.44 | 553.48 | 0.822 | 38/200 | FAIL |
 
-- Ch7 vLLM C1–C64 已提供框架侧压测证据。
-- Qwen3-4B torch eager（256 输入 / 64 输出）：TTFT P50 41.411 ms，TPOT P50 29.304 ms，decode 34.13 tok/s，torch peak allocated 7.684 GiB。
+- vLLM 最大已测通过点 C32，首次违约 C48（留出）；llama.cpp 最大已测通过点 C8，首次违约 C16（留出，仅超 TTFT 阈值 38.66 ms）。
+- vLLM C32→C64 裸吞吐 +30.5%，goodput 仅 +3.1%；llama.cpp C64 goodput 从 C8 的 2.323 跌到 0.822。
+- vLLM 全实验 `num_preemptions_total=0`；llama.cpp 未暴露可比计数器。64×(256+128)=24,576 token 仍在 32,768 token 总上下文内，C64 尾延迟首先归因于准入、调度与每步服务时间，而不是 KV 驱逐。
+- 显存采样：vLLM 恒约 21,689,548,800 B（20.20 GiB），llama.cpp 约 13.5 GB（12.6 GiB）。
 
-### rocprofv3 算子级 Profile
+### 测前冻结留出：C=16/48
 
-用 torch 环境自带的 `rocprofv3 1.3.5` 采集 `--kernel-trace --marker-trace`，用 ROCTx 标记切出 `PREFILL` 与 `DECODE` 窗口。下表是 kernel 时间归因；`GPU busy` 定义为窗口内 kernel 时间之和 / 墙钟，不是硬件 PMC。
+- 只用 C=1/8/32 拟合 `log(P99)=a+b*log(C)`；C64 在预测前已观测，明确排除；C16/48 在预测写盘后才测量。
+- 预测冻结：`2026-11-23T04:22:20Z`；测量分析生成：`2026-11-23T04:30:53Z`。
+
+| 框架 / C | TTFT P99 预测→实测（误差） | TPOT P99 预测→实测（误差） | E2EL P99 预测→实测（误差） | SLO |
+|-|-|-|-|-|
+| vLLM / 16 | 408.74→386.20（−5.5%） | 17.40→16.57（−4.8%） | 2,618.59→2,178.94（−16.8%） | PASS→PASS |
+| vLLM / 48 | 1,039.92→1,147.30（+10.3%） | 21.72→26.57（+22.3%） | 3,798.02→4,033.74（+6.2%） | FAIL→FAIL |
+| llama.cpp / 16 | 1,173.08→838.66（−28.5%） | 54.42→53.18（−2.3%） | 8,084.38→7,124.30（−11.9%） | FAIL→FAIL |
+| llama.cpp / 48 | 2,789.04→2,421.73（−13.2%） | 99.43→109.23（+9.9%） | 15,416.86→14,858.43（−3.6%） | FAIL→FAIL |
+
+- 4/4 SLO 判定命中；MAPE：TTFT 14.38%，TPOT 9.816%，E2EL 9.623%。
+- 三校准点拟合两参数，区间是启发式带，不是置信区间；这是四个留出点的预测，不是主扫描的完整盲预测。
+- llama.cpp C16 是边缘 FAIL，不能称为稳健边界；vLLM C48 TPOT 误差 +22.3%，接近拐点时幂律低估每 token 服务时间。
+
+### 框架级 kernel profile（C=8，20 请求）
+
+| 指标 | vLLM | llama.cpp |
+|-|-:|-:|
+| dispatches | 269,892 | 497,906 |
+| trace 跨度 | 8.50 s | 13.95 s |
+| kernel 时间 | 7,456.09 ms | 9,871.50 ms |
+| GPU busy | 87.73% | 70.77% |
+| dispatches / 输出 token | 105.4 | 194.5 |
+| GEMM 时间占比 | 89.18% | 89.32% |
+| attention 时间占比 | 6.25% | 4.83% |
+| norm / RoPE 时间占比 | 1.45% | 3.25% |
+
+vLLM phase split：prefill 5 次 / 2,255 kernels / 158.40 ms / busy 67.81%；decode 635 次 / 258,998 kernels / 6,295.36 ms / busy 87.58%；mixed chunked prefill 3 次 / 1,353 kernels / 385.45 ms / busy 96.87%。llama.cpp trace 无同等 phase annotation。原始 trace 仅留 `/tmp`，`profile-summary.json` 用 SHA-256 绑定。
+
+### 模拟筛选的负结果
+
+- 4 个候选全部 FAIL（`counts={fail:4}`）：两个 131K 候选为 `STATIC_MEMORY_INFEASIBLE`，与真机 OOM 一致；两个 48 并发候选被解析延迟判 FAIL。
+- 解析后端对 vLLM 与 llama.cpp 都算出约 66,029 ms TTFT、约 67,415 ms E2EL、10.91 ms TPOT；真机留出 TTFT 只有 1,147 ms / 2,422 ms。原因是 batch 内权重与 KV 读取复用建模不足，延迟数字不可信。
+- 结论：只采纳模拟筛选器的静态显存判定，不采纳其延迟预测。初次 `screen-qwen4b-7900xtx/` 因候选请求数不一致报 `INVALID_SCREENING_PLAN`，有效运行在 `-v2/`。
+
+### 早期单框架 rocprofv3 profile（保留，非横评）
+
+以下是本章新横评之前的单框架补充证据，仍有效，但不能替代 C=8 的 vLLM vs llama.cpp 同负载 profile。用 torch 环境自带的 `rocprofv3 1.3.5` 采集 `--kernel-trace --marker-trace`，用 ROCTx 标记切出 `PREFILL` 与 `DECODE` 窗口。下表是 kernel 时间归因；`GPU busy` 定义为窗口内 kernel 时间之和 / 墙钟，不是硬件 PMC。
 
 Qwen3-0.6B，512 输入，8 个 decode step：
 
@@ -510,11 +564,11 @@ Qwen3-4B，512 输入，4 个 decode step：
 1. **Prefill 是 GEMM 主导**，尤其 4B 的 GEMM 占 kernel 时间 71.27%，GPU busy 85.86%。
 2. **Decode 不是纯 GEMM**：0.6B 只有 32.76% 的 kernel 时间是 GEMM；4B 为 51.74%。其余主要是 elementwise、KV cache copy/cat、reduce 和 attention。
 3. **decode 被 launch/小算子开销拖住**：0.6B GPU busy 仅 30.39%，4B 也只有 46.94%；大量时间花在 kernel 之间的 gap，而不是 tensor core 计算。
-4. 这为 Ch8 的框架取舍提供了直接证据：continuous batching、CUDA/HIP graph、算子融合、减少 KV cache 拷贝，比单独追求更大 GEMM 更重要。
+4. 这组早期证据提示：continuous batching、CUDA/HIP graph、算子融合、减少 KV cache 拷贝，可能比单独追求更大 GEMM 更重要；本章新横评用两框架同负载数据进一步验证了 dispatch 与 GPU busy 的差异。
 
 > Profile 模式会引入 trace 开销；这里的墙钟与逐 step 事件计时只用于同次 profile 内的相对归因，不作为 Ch2/Ch7 的最终延迟数字。
 
-### PMC 硬件计数器
+### 早期 PMC 硬件计数器
 
 按 `PROFILE.md` 的修复方法，在 `STABLE_PEAK` 下重新采集派生指标。下表是每个窗口内各 kernel 的中位数；decode 的 `OccupancyPercent` 会被大量微小 kernel 拉低，因此同时看 `MeanOccupancyPerActiveCU`。
 
@@ -529,9 +583,10 @@ Qwen3-4B，512 输入，4 个 decode step：
 
 ### 缺项
 
-- 没有 llama.cpp / SGLang / Ollama / MIGraphX 横评。
-- PMC 已完成，但需稳定性能级别；当前证据来自 RX 7900 XTX + ROCm 10.0，`VALUBusy` 在 gfx1100 上不存在，使用 `VALUInsts` / `SQ_INSTS_VALU` 替代。
-- 没有多框架失败模式矩阵，无法回答“显存碎片 / 调度开销 / 降频”中哪一个主导。
+- 没有 SGLang / Ollama / MIGraphX 横评；没有共享前缀、长上下文成功路径、多轮对话、多卡、P/D 分离、功耗与温升。
+- 两框架不是受控单变量比较：BF16 HF vs F16 GGUF、OpenAI server vs 兼容层、4K/64 seqs vs 64×512 ctx、graph/compile vs 融合路径、KV 池 10.61 GiB vs 4.50 GiB 同时变化。
+- 未做 INT4/FP8 框架横评，无法回答量化后排序是否反转；131K 只证明当前 F16/BF16 配置不可行。
+
 ## Ch9.1 端侧部署助手（资源受限实战）
 
 - 产物：`ch9-agent/task-9.1*.json`、`hw-ch9-1-qwen1.7b/`
@@ -715,7 +770,7 @@ C16/C32/C64 完全相同，说明预测模型已达到批处理/并发平台；C
 2. **Ch3/Ch4 的显存账本方向正确**：4B BF16 权重约 7.5 GiB、每 token KV 144 KiB；量化后权重近似线性下降。但缺真实 PPL 与失败边界。
 3. **Ch5/Ch6 的通信模型能在解析层自洽**：Ring-AllReduce 48 点对账误差 2e-16；TP 通信占比能解释“什么时候切分不划算”。但缺多卡 GPU 性能与动画。
 4. **Ch7 的排队拐点在模拟与真机上方向一致**：模拟开环 16→32 rps 过载，闭环 16→32 clients 违约；真机 9070 XT 在 C64 仍无失败但 TTFT 上升到 268 ms。两边的绝对容量不可直接比较，因为模型、SLA、输入输出长度和硬件不同。
-5. **Ch8 的筛选器能正确拒绝静态显存、P99、吞吐三类失败**；rocprofv3 已补 0.6B/4B kernel profile 和 PMC，显示 decode 的 GPU busy 仅 30%/47%、4B prefill L2 命中率约 33.8%，仍缺多框架横评。
+5. **Ch8 完成了同卡同负载的 vLLM vs llama.cpp 核心横评**：在 RX 7900 XTX / Qwen3-4B / ISL=256 / OSL=128 / 800-100-15000 ms SLO 下，vLLM 最大已测通过点为 C32、首次违约 C48，llama.cpp 为 C8、首次违约 C16（仅超 38.66 ms）；测前冻结的 C16/48 四点 SLO 判定 4/4 命中，TTFT/TPOT/E2EL MAPE 为 14.38%/9.816%/9.623%。131K 上下文由 18.00 GiB KV 账本与 18,432 MiB 真机分配失败共同判死。模拟筛选项的静态显存判定有效，但 48 并发延迟预测（约 66 s TTFT）严重失真，已作为负结果保留。仍缺 SGLang/Ollama/MIGraphX、共享前缀、多卡与长上下文成功路径。
 6. **Ch9 的 Agent 协议与 DAG 调度可运行**；Ch9.3 目前是教学合成轨迹，不足以支撑“真实 deep-research 集群”结论。
 
 ## 工具链验证
