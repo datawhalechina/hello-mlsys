@@ -31,23 +31,25 @@
 >
 > The tutorial body is currently written in Chinese; this English README gives an overview of the project.
 
-&emsp;&emsp;🎓 **Learn MLSys together with students at the National University of Singapore (NUS)!** This project is co-built by NUS students, who are learning it together with more of their classmates. Join us and go from serving a model on one machine to a multi-user LLM serving platform on AMD devices.
+&emsp;&emsp;🎓 **Learn MLSys together with students at the National University of Singapore (NUS)!** This project is co-built by NUS students, and more NUS students will join in to learn and build along the way. Join us and go from serving a model on one machine to a multi-user LLM serving platform on AMD devices.
 
-&emsp;&emsp;Once a model runs, the next step is usually turning it into a service everyone can use: How many concurrent requests can one machine sustain? Are time to first token and generation speed good enough for the application? How should you choose precision and quantization, batching, KV cache, and framework settings? And how do you connect the few AMD machines in your lab into one stable LLM service shared by many users?
+&emsp;&emsp;Once a model runs, the next job is usually turning it into a service other people can use: how many concurrent requests one machine can handle, how long the first token takes and whether generation is fast enough, how to set quantization, batching, KV cache, and framework parameters, and how to connect a few machines into one shared service.
 
-&emsp;&emsp;However, **getting a model to run is not the same as running a good service**. These questions involve trade-offs among model, hardware, framework configuration, workload, and service targets. Trial and error is slow and expensive; framework documentation alone does not explain why a setting works or whether it still holds on a different machine.
+&emsp;&emsp;All of these involve trade-offs among model, hardware, framework configuration, workload, and service targets, and trial and error is slow and burns machine time.
 
-&emsp;&emsp;**hello-mlsys** is built for exactly this path. Based on AMD hardware and using open-source inference frameworks such as **vLLM and llama.cpp** as hands-on vehicles (vLLM for the main line on Linux, llama.cpp for comparison experiments and for edge devices such as the Ryzen AI MAX+ 395), it takes you from **single-machine deployment** to **multi-machine LLM serving**: through performance benchmarking, precision and quantization choices, framework tuning, and resource allocation, you build your own efficient model serving platform. The whole book answers one question:
+&emsp;&emsp;hello-mlsys is meant to spare you those detours. It is built on AMD hardware: the main line uses vLLM on Linux, and llama.cpp is used for comparison experiments and on-device deployment. The whole book revolves around one question:
 
-> **Given the devices, tasks, and service targets, how do you choose model precision, inference framework, and resource configuration to make the whole service more efficient?**
+> Given the devices, tasks, and service targets, how should you choose model precision, inference framework, and resource configuration so the whole service runs more efficiently?
 
-&emsp;&emsp;To back every choice with evidence, the tutorial follows a **predict first, then measure** approach: before tuning anything, use the **[mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator)** to estimate performance, memory, and capacity boundaries, then validate a small number of informative configurations on real AMD hardware, explain the deviations, calibrate the model, and make the configuration decision.
+&emsp;&emsp;In practice, we predict first and measure second. Before tuning anything, use [mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator) to estimate rough limits on performance, memory, and capacity, and write the predictions down; then take only the few configurations that tell you the most to real AMD hardware, explain the gaps, calibrate the model, and make the configuration decision.
 
-&emsp;&emsp;**This is not a user manual for inference frameworks. It aims to build engineering skills for LLM serving systems: deploy, benchmark, optimize, and scale. Anyone is welcome to open an issue or submit a PR to help build and maintain this project.**
+&emsp;&emsp;Part 2, "Designing with AI", has a companion agent-based learning workbench, [hello-mlsys-lab](https://github.com/taowangcheng/hello-mlsys-lab), which is still in development and testing. Learners talk with an AI assistant in a local course page or the terminal to discuss design tasks, run simulations with [mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator), plan experiments, and compare the simulated results with measurements. Until the AMD sandbox is connected, hardware measurements use stand-in data.
+
+&emsp;&emsp;**This is not a user manual for inference frameworks. By the end, you should be able to deploy a model as a service yourself, benchmark it under consistent conventions, find the bottleneck and tune it, and know when and how to add machines. Anyone is welcome to open an issue or submit a PR to help build and maintain this project.**
 
 ### The AMD Hello Series
 
-&emsp;&emsp;From getting started with AI and building applications, to GPU compute optimization, to building LLM serving platforms: a shared foundation for industry applications, research practice, and talent development. The three projects can be studied independently or connected through the same model: train, fine-tune, and use a model in hello-rocm; understand and optimize its computation in hello-gpu; and deploy it as an efficient shared service in hello-mlsys.
+&emsp;&emsp;hello-mlsys is one of three projects in the AMD Hello series; the other two are hello-rocm and hello-gpu. You can study them separately or connect them through the same model: train, fine-tune, and use it in hello-rocm, understand and optimize its computation in hello-gpu, then deploy it as a shared service in hello-mlsys.
 
 | Project | Slogan | Focus |
 | ---- | ---- | ---- |
@@ -55,31 +57,19 @@
 | [**hello-gpu**](https://github.com/datawhalechina/hello-gpu) | Understand the GPU and optimize every computation yourself. | Starting from the data types and GEMM optimization of a small model you trained, learn GPU programming and agent-assisted optimization |
 | **hello-mlsys** (this project) | Connect devices, build platforms, make every unit of AI compute more efficient. | Using vLLM and other open-source inference frameworks as case studies, learn LLM serving deployment, performance optimization, and multi-machine serving |
 
-&emsp;&emsp;For environment setup, getting started with AI, and fine-tuning, see hello-rocm; for GPU programming and kernel optimization, see hello-gpu. This tutorial does not repeat either topic.
-
-> &emsp;&emsp;***Study tip: the chapter order is the recommended learning order. Start with [Chapter 0: Protocol and Paper Drill](https://datawhalechina.github.io/hello-mlsys/part0-intro/chapter0/) to align on measurement units such as tokens, GB/GiB, and latency; Chapters 1 and 2 build the Roofline and profiling methods for performance analysis and calibration; Chapters 3–8 cover memory, precision and quantization, communication, parallelism, serving benchmarks, and inference framework trade-offs in turn; finally, the projects in Part 2 apply these methods to edge, single-machine, and cluster design. No AMD GPU at hand? The Roofline predictions in Chapter 1 and the memory ledger in Chapter 3 can be done on CPU alone.***
+> &emsp;&emsp;***Study tip: start with [Chapter 0: Protocol and Paper Drill](https://datawhalechina.github.io/hello-mlsys/part0-intro/chapter0/) to align on measurement conventions such as tokens, GB/GiB, and latency; then read Chapters 1 and 2 for Roofline, profiling, and calibration; work through Chapters 3–8 in order, and finally put these methods to use in the three design problems of Part 2. No AMD GPU at hand? The Roofline predictions in Chapter 1 and the memory ledger in Chapter 3 run on a CPU alone.***
 
 ## Why This Project
 
 &emsp;&emsp;What is MLSys?
 
-> MLSys (Machine Learning Systems) studies how to run machine learning models efficiently, reliably, and economically on real hardware under real workloads. For LLMs, it is not only about how fast a single request runs, but about how much useful work a service can reliably deliver on given devices and service targets.
+> MLSys (Machine Learning Systems) studies how to run machine learning models efficiently and reliably on real hardware under real workloads while keeping costs under control. For LLM inference, what counts is how much useful work the whole service can reliably deliver; how fast a single request runs is only part of it.
 
-&emsp;&emsp;Models keep growing and inference keeps getting more expensive. Once a model runs, the next questions are whether it holds up under load, whether it is worth the cost, and whether everyone can use it. Precision and quantization, batching, KV cache, framework settings, service replicas, and request routing each affect latency, throughput, memory, and cost. Yet most material either stops at "how to launch framework X" or at paper formulas: the former tells you how to run something but not why it is configured that way; the latter gives you a model but not how far it is from real hardware.
+&emsp;&emsp;Models keep growing and inference keeps getting more expensive, so a wrong configuration costs more as well. Most material covers only half of the story: framework tutorials show you how to launch a server but rarely explain why it is configured that way or whether the setting still holds on another machine, and the models in papers are seldom checked against real hardware.
 
-&emsp;&emsp;This project covers several kinds of AMD hardware: desktop GPUs such as the **Radeon RX 9070 XT and RX 7900 XTX** are affordable enough for students and small labs to run real-hardware experiments; edge devices such as the **Ryzen AI MAX+ 395** bring large unified memory to personal computers and suit on-device deployment and resource-constrained scenarios (support in progress); and **multiple W7900D 48 GB GPUs** are planned for multi-GPU and cluster experiments. Serving benchmark methods, memory ledgers, communication models, and queueing theory hold on any platform; switching hardware only means switching the parameter table.
+&emsp;&emsp;The experiments cover three kinds of AMD hardware: desktop GPUs (Radeon RX 9070 XT, RX 7900 XTX), affordable enough for students and small labs to run real-hardware experiments; edge devices (Ryzen AI MAX+ 395), whose large unified memory suits on-device deployment and resource-constrained scenarios; and workstation GPUs (Radeon PRO W7900D 48 GB), combined into multi-GPU setups for parallelism and cluster experiments. The benchmarking methods, memory ledgers, communication models, and queueing theory in this book carry over to other platforms; switching hardware only means switching the parameters.
 
-&emsp;&emsp;Along this path, the tutorial sticks to three principles:
-
-| Principle | Meaning | How you practice it |
-| ---- | ---- | ---- |
-| **Service as the goal** | The end point is a usable LLM service, not a single inference | Go from a single-machine API service to a serving platform shared by many users |
-| **Benchmarks as evidence** | Every optimization needs measurements under unified conventions | Fix the model and task, and measure input/output length, concurrency, latency, throughput, and memory |
-| **Predict, then measure** | Use the simulator to narrow the search, and let real hardware decide | Record predictions before measuring, measure only the few most informative configurations, explain errors, and calibrate |
-
-&emsp;&emsp;The tutorial focuses on **LLM inference serving**. For getting started with AI, training, and fine-tuning, see hello-rocm; for GPU programming and kernel optimization, see hello-gpu.
-
-&emsp;&emsp;***We hope every learner can connect the devices at hand, build their own serving platform, and make every unit of AI compute count.***
+&emsp;&emsp;***We hope every learner can put the devices at hand to work, build a serving platform of their own, and be able to say where every unit of compute goes.***
 
 ## Who This Is For
 
@@ -91,13 +81,13 @@
 * Developers who need to do capacity planning, quantization selection, or framework selection for inference services but lack measured evidence;
 * Learners who want to understand LLM serving systems in the AMD GPU / ROCm ecosystem.
 
-> &emsp;&emsp;You do not need kernel development experience, but you should be comfortable with Python, PyTorch, Linux, and reading English documentation; the basics of using and fine-tuning models can be picked up in hello-rocm first.
+> &emsp;&emsp;You do not need kernel development experience, but you should be comfortable with Python, PyTorch, Linux, and reading English documentation; environment setup and the basics of using and fine-tuning models can be picked up in hello-rocm first.
 
 ## Roadmap and Progress
 
 ### Chapters and Experiment Coverage
 
-> ✅ means the chapter text already includes that type of result (simulator prediction or real-hardware measurement); 🚧 means planned or in progress. Only completed experiments are counted; Chapters 4 and 5 also include RX 7900 XTX measurements.
+> ✅ means the chapter text already includes that type of result (simulator prediction or real-hardware measurement); 🚧 means planned or in progress. Chapters 4, 5, and 8 also include RX 7900 XTX measurements (Chapter 8 is measured on the RX 7900 XTX only).
 
 | Part / Chapter | Core experiment / topic | Simulator | RX 9070 XT | W7900D | Ryzen AI MAX+ 395 | Status |
 | ---- | ---- | :----: | :----: | :----: | :----: | :----: |
@@ -108,8 +98,8 @@
 | [Ch 4](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter4/) | Precision, quantization, and error budgets | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
 | [Ch 5](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter5/) | Communication cost models and scale-in / scale-up | ✅ | 🚧 | 🚧 | | 🚧 |
 | [Ch 6](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter6/) | Model parallelism and memory / compute partitioning | ✅ | ✅ (behavior check) | 🚧 | 🚧 | 🚧 |
-| [Ch 7](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter7/) | Serving, queueing, and SLA; load generation and stress testing | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
-| [Ch 8](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter8/) | Inference framework trade-offs, profiling, and performance analysis | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
+| [Ch 7](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter7/) | Serving performance and quality: latency, goodput, and SLO capacity | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
+| [Ch 8](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter8/) | Inference framework trade-offs, profiling, and performance analysis | ✅ | 🚧 | 🚧 | 🚧 | 🚧 |
 | [Ch 9.1](https://datawhalechina.github.io/hello-mlsys/part2-ai-design/chapter9-1/) | Designing with AI: on-device deployment assistant | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
 | [Ch 9.2](https://datawhalechina.github.io/hello-mlsys/part2-ai-design/chapter9-2/) | Designing with AI: meeting an SLA on a single machine | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
 | [Ch 9.3](https://datawhalechina.github.io/hello-mlsys/part2-ai-design/chapter9-3/) | Designing with AI: multi-GPU long-context, multi-subagent request handling | 🚧 | | 🚧 | | 🚧 |
@@ -135,7 +125,7 @@ hello-mlsys/
 
 ## Contents
 
-> The chapter order is the recommended learning order. The book covers five modules: single-machine deployment, serving benchmarks, single-machine optimization, multi-machine serving, and advanced collaboration; "single-machine deployment" and "multi-machine serving" are being written and will be inserted at the appropriate places. vLLM carries the main line, with llama.cpp for comparison and edge devices; conclusions about multi-GPU tensor parallelism on Radeon (Chapters 5 and 6) rely on our own measurements. Chapter links point to the Chinese text.
+> The chapter order is the recommended learning order. The book covers five modules: single-machine deployment, serving benchmarks, single-machine optimization, multi-machine serving, and advanced collaboration; "single-machine deployment" and "multi-machine serving" are being written and will be inserted at the appropriate places. Conclusions about multi-GPU tensor parallelism on Radeon (Chapters 5 and 6) rely on our own measurements. Chapter links point to the Chinese text.
 
 | Chapter | Summary | Module | Status |
 | ---- | ---- | ---- | ---- |
@@ -148,8 +138,8 @@ hello-mlsys/
 | [Chapter 4 Precision, Quantization, and Error Budgets](./docs/part1-modeling/chapter4/index.md) · [code](./code/part1-modeling/chapter4) | Numeric formats, precision / latency / memory trade-offs, error budget allocation | Single-machine optimization | 🚧 |
 | [Chapter 5 Communication Cost Models and Scale-in / Scale-up](./docs/part1-modeling/chapter5/index.md) · [code](./code/part1-modeling/chapter5) | Intra-node and inter-node interconnects, collective communication primitives, α–β cost model | Advanced collaboration | 🚧 |
 | [Chapter 6 Model Parallelism and Memory / Compute Partitioning](./docs/part1-modeling/chapter6/index.md) · [code](./code/part1-modeling/chapter6) | DP / FSDP, TP, PP, and when communication eats the gains from partitioning | Advanced collaboration | 🚧 |
-| [Chapter 7 Serving, Queueing, and SLA](./docs/part1-modeling/chapter7/index.md) · [code](./code/part1-modeling/chapter7) | TTFT, TPOT / ITL, latency percentiles, concurrency and throughput, queueing knee, load generation and stress testing | Serving benchmarks | 🚧 |
-| [Chapter 8 Inference Framework Trade-offs, Profiling, and Performance Analysis](./docs/part1-modeling/chapter8/index.md) | Framework-level trade-offs, framework-level profiling, configuration-space prediction and failure modes | Single-machine optimization | 🚧 |
+| [Chapter 7 Serving Performance and Quality of Service](./docs/part1-modeling/chapter7/index.md) · [code](./code/part1-modeling/chapter7) | Measure latency and goodput of an inference service and judge SLO-compliant capacity and headroom; compare open-loop and closed-loop load tests, analyze waiting with queueing theory, explain request scheduling and cache constraints in continuous batching, and predict service behavior with discrete-event simulation | Serving benchmarks | 🚧 |
+| [Chapter 8 Inference Framework Trade-offs, Profiling, and Performance Analysis](./docs/part1-modeling/chapter8/index.md) · [code](./code/part1-modeling/chapter8) | Same-card vLLM vs llama.cpp, memory failure modes, holdout prediction, framework-level profiling, and the selection decision | Single-machine optimization | 🚧 |
 | **Part 2: Designing with AI** | | | |
 | [Chapter 9.1 On-Device Deployment Assistant](./docs/part2-ai-design/chapter9-1/index.md) | Choosing model, precision, context, and KV configuration under tight resource limits | Single-machine optimization | 🚧 |
 | [Chapter 9.2 Meeting an SLA on a Single Machine](./docs/part2-ai-design/chapter9-2/index.md) | Single-GPU capacity planning: memory and queueing upper bounds, measured knee, holdout validation | Single-machine optimization | 🚧 |
@@ -162,7 +152,7 @@ hello-mlsys/
 | [Appendix C Glossary](./docs/appendix/appendix-c-glossary/index.md) | Coming soon | —— | 🚧 |
 | [Appendix D References](./docs/appendix/appendix-d-references/index.md) | Coming soon | —— | 🚧 |
 | [Appendix E Community](./docs/appendix/appendix-e-community/index.md) | Coming soon | —— | 🚧 |
-| [Appendix F Common Failure Modes and Troubleshooting Checklist](./docs/appendix/appendix-f-troubleshooting/index.md) | Coming soon | —— | 🚧 |
+| [Appendix F Common Failure Modes and Troubleshooting Checklist](./docs/appendix/appendix-f-troubleshooting/index.md) | Includes the rocprofv3 PMC fix record | —— | 🚧 |
 
 ## Contributors
 
@@ -171,6 +161,7 @@ hello-mlsys/
 - Yao Lu - Faculty Advisor & Project Lead (Assistant Professor, School of Computing, National University of Singapore)
 - [yuzhou - Project Lead](https://github.com/youyoulyz) (PhD student, ShanghaiTech University)
 - [Bowen Qin - Project Member](https://github.com/eyuansu62) (PhD student, National University of Singapore; builds and calibrates [mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator))
+- [Tao Wangcheng - Project Member](https://github.com/taowangcheng) (PhD student, National University of Singapore; develops and tests the companion agent [hello-mlsys-lab](https://github.com/taowangcheng/hello-mlsys-lab))
 - [Jiahang Pan - Project Member](https://github.com/amdjiahangpan) (Software Engineer, AMD)
 - [Weihong Liu - Project Member](https://github.com/Weihong-Liu) (Datawhale member)
 - yanhui - Project Member (MComp student, National University of Singapore)
@@ -200,7 +191,7 @@ hello-mlsys/
 * Sharing your experience deploying and optimizing LLM services on AMD devices
 * Sharing suggestions and ideas
 
-&emsp;&emsp;Before contributing, please read the **[Contributing Guide CONTRIBUTING_en.md](./CONTRIBUTING_en.md)**. It covers where content belongs, chapter and measurement-record conventions, local preview, and the PR workflow.
+&emsp;&emsp;Before contributing, please read the [Contributing Guide CONTRIBUTING_en.md](./CONTRIBUTING_en.md). It covers where content belongs, how to write chapters and measurement records, how to preview locally, and the PR workflow.
 
 - If you find a problem, please open an issue;
 - If you would like to contribute, please open a pull request and we will review it as soon as possible.

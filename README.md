@@ -31,21 +31,23 @@
 
 &emsp;&emsp;🎓 **和新加坡国立大学（NUS）的同学一起学 MLSys！** 本项目由 NUS 的同学参与共建，也会和更多 NUS 同学一起边学边做。欢迎你加入我们，在 AMD 设备上从一台机器的模型服务，走到多人共享的 LLM 服务平台。
 
-&emsp;&emsp;模型能跑起来之后，下一步往往是把它变成大家都能用的服务：一台机器能撑住多少并发？首 Token 延迟和生成速度能否满足应用？精度与量化、批处理、KV Cache 和框架配置该怎么选？实验室里的几台 AMD 设备，又该怎样连成一个多人共享、稳定可用的 LLM 服务？
+&emsp;&emsp;模型能跑起来以后，接下来通常要把它变成别人也能用的服务：一台机器能扛多少并发，首 token 要等多久、生成够不够快，量化、批处理、KV Cache 和框架参数怎么配，几台机器又该怎么接成一个共享的服务。
 
-&emsp;&emsp;然而，**能把模型跑起来，并不等于能把服务做好**。这些问题牵涉模型、硬件、框架配置、负载与服务目标之间的取舍：只靠反复试错，既慢又贵；只看框架文档，又说不清某个配置为什么有效、换一台设备是否依然成立。
+&emsp;&emsp;这些问题都牵涉模型、硬件、框架配置、负载和服务目标之间的取舍，靠反复试错既慢又费机时。
 
-&emsp;&emsp;**hello-mlsys** 正是为这条路径而生。本教程基于 AMD 硬件，以 **vLLM、llama.cpp** 等开源推理框架为实践载体（vLLM 在 Linux 上走通主线，llama.cpp 做对照实验并覆盖 Ryzen AI MAX+ 395 等端侧设备），带你从**单机部署**走到**多机 LLM 服务**：通过性能评测、精度与量化选择、框架调优和资源分配，搭建自己的高效模型服务平台。全书重点回答一个问题：
+&emsp;&emsp;hello-mlsys 想帮你少走这些弯路。教程基于 AMD 硬件，主线用 Linux 上的 vLLM，llama.cpp 用来做对照实验和端侧部署。全书围绕一个问题：
 
-> **给定设备、任务和服务目标，怎样选择模型精度、推理框架与资源配置，让整体服务更高效？**
+> 给定设备、任务和服务目标，模型精度、推理框架和资源配置该怎么选，整体服务才更高效？
 
-&emsp;&emsp;为了让每个选择都有依据，本教程坚持**先预测、再实测**：动手调参之前，先用模拟器 **[mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator)** 估算性能、显存与容量边界，再挑选少量有信息价值的配置上 AMD 真机验证，解释偏差、校准模型，最后做出配置决策。
+&emsp;&emsp;具体做法是先预测、再实测。调参之前，用模拟器 [mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator) 估出性能、显存和容量的大致边界，并把预测记下来；然后只挑几组最能说明问题的配置上 AMD 真机测，解释偏差、校准模型，最后做配置决策。
 
-&emsp;&emsp;**本教程不是推理框架的使用手册，而是希望帮助读者建立 LLM 服务系统的工程能力：能部署、会评测、懂优化、可扩展。任何人都可以提出 issue 或是提交 PR，共同构建维护这个项目。**
+&emsp;&emsp;第 2 篇「与 AI 一起设计」有一个配套的 Agent 学习工作台 [hello-mlsys-lab](https://github.com/taowangcheng/hello-mlsys-lab)，目前还在开发和测试。学员在本地课程页或终端里和 AI 助手对话，讨论设计任务，用 [mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator) 跑仿真、规划实验，再把仿真和实测结果放在一起比较。接入 AMD 沙盒之前，真机测量用的是替身数据。
+
+&emsp;&emsp;**这不是一本推理框架的使用手册。学完以后，你应该能自己把模型部署成服务，用统一的口径评测它，找到瓶颈并调优，也知道什么时候该加机器、怎么加。任何人都可以提出 issue 或是提交 PR，共同构建维护这个项目。**
 
 ### AMD Hello 系列
 
-&emsp;&emsp;从 AI 入门与应用实践，到 GPU 计算优化，再到 LLM 服务平台构建，为行业应用、科研实践与人才培养提供共同基础。三个项目可以独立学习，也能通过同一个模型串联实践：在 hello-rocm 中训练、微调和使用模型，在 hello-gpu 中理解并优化计算，在 hello-mlsys 中将模型部署为高效的共享服务。
+&emsp;&emsp;hello-mlsys 是 AMD Hello 系列的三个项目之一，另外两个是 hello-rocm 和 hello-gpu。三个项目可以分开学，也可以用同一个模型串起来：在 hello-rocm 里训练、微调和使用模型，在 hello-gpu 里理解并优化它的计算，再在 hello-mlsys 里把它部署成共享服务。
 
 | 项目 | 标语 | 核心定位 |
 | ---- | ---- | ---- |
@@ -53,31 +55,19 @@
 | [**hello-gpu**](https://github.com/datawhalechina/hello-gpu) | 看懂 GPU，亲手优化每一次计算。 | 从自己训练的小模型数据类型、GEMM 优化出发，学习 GPU 编程与 Agent 辅助优化 |
 | **hello-mlsys**（本项目） | 连接设备，搭建平台，让每一份 AI 算力更高效。 | 以 vLLM 等开源推理框架为案例，学习 LLM 服务部署、性能优化与多机服务构建 |
 
-&emsp;&emsp;环境安装、AI 入门与模型微调请参考 hello-rocm，GPU 编程与算子优化请参考 hello-gpu，本教程不重复这两部分内容。
-
-> &emsp;&emsp;***学习建议：章节顺序就是推荐的学习顺序。建议先读[第 0 章 协议与纸面演练](https://datawhalechina.github.io/hello-mlsys/part0-intro/chapter0/)，统一 token、GB/GiB、延迟等测量口径；第 1、2 章建立 Roofline 与 Profile 的性能分析和校准方法；第 3–8 章依次学习显存、精度与量化、通信、并行、服务评测与推理框架取舍；最后在第 2 篇的综合实战中，把这些方法用于端侧、单机与集群设计。手边暂时没有 AMD 显卡，第 1 章的 Roofline 预测与第 3 章的显存账本都可以纯 CPU 完成。***
+> &emsp;&emsp;***学习建议：先读[第 0 章 协议与纸面演练](https://datawhalechina.github.io/hello-mlsys/part0-intro/chapter0/)，统一 token、GB/GiB、延迟这些测量口径；再读第 1、2 章，掌握 Roofline、Profile 和校准方法；之后按顺序学第 3–8 章，最后在第 2 篇的三个设计题里把前面的方法用起来。手边没有 AMD 显卡的话，第 1 章的 Roofline 预测和第 3 章的显存账本只用 CPU 就能做完。***
 
 ## 项目意义
 
 &emsp;&emsp;什么是 MLSys？
 
-> MLSys（Machine Learning Systems）研究如何把机器学习模型高效、可靠、经济地运行在真实硬件与真实负载上。对 LLM 来说，它关心的不只是单个请求跑多快，而是一套服务在给定设备与服务目标下，能稳定交付多少有效工作。
+> MLSys（Machine Learning Systems）研究怎样让机器学习模型在真实硬件和真实负载上高效、可靠地运行，同时控制成本。放到 LLM 推理上，看的是整套服务能稳定交付多少有效工作，单个请求跑多快只是其中一部分。
 
-&emsp;&emsp;模型越来越大，推理越来越贵，“跑得动”之后紧接着就是“撑得住、划得来、大家都能用”。精度与量化、批处理、KV Cache、框架配置、服务副本与请求分配，每一个决定都会牵动延迟、吞吐、内存与成本。然而，大多数学习资料要么停留在“某个框架怎么启动”，要么停留在论文公式：前者告诉你怎么跑，却不告诉你为什么这样配；后者给出模型，却不告诉你它离真机有多远。
+&emsp;&emsp;模型越来越大，推理也越来越贵，配置选错的代价跟着变大。现有资料大多只讲到一半：框架教程教你怎么启动，很少解释为什么这样配、换一台机器还成不成立；论文给出的模型，又很少拿去和真机对一对。
 
-&emsp;&emsp;本项目覆盖 AMD 的多类硬件：**Radeon RX 9070 XT、RX 7900 XTX** 等桌面显卡价格亲民，学生和小型实验室也能完成真机实验；**Ryzen AI MAX+ 395** 等端侧设备把大容量统一内存带到了个人电脑上，适合端侧部署与资源受限场景（适配中）；**W7900D 48 GB** 多卡计划用于多卡与集群实验。服务评测方法、显存账本、通信模型与排队论在任何平台上都同样成立，换硬件只需换参数表。
+&emsp;&emsp;实验平台包括三类 AMD 硬件：桌面显卡（Radeon RX 9070 XT、RX 7900 XTX），价格不高，学生和小实验室也能做真机实验；端侧设备（Ryzen AI MAX+ 395），统一内存容量大，适合端侧部署和资源受限场景；工作站显卡（Radeon PRO W7900D 48 GB），多卡组合用于并行和集群实验。书里的评测方法、显存账本、通信模型和排队论换到别的平台同样适用，换硬件只需要换一套参数。
 
-&emsp;&emsp;围绕这条主线，本教程坚持三个原则：
-
-| 原则 | 含义 | 你会怎么练 |
-| ---- | ---- | ---- |
-| **以服务为目标** | 终点是一个能用的 LLM 服务，而不是一次推理 | 从单机 API 服务做到多人共享的服务平台 |
-| **以评测为依据** | 每一项优化都要有统一口径的实测数据 | 固定模型与任务，测输入输出长度、并发、延迟、吞吐与内存 |
-| **先预测再实测** | 用模拟器缩小搜索范围，用真机裁决 | 预测先留痕，只测信息量最大的少数配置，解释误差并校准 |
-
-&emsp;&emsp;本教程聚焦 **LLM 推理服务**；AI 入门、训练与微调请见 hello-rocm，GPU 编程与算子优化请见 hello-gpu。
-
-&emsp;&emsp;***我们希望让每一位学习者都能连接手边的设备、搭建自己的服务平台，让每一份 AI 算力都用得更高效。***
+&emsp;&emsp;***我们希望每一位学习者都能把手边的设备用起来，搭出自己的服务平台，并且说得清每一份算力花在了哪里。***
 
 ## 项目受众
 
@@ -89,13 +79,13 @@
 * 需要为推理服务做容量规划、量化选型或框架选型，却缺少实测依据的开发者；
 * 希望了解 AMD GPU / ROCm 生态下 LLM 服务系统的学习者。
 
-> &emsp;&emsp;你不需要有算子开发经验，但最好具备 Python、PyTorch、Linux 基础与英文文档阅读能力；模型使用与微调的基础可以先在 hello-rocm 中补齐。
+> &emsp;&emsp;你不需要有算子开发经验，但最好具备 Python、PyTorch、Linux 基础与英文文档阅读能力；环境安装和模型使用、微调的基础可以先在 hello-rocm 中补齐。
 
 ## 项目规划及进展
 
 ### 章节与实验覆盖
 
-> ✅ 表示该章正文已包含对应类型的结果（模拟器预测或真机实测），🚧 表示规划中或适配中。表中只统计已完成的实验；第 4、5 章另含 RX 7900 XTX 实测。
+> ✅ 表示该章正文已包含对应类型的结果（模拟器预测或真机实测），🚧 表示规划中或适配中。第 4、5、8 章另含 RX 7900 XTX 实测（第 8 章只在 RX 7900 XTX 上实测）。
 
 | 篇 / 章 | 核心实验 / 主题 | 模拟器 | RX 9070 XT | W7900D | Ryzen AI MAX+ 395 | 状态 |
 | ---- | ---- | :----: | :----: | :----: | :----: | :----: |
@@ -106,8 +96,8 @@
 | [Ch 4](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter4/) | 精度、量化方法与误差预算 | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
 | [Ch 5](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter5/) | 通信代价模型与 Scale-in / Scale-up | ✅ | 🚧 | 🚧 | | 🚧 |
 | [Ch 6](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter6/) | 模型并行策略与显存 / 算力拆解 | ✅ | ✅（行为验证） | 🚧 | 🚧 | 🚧 |
-| [Ch 7](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter7/) | 服务、排队与 SLA，负载生成与压测 | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
-| [Ch 8](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter8/) | 推理框架的系统取舍、Profile 方式与性能分析 | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
+| [Ch 7](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter7/) | 服务性能与服务质量：延迟、有效吞吐与 SLO 容量 | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
+| [Ch 8](https://datawhalechina.github.io/hello-mlsys/part1-modeling/chapter8/) | 推理框架的系统取舍、Profile 方式与性能分析 | ✅ | 🚧 | 🚧 | 🚧 | 🚧 |
 | [Ch 9.1](https://datawhalechina.github.io/hello-mlsys/part2-ai-design/chapter9-1/) | 与 AI 一起实战：端侧部署助手 | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
 | [Ch 9.2](https://datawhalechina.github.io/hello-mlsys/part2-ai-design/chapter9-2/) | 与 AI 一起实战：单机服务满足 SLA | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
 | [Ch 9.3](https://datawhalechina.github.io/hello-mlsys/part2-ai-design/chapter9-3/) | 与 AI 一起实战：多卡长上下文、多 Subagent 请求处理 | 🚧 | | 🚧 | | 🚧 |
@@ -133,7 +123,7 @@ hello-mlsys/
 
 ## 目录
 
-> 章节顺序就是推荐的学习顺序。全书内容覆盖「单机部署、服务评测、单机优化、多机服务、进阶协同」五个模块，其中「单机部署」与「多机服务」正在编写，完成后插入相应位置。vLLM 走通主线，llama.cpp 做对照与端侧；涉及 Radeon 多卡张量并行的结论（第 5、6 章）以本书实测为准。
+> 章节顺序就是推荐的学习顺序。全书内容覆盖「单机部署、服务评测、单机优化、多机服务、进阶协同」五个模块，其中「单机部署」与「多机服务」正在编写，完成后插入相应位置。涉及 Radeon 多卡张量并行的结论（第 5、6 章）以本书实测为准。
 
 | 章节名 | 简介 | 所属模块 | 状态 |
 | ---- | ---- | ---- | ---- |
@@ -169,6 +159,7 @@ hello-mlsys/
 - 陆遥-指导教师-项目负责人（新加坡国立大学计算机学院助理教授）
 - [yuzhou-项目负责人](https://github.com/youyoulyz)（上海科技大学博士在读）
 - [秦博文-项目成员](https://github.com/eyuansu62)（新加坡国立大学博士在读，[mlsys-simulator](https://github.com/eyuansu62/mlsys-simulator) 模拟器搭建与校准）
+- [Tao Wangcheng-项目成员](https://github.com/taowangcheng)（新加坡国立大学博士在读，[hello-mlsys-lab](https://github.com/taowangcheng/hello-mlsys-lab) 配套 Agent 开发与测试）
 - [潘嘉航-项目成员](https://github.com/amdjiahangpan)（AMD 软件工程师）
 - [刘伟鸿-项目成员](https://github.com/Weihong-Liu)（Datawhale 成员）
 - yanhui-项目成员（新加坡国立大学 MComp 硕士）
@@ -190,7 +181,7 @@ hello-mlsys/
 
 ## 参与贡献
 
-&emsp;&emsp;我们欢迎所有形式的贡献！无论是：
+&emsp;&emsp;欢迎各种形式的贡献，比如：
 
 * 完善或新增教程章节
 * 修复错误与 Bug
@@ -198,7 +189,7 @@ hello-mlsys/
 * 分享你在 AMD 设备上部署与优化 LLM 服务的实践经验
 * 提出建议与想法
 
-&emsp;&emsp;参与前请先阅读 **[贡献指南 CONTRIBUTING.md](./CONTRIBUTING.md)**，其中说明了内容放置位置、章节与实验记录规范、本地预览方式与 PR 流程。
+&emsp;&emsp;参与前请先读[贡献指南 CONTRIBUTING.md](./CONTRIBUTING.md)，里面写了内容该放在哪里、章节和实验记录怎么写、怎么在本地预览，以及 PR 流程。
 
 - 如果你发现了一些问题，可以提 Issue 进行反馈；
 - 如果你想参与贡献本项目，可以提 Pull Request，我们会尽快 review。
